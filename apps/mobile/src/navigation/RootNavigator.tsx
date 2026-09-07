@@ -21,6 +21,7 @@ import { useAuth } from '../auth/AuthProvider';
 import AuthScreen from '../screens/AuthScreen';
 import RideScreen from '../screens/RideScreen';
 import { makePlaceholder } from '../screens/Placeholder';
+import TabIcon, { type TabIconName } from './TabIcon';
 import { defaultTheme as t } from '../theme';
 import type {
   AuthStackParamList,
@@ -51,6 +52,12 @@ const tabScreenOptions = {
   tabBarStyle: { backgroundColor: t.colors.card, borderTopColor: t.colors.border },
 } as const;
 
+/** Tab icons are drawn from Views — see TabIcon.tsx for why not an icon font. */
+const tabIcon =
+  (name: TabIconName) =>
+  ({ color }: { color: string }) =>
+    <TabIcon name={name} color={color} />;
+
 function AuthStack() {
   return (
     <AuthStackNav.Navigator screenOptions={{ headerShown: false }}>
@@ -67,10 +74,10 @@ function AuthStack() {
 function RiderTabs() {
   return (
     <RiderTabNav.Navigator screenOptions={tabScreenOptions}>
-      <RiderTabNav.Screen name="RideTab" component={RideScreen} options={{ title: 'Ride' }} />
-      <RiderTabNav.Screen name="HistoryTab" component={makePlaceholder('History', '/history')} options={{ title: 'History' }} />
-      <RiderTabNav.Screen name="WalletTab" component={makePlaceholder('Wallet', '/wallet')} options={{ title: 'Wallet' }} />
-      <RiderTabNav.Screen name="ProfileTab" component={makePlaceholder('Profile', '/profile')} options={{ title: 'Profile' }} />
+      <RiderTabNav.Screen name="RideTab" component={RideScreen} options={{ title: 'Ride', tabBarIcon: tabIcon('ride') }} />
+      <RiderTabNav.Screen name="HistoryTab" component={makePlaceholder('History', '/history')} options={{ title: 'History', tabBarIcon: tabIcon('history') }} />
+      <RiderTabNav.Screen name="WalletTab" component={makePlaceholder('Wallet', '/wallet')} options={{ title: 'Wallet', tabBarIcon: tabIcon('wallet') }} />
+      <RiderTabNav.Screen name="ProfileTab" component={makePlaceholder('Profile', '/profile')} options={{ title: 'Profile', tabBarIcon: tabIcon('profile') }} />
     </RiderTabNav.Navigator>
   );
 }
@@ -78,11 +85,11 @@ function RiderTabs() {
 function DriverTabs() {
   return (
     <DriverTabNav.Navigator screenOptions={tabScreenOptions}>
-      <DriverTabNav.Screen name="DashboardTab" component={makePlaceholder('Dashboard', '/driver/dashboard')} options={{ title: 'Dashboard' }} />
-      <DriverTabNav.Screen name="RequestsTab" component={makePlaceholder('Requests', '/driver/requests')} options={{ title: 'Requests' }} />
-      <DriverTabNav.Screen name="TripsTab" component={makePlaceholder('Trips', '/driver/trips')} options={{ title: 'Trips' }} />
-      <DriverTabNav.Screen name="DriverWalletTab" component={makePlaceholder('Wallet', '/driver/wallet')} options={{ title: 'Wallet' }} />
-      <DriverTabNav.Screen name="DriverProfileTab" component={makePlaceholder('Profile', '/driver/profile')} options={{ title: 'Profile' }} />
+      <DriverTabNav.Screen name="DashboardTab" component={makePlaceholder('Dashboard', '/driver/dashboard')} options={{ title: 'Dashboard', tabBarIcon: tabIcon('ride') }} />
+      <DriverTabNav.Screen name="RequestsTab" component={makePlaceholder('Requests', '/driver/requests')} options={{ title: 'Requests', tabBarIcon: tabIcon('history') }} />
+      <DriverTabNav.Screen name="TripsTab" component={makePlaceholder('Trips', '/driver/trips')} options={{ title: 'Trips', tabBarIcon: tabIcon('history') }} />
+      <DriverTabNav.Screen name="DriverWalletTab" component={makePlaceholder('Wallet', '/driver/wallet')} options={{ title: 'Wallet', tabBarIcon: tabIcon('wallet') }} />
+      <DriverTabNav.Screen name="DriverProfileTab" component={makePlaceholder('Profile', '/driver/profile')} options={{ title: 'Profile', tabBarIcon: tabIcon('profile') }} />
     </DriverTabNav.Navigator>
   );
 }

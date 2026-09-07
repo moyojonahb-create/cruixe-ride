@@ -12,13 +12,36 @@
  */
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, type Theme } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { AuthProvider } from './auth/AuthProvider';
 import { coreConfigResult } from './core/config';
 import RootNavigator from './navigation/RootNavigator';
 import { defaultTheme as t } from './theme';
+
+/**
+ * React Navigation paints its own surfaces — screen backgrounds during
+ * transitions, headers, tab bars — from this object, not from screen styles.
+ * Left at its default it renders stock grey-blue, which reads as a different
+ * app for the fraction of a second a push animation takes.
+ *
+ * Values come from `theme`, so they inherit DIVERGENCE-003's canonical brand
+ * hex rather than the rounded HSL.
+ */
+const navTheme: Theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: t.colors.brandRed,
+    background: t.colors.background,
+    card: t.colors.card,
+    text: t.colors.foreground,
+    border: t.colors.border,
+    notification: t.colors.brandRed,
+  },
+};
 
 function ConfigError({ error }: { error: Error }) {
   return (
@@ -43,8 +66,26 @@ export default function AppRoot() {
 
   return (
     <SafeAreaProvider>
+      {/*
+        The Capacitor app set `StatusBar: { style: 'light', backgroundColor:
+        '#B81104' }`. Only the first half is expressible here: `backgroundColor`
+        was removed from expo-status-bar because Android 15 enforces
+        edge-to-edge, so the status bar is always transparent over app content.
+
+        The consequence is a real layout rule, not a cosmetic one: **every
+        screen must pay its own top inset** via `useSafeAreaInsets`, because
+        content now draws underneath the status bar by default. `RideScreen`
+        does. The spike harness in `App.tsx` does not — it uses RN's
+        `SafeAreaView`, which applies no top inset on Android, which is why its
+        tab row sits under the clock and its upper half is untappable.
+
+        `style="dark"` here, not "light": the app's own surfaces are white or
+        map imagery, so dark status-bar content is what stays legible. Light
+        content would be invisible against them.
+      */}
+      <StatusBar style="dark" />
       <AuthProvider>
-        <NavigationContainer>
+        <NavigationContainer theme={navTheme}>
           <RootNavigator />
         </NavigationContainer>
       </AuthProvider>

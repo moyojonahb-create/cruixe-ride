@@ -8,10 +8,7 @@
     "scheme": "cruixe",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "backgroundColor": "#B81104",
-      "resizeMode": "contain"
-    },
+    "//splash": "Legacy top-level `splash` removed — per the SDK 57 docs the expo-splash-screen config plugin is the supported path and the old key is scheduled for removal. Values mirror the Capacitor app's SplashScreen plugin: #B81104 ground, CENTER_INSIDE ~= contain. Dark mode repeats the same red deliberately, so a device in dark mode never flashes a white splash.",
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "zw.co.cruixe.mobile",
@@ -53,7 +50,20 @@
     "plugins": [
       "react-native-background-geolocation",
       "react-native-background-fetch",
-      "expo-sharing"
+      "expo-sharing",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#B81104",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "dark": {
+            "backgroundColor": "#B81104",
+            "image": "./assets/splash-icon.png"
+          }
+        }
+      ]
     ],
     "extra": {
       "//": "Values are read at runtime via expo-constants / process.env.EXPO_PUBLIC_*. Do not hardcode secrets here — app.json ships inside the binary.",

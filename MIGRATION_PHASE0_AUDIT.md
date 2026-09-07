@@ -653,9 +653,21 @@ on either platform. That is accepted and recorded, not forgotten.
 | # | Change | File | Blocks | Both platforms? |
 |---|---|---|---|---|
 | N-1 | `"scheme": "cruixe"` | `apps/mobile/app.json` | All deep links. `/track/:tripId` is the one route genuinely linked from outside — riders share tracking. Also required by React Navigation's `linking` config. | Yes — iOS URL types and Android intent filters both derive from it |
-| N-2 | Password-reset `redirectTo` | `apps/mobile/app.json` + Supabase dashboard redirect allow-list | `/reset-password`. Web uses `${window.location.origin}/reset-password`, which has no device equivalent; mobile needs `cruixe://reset-password`, so it depends on N-1 | Yes |
+| N-2 | Password-reset `redirectTo` | JS call site + Supabase dashboard redirect allow-list | `/reset-password`. Web uses `${window.location.origin}/reset-password`, which has no device equivalent; mobile needs `cruixe://reset-password` | **No — corrected, see below** |
 | N-3 | FCM push (the carrier change) | `app.json` plugins, `google-services.json`, APNs key | All notifications. Web Push (`src/lib/push.ts` + `public/sw.js`) is service-worker based and deleted rather than ported | Yes — APNs for iOS, FCM for Android |
-| N-4 | `expo-location` native module | already in `package.json`; needs autolinking into a build | The rider location path in increment 3a. Installed after build `b2146450`, so its native module is **not in the current dev client** — `requestForegroundPermissionsAsync()` fails with "Cannot find native module 'ExpoLocation'" until a rebuild | Yes |
+| N-4 | `expo-location` native module | already in `package.json`; needs autolinking into a build | The rider location path in increment 3a. Installed after build `b2146450`, so its native module is **not in the current dev client** — `requestForegroundPermissionsAsync()` fails with "Cannot find native module 'ExpoLocation'" until a rebuild | Yes — **shipped in `35808cc5`** |
+| N-5 | `expo` 57.0.19 → ~57.0.20, `expo-sharing` 57.0.17 → ~57.0.18 | `apps/mobile/package.json` via `npx expo install --check --fix` | Clears the `expo-doctor` advisory seen in build `35808cc5`. Advisory only — Gradle, upload and cache all passed after it | Yes — **do not apply before the next build** |
+
+**On N-5, and why it is not a quick tidy-up.** Both packages carry native code,
+and dev client `35808cc5` was compiled against `expo@57.0.19`. Running
+`expo install --check --fix` bumps only the JavaScript, leaving JS that expects
+native modules the installed binary does not contain. That is the same failure
+mode as the `expo-location` gap that blocked 3a's gate — "Cannot find native
+module" — except self-inflicted, and immediately after paying for a build.
+
+**Apply it in the same commit as the next native change, never on its own.** The
+advisory costs nothing while it sits; clearing it out of band costs the dev
+client on every test device.
 
 **On N-4 specifically.** The obvious shortcut is to use
 `react-native-background-geolocation` instead, since it *is* in the current

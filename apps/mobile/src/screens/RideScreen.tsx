@@ -1,24 +1,36 @@
 /**
- * Ride — increment 3a: shell and location only.
+ * Ride — the rider's home screen.
  *
- * Scope is deliberately narrow. This proves the location path and the town
- * resolution that everything downstream depends on:
+ * Styled from the web app's own ride design language (`src/components/ride/
+ * rideGlass.ts`): brand red #B81104, yellow #FFDD00, frosted white surfaces
+ * over a map, tinted tier cards (blue for economy/parcel, yellow for share),
+ * and a red CTA carrying a coloured glow rather than a neutral shadow.
  *
- *   - foreground permission and a real GPS fix (`useDeviceLocation`)
- *   - the fix rendered through the stub map, not a map SDK (§5a)
- *   - `detectTown()` from `@cruixe/core` deciding whether that fix is even
- *     inside a service area
+ * Two deliberate approximations, because both real versions are native modules
+ * and would each cost an EAS build:
  *
- * NOT in this increment: destination search (3b), fare and tier selection (3c),
- * the request itself and realtime (3d). The web original — `RideView.tsx`,
- * 1,834 lines and ~50 useState hooks — is five state machines in one file; this
- * is the first.
+ *   - **No backdrop blur.** `rideGlass`'s panels use `backdrop-filter`, which
+ *     RN has no equivalent for without `expo-blur`. High-opacity white reads
+ *     close enough over map imagery.
+ *   - **No gradient fill.** The CTA's `linear-gradient(135deg,#E01B00,#B81104)`
+ *     needs `expo-linear-gradient`. Solid #B81104 with the red glow retained.
  *
- * Styled directly from `theme/`. `components/ui/` is sequenced after the slice.
+ * Both are listed as N-6 candidates. Neither changes the layout, so swapping
+ * them in later is a fill change, not a redesign.
+ *
+ * Still `components/ui/`-free — that workstream is sequenced after the slice.
  */
 
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   DEFAULT_TOWN,
@@ -28,13 +40,22 @@ import {
   type RideTierId,
 } from '@cruixe/core';
 
-import StubMap from '../components/StubMap';
+import StaticMap from '../components/StaticMap';
 import { useDeviceLocation } from '../location/useDeviceLocation';
 import { useFareEstimate } from '../pricing/useFareEstimate';
 import { useTownPricing } from '../pricing/useTownPricing';
 import type { DestinationResult } from '../search/useDestinationSearch';
 import { defaultTheme as t } from '../theme';
 import DestinationSearchScreen from './DestinationSearchScreen';
+
+const CAR_ART: Record<RideTierId, ReturnType<typeof require>> = {
+  economy: require('../../assets/cars/car-front-economy.png'),
+  share: require('../../assets/cars/car-slant-share.png'),
+  parcel: require('../../assets/cars/car-parcel.png'),
+};
+
+const SCREEN = Dimensions.get('window');
+const MAP_HEIGHT = Math.round(SCREEN.height * 0.42);
 
 export default function RideScreen() {
   const insets = useSafeAreaInsets();
@@ -43,10 +64,6 @@ export default function RideScreen() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [selectedTier, setSelectedTier] = useState<RideTierId>('economy');
 
-  // Ask once on mount. Web prompts on first interaction instead, but a rider
-  // screen whose whole purpose is "where are you" has no useful state to show
-  // before the answer, and a pre-permission priming screen is already recorded
-  // as backlog in the Phase 0 audit.
   useEffect(() => {
     void request();
   }, [request]);
@@ -61,110 +78,83 @@ export default function RideScreen() {
     dropoff: destination ? { lat: destination.lat, lng: destination.lng } : null,
   });
 
-  return (
-    <ScrollView
-      style={styles.flex}
-      contentContainerStyle={[
-        styles.container,
-        { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 },
-      ]}
-    >
-      <Text style={styles.title}>Where to?</Text>
-      <Text style={styles.subtitle}>Increment 3a — shell and location</Text>
-
-      <StubMap
-        points={[
-          ...(coords
-            ? [{ label: 'Pickup (your location)', lat: coords.lat, lng: coords.lng, accuracy: coords.accuracy }]
-            : []),
-          ...(destination
-            ? [{ label: `Dropoff — ${destination.name}`, lat: destination.lat, lng: destination.lng }]
-            : []),
-        ]}
-        caption={
-          coords
-            ? `Detected town: ${town.name}${inServiceArea ? '' : ' — outside any service area'}`
-            : undefined
-        }
+  if (searchOpen) {
+    return (
+      <DestinationSearchScreen
+        town={town}
+        userCoords={coords ? { lat: coords.lat, lng: coords.lng } : null}
+        onSelect={(r: DestinationResult) => {
+          setDestination(r);
+          setSearchOpen(false);
+        }}
+        onClose={() => setSearchOpen(false)}
       />
+    );
+  }
 
-      <Pressable
-        onPress={() => setSearchOpen(true)}
-        accessibilityRole="button"
-        style={({ pressed }) => [styles.destinationField, pressed && styles.destinationFieldPressed]}
-      >
-        <Text style={styles.destinationLabel}>Destination</Text>
-        <Text
-          style={[styles.destinationValue, !destination && styles.destinationPlaceholder]}
-          numberOfLines={1}
-        >
-          {destination ? destination.name : 'Where are you going?'}
-        </Text>
-        {destination?.subtitle ? (
-          <Text style={styles.destinationSubtitle} numberOfLines={1}>
-            {destination.subtitle}
-          </Text>
-        ) : null}
-      </Pressable>
+  const selected = fare.tiers.find((x) => x.id === selectedTier) ?? fare.tiers[0];
 
-      <Modal
-        visible={searchOpen}
-        animationType="slide"
-        // Both platforms: iOS honours this for the sheet, Android ignores it
-        // harmlessly rather than needing a separate code path.
-        presentationStyle="pageSheet"
-        onRequestClose={() => setSearchOpen(false)}
-      >
-        <DestinationSearchScreen
-          town={town}
-          userCoords={coords ? { lat: coords.lat, lng: coords.lng } : null}
-          onSelect={(result) => {
-            setDestination(result);
-            setSearchOpen(false);
-          }}
-          onClose={() => setSearchOpen(false)}
+  return (
+    <View style={styles.root}>
+      {/* Map layer */}
+      <View style={styles.mapLayer}>
+        <StaticMap
+          pickup={coords ? { lat: coords.lat, lng: coords.lng } : null}
+          dropoff={destination ? { lat: destination.lat, lng: destination.lng } : null}
+          height={MAP_HEIGHT}
+          width={SCREEN.width}
         />
-      </Modal>
+      </View>
 
-      {status === 'loading' ? (
-        <View style={styles.row}>
-          <ActivityIndicator color={t.colors.brandRed} />
-          <Text style={styles.rowText}>Finding your location…</Text>
+      {/* Floating header over the map */}
+      <View style={[styles.header, { top: insets.top + 10 }]}>
+        <View style={styles.brandPill}>
+          <Text style={styles.brandText}>CruiXe</Text>
         </View>
-      ) : null}
-
-      {status === 'success' && coords ? (
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Service area</Text>
-          <KV k="Town" v={town.name} />
-          <KV k="Centre" v={`${town.center.lat.toFixed(4)}, ${town.center.lng.toFixed(4)}`} />
-          <KV k="Radius" v={`${town.radiusKm} km`} />
-          <KV
-            k="You are"
-            v={inServiceArea ? 'inside a service area' : 'outside any service area'}
-            tone={inServiceArea ? 'ok' : 'warn'}
-          />
-        </View>
-      ) : null}
-
-      {status === 'denied' || status === 'unavailable' ? (
-        <View style={styles.card}>
-          <Text style={styles.errorTitle}>
-            {status === 'denied' ? 'Location permission needed' : 'Location unavailable'}
+        <View style={styles.townPill}>
+          <Text style={styles.townText}>
+            {town.name}
+            {coords && !inServiceArea ? ' · outside service area' : ''}
           </Text>
-          <Text style={styles.errorBody}>{error}</Text>
+        </View>
+      </View>
+
+      {/* Glass sheet */}
+      <ScrollView
+        style={[styles.sheet, { marginTop: MAP_HEIGHT - 24 }]}
+        contentContainerStyle={[styles.sheetInner, { paddingBottom: insets.bottom + 28 }]}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.grabber} />
+
+        <Text style={styles.h1}>Where to?</Text>
+
+        {/* Pickup / dropoff */}
+        <View style={styles.route}>
+          <View style={styles.routeRow}>
+            <View style={[styles.dot, styles.dotPickup]} />
+            <Text style={styles.routeLabel} numberOfLines={1}>
+              {coords ? `Your location · ${town.name}` : 'Finding your location…'}
+            </Text>
+          </View>
+          <View style={styles.routeLine} />
           <Pressable
-            onPress={() => void request()}
+            style={({ pressed }) => [styles.routeRow, pressed && styles.pressed]}
+            onPress={() => setSearchOpen(true)}
             accessibilityRole="button"
-            style={({ pressed }) => [styles.retry, pressed && styles.retryPressed]}
           >
-            <Text style={styles.retryText}>Try again</Text>
+            <View style={[styles.dot, styles.dotDropoff]} />
+            <Text
+              style={[styles.routeLabel, !destination && styles.routePlaceholder]}
+              numberOfLines={1}
+            >
+              {destination ? destination.name : 'Enter destination'}
+            </Text>
           </Pressable>
         </View>
-      ) : null}
 
-      <View style={styles.tiers}>
-        <Text style={styles.cardTitle}>Choose a ride</Text>
+        {/* Tier cards */}
+        <Text style={styles.sectionTitle}>Choose a ride</Text>
         {fare.tiers.map((tier) => {
           const active = tier.id === selectedTier;
           return (
@@ -175,21 +165,21 @@ export default function RideScreen() {
               accessibilityState={{ selected: active }}
               style={({ pressed }) => [
                 styles.tier,
+                tier.id === 'share' ? styles.tintYellow : styles.tintBlue,
                 active && styles.tierActive,
-                pressed && styles.tierPressed,
+                pressed && styles.pressed,
               ]}
             >
+              <Image source={CAR_ART[tier.id]} style={styles.carArt} resizeMode="contain" />
               <View style={styles.tierMain}>
-                <Text style={[styles.tierName, active && styles.tierNameActive]}>{tier.name}</Text>
+                <Text style={styles.tierName}>{tier.name}</Text>
                 <Text style={styles.tierMeta}>
-                  {tier.capacity} seat{tier.capacity === 1 ? '' : 's'} · {tier.badge}
+                  {tier.capacity} seats · {tier.badge}
                 </Text>
               </View>
               <View style={styles.tierRight}>
-                {/* Null price is a value, not a gap — never fabricate a fare
-                    before a destination exists. Web says the same. */}
-                <Text style={[styles.tierPrice, active && styles.tierNameActive]}>
-                  {tier.price == null ? 'See fare next' : formatFare(tier.price, fare.currencySymbol)}
+                <Text style={styles.tierPrice}>
+                  {tier.price == null ? '—' : formatFare(tier.price, fare.currencySymbol)}
                 </Text>
                 {tier.etaMinutes != null ? (
                   <Text style={styles.tierEta}>{tier.etaMinutes} min</Text>
@@ -198,139 +188,174 @@ export default function RideScreen() {
             </Pressable>
           );
         })}
-      </View>
 
-      {fare.distanceKm != null ? (
-        <View style={styles.estimateNote}>
-          <Text style={styles.estimateTitle}>Estimate only</Text>
-          <Text style={styles.estimateBody}>
-            {fare.distanceKm.toFixed(2)} km straight-line, not road distance — real fares will be
-            higher. OSRM routing replaces this in increment 3d.
+        {/* CTA */}
+        <Pressable
+          disabled={!destination}
+          style={({ pressed }) => [
+            styles.cta,
+            !destination && styles.ctaDisabled,
+            pressed && destination && styles.ctaPressed,
+          ]}
+          accessibilityRole="button"
+        >
+          <Text style={styles.ctaText}>
+            {destination
+              ? `Request ${selected?.name ?? 'ride'}${
+                  selected?.price != null ? ` · ${formatFare(selected.price, fare.currencySymbol)}` : ''
+                }`
+              : 'Enter a destination first'}
           </Text>
-        </View>
-      ) : null}
+        </Pressable>
 
-      <Text style={styles.footnote}>
-        The ride request itself and realtime matching arrive in increment 3d.
-      </Text>
-    </ScrollView>
-  );
-}
+        {status === 'denied' || status === 'unavailable' ? (
+          <Pressable onPress={() => void request()} style={styles.errorCard}>
+            <Text style={styles.errorTitle}>
+              {status === 'denied' ? 'Location permission needed' : 'Location unavailable'}
+            </Text>
+            <Text style={styles.errorBody}>{error} — tap to retry</Text>
+          </Pressable>
+        ) : null}
 
-function KV({ k, v, tone }: { k: string; v: string; tone?: 'ok' | 'warn' }) {
-  return (
-    <View style={styles.kv}>
-      <Text style={styles.k}>{k}</Text>
-      <Text
-        style={[
-          styles.v,
-          tone === 'ok' && { color: t.colors.primary },
-          tone === 'warn' && { color: t.colors.destructive },
-        ]}
-      >
-        {v}
-      </Text>
+        {fare.distanceKm != null ? (
+          <Text style={styles.note}>
+            {fare.distanceKm.toFixed(1)} km straight-line — real road fares will be higher. Live
+            routing arrives with the ride request.
+          </Text>
+        ) : null}
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: t.colors.background },
-  container: { paddingHorizontal: 20, gap: 14 },
-  title: { fontSize: 26, fontWeight: '800', color: t.colors.foreground },
-  subtitle: { fontSize: 12, color: t.colors.mutedForeground, marginTop: -8 },
+  root: { flex: 1, backgroundColor: t.colors.background },
+  mapLayer: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
 
-  row: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  rowText: { fontSize: 14, color: t.colors.mutedForeground },
-
-  card: {
-    backgroundColor: t.colors.card,
-    borderRadius: t.radius.md,
-    borderWidth: 1,
-    borderColor: t.colors.border,
-    padding: 14,
+  header: {
+    position: 'absolute',
+    left: 16,
+    right: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
+    zIndex: 2,
   },
-  cardTitle: {
-    fontSize: 11,
+  brandPill: {
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 3,
+  },
+  brandText: { fontSize: 16, fontWeight: '800', color: t.colors.brandRed, letterSpacing: -0.3 },
+  townPill: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    elevation: 3,
+  },
+  townText: { fontSize: 12, fontWeight: '600', color: t.colors.mutedForeground },
+
+  sheet: { flex: 1 },
+  sheetInner: {
+    backgroundColor: 'rgba(255,255,255,0.97)',
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26,
+    paddingHorizontal: 18,
+    paddingTop: 10,
+    gap: 12,
+    minHeight: SCREEN.height * 0.62,
+  },
+  grabber: {
+    alignSelf: 'center',
+    width: 38,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#D8DBE0',
+    marginBottom: 4,
+  },
+  h1: { fontSize: 24, fontWeight: '800', color: '#111111', letterSpacing: -0.4 },
+
+  route: {
+    backgroundColor: '#F5F6F8',
+    borderRadius: 16,
+    paddingVertical: 4,
+    paddingHorizontal: 14,
+  },
+  routeRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 13 },
+  dot: { width: 10, height: 10, borderRadius: 5 },
+  dotPickup: { backgroundColor: t.colors.brandRed },
+  dotDropoff: { backgroundColor: '#111111' },
+  routeLine: { height: 1, backgroundColor: '#E3E6EA', marginLeft: 22 },
+  routeLabel: { flex: 1, fontSize: 14, fontWeight: '600', color: '#111111' },
+  routePlaceholder: { color: '#8A8F98', fontWeight: '500' },
+
+  sectionTitle: {
+    fontSize: 12,
     fontWeight: '800',
-    color: t.colors.mutedForeground,
+    color: '#666666',
     textTransform: 'uppercase',
     letterSpacing: 1,
-  },
-  kv: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  k: { fontSize: 13, color: t.colors.mutedForeground },
-  v: { fontSize: 14, fontWeight: '700', color: t.colors.cardForeground },
-
-  errorTitle: { fontSize: 15, fontWeight: '700', color: t.colors.destructive },
-  errorBody: { fontSize: 13, color: t.colors.cardForeground },
-  retry: {
-    height: 44,
-    borderRadius: t.radius.sm,
-    backgroundColor: t.colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
     marginTop: 4,
   },
-  retryPressed: { backgroundColor: t.colors.brandRedHover },
-  retryText: { fontSize: 14, fontWeight: '700', color: t.colors.primaryForeground },
 
-  destinationField: {
-    backgroundColor: t.colors.card,
-    borderRadius: t.radius.md,
-    borderWidth: 1,
-    borderColor: t.colors.border,
-    padding: 14,
-    gap: 3,
-  },
-  destinationFieldPressed: { backgroundColor: t.colors.secondary },
-  destinationLabel: {
-    fontSize: 11,
-    fontWeight: '800',
-    color: t.colors.mutedForeground,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  destinationValue: { fontSize: 16, fontWeight: '600', color: t.colors.cardForeground },
-  destinationPlaceholder: { color: t.colors.mutedForeground, fontWeight: '400' },
-  destinationSubtitle: { fontSize: 12, color: t.colors.mutedForeground },
-
-  tiers: { gap: 8 },
   tier: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    padding: 14,
-    borderRadius: t.radius.md,
+    gap: 12,
+    borderRadius: 18,
+    padding: 12,
     borderWidth: 1,
-    borderColor: t.colors.border,
-    backgroundColor: t.colors.card,
+    borderColor: 'rgba(255,255,255,0.6)',
   },
-  tierActive: { borderColor: t.colors.primary, borderWidth: 2 },
-  tierPressed: { backgroundColor: t.colors.secondary },
+  tintBlue: { backgroundColor: '#EEF3FC' },
+  tintYellow: { backgroundColor: '#FFFACD' },
+  tierActive: { borderColor: t.colors.brandRed, borderWidth: 2 },
+  carArt: { width: 62, height: 40 },
   tierMain: { flex: 1, gap: 2 },
-  tierName: { fontSize: 15, fontWeight: '700', color: t.colors.cardForeground },
-  tierNameActive: { color: t.colors.primary },
-  tierMeta: { fontSize: 12, color: t.colors.mutedForeground },
-  tierRight: { alignItems: 'flex-end', gap: 2 },
-  tierPrice: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: t.colors.cardForeground,
-    fontVariant: ['tabular-nums'],
-  },
-  tierEta: { fontSize: 12, color: t.colors.mutedForeground, fontVariant: ['tabular-nums'] },
+  tierName: { fontSize: 15, fontWeight: '800', color: '#111111' },
+  tierMeta: { fontSize: 12, color: '#666666' },
+  tierRight: { alignItems: 'flex-end', gap: 1 },
+  tierPrice: { fontSize: 15, fontWeight: '800', color: '#111111', fontVariant: ['tabular-nums'] },
+  tierEta: { fontSize: 12, color: '#666666', fontVariant: ['tabular-nums'] },
 
-  estimateNote: {
-    backgroundColor: t.colors.secondary,
-    borderRadius: t.radius.sm,
-    borderLeftWidth: 3,
-    borderLeftColor: t.colors.brandYellow,
+  cta: {
+    height: 54,
+    borderRadius: 16,
+    backgroundColor: t.colors.brandRed,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 6,
+    // The red glow from rideGlass.redCta, minus the gradient fill.
+    shadowColor: '#B81104',
+    shadowOpacity: 0.36,
+    shadowRadius: 26,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 8,
+  },
+  ctaPressed: { backgroundColor: t.colors.brandRedHover },
+  ctaDisabled: { backgroundColor: '#C9CDD4', shadowOpacity: 0, elevation: 0 },
+  ctaText: { fontSize: 15, fontWeight: '800', color: '#FFFFFF' },
+
+  pressed: { opacity: 0.85 },
+
+  errorCard: {
+    backgroundColor: '#FFF8F7',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(184,17,4,0.16)',
     padding: 12,
     gap: 3,
   },
-  estimateTitle: { fontSize: 12, fontWeight: '800', color: t.colors.secondaryForeground },
-  estimateBody: { fontSize: 12, color: t.colors.mutedForeground, lineHeight: 17 },
+  errorTitle: { fontSize: 14, fontWeight: '700', color: t.colors.brandRed },
+  errorBody: { fontSize: 12, color: '#666666' },
 
-  footnote: { fontSize: 11, color: t.colors.mutedForeground, lineHeight: 16 },
+  note: { fontSize: 11, color: '#8A8F98', lineHeight: 16 },
 });
