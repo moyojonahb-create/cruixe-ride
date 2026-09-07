@@ -14,6 +14,11 @@ import { ArrowLeft } from "lucide-react";
 import { vibrateAlert, showBrowserNotification } from "@/lib/alerts";
 import { playAcceptedSound } from "@/lib/notificationSounds";
 import { updateDriverLocation } from "@/lib/driverLocation";
+import {
+  startDriverLocationTracking,
+  PRESENCE_LOCATION_THROTTLE_MS,
+  type TrackingHandle,
+} from "@/lib/backgroundLocation";
 import { useVoiceNavigation } from "@/hooks/useVoiceNavigation";
 import { normalizeRideRow } from "@/lib/rideContract";
 import { preloadAllTownPricing } from "@/hooks/useTownPricing";
@@ -85,7 +90,13 @@ export default function DriverDashboard() {
   // fresh page load, not just right after this session's own completeTrip().
   const [uncollectedRide, setUncollectedRide] = useState<{ id: string; fare: number; payment_method: string; dropoff_address: string; user_id: string } | null>(null);
 
+  // Retained for the presence heartbeat only — position tracking moved to the
+  // native foreground service via backgroundLocation.ts.
   const locationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const trackingHandleRef = useRef<TrackingHandle | null>(null);
+  // Presence now rides the location stream rather than its own timer.
+  const presenceRefreshRef = useRef<(() => Promise<void>) | null>(null);
+  const lastPresenceAtRef = useRef(0);
   const presenceIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const trackingGenerationRef = useRef(0);
   const latestCoordsRef = useRef<{ lat: number; lng: number } | null>(null);
@@ -194,8 +205,7 @@ export default function DriverDashboard() {
     // open — do not install intervals nothing holds a handle to.
     if (generation !== trackingGenerationRef.current) return;
 
-    const handlePos = (pos: GeolocationPosition) => {
-      const { latitude, longitude } = pos.coords;
+    const handleCoords = (latitude: number, longitude: number) => {
       updateDriverLocation(latitude, longitude);
       const coords = { lat: latitude, lng: longitude };
       setDriverCoords(coords);
@@ -211,12 +221,29 @@ export default function DriverDashboard() {
       }
       prevLocationRef.current = { lat: latitude, lng: longitude, time: Date.now() };
     };
-    // Send initial location
-    navigator.geolocation.getCurrentPosition(handlePos, () => {});
-    // Update every 10 seconds
-    locationIntervalRef.current = setInterval(() => {
-      navigator.geolocation.getCurrentPosition(handlePos, () => {});
-    }, 10000);
+    // Tracking now runs through backgroundLocation.ts, which uses a native
+    // foreground service on device and keeps navigator.geolocation for the
+    // Chrome dashboard. The previous `setInterval` here was the reason a
+    // driver's position froze at screen lock: Android suspends a WebView's JS
+    // timers, so the interval simply stopped firing and the rider watched a
+    // stationary car for the rest of the trip.
+    trackingHandleRef.current = await startDriverLocationTracking({
+      onLocation: ({ lat, lng, isHeartbeat }) => {
+        // Late events from a previous tracking session must not overwrite the
+        // current one — the generation guard above already protects setup, and
+        // this protects delivery.
+        if (generation !== trackingGenerationRef.current) return;
+        handleCoords(lat, lng);
+        // Same stream, so presence cannot silently diverge from position.
+        refreshPresence(isHeartbeat);
+      },
+      onPermissionDenied: () => {
+        toast.error('Location permission needed', {
+          description:
+            'CruiXe needs location access while you are online so riders can see your car. Without it dispatch cannot reach you.',
+        });
+      },
+    });
 
     // Presence heartbeat: the backend expires the Redis presence key after
     // 90s and it is only written by this endpoint, so an online driver must
@@ -241,14 +268,56 @@ export default function DriverDashboard() {
         });
       }
     };
+    // Presence is no longer on its own timer.
+    //
+    // Presence and position answer one question — "is this driver online, and
+    // where" — and two mechanisms answering it can disagree. That disagreement
+    // WAS the bug: a 30s setInterval suspends at screen lock, so fresh
+    // coordinates kept flowing from the native service while dispatch quietly
+    // stopped considering the driver online after the backend's 90s expiry.
+    //
+    // Now both ride the same stream. The native plugin's onLocation covers a
+    // moving driver and onHeartbeat (25s) covers a stationary one, and both
+    // arrive through the single onLocation callback below, which refreshes
+    // presence as well as position. One source, one debounce, no divergence.
+    presenceRefreshRef.current = sendHeartbeat;
     void sendHeartbeat();
-    presenceIntervalRef.current = setInterval(() => {
-      void sendHeartbeat();
-    }, 30000);
+  };
+
+  /**
+   * Presence refresh, debounced against the backend's expiry rule.
+   *
+   * The location stream can deliver far faster than presence needs (a driver in
+   * traffic emits every 10s); POSTing presence at that rate is pure waste. This
+   * throttles to PRESENCE_MIN_INTERVAL_MS while still guaranteeing the backend's
+   * 90s key never lapses.
+   */
+  const refreshPresence = (isHeartbeat: boolean) => {
+    const fn = presenceRefreshRef.current;
+    if (!fn) return;
+    const now = Date.now();
+    // Heartbeats are NEVER throttled. They arrive every 25s and exist solely to
+    // guarantee a floor on refresh rate; dropping one because a 30s window has
+    // not elapsed collapses the effective refresh to 50s against a 60s backend
+    // expiry. That only bites a stationary driver, so it passes every walking
+    // test and fails a driver parked at a rank. See PRESENCE TIMING in
+    // backgroundLocation.ts.
+    if (!isHeartbeat && now - lastPresenceAtRef.current < PRESENCE_LOCATION_THROTTLE_MS) return;
+    lastPresenceAtRef.current = now;
+    void fn();
   };
 
   const stopLocationTracking = () => {
     trackingGenerationRef.current += 1;
+    // Stopping the native service matters more than clearing a timer did: an
+    // un-stopped foreground service keeps its notification up and keeps
+    // draining battery after the driver has gone offline, which is the most
+    // visible possible bug on a driver's phone.
+    if (trackingHandleRef.current) {
+      const handle = trackingHandleRef.current;
+      trackingHandleRef.current = null;
+      void handle.stop().catch((e) => console.warn('[DriverDashboard] stop tracking failed', e));
+    }
     if (locationIntervalRef.current) {
       clearInterval(locationIntervalRef.current);
       locationIntervalRef.current = null;

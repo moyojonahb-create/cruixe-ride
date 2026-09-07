@@ -68,6 +68,15 @@
 > reinstall, `OVERALL FAIL` produced by a build swap rather than by the OS).
 >
 > Let the test decide, not the preference.
+>
+> ### The one-line reason this works
+>
+> **Native callbacks are pushed into the JS thread and wake it; `setInterval` is
+> a scheduled timer that Doze and WebView background-throttling suppress.** That
+> single distinction is why moving location off a timer fixes it, why
+> `useArrivalDetection` becomes event-driven for free once positions arrive as
+> events, and why any remaining `setInterval` on a driver-critical path is a bug
+> waiting to be found.
 
 ---
 
@@ -531,73 +540,52 @@ about correctness.
 | **`short_trip_km`** | ❌ **never read** | **Bug — see below** |
 | `is_negotiation_enabled` | ❌ not read | Not a fare input; admin-editable only. Noted, not a fare defect |
 
-### BUG-001 — `short_trip_fare` / `short_trip_km` are configured but dead
+### BUG-001 (DOWNGRADED) — short-trip columns are latent ambiguity, not a live overcharge
 
-**Present in both `src/hooks/useTownPricing.ts` and
-`packages/core/src/pricing/fare.ts`. Not a port defect — a shared bug.**
+**Corrected 7 Sep 2026 against production data. The earlier version of this
+entry was materially overstated and is retracted.**
 
-Grepped across the whole web app: `short_trip_fare` and `short_trip_km` appear
-only in the type definition, the default object, generated Supabase types, test
-fixtures, and **the admin editor** (`src/pages/admin/AdminTownPricing.tsx:164`,
-which renders both as editable number fields). **No calculation anywhere reads
-them.**
+It claimed short trips were being billed distance-based instead of a configured
+flat rate, at roughly 60% over, live since July. **That is not supportable**, and
+it also contained an internal contradiction: it declined to guess the intended
+semantics while simultaneously reporting an overcharge that only exists under one
+of the two possible readings. Both claims cannot stand together.
 
-All 13 towns have both populated. `short_trip_km` is 2 in every row, and
-`short_trip_fare` equals that town's `minimum_fare` exactly in every row.
+What remains true: `short_trip_fare` and `short_trip_km` are read by no code path
+in either `src/hooks/useTownPricing.ts` or the ported `packages/core` fare
+module, while remaining editable in `AdminTownPricing.tsx:164`. Config that is
+editable and inert is still worth resolving.
 
-**Why this is worse than an unused column.** Operations staff can open the admin
-UI, set a town's short-trip fare, save it, and see it persist — and it changes
-nothing. Config that is editable, persisted, and inert is worse than config that
-is absent, because absent config prompts a question and inert config produces
-false confidence.
+**Evidence that downgrades it:**
 
-**Worked example, Victoria Falls** (`base_fare` 3.00, `per_km_rate` 1.20,
-`short_trip_fare` 2.50, `short_trip_km` 2):
+**(a) The column duplicates `minimum_fare` exactly.** In all 13 towns,
+`short_trip_fare == minimum_fare` — Beitbridge 1.50/1.50, Harare 2.00/2.00,
+Victoria Falls 2.50/2.50, and so on — and `short_trip_km` is `2` everywhere.
+A redundant duplicate of a column that *is* implemented explains "no code reads
+it" far more economically than an unwired feature does. The floor it expresses
+is already enforced by the `minimum_fare` clamp.
 
-| Trip | Configured intent | What is actually charged |
-|---|---|---|
-| 1 km, daytime | 2.50 flat | 3.00 + 1.20 = 4.20 → rounds to **4.00** |
+**(b) Fares are negotiated, not distance-billed.** `is_negotiation_enabled` is
+true in all 13 towns, `offer_floor`/`offer_ceiling` define the band, and the
+`offers` table holds 21 rows. Identical distances produce different fares —
+Gwanda at 2.3 km yielded 3.15, 3.80, 4.00, 4.50 and 5.00 across requests. A
+distance formula is deterministic; these are not. The distance calculation is a
+*recommendation* feeding a negotiation, not the billed amount, so any overcharge
+figure derived from it is unsound.
 
-A 60% overcharge on the shortest trips, in every town, if the intended semantics
-are a flat short-trip fare. **The intended semantics are a product question and
-this audit does not assume them** — but the fields are unreadable by any code
-path, which is a defect under every reading.
+**(c) There is no material exposure.** 87 rides exist in total, **5 completed**,
+all created within the last 30 days. "Live since July on your most common trip
+type" describes volume that does not exist.
 
-**Do not "fix" this in core alone.** Fare arithmetic diverging between the two
-clients would mean the same trip quotes differently on web and mobile, which is
-materially worse than both being consistently wrong. This needs a product
-decision on the intended semantics, then a change landed in both.
+**Status: latent pricing-semantics ambiguity, negligible exposure.** It stays on
+the backlog. It does not gate any build and it is not an emergency.
 
-#### BUG-001 is BLOCKED — and the blocker is a product decision, not engineering
-
-**Nobody should write the fix until this is answered:**
-
-> Does `short_trip_fare` mean **a flat fare** for trips under `short_trip_km`,
-> or **a floor** applied to them?
-
-The two readings produce different prices for the same trip. A 1 km Victoria
-Falls ride is **$2.50** under the flat reading and **$4.00** under the floor
-reading (since the distance-based fare already exceeds the floor). Nothing in
-the schema, the admin UI, or the code distinguishes them, because no code
-consumes the fields at all. **This is an owner decision.** Engineering can
-implement either in under an hour; guessing which is what produces a pricing
-incident.
-
-**Commercial weight, and it is not small.** Short trips are plausibly the modal
-trip in the pilot towns — Gwanda, Beitbridge and Plumtree are small enough that a
-sub-2 km ride is the ordinary case, not an edge case. If the flat reading is
-correct, the app is currently quoting roughly **60% over configured intent on
-the most common trip**, in a market where the alternative is informal transport
-competing directly on price. That is the kind of gap that shows up as
-unexplained low conversion rather than as a bug report, because riders who think
-a fare is too high simply do not book.
-
-**Landing rule when it is settled:** the change goes into
-`src/hooks/useTownPricing.ts` and `packages/core/src/pricing/fare.ts` **in the
-same commit**, with a shared test asserting the agreed semantics on both sides.
-A staged rollout where one platform gets the fix first is explicitly not
-acceptable here — two clients quoting different prices for the same trip is a
-trust problem, and a rider comparing with a friend will find it immediately.
+**Still needs an owner decision**, and still must not be guessed: is
+`short_trip_fare` a flat fare for trips under `short_trip_km`, or a floor? Given
+(a), "redundant duplicate, drop the columns" is now the most likely answer — but
+that is a product call about pricing, not an engineering inference. Whatever is
+decided must land in web and core together, or the same trip quotes differently
+per client.
 
 ### The $0.50 hard floor is vestigial, not a floor
 
