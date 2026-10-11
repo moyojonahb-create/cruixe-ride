@@ -23,6 +23,18 @@ function noteAuthFailure() {
   }
 }
 
+// A refresh failure is fatal (worth signing out) only when Supabase itself
+// rejected the refresh token — a 4xx auth status (e.g. invalid_grant).
+// Retryable fetch failures (AuthRetryableFetchError, status 0/missing, 5xx)
+// mean the network is down, not the session: the rider keeps their session.
+function isAuthRefreshFatal(error: unknown): boolean {
+  const status = (error as { status?: number })?.status;
+  const name = (error as { name?: string })?.name;
+  if (name === "AuthRetryableFetchError") return false;
+  if (!status || status === 0 || status >= 500) return false;
+  return status >= 400 && status < 500;
+}
+
 // A new session or refreshed token is exactly the condition that makes the
 // backend usable again — reopen immediately rather than waiting out the window.
 supabase.auth.onAuthStateChange((event) => {
@@ -245,14 +257,24 @@ async function request<T>(method: string, path: string, body?: unknown, isRetry 
   // (e.g. it expired between attach and receipt) — refresh once and retry
   // before surfacing an error, instead of failing a call that would have
   // succeeded a moment later.
+  // NOTE: this branch does NOT count an auth failure. Whether the refresh
+  // succeeded (retry, counts zero) or failed (falls through below), the
+  // counting happens exactly once at the single choke point in the
+  // !response.ok branch — double-counting here made the breaker open one
+  // request early.
   if (response.status === 401 && !isRetry) {
     const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession();
     if (!refreshError && refreshed.session) {
       return request<T>(method, path, body, true, signal);
     }
-    // Refresh didn't help; this is a real auth failure. Count it so the
-    // breaker can open and stop us from hammering the backend.
-    noteAuthFailure();
+    // The refresh token is genuinely invalid/expired (Supabase returned an
+    // auth error, not a network one) — the session can never recover, so
+    // sign out and let the auth guards redirect to /auth. Network-level
+    // refresh failures leave the session alone so a rider on a weak
+    // connection isn't logged out for it.
+    if (refreshError && isAuthRefreshFatal(refreshError)) {
+      await supabase.auth.signOut({ scope: "local" });
+    }
   }
 
 
@@ -265,6 +287,9 @@ async function request<T>(method: string, path: string, body?: unknown, isRetry 
           ? String((payload as { message?: unknown }).message)
           : `Backend request failed with ${response.status}`;
     console.warn("[GoBackend] non-2xx response", { method, path, status: response.status, message });
+    // Single auth-failure choke point: every terminal 401 — with or without a
+    // failed refresh above — counts here exactly once, so the breaker opens
+    // after AUTH_FAILURE_THRESHOLD genuinely failed requests.
     if (response.status === 401) {
       noteAuthFailure();
     }
