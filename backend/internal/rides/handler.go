@@ -650,13 +650,17 @@ func (h *Handler) Request(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "payment_method must be cash or wallet"})
 	}
 
-	rideStatus := strings.ToLower(strings.TrimSpace(req.Status))
-	if rideStatus == "" {
-		if req.ScheduledAt != nil {
-			rideStatus = "scheduled"
-		} else {
-			rideStatus = "pending"
+	// Ride creation is the only place a rider can select an initial state.
+	// Never trust a submitted "accepted", "completed", or "in_progress" state.
+	rideStatus := "pending"
+	requestedStatus := strings.ToLower(strings.TrimSpace(req.Status))
+	if req.ScheduledAt != nil {
+		if !req.ScheduledAt.After(time.Now()) {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Scheduled pickup must be in the future"})
 		}
+		rideStatus = "scheduled"
+	} else if requestedStatus != "" && requestedStatus != "pending" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid initial ride status"})
 	}
 	if req.VehicleType == "" {
 		req.VehicleType = "economy"
