@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"database/sql"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -214,54 +215,32 @@ func (r *PostgresRepository) GetTransactionByIdempotencyKey(ctx context.Context,
 		&transaction.CreatedAt,
 		&transaction.UpdatedAt,
 	)
-	return transaction, err
-}
-
-func (r *PostgresRepository) PostLedgerEntries(ctx context.Context, transaction Transaction, entries []LedgerEntry) error {
+	return transactiofunc (r *PostgresRepository) PostLedgerEntries(ctx context.Context, transaction Transaction, entries []LedgerEntry) error {
 	if err := ValidateBalancedTransaction(transaction, entries); err != nil {
 		return err
 	}
-	if db, ok := r.db.(transactionalDB); ok {
-		tx, err := db.Begin(ctx)
-		if err != nil {
-			return err
-		}
-		defer func() { _ = tx.Rollback(ctx) }()
-		if err := insertTransactionInTx(ctx, tx, transaction); err != nil {
-			return err
-		}
-		for _, entry := range entries {
-			if err := insertLedgerEntryInTx(ctx, tx, entry); err != nil {
-				return err
-			}
-		}
-		return tx.Commit(ctx)
+	// Financial entries must be all-or-nothing. Never fall back to separate
+	// Exec calls: a failed credit would otherwise leave a posted debit.
+	db, ok := r.db.(transactionalDB)
+	if !ok {
+		return errors.New("wallet ledger requires a transactional database")
 	}
-	if err := r.CreateTransaction(ctx, transaction); err != nil {
+	tx, err := db.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	if err := insertTransactionInTx(ctx, tx, transaction); err != nil {
 		return err
 	}
 	for _, entry := range entries {
-		_, err := r.db.Exec(ctx, `
-			INSERT INTO public.wallet_ledger_entries (
-				id,
-				transaction_id,
-				account_id,
-				entry_type,
-				amount,
-				currency,
-				ride_id,
-				source_type,
-				source_id,
-				payment_provider,
-				created_at
-			)
-			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,NOW())
-		`, nullString(entry.ID), transaction.ID, entry.AccountID, entry.EntryType, entry.AmountMinor, entry.Currency, nullString(entry.RideID), nullString(entry.SourceType), nullString(entry.SourceID), nullString(entry.PaymentProvider))
-		if err != nil {
+		if err := insertLedgerEntryInTx(ctx, tx, entry); err != nil {
 			return err
 		}
 	}
-	return nil
+	return tx.Commit(ctx)
+}
+urn nil
 }
 
 func (r *PostgresRepository) CreateReconciliationRun(ctx context.Context, run ReconciliationRun) error {
