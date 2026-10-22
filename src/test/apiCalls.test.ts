@@ -15,7 +15,8 @@ const goBackendMock = vi.hoisted(() => ({
 
 vi.mock("@/lib/supabaseClient", () => ({ supabase: supabaseMock }));
 vi.mock("@/integrations/supabase/client", () => ({ supabase: supabaseMock }));
-vi.mock("@/lib/goBackendClient", () => ({ goBackend: goBackendMock }));
+vi.mock("@/lib/goBackendClient", () => ({ goBackend: goBackendMock, getGoBackendBaseUrl: () => "https://backend.test" }));
+vi.mock("@/lib/authReady", () => ({ authReady: Promise.resolve() }));
 vi.mock("@/lib/avatarUrl", () => ({ resolveAvatarUrl: vi.fn((url) => Promise.resolve(url)) }));
 vi.mock("@/lib/queryCache", () => ({ getCached: vi.fn(() => null), setCache: vi.fn() }));
 
@@ -23,7 +24,7 @@ describe("API call helpers", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     supabaseMock.auth.getUser.mockResolvedValue({ data: { user: { id: "rider-1" } }, error: null });
-    supabaseMock.auth.getSession.mockResolvedValue({ data: { session: { access_token: "token" } } });
+    supabaseMock.auth.getSession.mockResolvedValue({ data: { session: { access_token: "token", user: { id: "rider-1" } } } });
     goBackendMock.post.mockResolvedValue({ ok: true });
   });
 
