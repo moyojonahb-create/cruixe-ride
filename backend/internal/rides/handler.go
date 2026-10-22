@@ -546,8 +546,21 @@ func (h *Handler) GetRide(c *fiber.Ctx) error {
 }
 
 func (h *Handler) ListOpenRides(c *fiber.Ctx) error {
-	if _, ok := middleware.AuthenticatedUserID(c); !ok {
+	authUserID, ok := middleware.AuthenticatedUserID(c)
+	if !ok {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Authentication required"})
+	}
+	// Pending ride locations are restricted to drivers eligible to receive offers.
+	if h.authz == nil {
+		return c.Status(fiber.StatusServiceUnavailable).JSON(fiber.Map{"error": "Driver authorization unavailable"})
+	}
+	uid, err := uuid.Parse(authUserID)
+	if err != nil {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "driver_not_authorized"})
+	}
+	if err := h.authz.CanReceiveOffers(middleware.RequestContext(c), uid); err != nil {
+		authz.LogSecurityFailure(authUserID, "ListOpenRides", "not_authorized")
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "driver_not_authorized"})
 	}
 	rows, err := h.db.Query(middleware.RequestContext(c), `
 		SELECT id, user_id::text, COALESCE(driver_id::text, ''),
@@ -656,6 +669,11 @@ func (h *Handler) Request(c *fiber.Ctx) error {
 	}
 
 	fareValue := rideEstimatedFareValue(req)
+	// Rider-proposed fares are permitted, but must be within the supported
+	// USD marketplace bounds before they enter the database or wallet flow.
+	if fareValue < 0.50 || fareValue > 500 || req.EstimatedFareMinor < 50 || req.EstimatedFareMinor > 50000 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Fare must be between USD 0.50 and USD 500.00"})
+	}
 	var rideID string
 	var createdAt time.Time
 	var authorization wallet.WalletAuthorization
