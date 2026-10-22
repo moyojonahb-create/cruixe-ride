@@ -220,6 +220,19 @@ func (s *Service) NearbyDrivers(ctx context.Context, query NearbyQuery) ([]Nearb
 		if len(hash) == 0 {
 			continue
 		}
+		// GEOADD members can outlive their TTL-backed location/presence hashes.
+		// Do not return a driver merely because an old GEO member still exists.
+		presence, present, err := s.DriverPresence(ctx, result.Member)
+		if err != nil {
+			return nil, err
+		}
+		if !present || !strings.EqualFold(presence.State, "online") ||
+			!strings.EqualFold(presence.Availability, "available") ||
+			presence.RideID != "" ||
+			presence.LastSeenAt.After(now.Add(30*time.Second)) ||
+			now.Sub(presence.LastSeenAt) > s.presenceTTL {
+			continue
+		}
 		updatedAt, err := time.Parse(time.RFC3339Nano, hash["updated_at"])
 		if err != nil || updatedAt.After(now.Add(30*time.Second)) ||
 			now.Sub(updatedAt) > s.locationTTL ||
