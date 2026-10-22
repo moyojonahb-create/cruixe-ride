@@ -48,3 +48,51 @@ FROM pg_constraint
 WHERE conrelid = 'public.wallet_transactions'::regclass
   AND contype = 'c'
 ORDER BY conname;
+
+-- REQUIRED Go V2 wallet SQL column compatibility (READ ONLY).
+-- Rows returned indicate an absent table or column. Do not push the
+-- backend/WALLET_LEDGER_SCHEMA.sql wholesale against legacy wallet_transactions:
+-- CREATE TABLE IF NOT EXISTS does not add columns or update constraints.
+WITH required(table_name, column_name) AS (
+  VALUES
+    ('wallet_accounts','id'),
+    ('wallet_accounts','owner_user_id'),
+    ('wallet_accounts','account_type'),
+    ('wallet_accounts','cached_available_balance_minor'),
+    ('wallet_ledger_entries','transaction_id'),
+    ('wallet_ledger_entries','account_id'),
+    ('wallet_ledger_entries','entry_type'),
+    ('wallet_ledger_entries','amount_minor'),
+    ('wallet_transactions','idempotency_key'),
+    ('wallet_transactions','currency'),
+    ('wallet_transactions','total_amount'),
+    ('wallet_transactions','status'),
+    ('wallet_transactions','payment_provider'),
+    ('payment_intents','id'),
+    ('payment_intents','provider'),
+    ('payment_intents','idempotency_key'),
+    ('provider_events','provider_event_id')
+)
+SELECT r.table_name, r.column_name, 'MISSING' AS compatibility_status
+FROM required r
+LEFT JOIN information_schema.columns c
+  ON c.table_schema = 'public'
+  AND c.table_name = r.table_name
+  AND c.column_name = r.column_name
+WHERE c.column_name IS NULL
+ORDER BY r.table_name, r.column_name;
+
+-- Legacy wallet_transactions has required NOT NULL fields absent from Go V2
+-- INSERT statements (wallet_id, user_id, amount). Record these so any proposed
+-- dual-schema migration plans explicit compatibility and data retention.
+SELECT column_name, data_type, column_default
+FROM information_schema.columns
+WHERE table_schema='public' AND table_name='wallet_transactions'
+  AND is_nullable = 'NO'
+  AND column_name NOT IN (
+    'id', 'transaction_type', 'status', 'idempotency_key', 'currency',
+    'total_amount', 'source_type', 'source_id', 'owner_user_id', 'ride_id',
+    'payment_provider', 'payment_intent_id', 'created_by', 'approved_by',
+    'approved_at', 'created_at', 'updated_at'
+  )
+ORDER BY column_name;
