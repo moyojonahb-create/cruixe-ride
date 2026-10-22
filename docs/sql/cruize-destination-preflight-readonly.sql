@@ -27,3 +27,24 @@ ORDER BY c.relname;
 SELECT
   has_table_privilege('authenticated','public.wallets','INSERT') AS client_wallet_insert_granted,
   has_column_privilege('authenticated','public.wallets','balance','UPDATE') AS client_balance_update_granted;
+
+-- Go V2 wallet ledger schema compatibility and money-path gates.
+-- Missing tables mean WALLET_LEDGER_SCHEMA.sql must be reconciled with the
+-- existing public.wallet_transactions schema before any migration is applied.
+SELECT
+  to_regclass('public.wallet_accounts') AS go_wallet_accounts,
+  to_regclass('public.wallet_ledger_entries') AS go_wallet_ledger_entries,
+  to_regclass('public.payment_intents') AS go_payment_intents,
+  to_regclass('public.provider_events') AS go_provider_events,
+  to_regclass('public.wallet_transactions') AS existing_transactions,
+  to_regclass('public.wallets') AS legacy_wallets,
+  has_table_privilege('authenticated','public.wallets','INSERT') AS client_wallet_insert_granted,
+  has_column_privilege('authenticated','public.wallets','balance','UPDATE') AS client_balance_update_granted;
+
+-- Verify current constraints so incompatible V2 wallet_transactions DDL
+-- cannot silently replace the already populated legacy transaction type.
+SELECT conname, pg_get_constraintdef(oid) AS definition
+FROM pg_constraint
+WHERE conrelid = 'public.wallet_transactions'::regclass
+  AND contype = 'c'
+ORDER BY conname;
