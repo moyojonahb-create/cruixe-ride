@@ -258,8 +258,3 @@ export async function acceptOffer(rideId: string, offerOrId: string | Offer) {
   } catch (error) {
     throw error;
   }
-} catch (error) {
-    if (isBackendUnavailable(error)) return viaSupabase();
-    throw error;
-  }
-}
