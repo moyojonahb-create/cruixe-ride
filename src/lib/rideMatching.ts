@@ -78,7 +78,7 @@ export async function fetchRideById(rideId: string): Promise<MatchingRide | null
 
 export async function cancelRideRequest(rideId: string, reason?: string): Promise<void> {
   if (!isGoBackendConfigured()) throw new Error("Ride cancellation temporarily unavailable");
-  await goBackend.post(`/api/rides/${rideId}/cancel`, { reason: reason ?? "" });
+  await goBackend.post(`/api/rides/${rideId}/status`, { status: "cancelled", reason: reason ?? "" });
 }
 
 /** Update a proposed fare only through the authoritative backend. */
