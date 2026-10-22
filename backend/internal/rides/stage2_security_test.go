@@ -2,7 +2,14 @@ package rides
 
 import (
     "context"
+    "fmt"
+    "strings"
     "net/http"
+    "net/http/httptest"
+    "sync"
+    "sync/atomic"
+    "github.com/jackc/pgx/v5"
+    "github.com/jackc/pgx/v5/pgconn"
     "testing"
 
     "github.com/gofiber/fiber/v2"
@@ -63,5 +70,74 @@ func TestOpenRidesDeniedWithoutDriverAuthorization(t *testing.T) {
     defer resp.Body.Close()
     if resp.StatusCode != http.StatusForbidden {
         t.Fatalf("expected authorization rejection, got %d", resp.StatusCode)
+    }
+}
+
+func TestOfferSubmissionRejectsOutOfBoundsPrice(t *testing.T) {
+    for _, price := range []float64{0, 0.49, 500.01} {
+        t.Run(fmt.Sprintf("price_%v", price), func(t *testing.T) {
+            db := &fakeDB{queryRowFn: func(_ context.Context, sql string, _ ...any) pgx.Row {
+                if strings.Contains(sql, "INSERT INTO public.offers") {
+                    t.Fatal("invalid offer reached database INSERT")
+                }
+                return &fakeRow{values: []any{"pending", "cash"}}
+            }}
+            h := makeHandlerWithDB(db)
+            app := makeAuthRideApp(http.MethodPost, "/api/rides/:rideId/offers", h.SubmitOffer, "driver-1")
+            resp := doRequest(t, app, "/api/rides/ride-1/offers", map[string]any{"price": price})
+            defer resp.Body.Close()
+            if resp.StatusCode != http.StatusBadRequest {
+                t.Fatalf("price %v: expected 400, got %d", price, resp.StatusCode)
+            }
+        })
+    }
+}
+
+// Tests the optimistic UPDATE status='pending' guard under two concurrent
+// requests with a thread-safe fake database. Real PostgreSQL lock behavior
+// still needs a staging integration test.
+func TestConcurrentOfferAcceptanceOnlyOneSucceeds(t *testing.T) {
+    var accepted atomic.Bool
+    db := &fakeDB{beginFn: func(context.Context) (Tx, error) {
+        return &fakeTx{
+            queryRowFn: offerAndDriverQueryRow([]any{"rider-1", "pending", "cash"}),
+            execFn: func(_ context.Context, sql string, _ ...any) (pgconn.CommandTag, error) {
+                if strings.Contains(sql, "UPDATE public.rides") {
+                    if !accepted.CompareAndSwap(false, true) {
+                        return pgconn.NewCommandTag("UPDATE 0"), nil
+                    }
+                }
+                return pgconn.NewCommandTag("UPDATE 1"), nil
+            },
+            commitFn: func(context.Context) error { return nil },
+            rollbackFn: func(context.Context) error { return nil },
+        }, nil
+    }}
+    app := makeAuthApp(makeHandlerWithDB(db).AcceptOffer, "rider-1")
+    results := make(chan int, 2)
+    var wg sync.WaitGroup
+    for i := 0; i < 2; i++ {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            req := httptest.NewRequest(http.MethodPost, "/test/ride-1/offer-1", nil)
+            resp, err := app.Test(req)
+            if err != nil {
+                results <- 0
+                return
+            }
+            defer resp.Body.Close()
+            results <- resp.StatusCode
+        }()
+    }
+    wg.Wait()
+    close(results)
+    success, conflict := 0, 0
+    for code := range results {
+        if code == http.StatusOK { success++ }
+        if code == http.StatusConflict { conflict++ }
+    }
+    if success != 1 || conflict != 1 {
+        t.Fatalf("expected one accepted offer and one conflict; got %d success, %d conflict", success, conflict)
     }
 }
