@@ -1,5 +1,8 @@
 # Repository Guidelines
 
+## Migration export boundary
+- Keep migration tools read-only and outputs outside the repository; the admin page contains non-sensitive handover files only, and full database/auth backups use Cloud's supported export workflow.
+
 ## Project Structure & Module Organization
 This is a **Vite-powered React** application built with **TypeScript**, **shadcn-ui**, and **Tailwind CSS**. It serves as a Progressive Web App (PWA) with mobile support via **Capacitor**.
 

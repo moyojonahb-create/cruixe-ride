@@ -1,0 +1,7 @@
+# Defense in depth; exporters require an output directory outside the repository.
+private-exports/
+*.json
+*.jsonl
+*.backup
+*.dump
+!package.json
