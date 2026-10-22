@@ -3,6 +3,7 @@ package geo
 import (
 	"context"
 	"errors"
+	"math"
 	"testing"
 	"time"
 )
@@ -170,5 +171,64 @@ func TestNearbyDriversDisabledReturnsUnavailable(t *testing.T) {
 	}
 	if drivers != nil {
 		t.Fatalf("expected nil drivers, got %#v", drivers)
+	}
+}
+
+func TestWriteDriverLocationRejectsInvalidTelemetry(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		location DriverLocation
+	}{
+		{"zero coordinates", DriverLocation{DriverID: "d", Latitude: 0, Longitude: 0}},
+		{"invalid latitude", DriverLocation{DriverID: "d", Latitude: -91, Longitude: 30}},
+		{"invalid longitude", DriverLocation{DriverID: "d", Latitude: -17, Longitude: 181}},
+		{"nan latitude", DriverLocation{DriverID: "d", Latitude: math.NaN(), Longitude: 30}},
+		{"invalid speed", DriverLocation{DriverID: "d", Latitude: -17, Longitude: 30, Speed: -2}},
+		{"invalid heading", DriverLocation{DriverID: "d", Latitude: -17, Longitude: 30, Heading: 500}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			store := newFakeStore(true)
+			service := NewService(store, Config{})
+			if err := service.WriteDriverLocation(context.Background(), tc.location); err == nil {
+				t.Fatal("expected invalid GPS telemetry rejection")
+			}
+			if len(store.hsets) != 0 || len(store.geoAdds) != 0 {
+				t.Fatal("invalid location must not be stored")
+			}
+		})
+	}
+}
+
+func TestNearbyDriversIgnoresForeignCityVehicleFutureAndBadGPS(t *testing.T) {
+	store := newFakeStore(true)
+	service := NewService(store, Config{LocationTTL: 60 * time.Second})
+	now := time.Date(2026, 10, 22, 12, 0, 0, 0, time.UTC)
+	service.now = func() time.Time { return now }
+	store.results = []GeoResult{
+		{Member: "correct", DistanceKM: 1},
+		{Member: "moved-to-bulawayo", DistanceKM: 2},
+		{Member: "different-class", DistanceKM: 3},
+		{Member: "future-sample", DistanceKM: 4},
+		{Member: "bad-gps", DistanceKM: 5},
+	}
+	for _, id := range []string{"correct", "moved-to-bulawayo", "different-class", "future-sample", "bad-gps"} {
+		store.hsets[DriverLocationKey(id)] = map[string]string{
+			"latitude": "-17.826", "longitude": "31.034",
+			"city": "harare", "vehicle_type": "economy",
+			"updated_at": now.Format(time.RFC3339Nano),
+		}
+	}
+	store.hsets[DriverLocationKey("moved-to-bulawayo")]["city"] = "bulawayo"
+	store.hsets[DriverLocationKey("different-class")]["vehicle_type"] = "premium"
+	store.hsets[DriverLocationKey("future-sample")]["updated_at"] = now.Add(2*time.Minute).Format(time.RFC3339Nano)
+	store.hsets[DriverLocationKey("bad-gps")]["latitude"] = "invalid"
+
+	drivers, err := service.NearbyDrivers(context.Background(), NearbyQuery{
+		Latitude: -17.825, Longitude: 31.03, RadiusKM: 6,
+		City: "harare", VehicleType: "economy",
+	})
+	if err != nil { t.Fatal(err) }
+	if len(drivers) != 1 || drivers[0].DriverID != "correct" {
+		t.Fatalf("expected only matching valid driver, got %#v", drivers)
 	}
 }
