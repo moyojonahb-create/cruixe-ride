@@ -160,3 +160,20 @@ func TestRideCreationRejectsForgedLifecycleState(t *testing.T) {
         })
     }
 }
+
+func TestRideFarePatchRejectsOutOfBoundsBeforeDatabaseWrite(t *testing.T) {
+    for _, amountMinor := range []int64{0, 49, 50001} {
+        t.Run(fmt.Sprintf("minor_%d", amountMinor), func(t *testing.T) {
+            app := makeAuthRideApp(http.MethodPatch, "/api/rides/:rideId", makeHandlerWithDB(nil).PatchRide, "rider-1")
+            payload := fmt.Sprintf(`{"fare_minor":%d}`, amountMinor)
+            req := httptest.NewRequest(http.MethodPatch, "/api/rides/ride-1", strings.NewReader(payload))
+            req.Header.Set("Content-Type", "application/json")
+            resp, err := app.Test(req)
+            if err != nil { t.Fatal(err) }
+            defer resp.Body.Close()
+            if resp.StatusCode != http.StatusBadRequest {
+                t.Fatalf("amount %d: expected 400, got %d", amountMinor, resp.StatusCode)
+            }
+        })
+    }
+}
