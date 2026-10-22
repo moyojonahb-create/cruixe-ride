@@ -141,3 +141,22 @@ func TestConcurrentOfferAcceptanceOnlyOneSucceeds(t *testing.T) {
         t.Fatalf("expected one accepted offer and one conflict; got %d success, %d conflict", success, conflict)
     }
 }
+
+func TestRideCreationRejectsForgedLifecycleState(t *testing.T) {
+    for _, status := range []string{"accepted", "in_progress", "completed", "cancelled"} {
+        t.Run(status, func(t *testing.T) {
+            h := makeHandlerWithDB(nil)
+            app := makeAuthRideApp(http.MethodPost, "/api/rides", h.Request, "rider-1")
+            resp := doRequest(t, app, "/api/rides", map[string]any{
+                "pickup_location": "Pickup",
+                "dropoff_location": "Dropoff",
+                "fare": 5,
+                "status": status,
+            })
+            defer resp.Body.Close()
+            if resp.StatusCode != http.StatusBadRequest {
+                t.Fatalf("status %s: expected 400, got %d", status, resp.StatusCode)
+            }
+        })
+    }
+}
