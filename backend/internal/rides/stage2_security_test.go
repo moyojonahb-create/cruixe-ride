@@ -7,6 +7,7 @@ import (
 
     "github.com/gofiber/fiber/v2"
     "github.com/google/uuid"
+    "pickme-backend/internal/middleware"
 )
 
 type rejectDriverAuthorization struct{}
@@ -52,7 +53,7 @@ func TestOpenRidesDeniedWithoutDriverAuthorization(t *testing.T) {
     h.authz = rejectDriverAuthorization{}
     app := fiber.New()
     app.Get("/api/rides/open", func(c *fiber.Ctx) error {
-        c.Locals("auth_subject", "ed21ea1d-c1b8-43fb-a948-17d941211997")
+        c.Locals(middleware.LocalsAuthSubject, "ed21ea1d-c1b8-43fb-a948-17d941211997")
         return h.ListOpenRides(c)
     })
     // A missing authenticated subject must be rejected before database access.
@@ -60,7 +61,7 @@ func TestOpenRidesDeniedWithoutDriverAuthorization(t *testing.T) {
     resp, err := app.Test(req)
     if err != nil { t.Fatal(err) }
     defer resp.Body.Close()
-    if resp.StatusCode != http.StatusUnauthorized && resp.StatusCode != http.StatusForbidden {
+    if resp.StatusCode != http.StatusForbidden {
         t.Fatalf("expected authorization rejection, got %d", resp.StatusCode)
     }
 }
