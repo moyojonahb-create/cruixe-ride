@@ -1078,8 +1078,8 @@ func (h *Handler) SubmitOffer(c *fiber.Ctx) error {
 	}
 
 	amountMinor := offerAmountMinor(req)
-	if amountMinor <= 0 {
-		return c.Status(400).JSON(fiber.Map{"error": "offer amount is required"})
+	if amountMinor < 50 || amountMinor > 50000 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Offer must be between USD 0.50 and USD 500.00"})
 	}
 	etaMinutes := req.ETAMinutes
 	if etaMinutes == 0 {
