@@ -142,6 +142,10 @@ func TestNearbyDriversReturnsCandidatesAndFiltersStaleLocations(t *testing.T) {
 		{Member: "stale-driver", DistanceKM: 1.4},
 		{Member: "missing-driver", DistanceKM: 1.6},
 	}
+	store.hsets[DriverPresenceKey("fresh-driver")] = map[string]string{
+		"state": "online", "availability": "available",
+		"last_seen_at": now.Add(-10 * time.Second).Format(time.RFC3339Nano),
+	}
 	store.hsets[DriverLocationKey("fresh-driver")] = map[string]string{
 		"latitude": "-17.826", "longitude": "31.034", "heading": "10", "speed": "20",
 		"city": "harare", "vehicle_type": "economy", "updated_at": now.Add(-20 * time.Second).Format(time.RFC3339Nano),
@@ -218,6 +222,12 @@ func TestNearbyDriversIgnoresForeignCityVehicleFutureAndBadGPS(t *testing.T) {
 			"updated_at": now.Format(time.RFC3339Nano),
 		}
 	}
+	for _, id := range []string{"correct", "moved-to-bulawayo", "different-class", "future-sample", "bad-gps"} {
+		store.hsets[DriverPresenceKey(id)] = map[string]string{
+			"state": "online", "availability": "available",
+			"last_seen_at": now.Format(time.RFC3339Nano),
+		}
+	}
 	store.hsets[DriverLocationKey("moved-to-bulawayo")]["city"] = "bulawayo"
 	store.hsets[DriverLocationKey("different-class")]["vehicle_type"] = "premium"
 	store.hsets[DriverLocationKey("future-sample")]["updated_at"] = now.Add(2*time.Minute).Format(time.RFC3339Nano)
@@ -230,5 +240,39 @@ func TestNearbyDriversIgnoresForeignCityVehicleFutureAndBadGPS(t *testing.T) {
 	if err != nil { t.Fatal(err) }
 	if len(drivers) != 1 || drivers[0].DriverID != "correct" {
 		t.Fatalf("expected only matching valid driver, got %#v", drivers)
+	}
+}
+
+func TestNearbyDriversFiltersBusyOfflineAndStalePresence(t *testing.T) {
+	store := newFakeStore(true)
+	service := NewService(store, Config{LocationTTL: 60 * time.Second, PresenceTTL: 45 * time.Second})
+	now := time.Date(2026, 10, 22, 12, 0, 0, 0, time.UTC)
+	service.now = func() time.Time { return now }
+	ids := []string{"eligible", "offline", "busy", "occupied", "stale", "no-presence"}
+	for _, id := range ids {
+		store.results = append(store.results, GeoResult{Member: id, DistanceKM: 1.2})
+		store.hsets[DriverLocationKey(id)] = map[string]string{
+			"latitude": "-17.82", "longitude": "31.03",
+			"city": "harare", "vehicle_type": "economy",
+			"updated_at": now.Format(time.RFC3339Nano),
+		}
+		if id != "no-presence" {
+			store.hsets[DriverPresenceKey(id)] = map[string]string{
+				"state": "online", "availability": "available",
+				"last_seen_at": now.Format(time.RFC3339Nano),
+			}
+		}
+	}
+	store.hsets[DriverPresenceKey("offline")]["state"] = "offline"
+	store.hsets[DriverPresenceKey("busy")]["availability"] = "busy"
+	store.hsets[DriverPresenceKey("occupied")]["ride_id"] = "ride-123"
+	store.hsets[DriverPresenceKey("stale")]["last_seen_at"] = now.Add(-2*time.Minute).Format(time.RFC3339Nano)
+	got, err := service.NearbyDrivers(context.Background(), NearbyQuery{
+		Latitude: -17.82, Longitude: 31.03, RadiusKM: 5,
+		City: "harare", VehicleType: "economy",
+	})
+	if err != nil { t.Fatal(err) }
+	if len(got) != 1 || got[0].DriverID != "eligible" {
+		t.Fatalf("expected only eligible driver, got %#v", got)
 	}
 }
