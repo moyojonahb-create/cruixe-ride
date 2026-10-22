@@ -215,12 +215,15 @@ func (r *PostgresRepository) GetTransactionByIdempotencyKey(ctx context.Context,
 		&transaction.CreatedAt,
 		&transaction.UpdatedAt,
 	)
-	return transactiofunc (r *PostgresRepository) PostLedgerEntries(ctx context.Context, transaction Transaction, entries []LedgerEntry) error {
+	return transaction, err
+}
+
+func (r *PostgresRepository) PostLedgerEntries(ctx context.Context, transaction Transaction, entries []LedgerEntry) error {
 	if err := ValidateBalancedTransaction(transaction, entries); err != nil {
 		return err
 	}
-	// Financial entries must be all-or-nothing. Never fall back to separate
-	// Exec calls: a failed credit would otherwise leave a posted debit.
+	// Ledger posting must be all-or-nothing. Never fall back to separate
+	// Exec calls: a failed credit could leave a posted debit.
 	db, ok := r.db.(transactionalDB)
 	if !ok {
 		return errors.New("wallet ledger requires a transactional database")
@@ -239,8 +242,6 @@ func (r *PostgresRepository) GetTransactionByIdempotencyKey(ctx context.Context,
 		}
 	}
 	return tx.Commit(ctx)
-}
-urn nil
 }
 
 func (r *PostgresRepository) CreateReconciliationRun(ctx context.Context, run ReconciliationRun) error {
