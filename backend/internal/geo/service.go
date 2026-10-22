@@ -3,6 +3,7 @@ package geo
 import (
 	"context"
 	"errors"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -130,10 +131,20 @@ func (s *Service) WriteDriverLocation(ctx context.Context, location DriverLocati
 	if location.DriverID == "" {
 		return nil
 	}
+	// Reject invalid samples rather than publishing impossible driver positions.
+	if !validCoordinates(location.Latitude, location.Longitude) ||
+		!validTelemetry(location.Heading, location.Speed) {
+		return errors.New("invalid driver location telemetry")
+	}
 	location.City = normalizeOrDefault(location.City, "default")
 	location.VehicleType = normalizeOrDefault(location.VehicleType, "economy")
 	if location.UpdatedAt.IsZero() {
 		location.UpdatedAt = s.now().UTC()
+	}
+	// Clock skew must not keep a driver eligible indefinitely.
+	if location.UpdatedAt.After(s.now().Add(30 * time.Second)) ||
+		s.now().Sub(location.UpdatedAt) > s.locationTTL {
+		return errors.New("driver location is stale or in the future")
 	}
 
 	key := DriverLocationKey(location.DriverID)
@@ -210,11 +221,16 @@ func (s *Service) NearbyDrivers(ctx context.Context, query NearbyQuery) ([]Nearb
 			continue
 		}
 		updatedAt, err := time.Parse(time.RFC3339Nano, hash["updated_at"])
-		if err != nil || now.Sub(updatedAt) > s.locationTTL {
+		if err != nil || updatedAt.After(now.Add(30*time.Second)) ||
+			now.Sub(updatedAt) > s.locationTTL ||
+			hash["city"] != query.City || hash["vehicle_type"] != query.VehicleType {
 			continue
 		}
-		latitude, _ := strconv.ParseFloat(hash["latitude"], 64)
-		longitude, _ := strconv.ParseFloat(hash["longitude"], 64)
+		latitude, latErr := strconv.ParseFloat(hash["latitude"], 64)
+		longitude, lonErr := strconv.ParseFloat(hash["longitude"], 64)
+		if latErr != nil || lonErr != nil || !validCoordinates(latitude, longitude) {
+			continue
+		}
 		heading, _ := strconv.ParseFloat(hash["heading"], 64)
 		speed, _ := strconv.ParseFloat(hash["speed"], 64)
 		drivers = append(drivers, NearbyDriver{
@@ -262,4 +278,19 @@ func emptyDefault(value string, fallback string) string {
 
 func formatFloat(value float64) string {
 	return strconv.FormatFloat(value, 'f', -1, 64)
+}
+
+func validCoordinates(latitude, longitude float64) bool {
+	return !math.IsNaN(latitude) && !math.IsNaN(longitude) &&
+		!math.IsInf(latitude, 0) && !math.IsInf(longitude, 0) &&
+		latitude >= -90 && latitude <= 90 &&
+		longitude >= -180 && longitude <= 180 &&
+		!(latitude == 0 && longitude == 0)
+}
+
+func validTelemetry(heading, speed float64) bool {
+	return !math.IsNaN(heading) && !math.IsNaN(speed) &&
+		!math.IsInf(heading, 0) && !math.IsInf(speed, 0) &&
+		heading >= 0 && heading <= 360 &&
+		speed >= 0
 }
