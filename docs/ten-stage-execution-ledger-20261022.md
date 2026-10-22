@@ -38,3 +38,9 @@ Statuses: VERIFIED = examined from live read-only query or source; CODED = commi
 - `backend/internal/wallet/repository_test.go`: test asserts no writes when `Begin` unsupported.
 - `backend/internal/wallet/atomic_ledger_test.go`: test successful posting/commit and simulated ledger-entry failure rollback, all through a pgx transaction fake.
 - Integration gate remains: real PostgreSQL transaction rollback, concurrent balance and idempotency tests, wallet schema parity and removal of client balance UPDATE permissions. Tests should pass in latest CI before marking this code VERIFIED.
+
+## Network-resumption continuation — 2026-10-22
+- Dispatch: `WriteDriverPresence` now rejects missing state or availability and heartbeats older than the presence TTL or more than 30 seconds in the future; it no longer defaults missing state to online/available. Regression tests added to `backend/internal/geo/service_test.go`.
+- Go CI for the presence change completed successfully (latest overall workflow still requires frontend and Docker results).
+- Financial schema read-only preflight expanded in `docs/sql/cruize-destination-preflight-readonly.sql` to flag missing Go V2 tables/columns and legacy NOT NULL constraints. Production read-only check found absent Go-required columns and tables including payment_intents, provider_events, wallet_accounts, wallet_ledger_entries and V2-required fields on legacy wallet_transactions.
+- No financial RLS/grants migration or production ledger creation performed: live database wallet compatibility is **still NO-GO** until staging migration and signed-in user authorization tests.
