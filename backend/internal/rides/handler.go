@@ -1314,8 +1314,8 @@ func (h *Handler) PatchRide(c *fiber.Ctx) error {
 	if amountMinor <= 0 {
 		amountMinor = req.EstimatedFareMinor
 	}
-	if amountMinor <= 0 {
-		return c.Status(400).JSON(fiber.Map{"error": "fare_minor is required"})
+	if amountMinor < 50 || amountMinor > 50000 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Fare must be between USD 0.50 and USD 500.00"})
 	}
 
 	rideID := c.Params("rideId")
