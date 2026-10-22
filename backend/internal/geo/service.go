@@ -181,10 +181,19 @@ func (s *Service) WriteDriverPresence(ctx context.Context, presence DriverPresen
 	if presence.LastSeenAt.IsZero() {
 		presence.LastSeenAt = s.now().UTC()
 	}
+	// Missing or unknown states must never silently mark a driver as bookable.
+	// Callers must explicitly assert online AND available.
+	if presence.State == "" || presence.Availability == "" {
+		return errors.New("driver state and availability required")
+	}
+	if presence.LastSeenAt.After(s.now().Add(30*time.Second)) ||
+		s.now().Sub(presence.LastSeenAt) > s.presenceTTL {
+		return errors.New("driver presence is stale or in the future")
+	}
 	key := DriverPresenceKey(presence.DriverID)
 	values := map[string]string{
-		"state":              emptyDefault(presence.State, "online"),
-		"availability":       emptyDefault(presence.Availability, "available"),
+		"state":              strings.ToLower(strings.TrimSpace(presence.State)),
+		"availability":       strings.ToLower(strings.TrimSpace(presence.Availability)),
 		"ride_id":            presence.RideID,
 		"last_seen_at":       presence.LastSeenAt.Format(time.RFC3339Nano),
 		"websocket_instance": presence.WebsocketInstance,
