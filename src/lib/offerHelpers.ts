@@ -108,12 +108,8 @@ async function getUserOrThrow() {
 // Fetch pending offers for a ride (with LIMIT to prevent overload)
 export async function fetchPendingOffers(rideId: string): Promise<Offer[]> {
   if (!isGoBackendConfigured()) throw new Error("Ride offers temporarily unavailable");
-  try {
-    const data = await goBackend.get<GoOfferResponse[]>(`/api/rides/${rideId}/offers`);
-    return (data ?? []).slice(0, 50).map((offer) => normalizeOffer(offer, rideId));
-  } catch (error) {
-    throw error;
-  }
+  const data = await goBackend.get<GoOfferResponse[]>(`/api/rides/${rideId}/offers`);
+  return (data ?? []).slice(0, 50).map((offer) => normalizeOffer(offer, rideId));
 }
 
 // Fetch drivers by their user IDs, enriched with profile name
@@ -225,13 +221,9 @@ export async function submitOffer(input: {
   };
 
   if (!isGoBackendConfigured()) throw new Error("Ride offers temporarily unavailable");
-  try {
-    const data = await goBackend.post<GoOfferResponse | { offer: GoOfferResponse }>(`/api/rides/${input.ride_id}/offers`, payload);
-    const offer = "offer" in data ? data.offer : data;
-    return normalizeOffer(offer, input.ride_id);
-  } catch (error) {
-    throw error;
-  }
+  const data = await goBackend.post<GoOfferResponse | { offer: GoOfferResponse }>(`/api/rides/${input.ride_id}/offers`, payload);
+  const offer = "offer" in data ? data.offer : data;
+  return normalizeOffer(offer, input.ride_id);
 }
 
 // Decline an offer
@@ -240,11 +232,7 @@ export async function declineOffer(offerId: string, rideId?: string): Promise<vo
   const path = rideId
     ? `/api/rides/${rideId}/offers/${offerId}/reject`
     : `/api/rides/offers/${offerId}/reject`;
-  try {
-    await goBackend.post(path);
-  } catch (error) {
-    throw error;
-  }
+  await goBackend.post(path);
 }
 
 // Accept an offer
@@ -253,9 +241,5 @@ export async function acceptOffer(rideId: string, offerOrId: string | Offer) {
   await getUserOrThrow();
 
   if (!isGoBackendConfigured()) throw new Error("Ride offers temporarily unavailable");
-  try {
-    return await goBackend.post(`/api/rides/${rideId}/offers/${offerId}/accept`);
-  } catch (error) {
-    throw error;
-  }
+  return await goBackend.post(`/api/rides/${rideId}/offers/${offerId}/accept`);
 }
