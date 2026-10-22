@@ -7,7 +7,7 @@ Statuses: VERIFIED = examined from live read-only query or source; CODED = commi
 |---|---|---|---|
 | 1 | Database foundation | VERIFIED Supabase project ACTIVE_HEALTHY; release `supabase/config.toml` points to destination. | Backed-up restore, migration-history parity, secure deploy env, zero old endpoints |
 | 2 | Auth / RLS | VERIFIED 2 auth users; checked ride/profile/wallet foreign user refs. | Real JWT cross-user negative tests, signed-in session revalidation and storage access |
-| 3 | Financial safety | VERIFIED `authenticated` still has `wallets.balance` UPDATE; Go wallet_accounts and wallet_ledger_entries are absent. | Isolated database ledger migration, service wallet integration tests, privilege hardening, sandbox payment reconciliation |
+| 3 | Financial safety | CODED: double-entry ledger posting now requires a database transaction (non-atomic fallback removed) with commit/rollback unit tests; VERIFIED `authenticated` still has `wallets.balance` UPDATE and Go wallet_accounts/ledger_entries are absent. | Isolated database ledger migration, service wallet integration tests, privilege hardening, sandbox payment reconciliation |
 | 4 | Realtime driver location | CODED reject invalid/expired/future GPS; CODED reject stale/offline/busy/occupied presence; unit regression tests. Redis GEOSEARCH present. | GitHub CI passing for latest commit and end-to-end real Redis/driver approvals |
 | 5 | Ride dispatch and matching | Earlier release branch code enforces Go-only ride/offer writes, fare bounds and driver eligibility. | Real Postgres race test, offer expiration, dispatch retry latency and stale driver exclusions |
 | 6 | Background jobs and push | Existing Redis/Asynq configuration and Web Push code inspected. | Worker Redis replay/DLQ tests; native Android FCM & iOS APNs killed-app delivery; credentials securely configured |
@@ -32,3 +32,9 @@ Statuses: VERIFIED = examined from live read-only query or source; CODED = commi
 7. Existing `mirror_outbox` has 353 pending records; do not replay/purge until origin and desired data direction are known.
 
 **GO / NO GO:** NO-GO for public launch and financial operations until the above gates are verified in a separate staging environment. Continue parallel development on the release branch.
+
+## Additional financial integrity hardening
+- `backend/internal/wallet/repository.go`: `PostLedgerEntries` rejects a DB implementation that cannot `Begin` a transaction; removed nontransactional independent-entry writes.
+- `backend/internal/wallet/repository_test.go`: test asserts no writes when `Begin` unsupported.
+- `backend/internal/wallet/atomic_ledger_test.go`: test successful posting/commit and simulated ledger-entry failure rollback, all through a pgx transaction fake.
+- Integration gate remains: real PostgreSQL transaction rollback, concurrent balance and idempotency tests, wallet schema parity and removal of client balance UPDATE permissions. Tests should pass in latest CI before marking this code VERIFIED.
