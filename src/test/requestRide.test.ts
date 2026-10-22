@@ -144,6 +144,15 @@ describe("requestRide", () => {
 });
 
 describe("Go-only booking security", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockOnline(true);
+    supabaseMock.auth.getUser.mockResolvedValue({
+      data: { user: { id: "user-1" } },
+      error: null,
+    });
+  });
+
   it("does not silently write a ride through Supabase when Go fails", async () => {
     goBackendMock.post.mockRejectedValue(new Error("Go unavailable"));
     const result = await requestRide(validInput);
