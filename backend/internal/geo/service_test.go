@@ -276,3 +276,28 @@ func TestNearbyDriversFiltersBusyOfflineAndStalePresence(t *testing.T) {
 		t.Fatalf("expected only eligible driver, got %#v", got)
 	}
 }
+
+func TestWriteDriverPresenceRejectsMissingStateAndStaleHeartbeats(t *testing.T) {
+	now := time.Date(2026, 10, 22, 12, 0, 0, 0, time.UTC)
+	for _, tc := range []struct {
+		name string
+		presence DriverPresence
+	}{
+		{"missing state", DriverPresence{DriverID: "driver1", Availability: "available", LastSeenAt: now}},
+		{"missing availability", DriverPresence{DriverID: "driver1", State: "online", LastSeenAt: now}},
+		{"stale", DriverPresence{DriverID: "driver1", State: "online", Availability: "available", LastSeenAt: now.Add(-2*time.Minute)}},
+		{"future", DriverPresence{DriverID: "driver1", State: "online", Availability: "available", LastSeenAt: now.Add(2*time.Minute)}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			store := newFakeStore(true)
+			service := NewService(store, Config{PresenceTTL: 45 * time.Second})
+			service.now = func() time.Time { return now }
+			if err := service.WriteDriverPresence(context.Background(), tc.presence); err == nil {
+				t.Fatal("expected rejected driver presence")
+			}
+			if len(store.hsets) != 0 {
+				t.Fatal("invalid presence must never enter dispatch cache")
+			}
+		})
+	}
+}
