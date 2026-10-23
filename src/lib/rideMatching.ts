@@ -19,19 +19,12 @@ export function isGoBackendConfigured(): boolean {
   return Boolean(getGoBackendBaseUrl());
 }
 
-/** True when the error means "backend unavailable", not "request rejected".
- *
- * UNAUTHENTICATED is included alongside the network-level codes: it covers
- * both "no local session at all" (the Supabase fallback will fail the same
- * way and surface a clear error) and "the backend rejected an otherwise-
- * valid token" (e.g. a backend-side signing-secret misconfiguration) — in
- * that second case the same token is perfectly valid for a direct Supabase
- * call, so falling back is what actually lets the rider proceed instead of
- * silently dead-ending on a 401 the backend shouldn't have sent. */
+/** Only network or server failures count as transient unavailability.
+ * Authentication failures must never be silently routed around Go. */
 export function isBackendUnavailable(error: unknown): boolean {
   if (!isGoBackendConfigured()) return true;
   const code = (error as { code?: string } | null)?.code;
-  return code === 'NETWORK_ERROR' || code === 'BAD_RESPONSE' || code === 'SERVER_ERROR' || code === 'UNAUTHENTICATED';
+  return code === 'NETWORK_ERROR' || code === 'BAD_RESPONSE' || code === 'SERVER_ERROR' ;
 }
 
 export type MatchingRide = {
@@ -84,44 +77,17 @@ export async function fetchRideById(rideId: string): Promise<MatchingRide | null
 }
 
 export async function cancelRideRequest(rideId: string, reason?: string): Promise<void> {
-  const { error } = await supabase
-    .from('rides')
-    .update({ status: 'cancelled' } as never)
-    .eq('id', rideId);
-  if (error) throw new Error(error.message);
-
-  // Best-effort — the cancellation itself already succeeded above, so a
-  // failure to log the reason shouldn't surface as an error to the rider.
-  if (reason) {
-    const { data: auth } = await supabase.auth.getUser();
-    supabase
-      .from('trip_events')
-      .insert([{ ride_id: rideId, actor_id: auth?.user?.id ?? null, event_type: 'ride_cancelled', payload: { reason } }] as never)
-      .then(({ error: eventError }) => {
-        if (eventError) console.warn('Could not log cancellation reason:', eventError.message);
-      });
-  }
+  if (!isGoBackendConfigured()) throw new Error("Ride cancellation temporarily unavailable");
+  await goBackend.post(`/api/rides/${rideId}/status`, { status: "cancelled", reason: reason ?? "" });
 }
 
-/** Bumps the offered fare while a ride is still pending, so it reaches more
- * drivers — mirrors Handler.PatchRide's `status = 'pending'` guard. */
+/** Update a proposed fare only through the authoritative backend. */
 export async function updateRideFare(rideId: string, fare: number): Promise<void> {
-  const viaSupabase = async () => {
-    const { error } = await supabase
-      .from('rides')
-      .update({ fare } as never)
-      .eq('id', rideId)
-      .eq('status', 'pending');
-    if (error) throw new Error(error.message);
-  };
-
-  if (!isGoBackendConfigured()) return viaSupabase();
-  try {
-    await goBackend.patch(`/api/rides/${rideId}`, { fare_minor: decimalToMinor(fare) });
-  } catch (error) {
-    if (isBackendUnavailable(error)) return viaSupabase();
-    throw error;
+  if (!Number.isFinite(fare) || fare < 0.50 || fare > 500) {
+    throw new Error("Fare must be between USD 0.50 and USD 500.00");
   }
+  if (!isGoBackendConfigured()) throw new Error("Ride fare updates temporarily unavailable");
+  await goBackend.patch(`/api/rides/${rideId}`, { fare_minor: decimalToMinor(fare) });
 }
 
 /** Assigned-driver details. Readable by the rider once the ride is accepted. */

@@ -546,8 +546,21 @@ func (h *Handler) GetRide(c *fiber.Ctx) error {
 }
 
 func (h *Handler) ListOpenRides(c *fiber.Ctx) error {
-	if _, ok := middleware.AuthenticatedUserID(c); !ok {
+	authUserID, ok := middleware.AuthenticatedUserID(c)
+	if !ok {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Authentication required"})
+	}
+	// Pending ride locations are restricted to drivers eligible to receive offers.
+	if h.authz == nil {
+		return c.Status(fiber.StatusServiceUnavailable).JSON(fiber.Map{"error": "Driver authorization unavailable"})
+	}
+	uid, err := uuid.Parse(authUserID)
+	if err != nil {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "driver_not_authorized"})
+	}
+	if err := h.authz.CanReceiveOffers(middleware.RequestContext(c), uid); err != nil {
+		authz.LogSecurityFailure(authUserID, "ListOpenRides", "not_authorized")
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "driver_not_authorized"})
 	}
 	rows, err := h.db.Query(middleware.RequestContext(c), `
 		SELECT id, user_id::text, COALESCE(driver_id::text, ''),
@@ -637,13 +650,17 @@ func (h *Handler) Request(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "payment_method must be cash or wallet"})
 	}
 
-	rideStatus := strings.ToLower(strings.TrimSpace(req.Status))
-	if rideStatus == "" {
-		if req.ScheduledAt != nil {
-			rideStatus = "scheduled"
-		} else {
-			rideStatus = "pending"
+	// Ride creation is the only place a rider can select an initial state.
+	// Never trust a submitted "accepted", "completed", or "in_progress" state.
+	rideStatus := "pending"
+	requestedStatus := strings.ToLower(strings.TrimSpace(req.Status))
+	if req.ScheduledAt != nil {
+		if !req.ScheduledAt.After(time.Now()) {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Scheduled pickup must be in the future"})
 		}
+		rideStatus = "scheduled"
+	} else if requestedStatus != "" && requestedStatus != "pending" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid initial ride status"})
 	}
 	if req.VehicleType == "" {
 		req.VehicleType = "economy"
@@ -656,6 +673,11 @@ func (h *Handler) Request(c *fiber.Ctx) error {
 	}
 
 	fareValue := rideEstimatedFareValue(req)
+	// Rider-proposed fares are permitted, but must be within the supported
+	// USD marketplace bounds before they enter the database or wallet flow.
+	if fareValue < 0.50 || fareValue > 500 || req.EstimatedFareMinor < 50 || req.EstimatedFareMinor > 50000 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Fare must be between USD 0.50 and USD 500.00"})
+	}
 	var rideID string
 	var createdAt time.Time
 	var authorization wallet.WalletAuthorization
@@ -1060,8 +1082,8 @@ func (h *Handler) SubmitOffer(c *fiber.Ctx) error {
 	}
 
 	amountMinor := offerAmountMinor(req)
-	if amountMinor <= 0 {
-		return c.Status(400).JSON(fiber.Map{"error": "offer amount is required"})
+	if amountMinor < 50 || amountMinor > 50000 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Offer must be between USD 0.50 and USD 500.00"})
 	}
 	etaMinutes := req.ETAMinutes
 	if etaMinutes == 0 {
@@ -1292,8 +1314,8 @@ func (h *Handler) PatchRide(c *fiber.Ctx) error {
 	if amountMinor <= 0 {
 		amountMinor = req.EstimatedFareMinor
 	}
-	if amountMinor <= 0 {
-		return c.Status(400).JSON(fiber.Map{"error": "fare_minor is required"})
+	if amountMinor < 50 || amountMinor > 50000 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Fare must be between USD 0.50 and USD 500.00"})
 	}
 
 	rideID := c.Params("rideId")

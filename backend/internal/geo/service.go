@@ -3,6 +3,7 @@ package geo
 import (
 	"context"
 	"errors"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -130,10 +131,20 @@ func (s *Service) WriteDriverLocation(ctx context.Context, location DriverLocati
 	if location.DriverID == "" {
 		return nil
 	}
+	// Reject invalid samples rather than publishing impossible driver positions.
+	if !validCoordinates(location.Latitude, location.Longitude) ||
+		!validTelemetry(location.Heading, location.Speed) {
+		return errors.New("invalid driver location telemetry")
+	}
 	location.City = normalizeOrDefault(location.City, "default")
 	location.VehicleType = normalizeOrDefault(location.VehicleType, "economy")
 	if location.UpdatedAt.IsZero() {
 		location.UpdatedAt = s.now().UTC()
+	}
+	// Clock skew must not keep a driver eligible indefinitely.
+	if location.UpdatedAt.After(s.now().Add(30 * time.Second)) ||
+		s.now().Sub(location.UpdatedAt) > s.locationTTL {
+		return errors.New("driver location is stale or in the future")
 	}
 
 	key := DriverLocationKey(location.DriverID)
@@ -170,10 +181,19 @@ func (s *Service) WriteDriverPresence(ctx context.Context, presence DriverPresen
 	if presence.LastSeenAt.IsZero() {
 		presence.LastSeenAt = s.now().UTC()
 	}
+	// Missing or unknown states must never silently mark a driver as bookable.
+	// Callers must explicitly assert online AND available.
+	if presence.State == "" || presence.Availability == "" {
+		return errors.New("driver state and availability required")
+	}
+	if presence.LastSeenAt.After(s.now().Add(30*time.Second)) ||
+		s.now().Sub(presence.LastSeenAt) > s.presenceTTL {
+		return errors.New("driver presence is stale or in the future")
+	}
 	key := DriverPresenceKey(presence.DriverID)
 	values := map[string]string{
-		"state":              emptyDefault(presence.State, "online"),
-		"availability":       emptyDefault(presence.Availability, "available"),
+		"state":              strings.ToLower(strings.TrimSpace(presence.State)),
+		"availability":       strings.ToLower(strings.TrimSpace(presence.Availability)),
 		"ride_id":            presence.RideID,
 		"last_seen_at":       presence.LastSeenAt.Format(time.RFC3339Nano),
 		"websocket_instance": presence.WebsocketInstance,
@@ -192,6 +212,12 @@ func (s *Service) NearbyDrivers(ctx context.Context, query NearbyQuery) ([]Nearb
 	if query.RadiusKM <= 0 {
 		return nil, nil
 	}
+	// Reject malformed/degenerate rider GPS before sending a GEOSEARCH
+	// command to Redis. NaN / Inf otherwise produce invalid Redis arguments.
+	if !validCoordinates(query.Latitude, query.Longitude) ||
+		math.IsNaN(query.RadiusKM) || math.IsInf(query.RadiusKM, 0) {
+		return nil, errors.New("invalid nearby driver search")
+	}
 	query.City = normalizeOrDefault(query.City, "default")
 	query.VehicleType = normalizeOrDefault(query.VehicleType, "economy")
 	results, err := s.store.GeoSearch(ctx, DriverGeoKey(query.City, query.VehicleType), query.Longitude, query.Latitude, query.RadiusKM, query.Count)
@@ -209,12 +235,30 @@ func (s *Service) NearbyDrivers(ctx context.Context, query NearbyQuery) ([]Nearb
 		if len(hash) == 0 {
 			continue
 		}
-		updatedAt, err := time.Parse(time.RFC3339Nano, hash["updated_at"])
-		if err != nil || now.Sub(updatedAt) > s.locationTTL {
+		// GEOADD members can outlive their TTL-backed location/presence hashes.
+		// Do not return a driver merely because an old GEO member still exists.
+		presence, present, err := s.DriverPresence(ctx, result.Member)
+		if err != nil {
+			return nil, err
+		}
+		if !present || !strings.EqualFold(presence.State, "online") ||
+			!strings.EqualFold(presence.Availability, "available") ||
+			presence.RideID != "" ||
+			presence.LastSeenAt.After(now.Add(30*time.Second)) ||
+			now.Sub(presence.LastSeenAt) > s.presenceTTL {
 			continue
 		}
-		latitude, _ := strconv.ParseFloat(hash["latitude"], 64)
-		longitude, _ := strconv.ParseFloat(hash["longitude"], 64)
+		updatedAt, err := time.Parse(time.RFC3339Nano, hash["updated_at"])
+		if err != nil || updatedAt.After(now.Add(30*time.Second)) ||
+			now.Sub(updatedAt) > s.locationTTL ||
+			hash["city"] != query.City || hash["vehicle_type"] != query.VehicleType {
+			continue
+		}
+		latitude, latErr := strconv.ParseFloat(hash["latitude"], 64)
+		longitude, lonErr := strconv.ParseFloat(hash["longitude"], 64)
+		if latErr != nil || lonErr != nil || !validCoordinates(latitude, longitude) {
+			continue
+		}
 		heading, _ := strconv.ParseFloat(hash["heading"], 64)
 		speed, _ := strconv.ParseFloat(hash["speed"], 64)
 		drivers = append(drivers, NearbyDriver{
@@ -262,4 +306,19 @@ func emptyDefault(value string, fallback string) string {
 
 func formatFloat(value float64) string {
 	return strconv.FormatFloat(value, 'f', -1, 64)
+}
+
+func validCoordinates(latitude, longitude float64) bool {
+	return !math.IsNaN(latitude) && !math.IsNaN(longitude) &&
+		!math.IsInf(latitude, 0) && !math.IsInf(longitude, 0) &&
+		latitude >= -90 && latitude <= 90 &&
+		longitude >= -180 && longitude <= 180 &&
+		!(latitude == 0 && longitude == 0)
+}
+
+func validTelemetry(heading, speed float64) bool {
+	return !math.IsNaN(heading) && !math.IsNaN(speed) &&
+		!math.IsInf(heading, 0) && !math.IsInf(speed, 0) &&
+		heading >= 0 && heading <= 360 &&
+		speed >= 0
 }

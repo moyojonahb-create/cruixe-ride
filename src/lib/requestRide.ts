@@ -1,11 +1,10 @@
 import { supabase } from '@/lib/supabaseClient';
 import { goBackend, type GoRideCreateRequest, type GoRideResponse } from '@/lib/goBackendClient';
 import { decimalToMinor } from '@/lib/money';
-import { queueOfflineRide } from '@/lib/offlineQueue';
 import { detectSuspiciousPatterns, reportFraudFlag } from '@/lib/fraudDetection';
 import { isRateLimited } from '@/lib/rateLimit';
 import { normalizeRideRow } from '@/lib/rideContract';
-import { isGoBackendConfigured, isBackendUnavailable } from '@/lib/rideMatching';
+import { isGoBackendConfigured } from '@/lib/rideMatching';
 
 type RequestRideInput = {
   pickup_address: string;
@@ -116,72 +115,13 @@ async function requestRideImpl(input: RequestRideInput, signal: AbortSignal) {
     ...(input.scheduled_at ? { scheduled_at: input.scheduled_at } : {}),
   };
 
-  if (!navigator.onLine) {
-    try {
-      const queuedId = await queueOfflineRide(ridePayload as Record<string, unknown>);
-      if ('serviceWorker' in navigator && 'SyncManager' in window) {
-        const reg = await navigator.serviceWorker.ready;
-        await (reg as unknown as { sync: { register: (tag: string) => Promise<void> } }).sync.register('sync-rides');
-      }
-      return { ok: true as const, ride: { id: queuedId, _offline: true } as unknown as RideRow };
-    } catch {
-      return { ok: false as const, error: "Failed to save ride offline. Please try again." };
-    }
+  if (typeof navigator !== "undefined" && !navigator.onLine) {
+    return { ok: false as const, error: "You are offline. Reconnect before requesting a ride." };
   }
 
-  const persistViaSupabase = async () => {
-    const row = {
-      user_id: user.id,
-      status: input.scheduled_at ? "scheduled" : "pending",
-      pickup_address,
-      dropoff_address,
-      pickup_lat: input.pickup_lat,
-      pickup_lon: input.pickup_lng,
-      dropoff_lat: input.dropoff_lat,
-      dropoff_lon: input.dropoff_lng,
-      fare,
-      distance_km,
-      duration_minutes: Math.round(duration_minutes),
-      vehicle_type: input.vehicle_type ?? "economy",
-      route_polyline: input.route_polyline ?? null,
-      passenger_count: input.passenger_count ?? 1,
-      payment_method: paymentMethod,
-      town_id: input.town_id ?? null,
-      gender_preference: input.gender_preference ?? "any",
-      ...(input.scheduled_at ? { scheduled_at: input.scheduled_at } : {}),
-    };
-    const { data, error } = await supabase.from("rides").insert([row] as never).select("*").abortSignal(signal).maybeSingle();
-    if (error) throw new Error(error.message);
-    if (!data) throw new Error("Ride request failed: no ride returned");
-    const created = data as unknown as RideRow;
-    const contactName = input.passenger_name?.trim();
-    const contactPhone = input.passenger_phone?.trim();
-    if (created?.id && (contactName || contactPhone)) {
-      // Passenger contact details are stored separately so that only the rider,
-      // the assigned driver and admins can read them (never the open ride feed).
-      // Best-effort: the ride itself already exists at this point, so a
-      // failure here must not make the caller believe ride creation failed
-      // and prompt a duplicate request — it previously did exactly that.
-      const { error: contactError } = await supabase.from("ride_passenger_contacts").insert([{
-        ride_id: created.id,
-        passenger_name: contactName || null,
-        passenger_phone: contactPhone || null,
-      }] as never);
-      if (contactError) console.error("Passenger contact insert failed (ride was still created):", contactError.message);
-    }
-    return created;
-  };
-
-
-  // Primary path: Go Core backend. Fallback: persist directly to the database
-  // so the request still reaches drivers when the Go backend isn't reachable.
+  // Core ride mutations must never bypass the Go authorization and wallet flow.
   if (!isGoBackendConfigured()) {
-    try {
-      const ride = await persistViaSupabase();
-      return { ok: true as const, ride };
-    } catch (e: unknown) {
-      return { ok: false as const, error: `Ride request failed: ${(e as Error).message}` };
-    }
+    return { ok: false as const, error: "Ride booking is temporarily unavailable. Please try again later." };
   }
 
   try {
@@ -194,14 +134,6 @@ async function requestRideImpl(input: RequestRideInput, signal: AbortSignal) {
     if (!rideId) return { ok: false as const, error: "Ride request failed: backend did not return a ride id" };
     return { ok: true as const, ride: { ...ride, id: rideId } as RideRow };
   } catch (e: unknown) {
-    if (isBackendUnavailable(e)) {
-      try {
-        const ride = await persistViaSupabase();
-        return { ok: true as const, ride };
-      } catch (fallbackError: unknown) {
-        return { ok: false as const, error: `Ride request failed: ${(fallbackError as Error).message}` };
-      }
-    }
     return { ok: false as const, error: `Ride request failed: ${(e as Error).message}` };
   }
 }

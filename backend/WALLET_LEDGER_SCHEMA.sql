@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS public.wallet_accounts (
   UNIQUE (owner_user_id, account_type, currency)
 );
 
-CREATE TABLE IF NOT EXISTS public.wallet_transactions (
+CREATE TABLE IF NOT EXISTS public.wallet_v2_transactions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   transaction_type text NOT NULL CHECK (transaction_type IN (
     'ride_settlement',
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS public.wallet_transactions (
 
 CREATE TABLE IF NOT EXISTS public.wallet_ledger_entries (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  transaction_id uuid NOT NULL REFERENCES public.wallet_transactions(id),
+  transaction_id uuid NOT NULL REFERENCES public.wallet_v2_transactions(id),
   account_id uuid NOT NULL REFERENCES public.wallet_accounts(id),
   entry_type text NOT NULL CHECK (entry_type IN ('debit', 'credit')),
   amount numeric(18,2) NOT NULL CHECK (amount > 0),
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS public.payment_intents (
   rejected_by uuid,
   rejected_at timestamptz,
   rejection_reason text,
-  wallet_transaction_id uuid REFERENCES public.wallet_transactions(id),
+  wallet_transaction_id uuid REFERENCES public.wallet_v2_transactions(id),
   metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS public.withdrawal_requests (
   rejected_at timestamptz,
   rejection_reason text,
   provider_reference text,
-  wallet_transaction_id uuid REFERENCES public.wallet_transactions(id),
+  wallet_transaction_id uuid REFERENCES public.wallet_v2_transactions(id),
   metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
   updated_at timestamptz NOT NULL DEFAULT now()
 );
@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS public.settlement_records (
   payment_method text NOT NULL CHECK (payment_method IN ('cash', 'wallet', 'ecocash', 'innbucks', 'visa', 'mastercard', 'paypal')),
   settlement_mode text NOT NULL CHECK (settlement_mode IN ('shadow', 'active')),
   status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'posted', 'settled', 'failed', 'liability_recorded', 'reversed', 'cancelled')),
-  wallet_transaction_id uuid REFERENCES public.wallet_transactions(id),
+  wallet_transaction_id uuid REFERENCES public.wallet_v2_transactions(id),
   idempotency_key text NOT NULL UNIQUE,
   error text,
   metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
@@ -340,7 +340,7 @@ CREATE TABLE IF NOT EXISTS public.provider_statement_lines (
   status text NOT NULL,
   match_status text NOT NULL DEFAULT 'unmatched' CHECK (match_status IN ('matched', 'amount_mismatch', 'currency_mismatch', 'missing_ledger', 'missing_provider_event', 'unmatched_provider', 'ignored')),
   matched_payment_intent_id uuid REFERENCES public.payment_intents(id),
-  matched_wallet_transaction_id uuid REFERENCES public.wallet_transactions(id),
+  matched_wallet_transaction_id uuid REFERENCES public.wallet_v2_transactions(id),
   mismatch_reason text,
   occurred_at timestamptz,
   metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
@@ -352,7 +352,7 @@ CREATE TABLE IF NOT EXISTS public.refund_intents (
   provider text NOT NULL CHECK (provider IN ('onemoney', 'ecocash', 'innbucks', 'card', 'visa', 'mastercard', 'paypal', 'internal')),
   user_id uuid,
   original_payment_intent_id uuid REFERENCES public.payment_intents(id),
-  original_wallet_transaction_id uuid REFERENCES public.wallet_transactions(id),
+  original_wallet_transaction_id uuid REFERENCES public.wallet_v2_transactions(id),
   amount numeric(18,2) NOT NULL CHECK (amount > 0),
   amount_minor bigint NOT NULL CHECK (amount_minor > 0),
   currency text NOT NULL CHECK (currency IN ('USD', 'ZWG')),
@@ -362,7 +362,7 @@ CREATE TABLE IF NOT EXISTS public.refund_intents (
   created_by uuid,
   approved_by uuid,
   approved_at timestamptz,
-  wallet_transaction_id uuid REFERENCES public.wallet_transactions(id),
+  wallet_transaction_id uuid REFERENCES public.wallet_v2_transactions(id),
   failure_reason text,
   metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -375,7 +375,7 @@ CREATE TABLE IF NOT EXISTS public.chargeback_records (
   provider_reference text,
   provider_chargeback_id text NOT NULL,
   payment_intent_id uuid REFERENCES public.payment_intents(id),
-  wallet_transaction_id uuid REFERENCES public.wallet_transactions(id),
+  wallet_transaction_id uuid REFERENCES public.wallet_v2_transactions(id),
   amount numeric(18,2) NOT NULL CHECK (amount > 0),
   amount_minor bigint NOT NULL CHECK (amount_minor > 0),
   currency text NOT NULL CHECK (currency IN ('USD', 'ZWG')),
@@ -397,7 +397,7 @@ CREATE TABLE IF NOT EXISTS public.financial_disputes (
   ride_id uuid,
   user_id uuid,
   payment_intent_id uuid REFERENCES public.payment_intents(id),
-  wallet_transaction_id uuid REFERENCES public.wallet_transactions(id),
+  wallet_transaction_id uuid REFERENCES public.wallet_v2_transactions(id),
   amount numeric(18,2),
   amount_minor bigint NOT NULL DEFAULT 0 CHECK (amount_minor >= 0),
   currency text CHECK (currency IS NULL OR currency IN ('USD', 'ZWG')),
@@ -1304,13 +1304,13 @@ CREATE INDEX IF NOT EXISTS idx_wallet_accounts_owner
   ON public.wallet_accounts (owner_user_id, account_type, currency);
 
 CREATE INDEX IF NOT EXISTS idx_wallet_transactions_idempotency
-  ON public.wallet_transactions (idempotency_key);
+  ON public.wallet_v2_transactions (idempotency_key);
 
 CREATE INDEX IF NOT EXISTS idx_wallet_transactions_ride
-  ON public.wallet_transactions (ride_id);
+  ON public.wallet_v2_transactions (ride_id);
 
 CREATE INDEX IF NOT EXISTS idx_wallet_transactions_status_created
-  ON public.wallet_transactions (status, created_at DESC);
+  ON public.wallet_v2_transactions (status, created_at DESC);
 
 CREATE INDEX IF NOT EXISTS idx_wallet_ledger_entries_account_created
   ON public.wallet_ledger_entries (account_id, created_at DESC);
@@ -1573,7 +1573,7 @@ BEFORE DELETE ON public.wallet_ledger_entries
 FOR EACH ROW EXECUTE FUNCTION public.prevent_wallet_ledger_entry_mutation();
 
 ALTER TABLE public.wallet_accounts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.wallet_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.wallet_v2_transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.wallet_ledger_entries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.payment_intents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.provider_events ENABLE ROW LEVEL SECURITY;
@@ -1660,7 +1660,7 @@ CREATE POLICY wallet_accounts_owner_select
   );
 
 CREATE POLICY wallet_transactions_owner_select
-  ON public.wallet_transactions
+  ON public.wallet_v2_transactions
   FOR SELECT
   USING (
     owner_user_id = auth.uid()
