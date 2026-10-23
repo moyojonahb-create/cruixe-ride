@@ -34,3 +34,10 @@
 7. Run payment sandbox certification and a city-limited rider/driver pilot.
 
 **Current release status:** NO-GO for production payments or public release.
+
+## 2026-10-23: staging cost gate and CI hardening
+- The latest full CI run before this checkpoint (commit `92e16eb9ed0eef8cec4c2cdc530cb1abc41e0456`) completed successfully.
+- `backend/internal/wallet/staged_migration_safety_test.go` adds test gates: the V2 staging core schema must preserve the legacy wallet tables, enable V2 RLS, omit direct client financial write grants, and Go V2 repositories must not reference the legacy transaction table.
+- Attempt to create Supabase development branch `cruize-v2-finance-staging-20261023` was blocked by mandatory hourly billing confirmation. **No branch created.** Creating this branch requires organization ID, exact cost quote and explicit approval of the price.
+- Supabase project main still reports `MIGRATIONS_FAILED`. Treat this as independent blocker; merging code is not equivalent to applying SQL migration.
+- Production privileges remain vulnerable and unchanged; do not enable wallet payments or represent the financial upgrade as deployed.
