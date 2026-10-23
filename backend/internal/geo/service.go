@@ -212,6 +212,12 @@ func (s *Service) NearbyDrivers(ctx context.Context, query NearbyQuery) ([]Nearb
 	if query.RadiusKM <= 0 {
 		return nil, nil
 	}
+	// Reject malformed/degenerate rider GPS before sending a GEOSEARCH
+	// command to Redis. NaN / Inf otherwise produce invalid Redis arguments.
+	if !validCoordinates(query.Latitude, query.Longitude) ||
+		math.IsNaN(query.RadiusKM) || math.IsInf(query.RadiusKM, 0) {
+		return nil, errors.New("invalid nearby driver search")
+	}
 	query.City = normalizeOrDefault(query.City, "default")
 	query.VehicleType = normalizeOrDefault(query.VehicleType, "economy")
 	results, err := s.store.GeoSearch(ctx, DriverGeoKey(query.City, query.VehicleType), query.Longitude, query.Latitude, query.RadiusKM, query.Count)
