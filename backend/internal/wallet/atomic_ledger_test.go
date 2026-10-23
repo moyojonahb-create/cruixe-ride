@@ -55,7 +55,7 @@ func TestLedgerPostingCommitsTransactionAsOneUnit(t *testing.T) {
 	if !db.tx.committed {
 		t.Fatal("expected transaction commit")
 	}
-	if len(db.tx.execs) != 3 || !strings.Contains(db.tx.execs[0], "INSERT INTO public.wallet_transactions") ||
+	if len(db.tx.execs) != 3 || !strings.Contains(db.tx.execs[0], "INSERT INTO public.wallet_v2_transactions") ||
 		!strings.Contains(db.tx.execs[1], "INSERT INTO public.wallet_ledger_entries") ||
 		!strings.Contains(db.tx.execs[2], "INSERT INTO public.wallet_ledger_entries") {
 		t.Fatalf("expected transaction and two entries within tx, got %#v", db.tx.execs)
