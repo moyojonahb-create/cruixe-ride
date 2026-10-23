@@ -4371,7 +4371,7 @@ func (r *PostgresRepository) CaptureRideFunds(ctx context.Context, req CaptureRe
 			created_at,
 			updated_at
 		)
-		VALUES ($1,$2,$3,$4,$5,($6::numeric / 100),$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW(),NOW())
+		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW(),NOW())
 	`, settlement.ID, settlement.RideID, settlement.DriverID, settlement.RiderID, MinorDecimalString(settlement.FareMinor, settlement.Currency), settlement.FareMinor, MinorDecimalString(settlement.PlatformFeeMinor, settlement.Currency), settlement.PlatformFeeMinor, MinorDecimalString(settlement.DriverEarningMinor, settlement.Currency), settlement.DriverEarningMinor, settlement.PaymentMethod, settlement.SettlementMode, settlement.Status, settlement.WalletTransactionID, settlement.IdempotencyKey)
 	if err != nil {
 		return SettlementRecord{}, err
