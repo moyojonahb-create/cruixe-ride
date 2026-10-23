@@ -301,3 +301,33 @@ func TestWriteDriverPresenceRejectsMissingStateAndStaleHeartbeats(t *testing.T) 
 		})
 	}
 }
+
+func TestNearbyDriversRejectsMalformedRiderSearch(t *testing.T) {
+	for _, tc := range []struct{
+		name string
+		latitude float64
+		longitude float64
+		radius float64
+	}{
+		{"invalid latitude", -91, 30, 5},
+		{"invalid longitude", -17, 190, 5},
+		{"missing position", 0, 0, 5},
+		{"NaN latitude", math.NaN(), 30, 5},
+		{"NaN radius", -17, 30, math.NaN()},
+		{"infinite radius", -17, 30, math.Inf(1)},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			store := newFakeStore(true)
+			service := NewService(store, Config{})
+			got, err := service.NearbyDrivers(context.Background(), NearbyQuery{
+				Latitude: tc.latitude, Longitude: tc.longitude, RadiusKM: tc.radius,
+			})
+			if err == nil {
+				t.Fatal("expected invalid rider search error")
+			}
+			if got != nil {
+				t.Fatalf("expected nil candidates, got %#v", got)
+			}
+		})
+	}
+}
