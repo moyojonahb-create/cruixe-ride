@@ -149,7 +149,7 @@ func (r *PostgresRepository) CreateTransaction(ctx context.Context, transaction 
 		return err
 	}
 	_, err := r.db.Exec(ctx, `
-		INSERT INTO public.wallet_transactions (
+		INSERT INTO public.wallet_v2_transactions (
 			id,
 			transaction_type,
 			status,
@@ -194,7 +194,7 @@ func (r *PostgresRepository) GetTransactionByIdempotencyKey(ctx context.Context,
 			approved_at,
 			created_at,
 			updated_at
-		FROM public.wallet_transactions
+		FROM public.wallet_v2_transactions
 		WHERE idempotency_key = $1
 	`, key).Scan(
 		&transaction.ID,
@@ -4858,7 +4858,7 @@ func insertTransactionInTx(ctx context.Context, tx pgx.Tx, transaction Transacti
 		return err
 	}
 	_, err := tx.Exec(ctx, `
-		INSERT INTO public.wallet_transactions (
+		INSERT INTO public.wallet_v2_transactions (
 			id,
 			transaction_type,
 			status,
