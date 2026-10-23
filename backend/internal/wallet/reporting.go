@@ -40,7 +40,7 @@ func (r *PostgresReports) WalletState(ctx context.Context, userID string) ([]map
 	return rawRowsToMaps(rows, err)
 }
 
-// Columns here must match public.wallet_transactions as it actually exists
+// Columns here must match public.wallet_v2_transactions as it actually exists
 // (id, wallet_id, user_id, amount, transaction_type, description, ride_id,
 // reference_code, created_at). An earlier version selected status/currency/
 // total_amount/source_type/source_id/payment_provider and filtered on
@@ -60,7 +60,7 @@ func (r *PostgresReports) WalletTransactions(ctx context.Context, userID string,
 			'reference_code', reference_code,
 			'created_at', created_at
 		)
-		FROM public.wallet_transactions
+		FROM public.wallet_v2_transactions
 		WHERE user_id = $1
 		ORDER BY created_at DESC
 		LIMIT $2
@@ -1150,7 +1150,7 @@ func (r *PostgresReports) PilotMonitoringReport(ctx context.Context) (map[string
 	raw, err := queryJSON(ctx, r.db, `
 		SELECT json_build_object(
 			'pilot_users', COALESCE((SELECT pilot_users FROM public.pilot_monitoring_snapshots ORDER BY created_at DESC LIMIT 1), (SELECT COUNT(*) FROM public.pilot_wallet_users WHERE status = 'enabled')),
-			'pilot_transactions', COALESCE((SELECT pilot_transactions FROM public.pilot_monitoring_snapshots ORDER BY created_at DESC LIMIT 1), (SELECT COUNT(*) FROM public.wallet_transactions WHERE payment_provider IS NOT NULL)),
+			'pilot_transactions', COALESCE((SELECT pilot_transactions FROM public.pilot_monitoring_snapshots ORDER BY created_at DESC LIMIT 1), (SELECT COUNT(*) FROM public.wallet_v2_transactions WHERE payment_provider IS NOT NULL)),
 			'pilot_deposits', COALESCE((SELECT pilot_deposits FROM public.pilot_monitoring_snapshots ORDER BY created_at DESC LIMIT 1), (SELECT COUNT(*) FROM public.payment_intents WHERE status IN ('approved', 'completed'))),
 			'pilot_withdrawals', COALESCE((SELECT pilot_withdrawals FROM public.pilot_monitoring_snapshots ORDER BY created_at DESC LIMIT 1), (SELECT COUNT(*) FROM public.withdrawal_requests WHERE status = 'approved')),
 			'pilot_failures', COALESCE((SELECT pilot_failures FROM public.pilot_monitoring_snapshots ORDER BY created_at DESC LIMIT 1), (
