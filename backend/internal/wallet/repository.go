@@ -85,9 +85,9 @@ func (r *PostgresRepository) CreateAccount(ctx context.Context, account Account)
 			account_type,
 			currency,
 			status,
-			cached_available_balance,
-			cached_pending_balance,
-			cached_liability_balance,
+			cached_available_balance_minor,
+			cached_pending_balance_minor,
+			cached_liability_balance_minor,
 			created_at,
 			updated_at
 		)
@@ -121,9 +121,9 @@ func (r *PostgresRepository) GetAccount(ctx context.Context, accountID string) (
 			account_type,
 			currency,
 			status,
-			cached_available_balance,
-			cached_pending_balance,
-			cached_liability_balance,
+			cached_available_balance_minor,
+			cached_pending_balance_minor,
+			cached_liability_balance_minor,
 			created_at,
 			updated_at
 		FROM public.wallet_accounts
@@ -156,6 +156,7 @@ func (r *PostgresRepository) CreateTransaction(ctx context.Context, transaction 
 			idempotency_key,
 			currency,
 			total_amount,
+			amount_minor,
 			source_type,
 			source_id,
 			owner_user_id,
@@ -168,7 +169,7 @@ func (r *PostgresRepository) CreateTransaction(ctx context.Context, transaction 
 			created_at,
 			updated_at
 		)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW(),NOW())
+		VALUES ($1,$2,$3,$4,$5,($6::numeric / 100),$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW(),NOW())
 	`, nullString(transaction.ID), transaction.TransactionType, defaultString(transaction.Status, TransactionStatusPending), transaction.IdempotencyKey, transaction.Currency, transaction.TotalAmountMinor, nullString(transaction.SourceType), nullString(transaction.SourceID), nullString(transaction.OwnerUserID), nullString(transaction.RideID), nullString(transaction.PaymentProvider), nullString(transaction.PaymentIntentID), nullString(transaction.CreatedBy), nullString(transaction.ApprovedBy), transaction.ApprovedAt)
 	return err
 }
@@ -183,6 +184,7 @@ func (r *PostgresRepository) GetTransactionByIdempotencyKey(ctx context.Context,
 			idempotency_key,
 			currency,
 			total_amount,
+			amount_minor,
 			COALESCE(source_type, ''),
 			COALESCE(source_id, ''),
 			COALESCE(owner_user_id::text, ''),
@@ -4370,7 +4372,7 @@ func (r *PostgresRepository) CaptureRideFunds(ctx context.Context, req CaptureRe
 			created_at,
 			updated_at
 		)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW(),NOW())
+		VALUES ($1,$2,$3,$4,$5,($6::numeric / 100),$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW(),NOW())
 	`, settlement.ID, settlement.RideID, settlement.DriverID, settlement.RiderID, MinorDecimalString(settlement.FareMinor, settlement.Currency), settlement.FareMinor, MinorDecimalString(settlement.PlatformFeeMinor, settlement.Currency), settlement.PlatformFeeMinor, MinorDecimalString(settlement.DriverEarningMinor, settlement.Currency), settlement.DriverEarningMinor, settlement.PaymentMethod, settlement.SettlementMode, settlement.Status, settlement.WalletTransactionID, settlement.IdempotencyKey)
 	if err != nil {
 		return SettlementRecord{}, err
@@ -4865,6 +4867,7 @@ func insertTransactionInTx(ctx context.Context, tx pgx.Tx, transaction Transacti
 			idempotency_key,
 			currency,
 			total_amount,
+			amount_minor,
 			source_type,
 			source_id,
 			owner_user_id,
@@ -4877,7 +4880,7 @@ func insertTransactionInTx(ctx context.Context, tx pgx.Tx, transaction Transacti
 			created_at,
 			updated_at
 		)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW(),NOW())
+		VALUES ($1,$2,$3,$4,$5,($6::numeric / 100),$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW(),NOW())
 	`, nullString(transaction.ID), transaction.TransactionType, defaultString(transaction.Status, TransactionStatusPending), transaction.IdempotencyKey, transaction.Currency, transaction.TotalAmountMinor, nullString(transaction.SourceType), nullString(transaction.SourceID), nullString(transaction.OwnerUserID), nullString(transaction.RideID), nullString(transaction.PaymentProvider), nullString(transaction.PaymentIntentID), nullString(transaction.CreatedBy), nullString(transaction.ApprovedBy), transaction.ApprovedAt)
 	return err
 }
@@ -4892,6 +4895,7 @@ func insertLedgerEntryInTx(ctx context.Context, tx pgx.Tx, entry LedgerEntry) er
 			transaction_id,
 			account_id,
 			entry_type,
+			amount,
 			amount_minor,
 			currency,
 			ride_id,
@@ -4900,7 +4904,7 @@ func insertLedgerEntryInTx(ctx context.Context, tx pgx.Tx, entry LedgerEntry) er
 			payment_provider,
 			created_at
 		)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,NOW())
+		VALUES ($1,$2,$3,$4,($5::numeric / 100),$5,$6,$7,$8,$9,$10,NOW())
 	`, nullString(entry.ID), entry.TransactionID, entry.AccountID, entry.EntryType, entry.AmountMinor, entry.Currency, nullString(entry.RideID), nullString(entry.SourceType), nullString(entry.SourceID), nullString(entry.PaymentProvider))
 	return err
 }
