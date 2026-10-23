@@ -44,3 +44,11 @@ Statuses: VERIFIED = examined from live read-only query or source; CODED = commi
 - Go CI for the presence change completed successfully (latest overall workflow still requires frontend and Docker results).
 - Financial schema read-only preflight expanded in `docs/sql/cruize-destination-preflight-readonly.sql` to flag missing Go V2 tables/columns and legacy NOT NULL constraints. Production read-only check found absent Go-required columns and tables including payment_intents, provider_events, wallet_accounts, wallet_ledger_entries and V2-required fields on legacy wallet_transactions.
 - No financial RLS/grants migration or production ledger creation performed: live database wallet compatibility is **still NO-GO** until staging migration and signed-in user authorization tests.
+
+## 2026-10-23 recovery from network interruption and live finance audit
+- Prior CI runs **39856343622** and **39856447333** succeeded; atomic wallet-ledger posting unit tests had passing Go CI.
+- Live, **read-only** Supabase query: legacy `wallet_transactions` = **0 rows**, `wallets` = **2 rows**, `driver_wallets` = **0 rows**, `mirror_outbox` pending = **353**. No rows deleted or balances modified.
+- Live `wallet_transactions` columns require `wallet_id`, `user_id`, `amount` and permit only `deposit`, `withdrawal`, `trip_fee`, `refund`. V2 expects `idempotency_key`, `currency`, `status`, `total_amount` and different ledger semantics. Blank transaction data does not make the shapes compatible.
+- Missing Go V2 finance tables include `wallet_accounts`, `wallet_ledger_entries`, `payment_intents`, `provider_events`. `authenticated` continues to have financial balance UPDATE permission. **Production money release is blocked.**
+- Committed `docs/sql/cruize-financial-compatibility-readonly.sql` and `docs/financial-schema-reconciliation-decision.md` to make this gate reproducible.
+- Latest CI must independently complete; no successful CI claim until jobs conclude.
