@@ -1,0 +1,73 @@
+// REVIEW DRAFT ONLY. Not a Go build input, production authority or server wiring.
+// Planned package backend/internal/assignment after schema/policy approval.
+package assignment
+
+import (
+ "context"
+ "time"
+ "github.com/google/uuid"
+)
+
+type Principal struct { Subject uuid.UUID } // constructed only from verified server auth
+// Server authorization/role, driver eligibility and session checks are independent
+// of this DTO. Never bind actor, driver role, money or internal claim from HTTP body.
+type Intent struct {
+ Principal Principal
+ Key string // actor+operation+key receipt namespace
+ CanonicalHash [32]byte // excludes request ID, gateway, timing and transport headers
+ RequestID string
+}
+type Money struct { Minor int64; Currency string } // canonical exponent/range from server registry; no float64
+type Version int64 // requires reviewed aggregate-version storage, not invented runtime field
+
+type AcceptOfferInput struct { Intent Intent; RideID,OfferID uuid.UUID; ExpectedRide,ExpectedTerms Version }
+type CancelInput struct { Intent Intent; RideID uuid.UUID; Reason string }
+type CompleteInput struct { Intent Intent; RideID uuid.UUID; ExpectedAssignment uuid.UUID }
+type AssignmentResult struct {
+ AssignmentID,RideID,DriverRowID uuid.UUID
+ DriverSubject uuid.UUID
+ State string
+ Accepted Money
+ Replay bool
+ Events []Event // committed intent; transport delivery is not command success
+}
+type Event struct { ID,AssignmentID,RideID uuid.UUID; Type string; Version Version; At time.Time }
+
+type Commands interface {
+ AcceptOfferAndAssignDriver(context.Context, AcceptOfferInput) (AssignmentResult,error)
+ CancelAssignedRide(context.Context, CancelInput) (AssignmentResult,error)
+ CompleteAndReleaseDriver(context.Context, CompleteInput) (AssignmentResult,error)
+}
+
+// Only one reviewed adapter owns authority: Go using this transaction port OR
+// one database primitive called by Go/retained RPC, never two independent writers.
+type UnitOfWork interface { Within(context.Context,func(Tx) error) error }
+type Receipt struct { Operation,Key string; Principal Principal; Hash [32]byte }
+type ReceiptResult struct { Replay bool; Result AssignmentResult }
+type LockedRide struct { ID uuid.UUID; Revision Version; State string }
+type LockedDriver struct { RowID,Subject uuid.UUID; Status string }
+type LockedOffer struct { ID,RideID,DriverSubject uuid.UUID; Terms Version; State string; Accepted Money; ExpiresAt time.Time }
+type Claim struct { AssignmentID uuid.UUID; Ride LockedRide; Driver LockedDriver; Offer LockedOffer }
+type Release struct { AssignmentID,RideID,DriverRowID uuid.UUID }
+type Tx interface {
+ LockReceipt(context.Context,Receipt) (ReceiptResult,error)
+ LockRides(context.Context,[]uuid.UUID) ([]LockedRide,error) // sorted IDs
+ LockDrivers(context.Context,[]uuid.UUID) ([]LockedDriver,error) // existing rows anchor absent reservations
+ LockOffers(context.Context,[]uuid.UUID) ([]LockedOffer,error) // sorted, after drivers
+ FreshTime(context.Context) (time.Time,error) // clock_timestamp after waits
+ RejectConflictingAssignment(context.Context,Claim) error // read/guard: never overwrite or release winner
+ ReserveDriver(context.Context,Claim) error // only inside same acceptance transaction after all checks
+ ReleaseDriverReservation(context.Context,Release) (bool,error) // matching tuple only; stale release returns false
+ PersistAcceptedAgreement(context.Context,Claim) error
+ TransitionRide(context.Context,uuid.UUID,string,string) error // expected state -> target, one row
+ CloseCompetingOffers(context.Context,uuid.UUID,uuid.UUID) error // never frees unrelated driver
+ PersistReceipt(context.Context,Receipt,AssignmentResult) error
+ AppendEventIntent(context.Context,Event) error // shared reviewed P0.5 outbox; not WebSocket publish
+}
+// Types representing locks are illustrative; final implementation must make
+// lock tokens unforgeable within repository boundaries and bind them to one Tx.
+// Tx callbacks cannot commit, open another mutation authority or publish effects.
+// UnitOfWork rollback is mandatory on callback errors; unknown commit produces
+// OUTCOME_UNKNOWN and reconciles the same receipt, never another fallback writer.
+// Reserve/Release/RejectConflictingAssignment are internal repository operations,
+// not independently callable public commands and never independently committed.

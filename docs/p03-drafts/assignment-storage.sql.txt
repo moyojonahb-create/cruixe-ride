@@ -1,0 +1,57 @@
+-- REVIEW DRAFT ONLY. Not in supabase/migrations. Never apply this file.
+-- Exact canonical public FKs/grants, terms/currency and existing data unverified.
+-- Guard aborts even accidental execution; final rollback prevents persistence
+-- if someone removes only the guard. A reviewed migration must be generated later.
+BEGIN;
+DO $$ BEGIN RAISE EXCEPTION 'DRAFT ONLY: schema, authority, grants and data remediation not verified'; END $$;
+CREATE SCHEMA ride_assignment_private;
+REVOKE ALL ON SCHEMA ride_assignment_private FROM PUBLIC;
+
+-- Draft 01: immutable accepted agreement; offer driver is auth subject while
+-- driver_id below is drivers.id. Existing-ride reassignment is not approved.
+CREATE TABLE ride_assignment_private.accepted_agreements (
+ id uuid PRIMARY KEY,
+ ride_id uuid NOT NULL UNIQUE REFERENCES public.rides(id),
+ driver_id uuid NOT NULL REFERENCES public.drivers(id),
+ offer_id uuid NOT NULL REFERENCES public.offers(id),
+ amount_minor bigint NOT NULL CHECK (amount_minor > 0),
+ currency text NOT NULL CHECK (currency ~ '^[A-Z]{3}$'),
+ -- This format check does NOT authorize a currency/exponent; registry gate needed.
+ terms_fingerprint bytea NOT NULL CHECK (octet_length(terms_fingerprint)=32),
+ accepted_at timestamptz NOT NULL,
+ UNIQUE(id,ride_id,driver_id)
+);
+-- Draft 02: active row only, no Redis/presence TTL expiration.
+CREATE TABLE ride_assignment_private.active_driver_reservations (
+ driver_id uuid PRIMARY KEY,
+ ride_id uuid NOT NULL UNIQUE,
+ assignment_id uuid NOT NULL UNIQUE,
+ reserved_at timestamptz NOT NULL,
+ FOREIGN KEY(assignment_id,ride_id,driver_id)
+  REFERENCES ride_assignment_private.accepted_agreements(id,ride_id,driver_id)
+);
+-- Draft 03: shared actor-scoped command receipt; coordinate with P0.5 before DDL.
+CREATE TABLE ride_assignment_private.command_receipts (
+ actor_id uuid NOT NULL,
+ operation text NOT NULL,
+ idempotency_key text NOT NULL CHECK(length(idempotency_key) BETWEEN 1 AND 200),
+ request_hash bytea NOT NULL CHECK(octet_length(request_hash)=32),
+ assignment_id uuid REFERENCES ride_assignment_private.accepted_agreements(id),
+ result jsonb,
+ state text NOT NULL CHECK(state IN ('pending','committed')),
+ created_at timestamptz NOT NULL,
+ PRIMARY KEY(actor_id,operation,idempotency_key),
+ CHECK(state <> 'committed' OR result IS NOT NULL)
+);
+ALTER TABLE ride_assignment_private.accepted_agreements ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ride_assignment_private.active_driver_reservations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ride_assignment_private.command_receipts ENABLE ROW LEVEL SECURITY;
+-- NO roles, policies, service grants, SECURITY DEFINER mutation functions,
+-- triggers, public RPC, candidate authority, fees, jobs or routing are activated.
+-- Draft 04 BLOCKED: shared primitive/direct-write restrictions and database
+-- state/reservation consistency enforcement, based on actual schema/writers.
+-- Draft 05 BLOCKED: P0.4 immutable term references and P0.5 outbox/version storage.
+-- Uniqueness above alone cannot stop a legacy writer creating an unreserved
+-- accepted ride. Receipt pending rows must not be independently committed.
+-- No applied-role, RLS, backfill or migration-chain compatibility is asserted.
+ROLLBACK;
