@@ -1,6 +1,9 @@
 name: P0.3 Remote Verification
 
 on:
+  push:
+    branches:
+      - verify/p03-assignment-linux-20261028
   workflow_dispatch:
     inputs:
       run_integration:
