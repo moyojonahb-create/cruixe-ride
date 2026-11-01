@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      SCHEDULE_EXACT_ALARM is merged in by @capacitor/local-notifications, which
+      declares it so apps can schedule notifications for a future time. We only
+      ever deliver immediately (arrival announcements, ride offers), so we have
+      no use case to declare — and Google Play requires a policy justification
+      for it. Carrying an unjustifiable permission is worse than not having it.
+
+      DO NOT REMOVE THIS REMOVAL. A future plugin update or a new plugin will
+      pull the permission back in silently; this line is what keeps it out.
+
+      NOTE: this fails at RUNTIME, not build time. A tools:node="remove" builds
+      cleanly and then throws SecurityException at the call site if anything
+      actually reaches AlarmManager. S9 (arrival notification on a locked
+      screen) is the test that proves the removal is safe.
+
+      USE_EXACT_ALARM — the stricter sibling Play restricts to alarm-clock and
+      calendar apps — is verified absent, and must stay absent.
+    -->
+    <uses-permission
+        android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        tools:node="remove" />
+
 
     <application
         android:allowBackup="false"

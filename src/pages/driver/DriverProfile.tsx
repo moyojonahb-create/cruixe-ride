@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, type CSSProperties, type ReactNode, type ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Camera, Loader2, Star, BadgeCheck, Pencil, Power, Car, ChevronRight,
+  Camera, Loader2, Star, BadgeCheck, Pencil, Car, ChevronRight,
   Copy, Check, FileCheck2, ChartColumn, Bell, Volume2,
   ShieldAlert, CircleHelp, Clock, CreditCard,
 } from 'lucide-react';
@@ -12,7 +12,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { getDriverProfile, fetchOpenRides } from '@/lib/offerHelpers';
 import { fetchDriverWeekStats, type DriverWeekStats } from '@/lib/driverStats';
 import { listWalletDeposits } from '@/lib/walletApi';
-import { setDriverOnline } from '@/lib/driverPresence';
 import { updateMyProfileAvatar } from '@/lib/businessApi';
 import { useVoiceNavigation } from '@/hooks/useVoiceNavigation';
 import PhotoCropModal from '@/components/driver/PhotoCropModal';
@@ -23,6 +22,7 @@ import DriverBottomNav from '@/components/driver/DriverBottomNav';
 import defaultDriverAvatar from '@/assets/driver-avatar-jonah.png';
 import { RIDE_RED, RIDE_RED_GRADIENT, RIDE_YELLOW, RIDE_TEXT, RIDE_TEXT_2 } from '@/components/ride/rideGlass';
 import type { DriverProfile as DriverProfileData } from '@/lib/offerHelpers';
+import DriverAvailabilityControl from '@/components/driver/DriverAvailabilityControl';
 
 const glassSurface: CSSProperties = {
   background: 'linear-gradient(160deg, rgba(255,255,255,.8), rgba(255,255,255,.48))',
@@ -68,7 +68,6 @@ export default function DriverProfilePage() {
   const [pendingAvatarFile, setPendingAvatarFile] = useState<File | null>(null);
   const [uploadingVehiclePhoto, setUploadingVehiclePhoto] = useState(false);
   const [pendingVehiclePhotoFile, setPendingVehiclePhotoFile] = useState<File | null>(null);
-  const [togglingOnline, setTogglingOnline] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -135,21 +134,6 @@ export default function DriverProfilePage() {
   }, [user?.id]);
 
   useEffect(() => { load(); }, [load]);
-
-  const handleToggleOnline = async () => {
-    if (!profile) return;
-    const next = !profile.is_online;
-    setTogglingOnline(true);
-    try {
-      await setDriverOnline(next);
-      setProfile((prev) => (prev ? { ...prev, is_online: next } : prev));
-      toast.success(next ? "You're now online!" : "You're now offline");
-    } catch (e) {
-      toast.error('Failed to update status', { description: (e as Error).message });
-    } finally {
-      setTogglingOnline(false);
-    }
-  };
 
   const handleAvatarFile = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -337,39 +321,15 @@ export default function DriverProfilePage() {
             boxShadow: '0 12px 26px rgba(184,17,4,.3), inset 0 1px 0 rgba(255,255,255,.28)',
           }}
         >
-          <button
-            type="button"
-            aria-label={isOnline ? 'Go offline' : 'Go online'}
-            onClick={handleToggleOnline}
-            disabled={togglingOnline}
-            className="shrink-0 flex items-center justify-center rounded-full active:scale-90 transition-all disabled:opacity-70"
-            style={{
-              width: 44,
-              height: 44,
-              background: isOnline ? '#FFFFFF' : '#111111',
-              boxShadow: isOnline
-                ? '0 4px 14px rgba(0,0,0,.18), inset 0 0 0 .5px rgba(17,17,17,.08)'
-                : '0 4px 14px rgba(0,0,0,.35)',
-            }}
-          >
-            {togglingOnline
-              ? <Loader2 className="animate-spin" style={{ width: 20, height: 20, color: isOnline ? RIDE_RED : '#fff' }} />
-              : <Power style={{ width: 20, height: 20, color: isOnline ? RIDE_RED : '#fff' }} />}
-          </button>
-
-          <button
-            type="button"
-            onClick={handleToggleOnline}
-            disabled={togglingOnline}
-            className="flex-1 min-w-0 text-left disabled:opacity-70"
-          >
+          <div className="flex-1 min-w-0">
             <p style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>{isOnline ? "You're online" : "You're offline"}</p>
             <p style={{ fontSize: 11.5, fontWeight: 500, color: 'rgba(255,255,255,.8)', marginTop: 1 }}>
               {isOnline
                 ? (waitingCount > 0 ? `${waitingCount} request${waitingCount === 1 ? '' : 's'} waiting` : 'No requests waiting')
-                : 'Tap to go online'}
+                : 'Go online to receive requests'}
             </p>
-          </button>
+          </div>
+          <DriverAvailabilityControl isOnline={isOnline} onChange={(online) => setProfile((prev) => prev ? { ...prev, is_online: online } : prev)} compact />
           <button
             type="button"
             onClick={() => navigate('/driver/requests')}

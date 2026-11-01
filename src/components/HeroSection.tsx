@@ -89,7 +89,7 @@ const HeroSection = ({ onLoginClick }: HeroSectionProps) => {
   // Calculate fare using USD town pricing
   const fareCalc = pickupCoords && dropoffCoords && routeInfo
     ? calculateRecommendedFare(
-        { id: '', town_id: 'default', town_name: 'Zimbabwe', currency_code: 'USD', currency_symbol: '$', base_fare: 1.5, per_km_rate: 1, minimum_fare: 1.5, offer_floor: 1, offer_ceiling: 50, short_trip_fare: 1.5, short_trip_km: 2, night_multiplier: 1.2, demand_multiplier: 1, is_negotiation_enabled: true },
+        { id: '', town_id: 'default', town_name: 'Zimbabwe', currency_code: 'USD', currency_symbol: '$', base_fare: 1.5, per_km_rate: 1, minimum_fare: 1.5, offer_floor: 1, offer_ceiling: 50, night_multiplier: 1.2, demand_multiplier: 1, is_negotiation_enabled: true },
         routeInfo.distance,
         routeInfo.duration
       )

@@ -1,3 +1,5 @@
+import { canShowLocationEta, type DriverLocationFeedState } from '@/lib/driverLocationState';
+
 // Lightweight polyline progress + speed helpers (no external deps).
 
 export interface LatLng { lat: number; lng: number }
@@ -97,6 +99,45 @@ export function trimRouteAhead(
     );
   }
   return { ahead, remainingMeters: remaining, snapped: bestPt };
+}
+
+export interface TrustedRouteProgress {
+  remainingKm: number;
+  minutes: number;
+}
+
+/**
+ * Derive rider-facing trip progress only from a location whose GPS-fix time is
+ * authoritative and whose feed is still usable. A live_locations heartbeat can
+ * refresh updated_at without moving the device, so that timestamp is not proof
+ * of a fresh GPS fix.
+ */
+export function trustedRouteProgress(
+  coords: [number, number][],
+  driver: LatLng | null,
+  routeDistanceKm: number,
+  routeDurationMinutes: number,
+  feedState: DriverLocationFeedState,
+  hasAuthoritativeGpsFixTime: boolean,
+): TrustedRouteProgress | null {
+  if (
+    !driver
+    || coords.length < 2
+    || !Number.isFinite(routeDistanceKm)
+    || routeDistanceKm <= 0
+    || !Number.isFinite(routeDurationMinutes)
+    || routeDurationMinutes <= 0
+    || !canShowLocationEta(feedState, hasAuthoritativeGpsFixTime)
+  ) {
+    return null;
+  }
+
+  const { remainingMeters } = trimRouteAhead(coords, driver);
+  const remainingKm = remainingMeters / 1000;
+  return {
+    remainingKm,
+    minutes: Math.max(1, Math.round((remainingKm / routeDistanceKm) * routeDurationMinutes)),
+  };
 }
 
 /**

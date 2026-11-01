@@ -1,0 +1,65 @@
+name: P0.3 Remote Verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_integration:
+        description: Run disposable PostgreSQL tests only when a reviewed nonproduction DSN is supplied
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  assignment:
+    name: Compile and test inactive P0.3 authority
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      GOMAXPROCS: '2'
+      GOFLAGS: '-p=1'
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+          cache: true
+          cache-dependency-path: backend/go.sum
+      - name: Capture toolchain baseline
+        run: |
+          set -o pipefail
+          { go version; go env GOROOT GOPATH GOCACHE; free -h; df -h .; } 2>&1 | tee ../p03-toolchain.log
+      - name: Compile assignment package
+        run: |
+          set -o pipefail
+          timeout --signal=TERM 180s go test -run '^$' -count=1 ./internal/assignment 2>&1 | tee ../p03-compile.log
+      - name: Run focused assignment unit tests
+        run: |
+          set -o pipefail
+          timeout --signal=TERM 180s go test -run '^TestAcceptOffer' -count=1 -json ./internal/assignment | tee ../p03-unit.json
+      - name: Run disposable PostgreSQL package (explicitly skips without approved DSN)
+        if: ${{ inputs.run_integration }}
+        run: |
+          set -o pipefail
+          if [ -z "${CRUIZE_P03_TEST_DSN:-}" ]; then
+            echo 'SKIPPED: CRUIZE_P03_TEST_DSN is unset; no database was contacted' | tee ../p03-integration.log
+            exit 0
+          fi
+          timeout --signal=TERM 600s go test -count=1 -json ./internal/assignmenttest | tee ../p03-integration.json
+        env:
+          CRUIZE_P03_TEST_DSN: ${{ secrets.CRUIZE_P03_TEST_DSN }}
+      - name: Upload P0.3 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p03-verification-${{ github.run_id }}
+          if-no-files-found: warn
+          path: |
+            p03-*.log
+            p03-*.json

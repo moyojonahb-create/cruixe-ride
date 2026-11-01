@@ -1,6 +1,7 @@
 // Environment polyfill MUST be imported first to patch missing env vars
 import './lib/envPolyfill';
 
+import { Capacitor } from "@capacitor/core";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
@@ -15,6 +16,18 @@ import { captureError, markTelemetryReady } from "./lib/telemetryBuffer";
 import "./index.css";
 
 const SENTRY_DSN = "https://dd32fb52f690c164bc144e1c36438bf5@o4511105677328384.ingest.de.sentry.io/4511989333098576";
+
+// A packaged app must report regardless of which vite script built the bundle.
+// `build:dev` sets PROD false, which silently disabled Sentry in any AAB built
+// with it — and with no Android CI, that choice is made by hand every release.
+// Web dev behaviour is unchanged: a local `vite` run still sends nothing.
+const IS_NATIVE_BUILD = Capacitor.isNativePlatform();
+const TELEMETRY_ENABLED = import.meta.env.PROD || IS_NATIVE_BUILD;
+
+/** Project id from the DSN path — the part that says where events actually land. */
+function sentryProjectId(dsn: string): string {
+  return dsn.split('/').pop() ?? 'unknown';
+}
 
 window.addEventListener('unhandledrejection', (event) => {
   captureError(event.reason);
@@ -42,7 +55,7 @@ async function initTelemetry() {
   Sentry.init({
     dsn: SENTRY_DSN,
     environment: import.meta.env.MODE,
-    enabled: import.meta.env.PROD,
+    enabled: TELEMETRY_ENABLED,
     release: import.meta.env.VITE_APP_VERSION,
     // Was `true` — this app records wallet PINs (WalletPinModal), driver
     // licence/ID uploads, phone numbers and home addresses. Sending default
@@ -73,6 +86,29 @@ async function initTelemetry() {
       return event;
     },
   });
+
+  // Answers "is this build reporting, and to where?" without a Sentry login.
+  // Deliberately console.info rather than a debug-gated logger: it has to
+  // survive into a production bundle, because that is exactly where the
+  // question gets asked.
+  console.info(
+    `[Telemetry] sentry enabled=${TELEMETRY_ENABLED} project=${sentryProjectId(SENTRY_DSN)} ` +
+      `native=${IS_NATIVE_BUILD} mode=${import.meta.env.MODE}`,
+  );
+
+  // Proves the pipeline end to end — init, egress from the WebView, correct
+  // project — rather than proving only that init() returned. Also makes real
+  // cold-start volume visible, so "telemetry is broken" and "nobody has used
+  // the app" stop being indistinguishable from the outside.
+  //
+  // Sampling note: one info event per cold start. Fine at closed-test volume;
+  // drop or sample this before a wide release.
+  if (TELEMETRY_ENABLED) {
+    Sentry.captureMessage('telemetry_boot', {
+      level: 'info',
+      tags: { native: String(IS_NATIVE_BUILD), build_mode: import.meta.env.MODE },
+    });
+  }
 
   markTelemetryReady((error) => Sentry.captureException(error));
 

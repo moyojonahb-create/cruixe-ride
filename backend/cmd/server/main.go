@@ -289,7 +289,7 @@ func main() {
 	app.Use(observability.HTTPMiddleware())
 	app.Use(middleware.Observability())
 	app.Use(middleware.CORS(cfg.CORS))
-	app.Use("/ws", websocket.NewHandler(wsManager, riderRegistry, driverRegistry, jwtVerifier, websocket.NewPostgresRoomAuthorizer(dbpool), authzSvc))
+	app.Use("/ws", websocket.NewHandler(wsManager, riderRegistry, driverRegistry, jwtVerifier, websocket.NewPostgresRoomAuthorizer(dbpool, authzSvc), authzSvc))
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"message": "PickMe Go Backend Running 🚖"})
@@ -325,7 +325,7 @@ func main() {
 	jobs.RegisterAdminRoutes(app, jobRuntime, requireAuth)
 	notification.RegisterRoutes(app, notificationService, requireAuth)
 	risk.RegisterRoutes(app, riskService, requireAuth)
-	business.RegisterRoutes(app, dbpool, requireAuth)
+	business.RegisterRoutes(app, dbpool, requireAuth, rideHandler.NotifyRideCancelled)
 
 	go func() {
 		quit := make(chan os.Signal, 1)

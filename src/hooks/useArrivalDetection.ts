@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { calculateHaversineDistance, type Coordinates } from '@/lib/osrm';
 import { useVoiceNavigation } from './useVoiceNavigation';
 import { toast } from 'sonner';
+import { announceToDriver } from '@/lib/notifications';
 
 interface ArrivalState {
   isArrived: boolean;
@@ -66,6 +67,17 @@ export function useArrivalDetection({
           speakRiderArrival();
         }
 
+        // The two channels above only reach a driver who is looking at the
+        // screen: `sonner` renders into a DOM nobody sees when the phone is
+        // locked, and `speechSynthesis` will not reliably speak from a
+        // backgrounded WebView. Arrival detection was never the broken half —
+        // delivery was. This adds a channel the OS draws itself. See S9.
+        void announceToDriver({
+          title: 'You have arrived at pickup',
+          body: 'Your rider is waiting here.',
+          url: '/driver/dashboard',
+        });
+
         setArrivalState({
           isArrived: true,
           distanceToPickup,
@@ -94,6 +106,12 @@ export function useArrivalDetection({
         if (enableVoice && voiceSupported) {
           speakArrival();
         }
+
+        void announceToDriver({
+          title: 'You have arrived',
+          body: 'You have reached the destination.',
+          url: '/driver/dashboard',
+        });
 
         setArrivalState({
           isArrived: true,

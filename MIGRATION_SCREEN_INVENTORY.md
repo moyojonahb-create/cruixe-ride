@@ -328,3 +328,98 @@ Mapbox is then attempted against data already known to be correct.
 
 *Produced by reading `src/App.tsx` (229 lines, 74 routes) and measuring all 54
 page files plus their component subtrees. No packages installed, no network used.*
+
+---
+
+## 8. Parity backlog — deferred from the slice, NOT dropped
+
+The vertical slice (§5) deliberately carries only what proves the architecture.
+Everything below is **live on web today** and is therefore outstanding work, not
+descoped work. It is listed here per-feature with its source path so it is
+tracked rather than absorbed into a sentence.
+
+**Capacitor cannot be retired until every row is either built or consciously
+dropped, with the drop recorded.** A row silently missing from the RN app is a
+regression for users who use it now.
+
+| # | Feature | Web source | LOC | Notes |
+|---|---|---|---|---|
+| P-1 | **Emergency button** | `src/components/ride/EmergencyButton.tsx` | 297 | **Safety feature. Highest priority in this table.** See below. |
+| P-2 | Parcel booking | `src/components/ride/ParcelBookingSheet.tsx` | 427 | Backs the `parcel` ride tier; the tier selector offers it |
+| P-3 | Schedule a ride | `src/components/ride/ScheduleRide.tsx` | 361 | Future-dated bookings |
+| P-4 | Book for someone else | `src/components/ride/BookingForSomeoneElse.tsx` | 306 | Third-party payer + passenger notify; needs the contact picker |
+| P-5 | Note to driver | `src/components/ride/NoteToDriverSheet.tsx` | 230 | Includes the "reuse every trip" persisted preference |
+| P-6 | Share ride | `src/components/ride/ShareRideSheet.tsx` | 164 | Share a ride with another rider |
+| P-7 | Share trip | `src/components/ride/ShareTripButton.tsx` | 151 | Sends the live-tracking link — pairs with `/track/:tripId` |
+| P-8 | Intercity | `src/components/ride/IntercitySelector.tsx` + `src/lib/intercityRoutes.ts` | 198 | One of four service types |
+| P-9 | Multi-stop | `src/components/ride/MultiStopInput.tsx` | 103 | Adds waypoints to a ride |
+| P-10 | Gender preference | `src/components/ride/GenderPreferenceToggle.tsx` | 61 | Ties into the women-only theme already in `packages/core` |
+| P-11 | Luggage | `src/components/luggage/` (4 files) | 645 | Sheet, preview, button, fare adjustment |
+| P-12 | Service types: courier / freight | `src/components/VehicleTypeSelector.tsx` | 121 | `SERVICE_TABS` in `RideView.tsx` declares ride/intercity/courier/freight |
+| P-13 | **Offline ride queue** | `src/lib/offlineQueue.ts` | 69 | **Excluded from 3d, not deferred by oversight.** See below |
+| | **Total** | | **~3,133** | |
+
+> The earlier "~2,300 LOC" estimate undercounted. Measured directly, the
+> deferred set is **~3,064 LOC** across 12 features — larger than the entire
+> `components/ui/` rebuild (4,355 LOC across 59 files) is likely to feel, because
+> these are twelve independent features rather than one systematic pass.
+
+### P-13 — offline ride queue, and why it is listed here rather than in the audit
+
+`src/lib/offlineQueue.ts` (69 LOC) is a live web capability. When
+`navigator.onLine` is false, `requestRide.ts:121` writes the ride payload to
+**IndexedDB** and registers a **service-worker background sync** (`sync-rides`),
+so a ride requested with no signal is submitted automatically once connectivity
+returns. The rider gets a ride id immediately and never re-taps.
+
+**None of that exists in React Native.** No IndexedDB, no service worker, no
+Background Sync API. The 3d port of `requestRide` therefore drops the offline
+branch entirely, which means **a mobile rider who requests a ride with no signal
+gets an error where a web rider gets a queued ride.**
+
+That is a real capability regression, and it belongs in this table rather than
+as a paragraph in the audit — the audit records decisions, this table is the
+mechanism that stops capabilities evaporating before cutover. It matters more
+here than it looks: the pilot towns are exactly where a rider is most likely to
+be requesting on one bar of signal.
+
+**RN replacement path**, so nobody starts from scratch:
+
+- **Storage:** AsyncStorage instead of IndexedDB. The queue is a small array of
+  payloads; `pendingProfile.ts` already establishes this pattern in
+  `apps/mobile/src/auth/` and can be copied.
+- **Trigger:** there is no Background Sync equivalent, so flush on foreground —
+  the same `AppState` listener that `useSocketForegroundResume.ts` already
+  installs — plus a flush on connectivity regained via
+  `@react-native-community/netinfo`, which also replaces `navigator.onLine`.
+- **Cannot be equivalent, and should not pretend to be.** Web's service worker
+  can sync while the app is closed; a foreground flush cannot. A ride queued
+  offline will submit when the rider next opens the app, not before. Whether
+  that is acceptable is a product call, and the UI must be honest about it
+  rather than implying the ride is already on its way.
+- **Idempotency is the trap.** A queued payload replayed after the network
+  recovers can produce a duplicate ride if the first attempt actually succeeded
+  before the response was lost. `requestRide` already carries an
+  `AbortController` for precisely this class of problem; the queue needs a
+  client-generated request id the backend can dedupe on.
+
+### P-1 deserves separate treatment
+
+`EmergencyButton` is a rider-safety control, wired to `SafetySheet`
+(`src/components/ride/SafetySheet.tsx`, 402 LOC) and the admin emergency-alert
+path (`src/components/admin/AdminEmergencyAlerts.tsx`). Shipping a ride-hailing
+app whose predecessor had a panic control and whose replacement does not is a
+safety regression, not a feature gap — and it is the kind that gets noticed at
+the worst possible moment.
+
+**It should not wait for the end of the parity backlog.** Either schedule it
+into the slice's tail, or make dropping it an explicit, recorded decision by a
+person who owns that risk. What it must not do is quietly fail to arrive.
+
+### How to close this section
+
+Each row ends in one of two states, and neither is "we forgot":
+
+- **Built** — ported, with the web path removed from this table.
+- **Consciously dropped** — recorded here with who decided and why, so its
+  absence is a decision rather than an accident.

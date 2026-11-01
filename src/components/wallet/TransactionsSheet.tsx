@@ -1,10 +1,12 @@
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { ArrowUpRight, ArrowDownLeft, Car, RotateCcw } from 'lucide-react';
 import { format } from 'date-fns';
+import MoneyAmount from './MoneyAmount';
 
 interface Transaction {
   id: string;
   amount: number;
+  currency?: string | null;
   transaction_type: 'deposit' | 'withdrawal' | 'trip_fee' | 'refund';
   description: string | null;
   created_at: string;
@@ -50,6 +52,7 @@ export default function TransactionsSheet({ isOpen, onClose, transactions, title
       <SheetContent side="bottom" className="h-[80vh] rounded-t-2xl">
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
+          <SheetDescription className="sr-only">Credits add money to your wallet. Debits remove money. Each amount includes its currency.</SheetDescription>
         </SheetHeader>
 
         <div className="mt-4 space-y-3 overflow-y-auto max-h-[calc(80vh-100px)]">
@@ -62,6 +65,7 @@ export default function TransactionsSheet({ isOpen, onClose, transactions, title
               const config = typeConfig[tx.transaction_type] || typeConfig.deposit;
               const Icon = config.icon;
               const isPositive = tx.amount > 0;
+              const isNegative = tx.amount < 0;
 
               return (
                 <div
@@ -80,8 +84,8 @@ export default function TransactionsSheet({ isOpen, onClose, transactions, title
                       {format(new Date(tx.created_at), 'dd MMM yyyy, HH:mm')}
                     </p>
                   </div>
-                  <div className={`font-bold ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                    {isPositive ? '+' : ''}R{Math.abs(tx.amount).toFixed(2)}
+                  <div className={`font-bold ${isPositive ? 'text-green-500' : isNegative ? 'text-red-500' : 'text-foreground'}`}>
+                    <MoneyAmount amount={tx.amount} currency={tx.currency} />
                   </div>
                 </div>
               );

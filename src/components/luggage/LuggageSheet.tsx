@@ -1,3 +1,4 @@
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Camera, ImageIcon, Trash2, Briefcase, Loader2 } from 'lucide-react';
@@ -31,6 +32,10 @@ const WEIGHTS: { value: LuggageDraft['estimated_weight']; label: string; hint: s
 ];
 
 export default function LuggageSheet({ open, onClose, initial, onSave }: LuggageSheetProps) {
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+  useLayoutEffect(() => {
+    if (open) returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  }, [open]);
   const { user } = useAuth();
   const [description, setDescription] = useState(initial?.description || '');
   const [weight, setWeight] = useState<LuggageDraft['estimated_weight']>(initial?.estimated_weight || 'small');
@@ -106,22 +111,29 @@ export default function LuggageSheet({ open, onClose, initial, onSave }: Luggage
   };
 
   return (
+    <DialogPrimitive.Root open={open} onOpenChange={next => { if (!next) onClose(); }}>
+      <DialogPrimitive.Portal forceMount>
+      <div>
     <AnimatePresence>
       {open && (
         <>
+          <DialogPrimitive.Overlay asChild forceMount>
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/60 z-[70]"
             onClick={onClose}
           />
+          </DialogPrimitive.Overlay>
+          <DialogPrimitive.Content onCloseAutoFocus={event => { event.preventDefault(); returnFocusRef.current?.focus(); }} asChild forceMount>
           <motion.div
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
             drag="y" dragConstraints={{ top: 0, bottom: 0 }} dragElastic={0.2}
             onDragEnd={(_, info) => { if (info.offset.y > 120) onClose(); }}
-            className="fixed bottom-0 inset-x-0 z-[71] rounded-t-3xl max-h-[90vh] flex flex-col"
+            className="fixed bottom-0 inset-x-0 z-[71] rounded-t-3xl max-h-[90dvh] flex flex-col"
             style={{ ...glassPanel, fontFamily: RIDE_FONT }}
           >
+            <DialogPrimitive.Description className="sr-only">Optional luggage details for your trip. Saving updates this booking draft.</DialogPrimitive.Description>
             <div className="flex justify-center pt-3 pb-1 shrink-0">
               <div className="w-12 h-1.5 rounded-full bg-muted-foreground/30" />
             </div>
@@ -130,13 +142,13 @@ export default function LuggageSheet({ open, onClose, initial, onSave }: Luggage
                 <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: RIDE_RED_GRADIENT, boxShadow: '0 6px 14px rgba(184,17,4,.35)' }}>
                   <Briefcase className="w-[18px] h-[18px] text-white" />
                 </div>
-                <h2 className="text-lg font-bold" style={{ color: RIDE_TEXT }}>Add Luggage</h2>
+                <DialogPrimitive.Title asChild><h2 className="text-lg font-bold" style={{ color: RIDE_TEXT }}>Add Luggage</h2></DialogPrimitive.Title>
               </div>
               <button
                 onClick={onClose}
                 aria-label="Close"
                 className="flex items-center justify-center rounded-full active:scale-90 transition-transform"
-                style={{ width: 32, height: 32, background: 'rgba(17,17,17,.06)' }}
+                style={{ width: 44, height: 44, background: 'rgba(17,17,17,.06)' }}
               >
                 <X className="w-4 h-4" style={{ color: RIDE_TEXT }} />
               </button>
@@ -166,6 +178,7 @@ export default function LuggageSheet({ open, onClose, initial, onSave }: Luggage
                       key={w.value}
                       type="button"
                       onClick={() => setWeight(w.value)}
+                      aria-pressed={weight === w.value}
                       className="p-3.5 rounded-2xl text-left transition-transform active:scale-[0.98]"
                       style={{
                         ...glassSurface,
@@ -197,7 +210,7 @@ export default function LuggageSheet({ open, onClose, initial, onSave }: Luggage
                       )}
                       <button
                         onClick={() => removePhoto(i)}
-                        className="absolute top-1 right-1 w-7 h-7 rounded-full flex items-center justify-center"
+                        className="absolute top-1 right-1 w-11 h-11 rounded-full flex items-center justify-center"
                         style={{ background: 'rgba(17,17,17,.65)', backdropFilter: 'blur(6px)' }}
                       >
                         <Trash2 className="w-3.5 h-3.5 text-white" />
@@ -254,8 +267,12 @@ export default function LuggageSheet({ open, onClose, initial, onSave }: Luggage
               </button>
             </div>
           </motion.div>
+          </DialogPrimitive.Content>
         </>
       )}
     </AnimatePresence>
+      </div>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
   );
 }

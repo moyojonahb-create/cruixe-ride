@@ -231,3 +231,228 @@ granting it is more likely to be granted.
    background-location spike (`apps/spike-background-location/RUNBOOK.md`)
    covers Android only. An equivalent iOS pass is a prerequisite before an iOS
    release commitment — do not submit on the strength of Android results.
+
+---
+
+# Google Play — Android permissions review
+
+Added 8 Sep 2026, from the **merged** manifest
+(`app/build/intermediates/merged_manifest/debug/processDebugMainManifest/`)
+rather than from `app/src/main/AndroidManifest.xml`. That distinction matters:
+**we declare none of these ourselves.** Every permission below arrives from a
+plugin at merge time, which is why reviewing the source manifest would show an
+almost empty file and tell you nothing.
+
+## `ACCESS_BACKGROUND_LOCATION` — DECISION PENDING S7, not a settled gate
+
+**Present in the merged manifest. But it may not be needed at all.**
+
+An earlier version of this section called it "the release gate" and stated that
+Transistorsoft cannot function without it. **The second claim is wrong** and the
+first is premature. Corrected 8 Sep 2026.
+
+### What the platform actually requires
+
+For a foreground service with `foregroundServiceType="location"`, the runtime
+prerequisite is **at least one of** `ACCESS_COARSE_LOCATION` or
+`ACCESS_FINE_LOCATION`. `ACCESS_BACKGROUND_LOCATION` is required for exactly one
+thing: **starting** such a service while the app is in the background.
+
+It is not what keeps a driver tracked. A driver taps "go online" **with the app
+open**; the service starts in the foreground, and from that moment location
+survives screen lock, backgrounding and a full shift on while-in-use alone.
+
+### Corroborating evidence from the manifest itself
+
+`START_FOREGROUND_SERVICES_FROM_BACKGROUND` and `RECEIVE_BOOT_COMPLETED` are
+both present and both exist *only* to serve background-start and boot-restart.
+They are the fingerprint of the capability this permission buys — which
+independently confirms the reading above from a different direction than the
+docs.
+
+### What each branch costs
+
+| Branch | Gains | Loses |
+|---|---|---|
+| **Keep** | `startOnBoot`, service self-restart after an OS kill | Declaration form, demo video, disclosure screen, multi-week review with rejection risk **on the launch critical path** |
+| **Drop** | All four review requirements disappear | Boot restart; self-restart after an OS kill |
+
+**`startOnBoot` is arguably a defect, not a feature.** A phone that reboots in a
+driver's pocket and silently resumes broadcasting location — potentially
+appearing available for dispatch — is a **consent defect**. The driver never
+opened the app. Dropping it improves the product.
+
+The real cost of dropping is the **OS-kill case**: a driver killed mid-shift
+stops receiving offers until they reopen the app. On aggressive Samsung firmware
+that may not be rare.
+
+### S7 decides it, and S7 is now load-bearing
+
+S7 was scoped as a curiosity about the terminated case. It is now the evidence
+for this decision: **how often is the app actually killed mid-shift on the
+SM-M075F with battery optimisation on?** Without that number this is a decision
+made on vibes.
+
+### The drop branch has a mandatory ORDER — this is the non-obvious part
+
+The permission is declared by the **AAR itself**, not by our manifest or the
+Capacitor wrapper:
+
+```
+uses-permission#android.permission.ACCESS_BACKGROUND_LOCATION
+ADDED from [com.transistorsoft:tslocationmanager:4.5.1]
+  .../transformed/tslocationmanager-4.5.1/AndroidManifest.xml:11:5-85
+```
+
+So removing it does not stop the native library from *attempting* the background
+start. Sequence is what makes it safe:
+
+1. **Config first** — `startOnBoot: false`, `stopOnTerminate: true` in
+   `src/lib/backgroundLocation.ts`. This stops the SDK attempting the boot
+   receiver and background restart at all.
+2. **Manifest second** — `tools:node="remove"` on `ACCESS_BACKGROUND_LOCATION`,
+   `RECEIVE_BOOT_COMPLETED` and `START_FOREGROUND_SERVICES_FROM_BACKGROUND`.
+
+**Reversed, this crashes at boot.** Permission removed while config still says
+`startOnBoot: true` means the SDK's boot receiver fires without the permission →
+`SecurityException` / `ForegroundServiceStartNotAllowedException` **inside a
+BroadcastReceiver**, which surfaces in Play vitals and counts against store
+standing. Same components, opposite outcome, decided purely by order.
+
+### S11 — conditional, drop branch only
+
+**Do not run speculatively.** It requires making the change, so it is the
+validation step *for* the drop, not an exploration of it. Run only if S7's kill
+rate makes dropping attractive.
+
+With config and manifest changed in the order above: driver online → reboot the
+device → observe. Does anything crash? Does the SDK log and continue cleanly?
+Does anything reach Sentry? Confirm the app returns to a sane state where the
+driver is simply **offline until they open it**.
+
+### If we keep it, these four are required
+
+| Requirement | State |
+|---|---|
+| Play Console **declaration form** | not started |
+| **Demo video** of the in-app flow leading to the request | not started |
+| **Prominent in-app disclosure** before the OS prompt, in our own UI | **NOT BUILT** — 25th screen |
+| Privacy policy covering background location | `/privacy` exists; needs review |
+
+---
+
+## `ACTIVITY_RECOGNITION` — declared by the AAR, never requested by us
+
+Same AAR block as the permission above. **It is a runtime dangerous permission
+on Android 10+, not a manifest formality.**
+
+The SDK exposes `requestPermission(permission?: Permission)` for exactly this.
+**Nothing in our code calls it.** `backgroundLocation.ts` calls `ready()` and
+`start()` only; `nativeBridge.ts` calls Capacitor's *Geolocation* plugin, which
+requests location and nothing else.
+
+**Unverified:** whether the native SDK requests it internally during `start()`.
+Our code definitely does not.
+
+**Why it matters for the scenarios:** if it is never granted, motion-based state
+detection degrades silently — the SDK falls back to less efficient tracking,
+which costs battery, which is what gets a driver app uninstalled. It degrades
+with **no error anywhere**.
+
+That is the same shape as the phantom columns and the fatigue writer: declared,
+plausible-looking, never wired. **Check the granted state on device before
+S3–S5**, or those scenarios may measure a degraded mode without anyone knowing:
+
+```
+adb shell dumpsys package zw.co.pickme | grep -A1 ACTIVITY_RECOGNITION
+```
+
+---
+
+## Superseded — the original gate framing
+
+**Present in the merged manifest. Transistorsoft cannot function without it.**
+
+This is the single biggest schedule risk between here and a Play release, and it
+is **entirely non-technical**. Reviews take days to weeks and are rejected for
+imprecise justification. Nothing about the code changes the outcome.
+
+Four things are required, and all four must be ready before submission:
+
+| Requirement | State |
+|---|---|
+| Play Console **declaration form**, explaining the use case | not started |
+| **Demo video** showing the in-app flow leading to the request, and what the feature does | not started |
+| **Prominent in-app disclosure**, shown *before* the OS prompt, in our own UI, naming the data and purpose | **NOT BUILT — see below** |
+| Privacy policy covering background location | `/privacy` exists; needs review for this specifically |
+
+### The disclosure is a screen that does not exist
+
+Play requires a disclosure **distinct from the OS dialog**, in our own UI, shown
+*before* the permission is requested, naming what is collected and why. That is a
+real UI surface with mandated content — a **25th screen**, tracked as such in the
+walkthrough checklist and currently marked *not yet built*.
+
+The iOS section above ("Why the app needs Always-on location") already contains
+usable justification copy. The Android disclosure has stricter placement rules
+(before the prompt, dismissible only by explicit action) but the same substance.
+
+## `SCHEDULE_EXACT_ALARM` — deliberately removed
+
+Merged in by `@capacitor/local-notifications`. **Removed** via `tools:node="remove"`
+in `app/src/main/AndroidManifest.xml`.
+
+We deliver local notifications immediately (arrival announcements, ride offers)
+and never schedule one for a future time, so there is no use case to declare —
+and Play requires a policy justification for this permission. Carrying an
+unjustifiable permission is worse than not having it.
+
+**Do not re-add it by reflex.** A future plugin will pull it back in silently;
+the removal line is what keeps it out.
+
+**It fails at runtime, not build time.** `tools:node="remove"` builds cleanly and
+then throws `SecurityException` at the call site if anything reaches
+`AlarmManager`. **S9** — arrival notification on a locked screen — is the test
+that proves the removal is safe. Do not consider it verified before S9 passes.
+
+## `USE_EXACT_ALARM` — verified absent, must stay absent
+
+The stricter sibling. Play restricts it to alarm-clock and calendar apps
+outright; a ride-hailing app carrying it is a straightforward rejection.
+Confirmed absent from the merged manifest (count 0). Re-check after any plugin
+addition.
+
+## Keep, no declaration needed
+
+| Permission | Source | Note |
+|---|---|---|
+| `POST_NOTIFICATIONS` | push + local notifications | Required. Needs a runtime request on Android 13+; covered by S6 |
+| `START_FOREGROUND_SERVICES_FROM_BACKGROUND` | background-geolocation | Needed for the service to restart |
+| `HIGH_SAMPLING_RATE_SENSORS` | background-geolocation | Normal (non-dangerous) permission — no runtime prompt, no declaration. Activity recognition |
+| `ACCESS_FINE_LOCATION` / `ACCESS_COARSE_LOCATION` | geolocation | Foreground location |
+| `ACTIVITY_RECOGNITION` | background-geolocation | Motion state |
+| `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_LOCATION` | background-geolocation | The tracking service |
+| `RECEIVE_BOOT_COMPLETED`, `WAKE_LOCK` | background-geolocation | `startOnBoot` |
+
+## Pre-existing, need disclosure and privacy-policy coverage
+
+Not blockers, but do not meet them for the first time at submission:
+
+- **`CAMERA`** — driver selfie check, document upload
+- **`RECORD_AUDIO`** — Agora in-app voice calling
+- **`READ_CONTACTS`** — contact picker for "book for someone else". Attracts more
+  scrutiny than people expect for a picker; consider whether the OS contact
+  picker (which needs no permission) would serve
+
+## Re-run this review after any plugin change
+
+The whole point is that our own manifest is nearly empty and the merged one is
+not. After adding or updating any Capacitor plugin:
+
+```
+npx cap sync android
+cd android && JAVA_HOME=<jdk21> ./gradlew :app:processDebugMainManifest
+grep -oE 'android:name="android.permission.[A-Z_]+"' \
+  app/build/intermediates/merged_manifest/debug/processDebugMainManifest/AndroidManifest.xml \
+  | sort -u
+```

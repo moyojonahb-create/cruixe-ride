@@ -38,7 +38,7 @@ const RideGlassPanel = forwardRef<HTMLDivElement, RideGlassPanelProps>(function 
   return (
     <div
       ref={ref}
-      className={cn('relative flex flex-col overflow-hidden', className)}
+      className={cn('relative flex flex-col overflow-visible', className)}
       style={{
         borderTopLeftRadius: 26,
         borderTopRightRadius: 26,
@@ -67,11 +67,11 @@ const RideGlassPanel = forwardRef<HTMLDivElement, RideGlassPanelProps>(function 
         onClick={onRibbonClick}
         aria-label="Toggle sheet"
         className="absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity"
-        style={{ top: -4, width: 64, height: 24 }}
+        style={{ top: -16, width: Math.max(64, handleWidth), height: 44 }}
       >
         <span
           className="block rounded-full"
-          style={{ width: handleWidth, height: 5, background: '#FFFFFF', boxShadow: '0 1px 2px rgba(0,0,0,.18)' }}
+          style={{ position: 'absolute', top: 21.5, width: handleWidth, height: 5, background: '#FFFFFF', boxShadow: '0 1px 2px rgba(0,0,0,.18)' }}
         />
       </button>
 

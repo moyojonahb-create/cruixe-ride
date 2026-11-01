@@ -1,3 +1,5 @@
+import { subscribeRideLocation } from "@/lib/rideLocationSubscription";
+import { backendSocketClient } from "@/lib/backendSocketClient";
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,7 +15,6 @@ import { useTownPricing, calculateRecommendedFare, getFareStep } from '@/hooks/u
 import {
   cancelRideRequest,
   fetchAssignedDriver,
-  fetchDriverLocation,
   fetchRideById,
   updateRideFare,
   type MatchedDriver,
@@ -21,7 +22,7 @@ import {
 } from '@/lib/rideMatching';
 import { useRideViewerCount } from '@/lib/rideViewerPresence';
 import { useNearbyDrivers } from '@/hooks/useNearbyDrivers';
-import { decodePolyline, trimRouteAhead } from '@/lib/routeProgress';
+import { decodePolyline, trustedRouteProgress } from '@/lib/routeProgress';
 import { submitDriverRating, createTip } from '@/lib/businessApi';
 import carSearchSide from '@/assets/cars/car-search-side.png';
 import carFrontEconomy from '@/assets/cars/car-front-economy.png';
@@ -39,6 +40,7 @@ import IncomingCallModal from '@/components/ride/IncomingCallModal';
 import ActiveCallOverlay from '@/components/ride/ActiveCallOverlay';
 import { useAgoraCall } from '@/hooks/useAgoraCall';
 import { useUnreadRideMessages } from '@/hooks/useUnreadRideMessages';
+import { acceptLocationSample, canShowLocationEta, locationFeedState, locationStatusCopy, type DriverLocationSample } from '@/lib/driverLocationState';
 
 import { glassSurface, redCta, tintBlue, tintRed, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3, RIDE_YELLOW } from '@/components/ride/rideGlass';
 import type { CSSProperties } from 'react';
@@ -125,6 +127,10 @@ export default function RideMatching() {
   const [ride, setRide] = useState<MatchingRide | null>(null);
   const [driver, setDriver] = useState<MatchedDriver | null>(null);
   const [driverLocation, setDriverLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [driverLocationSample, setDriverLocationSample] = useState<DriverLocationSample | null>(null);
+  const [locationConnected, setLocationConnected] = useState(false);
+  const [locationReconnecting, setLocationReconnecting] = useState(false);
+  const [locationNow, setLocationNow] = useState(() => Date.now());
   const [offers, setOffers] = useState<Offer[]>([]);
   const [remaining, setRemaining] = useState(60);
   const [radiusIndex, setRadiusIndex] = useState(0);
@@ -444,13 +450,17 @@ export default function RideMatching() {
   // dependency arrays — a `const` referenced before its declaration line
   // throws a ReferenceError ("Cannot access 'etaMinutes' before
   // initialization") even though it's the same component scope.
+  const driverLocationState = locationFeedState(driverLocationSample, locationConnected, locationReconnecting, locationNow);
+  // live_locations.updated_at is also changed by online heartbeats, so the
+  // current backend does not provide an authoritative GPS-fix timestamp.
+  const hasAuthoritativeGpsFixTime = false;
   const etaMinutes = useMemo(() => {
-    if (!driverLocation || !ride) return null;
+    if (!driverLocation || !ride || !canShowLocationEta(driverLocationState, hasAuthoritativeGpsFixTime)) return null;
     const dLat = (ride.pickup_lat - driverLocation.lat) * 111;
     const dLng = (ride.pickup_lon - driverLocation.lng) * 111 * Math.cos((ride.pickup_lat * Math.PI) / 180);
     const km = Math.sqrt(dLat * dLat + dLng * dLng);
     return Math.max(1, Math.round((km / 25) * 60));
-  }, [driverLocation, ride]);
+  }, [driverLocation, ride, driverLocationState, hasAuthoritativeGpsFixTime]);
 
   /* ── Parcel-match SMS: the recipient isn't an app user, so this is the
      only way they learn a driver is actually on the way. Fires once, best
@@ -523,20 +533,30 @@ export default function RideMatching() {
   }, [isMatched, ride?.vehicle_type, driver, rideId, etaMinutes]);
 
   useEffect(() => {
-    if (!driver?.user_id) return;
-    let active = true;
-    const pull = () => fetchDriverLocation(driver.user_id).then((loc) => { if (active && loc) setDriverLocation(loc); }).catch(() => {});
-    pull();
-    const channel = supabase
-      .channel(`driver-loc-${driver.user_id}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'live_locations', filter: `user_id=eq.${driver.user_id}` }, (payload) => {
-        const row = payload.new as Record<string, unknown>;
-        if (row?.latitude && row?.longitude) setDriverLocation({ lat: Number(row.latitude), lng: Number(row.longitude) });
-      })
-      .subscribe();
-    const poll = setInterval(pull, 15000);
-    return () => { active = false; clearInterval(poll); supabase.removeChannel(channel); };
-  }, [driver?.user_id]);
+    setDriverLocation(null); setDriverLocationSample(null);
+    setLocationConnected(false); setLocationReconnecting(true);
+    if (!driver?.user_id || !rideId || !isMatched) return;
+    const stop = subscribeRideLocation(rideId, driver.user_id, loc => {
+      const observedAt = Date.parse(loc.updatedAt);
+      const sample = { lat: loc.lat, lng: loc.lng, observedAt, sequence: observedAt };
+      setDriverLocationSample(current => {
+        const accepted = acceptLocationSample(current, sample);
+        if (accepted === sample) { setDriverLocation({ lat: loc.lat, lng: loc.lng }); setLocationReconnecting(false); }
+        return accepted;
+      });
+    }, connected => { setLocationConnected(connected); setLocationReconnecting(!connected); }, () => {
+      setDriverLocation(null); setDriverLocationSample(null);
+    });
+    const off = backendSocketClient.onAny(event => {
+      if (event.ride_id === rideId && event.type === "ride_snapshot") void loadRide();
+    });
+    const refresh = () => { void backendSocketClient.refreshRide(rideId); };
+    const poll = setInterval(refresh, 15_000);
+    const clock = setInterval(() => setLocationNow(Date.now()), 15_000);
+    const onVisibility = () => { if (document.visibilityState === 'visible') refresh(); };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => { stop(); off(); clearInterval(poll); clearInterval(clock); document.removeEventListener('visibilitychange', onVisibility); };
+  }, [driver?.user_id, rideId, isMatched, loadRide]);
 
   /* ── Actions ───────────────────────────────────────────────── */
   const handleCancel = async (reason?: string) => {
@@ -667,13 +687,15 @@ export default function RideMatching() {
   const tripProgress = useMemo(() => {
     if (!inTrip || !ride?.route_polyline) return null;
     const coords = decodePolyline(ride.route_polyline) as [number, number][];
-    const { remainingMeters } = trimRouteAhead(coords, driverLocation);
-    const remainingKm = remainingMeters / 1000;
-    const minutes = ride.distance_km > 0
-      ? Math.max(1, Math.round((remainingKm / ride.distance_km) * ride.duration_minutes))
-      : null;
-    return { remainingKm, minutes };
-  }, [inTrip, ride?.route_polyline, ride?.distance_km, ride?.duration_minutes, driverLocation]);
+    return trustedRouteProgress(
+      coords,
+      driverLocation,
+      ride.distance_km,
+      ride.duration_minutes,
+      driverLocationState,
+      hasAuthoritativeGpsFixTime,
+    );
+  }, [inTrip, ride?.route_polyline, ride?.distance_km, ride?.duration_minutes, driverLocation, driverLocationState, hasAuthoritativeGpsFixTime]);
 
   /* ── 4g fare breakdown — single source of truth is ride.fare (the exact
      total the rider's accepted offer already locked in). We don't add a
@@ -1074,16 +1096,22 @@ export default function RideMatching() {
                 <div className="flex items-end justify-between" style={{ gap: 12 }}>
                   <div>
                     <p style={{ fontSize: 11.5, fontWeight: 700, color: RIDE_TEXT_2, textTransform: 'uppercase', letterSpacing: '.06em' }}>
-                      Arriving in
+                      Arrival estimate
                     </p>
-                    <div className="flex items-baseline" style={{ marginTop: 3, gap: 5 }}>
-                      <span className="tabular-nums" style={{ fontSize: 32, fontWeight: 700, letterSpacing: '-.035em', lineHeight: 1, color: RIDE_TEXT }}>
-                        {tripProgress?.minutes ?? '–'}
-                      </span>
-                      <span style={{ fontSize: 14, fontWeight: 600, color: RIDE_TEXT_2 }}>
-                        min{tripProgress ? ` · ${tripProgress.remainingKm.toFixed(1)} km left` : ''}
-                      </span>
-                    </div>
+                    {tripProgress ? (
+                      <div className="flex items-baseline" style={{ marginTop: 3, gap: 5 }}>
+                        <span className="tabular-nums" style={{ fontSize: 32, fontWeight: 700, letterSpacing: '-.035em', lineHeight: 1, color: RIDE_TEXT }}>
+                          {tripProgress.minutes}
+                        </span>
+                        <span style={{ fontSize: 14, fontWeight: 600, color: RIDE_TEXT_2 }}>
+                          min · {tripProgress.remainingKm.toFixed(1)} km left
+                        </span>
+                      </div>
+                    ) : (
+                      <p style={{ marginTop: 4, fontSize: 17, fontWeight: 700, color: RIDE_TEXT }}>
+                        ETA unavailable
+                      </p>
+                    )}
                   </div>
                   <div className="flex flex-col items-end shrink-0">
                     <span className="tabular-nums" style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', color: RIDE_RED }}>
@@ -1094,6 +1122,10 @@ export default function RideMatching() {
                     </span>
                   </div>
                 </div>
+
+                <p role="status" aria-live="polite" style={{ marginTop: -8, fontSize: 11.5, fontWeight: 600, color: tripProgress ? '#15803d' : RIDE_TEXT_2 }}>
+                  {locationStatusCopy(driverLocationState, driverLocationSample, locationNow)}
+                </p>
 
                 {/* Section 2 — route card: origin secondary, destination bold */}
                 <div className="flex items-start" style={{ ...tintBlue, borderRadius: 16, gap: 10, padding: '9px 12px' }}>
@@ -1225,9 +1257,12 @@ export default function RideMatching() {
                     <span className="tabular-nums" style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-.02em', color: RIDE_TEXT }}>
                       {etaMinutes ?? '–'}
                     </span>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: RIDE_TEXT_2 }}>min away</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: RIDE_TEXT_2 }}>{etaMinutes == null ? 'ETA paused' : 'min away'}</span>
                   </span>
                 </div>
+                <p role="status" aria-live="polite" style={{ marginTop: -8, fontSize: 11.5, fontWeight: 600, color: driverLocationState === 'live' ? '#15803d' : RIDE_TEXT_2 }}>
+                  {locationStatusCopy(driverLocationState, driverLocationSample, locationNow)}
+                </p>
 
                 {/* Section 2 — driver identity row */}
                 <div className="flex items-center" style={{ gap: 12 }}>

@@ -133,6 +133,98 @@ func TestPresenceUpdateAttemptsRedisHashWhenEnabled(t *testing.T) {
 	}
 }
 
+func TestOnlineRequiresCompleteOperabilityAndMutatesPresenceAtomically(t *testing.T) {
+	var execCalls int
+	var queryCalls int
+	var querySQL string
+	db := fakeDriverDB{
+		execFn: func(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error) {
+			execCalls++
+			return pgconn.NewCommandTag("UPDATE 1"), nil
+		},
+		queryRowFn: func(ctx context.Context, sql string, args ...any) pgx.Row {
+			queryCalls++
+			querySQL = sql
+			return fakeDriverRow{boolValue: true}
+		},
+	}
+	app := makeDriverAppWithDB(t, db, &failingGeoStore{enabled: false})
+
+	resp := doDriverRequest(t, app, http.MethodPost, "/drivers/online", DriverOnlineRequest{
+		Latitude: -17.826, Longitude: 31.034, VehicleType: "economy",
+	})
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", resp.StatusCode)
+	}
+	if execCalls != 0 || queryCalls != 1 {
+		t.Fatalf("online transition must use one atomic query, got exec=%d query=%d", execCalls, queryCalls)
+	}
+	for _, required := range []string{"public.can_driver_operate", "UPDATE public.drivers", "public.driver_documents", "document.status = 'approved'", "INSERT INTO public.live_locations"} {
+		if !strings.Contains(querySQL, required) {
+			t.Fatalf("online transition query missing %q", required)
+		}
+	}
+}
+
+func TestOnlineFailsClosedWhenCompleteOperabilityIsDenied(t *testing.T) {
+	db := fakeDriverDB{
+		execFn: func(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error) {
+			t.Fatal("ineligible online transition must not issue a separate mutation")
+			return pgconn.CommandTag{}, nil
+		},
+		queryRowFn: func(ctx context.Context, sql string, args ...any) pgx.Row {
+			return fakeDriverRow{boolValue: false}
+		},
+	}
+	app := makeDriverAppWithDB(t, db, &failingGeoStore{enabled: false})
+
+	resp := doDriverRequest(t, app, http.MethodPost, "/drivers/online", DriverOnlineRequest{
+		Latitude: -17.826, Longitude: 31.034, VehicleType: "economy",
+	})
+	if resp.StatusCode != http.StatusForbidden {
+		t.Fatalf("expected ineligible driver status 403, got %d", resp.StatusCode)
+	}
+}
+
+func TestLocationFailsClosedWhenDriverIsOfflineOrIneligible(t *testing.T) {
+	db := fakeDriverDB{
+		queryRowFn: func(ctx context.Context, sql string, args ...any) pgx.Row {
+			if strings.Contains(sql, "location_write") {
+				return fakeDriverRow{boolValue: false}
+			}
+			return fakeDriverRow{boolValue: true}
+		},
+	}
+	app := makeDriverAppWithDB(t, db, &failingGeoStore{enabled: false})
+
+	resp := doDriverRequest(t, app, http.MethodPost, "/drivers/location", DriverLocationRequest{
+		Latitude: -17.826, Longitude: 31.034, Speed: 30, Heading: 90,
+	})
+	if resp.StatusCode != http.StatusForbidden {
+		t.Fatalf("expected offline/ineligible location status 403, got %d", resp.StatusCode)
+	}
+}
+
+func TestLocationPersistenceFailureDoesNotPublishHotState(t *testing.T) {
+	store := &failingGeoStore{enabled: true}
+	db := fakeDriverDB{
+		queryRowFn: func(ctx context.Context, sql string, args ...any) pgx.Row {
+			return fakeDriverRow{err: errors.New("database unavailable")}
+		},
+	}
+	app := makeDriverAppWithDB(t, db, store)
+
+	resp := doDriverRequest(t, app, http.MethodPost, "/drivers/location", DriverLocationRequest{
+		Latitude: -17.826, Longitude: 31.034, Speed: 30, Heading: 90,
+	})
+	if resp.StatusCode != http.StatusServiceUnavailable {
+		t.Fatalf("expected persistence failure status 503, got %d", resp.StatusCode)
+	}
+	if store.geoAdds != 0 || store.hsets != 0 {
+		t.Fatalf("persistence failure must not publish hot state, got hsets=%d geoAdds=%d", store.hsets, store.geoAdds)
+	}
+}
+
 func TestDriverLocationWithoutRideDoesNotUseGlobalBroadcastPath(t *testing.T) {
 	source, err := os.ReadFile("handler.go")
 	if err != nil {
@@ -204,6 +296,27 @@ func TestImpossibleLocationJumpRejected(t *testing.T) {
 	}
 }
 
+func TestGPSMetadataValidationRejectsStaleFutureAndPoorAccuracy(t *testing.T) {
+	handler := NewHandler(fakeDriverDB{}, websocket.NewManager())
+	accuracy := 1001.0
+	cases := []struct {
+		name string
+		req  DriverLocationRequest
+		want error
+	}{
+		{name: "stale", req: DriverLocationRequest{DriverID: "driver-1", Latitude: -17.826, Longitude: 31.034, GPSFixedAt: ptrTime(timeNowUTC().Add(-121 * time.Second))}, want: errLocationStaleTimestamp},
+		{name: "future", req: DriverLocationRequest{DriverID: "driver-1", Latitude: -17.826, Longitude: 31.034, GPSFixedAt: ptrTime(timeNowUTC().Add(31 * time.Second))}, want: errLocationFutureTimestamp},
+		{name: "accuracy", req: DriverLocationRequest{DriverID: "driver-1", Latitude: -17.826, Longitude: 31.034, AccuracyM: &accuracy}, want: errLocationInvalidAccuracy},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := handler.validateLocationUpdate(tc.req); !errors.Is(err, tc.want) {
+				t.Fatalf("expected %v, got %v", tc.want, err)
+			}
+		})
+	}
+}
+
 func TestNearbyDriversRequiresAdmin(t *testing.T) {
 	app := makeDriverAppWithOptions(t, &failingGeoStore{enabled: false}, nil, false, "rider-1", "authenticated")
 
@@ -236,9 +349,25 @@ func makeDriverAppWithOptions(t *testing.T, store *failingGeoStore, execFn func(
 	handler := NewHandler(fakeDriverDB{
 		execFn: execFn,
 		queryRowFn: func(ctx context.Context, sql string, args ...any) pgx.Row {
+			if strings.Contains(sql, "public.can_driver_operate") {
+				return fakeDriverRow{boolValue: true}
+			}
 			return fakeDriverRow{boolValue: rideAllowed}
 		},
 	}, websocket.NewManager(), geo.NewService(store, geo.Config{}))
+	RegisterRoutes(app, handler, func(c *fiber.Ctx) error { return c.Next() })
+	return app
+}
+
+func makeDriverAppWithDB(t *testing.T, db DB, store *failingGeoStore) *fiber.App {
+	t.Helper()
+	app := fiber.New()
+	app.Use(func(c *fiber.Ctx) error {
+		c.Locals(middleware.LocalsAuthSubject, "driver-1")
+		c.Locals(middleware.LocalsAuthRole, "driver")
+		return c.Next()
+	})
+	handler := NewHandler(db, websocket.NewManager(), geo.NewService(store, geo.Config{}))
 	RegisterRoutes(app, handler, func(c *fiber.Ctx) error { return c.Next() })
 	return app
 }
@@ -263,3 +392,5 @@ func doDriverRequest(t *testing.T, app *fiber.App, method string, path string, b
 	}
 	return resp
 }
+
+func ptrTime(value time.Time) *time.Time { return &value }

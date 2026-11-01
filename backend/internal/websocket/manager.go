@@ -24,8 +24,10 @@ const (
 	RoleRider  = "rider"
 	RoleDriver = "driver"
 
-	envelopeKindRoom = "room"
-	envelopeKindUser = "user"
+	envelopeKindRoom       = "room"
+	envelopeKindRoomRevoke = "room_revoke"
+	envelopeKindUserRevoke = "room_user_revoke"
+	envelopeKindUser       = "user"
 
 	// DriverRoleRoom is the implicit room every driver connection joins on
 	// connect (see websocket/handler.go). It lets legacy marketplace-style
@@ -37,26 +39,33 @@ const (
 )
 
 type Manager struct {
-	clientsMu  sync.Mutex
-	clients    map[*socketio.Websocket]*clientState
-	roomsMu    sync.Mutex
-	rooms      map[string]map[*socketio.Websocket]bool
-	nodeID     string
-	pubsub     PubSub
-	pubsubChan string
-	riders     *ConnectionRegistry
-	drivers    *ConnectionRegistry
-	seqMu      sync.Mutex
-	sequences  map[string]uint64
-	seenSeq    map[string]uint64
+	authorizer         RoomAuthorizer
+	driverAuthorizer   DriverAuthorizer
+	sessionAuthorizer  SessionAuthorizer
+	authEnabled        bool
+	authorizationEpoch uint64
+	clientsMu          sync.Mutex
+	clients            map[*socketio.Websocket]*clientState
+	roomsMu            sync.Mutex
+	rooms              map[string]map[*socketio.Websocket]bool
+	nodeID             string
+	pubsub             PubSub
+	pubsubChan         string
+	riders             *ConnectionRegistry
+	drivers            *ConnectionRegistry
+	seqMu              sync.Mutex
+	sequences          map[string]uint64
+	seenSeq            map[string]uint64
 }
 
 type clientState struct {
-	send  chan []byte
-	done  chan struct{}
-	once  sync.Once
-	mu    sync.Mutex
-	rooms map[string]bool
+	identity *AuthenticatedConnection
+	revoked  map[string]bool
+	send     chan []byte
+	done     chan struct{}
+	once     sync.Once
+	mu       sync.Mutex
+	rooms    map[string]bool
 }
 
 type PubSub interface {
@@ -173,6 +182,9 @@ func (m *Manager) RemoveClient(conn *socketio.Websocket) {
 			m.LeaveRoom(roomID, conn)
 		}
 		state.close()
+		if conn.Conn != nil {
+			_ = conn.Conn.Close()
+		}
 	}
 }
 
@@ -183,6 +195,22 @@ func (m *Manager) ClientCount() int {
 }
 
 func (m *Manager) JoinRoom(roomID string, conn *socketio.Websocket) {
+	if m.authEnabled {
+		if roomID != DriverRoleRoom {
+			m.JoinAuthorizedRoom(conn, roomID)
+			return
+		}
+		state := m.stateFor(conn)
+		if state == nil {
+			return
+		}
+		id := state.identityCopy()
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		defer cancel()
+		if id == nil || !id.RegisterAsDriver || !m.validIdentity(ctx, id) {
+			return
+		}
+	}
 	if roomID == "" || conn == nil {
 		return
 	}
@@ -249,6 +277,111 @@ func (m *Manager) BroadcastRoom(roomID string, payload []byte) {
 	m.publishRoom(roomID, payload)
 }
 
+// RevokeRoom removes every local connection from a ride room and propagates
+// the revocation through the existing pub/sub channel. A revoked connection
+// remains authenticated, but must re-authorize before it can join the room
+// again. This closes the cancellation/completion race where a former rider or
+// driver could otherwise keep receiving room-scoped location events.
+func (m *Manager) RevokeRoom(roomID string) {
+	if roomID == "" {
+		return
+	}
+	m.revokeRoomLocal(roomID)
+	payload, err := json.Marshal(map[string]string{"event": "room_revoked", "room_id": roomID})
+	if err != nil {
+		return
+	}
+	m.publishEnvelope(wsEnvelope{
+		Kind:   envelopeKindRoomRevoke,
+		NodeID: m.nodeID,
+		RoomID: roomID,
+		// Revocations share the room sequence stream with broadcasts so a
+		// receiver can discard an older room message that arrives late.
+		Seq:     m.nextSequence("room:" + roomID),
+		SentAt:  time.Now().UTC(),
+		Payload: payload,
+	})
+}
+
+// RevokeUserFromRoom removes one authenticated participant from a room and
+// propagates that removal to every manager instance. It is intended for
+// reassignment or eligibility/suspension authorities; terminal ride states
+// should continue to use RevokeRoom.
+func (m *Manager) RevokeUserFromRoom(roomID, role, userID string) {
+	if roomID == "" || userID == "" || (role != RoleRider && role != RoleDriver) {
+		return
+	}
+	m.revokeUserFromRoomLocal(roomID, role, userID)
+	payload, err := json.Marshal(map[string]string{
+		"event":   "room_user_revoked",
+		"room_id": roomID,
+		"user_id": userID,
+		"role":    role,
+	})
+	if err != nil {
+		return
+	}
+	m.publishEnvelope(wsEnvelope{
+		Kind:    envelopeKindUserRevoke,
+		NodeID:  m.nodeID,
+		RoomID:  roomID,
+		Role:    role,
+		UserID:  userID,
+		Seq:     m.nextSequence("room:" + roomID),
+		SentAt:  time.Now().UTC(),
+		Payload: payload,
+	})
+}
+
+func (m *Manager) revokeRoomLocal(roomID string) {
+	m.roomsMu.Lock()
+	m.authorizationEpoch++
+	clients := make([]*socketio.Websocket, 0, len(m.rooms[roomID]))
+	for client := range m.rooms[roomID] {
+		clients = append(clients, client)
+		if state := m.stateFor(client); state != nil {
+			state.revoke(roomID)
+		}
+	}
+	delete(m.rooms, roomID)
+	m.roomsMu.Unlock()
+	for _, client := range clients {
+		m.clientsMu.Lock()
+		state := m.clients[client]
+		m.clientsMu.Unlock()
+		if state != nil {
+			state.revoke(roomID)
+		}
+		revoked, _ := json.Marshal(map[string]string{"event": "room_revoked", "room_id": roomID})
+		m.Send(client, revoked)
+	}
+}
+
+func (m *Manager) revokeUserFromRoomLocal(roomID, role, userID string) {
+	m.roomsMu.Lock()
+	m.authorizationEpoch++
+	m.roomsMu.Unlock()
+	registry := m.registryForRole(role)
+	if registry == nil {
+		return
+	}
+	conn, ok := registry.Get(userID)
+	if !ok || !m.RoomSnapshot(roomID)[conn] {
+		return
+	}
+	if state := m.stateFor(conn); state != nil {
+		state.revoke(roomID)
+	}
+	m.LeaveRoom(roomID, conn)
+	revoked, _ := json.Marshal(map[string]string{
+		"event":   "room_user_revoked",
+		"room_id": roomID,
+		"user_id": userID,
+		"role":    role,
+	})
+	m.Send(conn, revoked)
+}
+
 // SendToUser delivers payload to the given role's ("rider" or "driver")
 // live connection for userID. It always attempts local delivery first via
 // the matching registry, and always also publishes to pub/sub — mirroring
@@ -305,6 +438,9 @@ func (m *Manager) RoomSnapshot(roomID string) map[*socketio.Websocket]bool {
 }
 
 func (m *Manager) Send(conn *socketio.Websocket, payload []byte) bool {
+	if !m.deliveryAllowed(conn, payload) {
+		return false
+	}
 	if conn == nil {
 		return false
 	}
@@ -334,6 +470,12 @@ func (m *Manager) writeLoop(conn *socketio.Websocket, state *clientState) {
 	for {
 		select {
 		case payload := <-state.send:
+			if !stateOpen(state) {
+				return
+			}
+			if !m.deliveryAllowed(conn, payload) {
+				continue
+			}
 			_ = conn.Conn.SetWriteDeadline(time.Now().Add(defaultWriteTimeout))
 			if err := conn.Conn.WriteMessage(1, payload); err != nil {
 				if !isBenignDisconnect(err) {
@@ -393,6 +535,9 @@ func (m *Manager) publishUser(role string, userID string, payload []byte) {
 }
 
 func (m *Manager) publishEnvelope(env wsEnvelope) {
+	if m.pubsub == nil {
+		return
+	}
 	raw, err := json.Marshal(env)
 	if err != nil {
 		observability.CaptureError(err)
@@ -418,6 +563,18 @@ func (m *Manager) handlePubSubMessage(payload []byte) {
 		return
 	}
 	switch env.Kind {
+	case envelopeKindRoomRevoke:
+		if env.RoomID == "" {
+			return
+		}
+		_ = m.acceptSequence(env.NodeID, "room:"+env.RoomID, env.Seq)
+		m.revokeRoomLocal(env.RoomID)
+	case envelopeKindUserRevoke:
+		if env.RoomID == "" || env.Role == "" || env.UserID == "" {
+			return
+		}
+		_ = m.acceptSequence(env.NodeID, "room:"+env.RoomID, env.Seq)
+		m.revokeUserFromRoomLocal(env.RoomID, env.Role, env.UserID)
 	case envelopeKindRoom:
 		if env.RoomID == "" {
 			return

@@ -1,0 +1,71 @@
+-- REVIEW DRAFT ONLY. Do not apply to production or a connected project.
+-- This file is intentionally outside supabase/migrations and aborts if executed.
+-- It is based on read-only metadata from project foksbnjtzubsjpeoorvo on 2026-10-28.
+-- Product policy gates remain: currency/exponent, consent revision, cancellation,
+-- event ownership, duplicate remediation and client cutover.
+BEGIN;
+DO $$ BEGIN
+  RAISE EXCEPTION 'DRAFT ONLY: assignment contract requires nonproduction review';
+END $$;
+
+-- Phase A (nonproduction expand): private storage owned by the service role.
+-- These statements are design targets and are not executed because the guard above aborts.
+CREATE SCHEMA ride_assignment_private;
+REVOKE ALL ON SCHEMA ride_assignment_private FROM PUBLIC;
+
+CREATE TABLE ride_assignment_private.accepted_agreements (
+  id uuid PRIMARY KEY,
+  ride_id uuid NOT NULL UNIQUE REFERENCES public.rides(id),
+  driver_id uuid NOT NULL REFERENCES public.drivers(id),
+  offer_id uuid NOT NULL REFERENCES public.offers(id),
+  amount_minor bigint NOT NULL CHECK (amount_minor > 0),
+  currency text NOT NULL CHECK (currency ~ '^[A-Z]{3}$'),
+  terms_fingerprint bytea NOT NULL CHECK (octet_length(terms_fingerprint) = 32),
+  accepted_at timestamptz NOT NULL DEFAULT clock_timestamp(),
+  UNIQUE (id, ride_id, driver_id)
+);
+
+CREATE TABLE ride_assignment_private.active_driver_reservations (
+  driver_id uuid PRIMARY KEY REFERENCES public.drivers(id),
+  ride_id uuid NOT NULL UNIQUE REFERENCES public.rides(id),
+  assignment_id uuid NOT NULL UNIQUE,
+  reserved_at timestamptz NOT NULL DEFAULT clock_timestamp(),
+  FOREIGN KEY (assignment_id, ride_id, driver_id)
+    REFERENCES ride_assignment_private.accepted_agreements(id, ride_id, driver_id)
+);
+
+CREATE TABLE ride_assignment_private.command_receipts (
+  actor_id uuid NOT NULL,
+  operation text NOT NULL,
+  idempotency_key text NOT NULL CHECK (length(idempotency_key) BETWEEN 1 AND 200),
+  request_hash bytea NOT NULL CHECK (octet_length(request_hash) = 32),
+  assignment_id uuid REFERENCES ride_assignment_private.accepted_agreements(id),
+  state text NOT NULL CHECK (state IN ('pending','committed')),
+  result jsonb,
+  created_at timestamptz NOT NULL DEFAULT clock_timestamp(),
+  PRIMARY KEY (actor_id, operation, idempotency_key),
+  CHECK (state <> 'committed' OR result IS NOT NULL)
+);
+
+-- Phase B (one-writer cutover, after nonproduction parity):
+-- 1. Go AcceptOfferAndAssignDriver becomes the only mutation authority.
+-- 2. It locks receipt identity, ride, driver serialization row and offer(s) in
+--    one deterministic order; it validates auth ownership, offer/ride state,
+--    driver approval, expiry and exact terms after lock waits.
+-- 3. It inserts agreement and reservation, updates rides/offers and commits
+--    the receipt atomically. Redis remains advisory coordination only.
+-- 4. public.accept_ride_offer(uuid,uuid) becomes a compatibility wrapper to
+--    that same authority, or is revoked after all clients use the Go endpoint.
+-- Do not create a second SECURITY DEFINER implementation with copied logic.
+
+-- Phase C (after dependency/access tests): protect lifecycle columns.
+-- Revoke direct authenticated UPDATE on rides, offers and drivers, then grant
+-- only explicitly approved mutable columns. Add restrictive RLS policies with
+-- both USING and WITH CHECK for remaining client-owned fields. Keep protected
+-- lifecycle/assignment/fare/availability writes inside the authority.
+-- Existing clients must pass endpoint, SDK and realtime regression tests first.
+
+-- Phase D (contract): add consistency enforcement after duplicate audit and
+-- historical-data remediation. Reservation uniqueness alone is insufficient
+-- while any legacy writer can set rides.driver_id/status directly.
+ROLLBACK;

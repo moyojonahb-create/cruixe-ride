@@ -44,6 +44,12 @@ dependencies {
 
 apply from: 'capacitor.build.gradle'
 
+// Transistorsoft ships this and its only job is stripping ~1.5 MB of debug
+// sound files from release builds. Not applying it is not a build failure —
+// it is 1.5 MB of debugging sound effects shipped to every driver, on a market
+// where users pay by the megabyte.
+apply from: '../../node_modules/@transistorsoft/capacitor-background-geolocation/android/app.gradle'
+
 try {
     def servicesJSON = file('google-services.json')
     if (servicesJSON.text) {

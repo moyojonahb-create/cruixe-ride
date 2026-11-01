@@ -7,31 +7,57 @@ import { supabase } from '@/lib/supabaseClient';
 
 interface DriverSelfieCheckProps {
   open: boolean;
-  onVerified: () => void;
-  onSkip?: () => void;
+  onSubmitted?: () => void;
+  onCancel?: () => void;
 }
 
-export default function DriverSelfieCheck({ open, onVerified, onSkip }: DriverSelfieCheckProps) {
+export default function DriverSelfieCheck({ open, onSubmitted, onCancel }: DriverSelfieCheckProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const lifecycleRef = useRef(0);
+  const activeUserIdRef = useRef<string | null>(null);
   const [step, setStep] = useState<'prompt' | 'camera' | 'preview' | 'verifying' | 'done' | 'error'>('prompt');
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
 
   useEffect(() => {
+    lifecycleRef.current += 1;
+    activeUserIdRef.current = null;
     if (!open) {
       streamRef.current?.getTracks().forEach((t) => t.stop());
+    } else {
+      setStep('prompt');
+      setCapturedImage(null);
     }
     return () => {
+      lifecycleRef.current += 1;
+      activeUserIdRef.current = null;
       streamRef.current?.getTracks().forEach((t) => t.stop());
     };
   }, [open]);
 
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (activeUserIdRef.current && session?.user.id !== activeUserIdRef.current) {
+        lifecycleRef.current += 1;
+        activeUserIdRef.current = null;
+        streamRef.current?.getTracks().forEach((track) => track.stop());
+        setStep('error');
+      }
+    });
+    return () => data.subscription.unsubscribe();
+  }, []);
+
   const startCamera = useCallback(async () => {
+    const lifecycle = ++lifecycleRef.current;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user', width: 480, height: 480 },
       });
+      if (lifecycle !== lifecycleRef.current || !open) {
+        stream.getTracks().forEach((track) => track.stop());
+        return;
+      }
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -39,10 +65,10 @@ export default function DriverSelfieCheck({ open, onVerified, onSkip }: DriverSe
       }
       setStep('camera');
     } catch {
-      // Camera not available — allow skip
-      onVerified();
+      // A missing camera is not identity verification.
+      if (lifecycle === lifecycleRef.current && open) onCancel?.();
     }
-  }, [onVerified]);
+  }, [onCancel, open]);
 
   const capture = useCallback(() => {
     if (!videoRef.current || !canvasRef.current) return;
@@ -65,43 +91,65 @@ export default function DriverSelfieCheck({ open, onVerified, onSkip }: DriverSe
 
   const verify = useCallback(async () => {
     if (!capturedImage) return;
+    const lifecycle = ++lifecycleRef.current;
     setStep('verifying');
     try {
       const { data: { user } } = await supabase.auth.getUser();
+      if (lifecycle !== lifecycleRef.current || !open) return;
       if (!user) {
         setStep('error');
         return;
       }
+      activeUserIdRef.current = user.id;
 
       const blob = await (await fetch(capturedImage)).blob();
+      if (lifecycle !== lifecycleRef.current || !open) return;
       const path = `${user.id}/selfie-${Date.now()}.jpg`;
 
       const { error: uploadError } = await supabase.storage
         .from('driver-documents')
         .upload(path, blob, { contentType: 'image/jpeg', upsert: true });
       if (uploadError) throw uploadError;
+      if (lifecycle !== lifecycleRef.current || !open) return;
+
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser || currentUser.id !== user.id) {
+        throw new Error('Account changed during selfie submission');
+      }
+      if (lifecycle !== lifecycleRef.current || !open) return;
+
+      const { data: driver, error: driverError } = await supabase
+        .from('drivers')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (driverError || !driver?.id) throw driverError ?? new Error('Driver profile not found');
+      if (lifecycle !== lifecycleRef.current || !open) return;
 
       const { data: urlData } = supabase.storage.from('driver-documents').getPublicUrl(path);
 
       const { error: insertError } = await supabase.from('driver_documents').insert({
-        driver_id: user.id,
-        document_type: 'selfie',
+        driver_id: driver.id,
+        document_type: 'personal_photo',
         file_url: urlData.publicUrl,
         status: 'pending',
       });
       if (insertError) throw insertError;
 
+      if (lifecycle !== lifecycleRef.current || !open) return;
+      activeUserIdRef.current = null;
       setStep('done');
-      setTimeout(() => onVerified(), 1500);
     } catch (err) {
       console.error('Selfie submission failed:', err);
-      setStep('error');
+      if (lifecycle === lifecycleRef.current && open) setStep('error');
     }
-  }, [capturedImage, onVerified]);
+  }, [capturedImage, open]);
 
   const handleClose = () => {
+    lifecycleRef.current += 1;
+    activeUserIdRef.current = null;
     streamRef.current?.getTracks().forEach((t) => t.stop());
-    onSkip?.();
+    onCancel?.();
   };
 
   return (
@@ -137,7 +185,7 @@ export default function DriverSelfieCheck({ open, onVerified, onSkip }: DriverSe
                   <Camera className="w-4 h-4" />
                   Open Camera
                 </Button>
-                {onSkip && (
+                {onCancel && (
                   <button onClick={handleClose} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
                     Skip for now
                   </button>
@@ -223,8 +271,9 @@ export default function DriverSelfieCheck({ open, onVerified, onSkip }: DriverSe
                 </motion.div>
                 <p className="text-sm font-bold text-foreground">Submitted for review</p>
                 <p className="text-xs text-muted-foreground text-center">
-                  An admin will review your photo shortly.
+                  Your photo is pending review. You can go online only after the server confirms approval.
                 </p>
+                <Button onClick={onSubmitted} className="w-full font-bold">Close</Button>
               </motion.div>
             )}
 

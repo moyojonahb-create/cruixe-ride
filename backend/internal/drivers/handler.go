@@ -90,6 +90,9 @@ type validatedLocation struct {
 const (
 	minimumLocationUpdateInterval = 500 * time.Millisecond
 	maxDriverLocationSpeedMPS     = 100.0
+	maxGPSFutureSkew              = 30 * time.Second
+	maxGPSAge                     = 120 * time.Second
+	maxGPSAccuracyM               = 1000.0
 )
 
 type driverReputationTracker interface {
@@ -236,34 +239,53 @@ func (h *Handler) UpdateLocation(c *fiber.Ctx) error {
 	// driver's position froze at whatever Online() wrote (often 0,0) for
 	// their entire online session. Keep it fresh here on every periodic
 	// location update instead.
-	if _, err := h.db.Exec(context.Background(), `
-		INSERT INTO public.live_locations (
-			user_id,
-			user_type,
-			latitude,
-			longitude,
-			heading,
-			speed,
-			is_online,
-			updated_at
+	// Eligibility and persistence are one transactionally authorized write.
+	// A rejected or failed write must not reach Redis, reputation, or WebSocket
+	// publication, otherwise hot state can claim an ineligible driver is online.
+	var persisted bool
+	if err := h.db.QueryRow(middleware.RequestContext(c), `
+		WITH eligible_driver AS (
+			SELECT d.user_id
+			FROM public.drivers AS d
+			WHERE d.user_id = $1
+			  AND d.status = 'approved'
+			  AND d.is_online = true
+			  AND public.can_driver_operate($1::uuid)
+              AND ($6::text = '' OR EXISTS (
+                SELECT 1 FROM public.rides r WHERE r.id::text = $6::text
+                AND r.driver_id = d.id AND r.status IN ('accepted', 'arrived', 'in_progress')
+              ))
+			  AND EXISTS (
+				SELECT 1
+				FROM public.driver_documents AS document
+				WHERE document.driver_id = d.id
+				  AND document.document_type IN ('personal_photo', 'selfie_with_id')
+				  AND document.status = 'approved'
+			  )
+		), location_write AS (
+			INSERT INTO public.live_locations (
+				user_id, user_type, latitude, longitude, heading, speed, is_online, updated_at
+			)
+			SELECT user_id, 'driver', $2, $3, $4, $5, true, NOW()
+			FROM eligible_driver
+			ON CONFLICT (user_id)
+			DO UPDATE SET
+				latitude = EXCLUDED.latitude,
+				longitude = EXCLUDED.longitude,
+				heading = EXCLUDED.heading,
+				speed = EXCLUDED.speed,
+				is_online = true,
+				updated_at = NOW()
+			RETURNING user_id
 		)
-		VALUES ($1,'driver',$2,$3,$4,$5,true,NOW())
-		ON CONFLICT (user_id)
-		DO UPDATE SET
-			latitude = EXCLUDED.latitude,
-			longitude = EXCLUDED.longitude,
-			heading = EXCLUDED.heading,
-			speed = EXCLUDED.speed,
-			is_online = true,
-			updated_at = NOW()
-	`,
-		req.DriverID,
-		req.Latitude,
-		req.Longitude,
-		req.Heading,
-		req.Speed,
-	); err != nil {
-		log.Println("live_locations update error:", err)
+		SELECT EXISTS (SELECT 1 FROM location_write)
+	`, req.DriverID, req.Latitude, req.Longitude, req.Heading, req.Speed, req.RideID).Scan(&persisted); err != nil {
+		log.Println("authorized live_locations update error:", err)
+		return c.Status(fiber.StatusServiceUnavailable).JSON(fiber.Map{"error": "location_persistence_failed"})
+	}
+	if !persisted {
+		logLocationAccessDenied(authUserID, "UpdateLocation", req.RideID, "driver_not_online_or_eligible")
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "driver_not_online_or_eligible"})
 	}
 
 	h.writeRedisDriverLocation(middleware.RequestContext(c), req)
@@ -276,6 +298,7 @@ func (h *Handler) UpdateLocation(c *fiber.Ctx) error {
 
 	broadcast := DriverLocationBroadcast{
 		Event:     "driver_location",
+		UpdatedAt: time.Now().UTC().Format(time.RFC3339Nano),
 		Room:      roomID,
 		RideID:    req.RideID,
 		DriverID:  req.DriverID,
@@ -305,14 +328,32 @@ func (h *Handler) UpdateLocation(c *fiber.Ctx) error {
 }
 
 func (h *Handler) validateLocationUpdate(req DriverLocationRequest) error {
+	if math.IsNaN(req.Latitude) || math.IsInf(req.Latitude, 0) || math.IsNaN(req.Longitude) || math.IsInf(req.Longitude, 0) {
+		return errLocationInvalidCoordinates
+	}
 	if req.Latitude < -90 || req.Latitude > 90 || req.Longitude < -180 || req.Longitude > 180 {
 		return errLocationInvalidCoordinates
 	}
-	if req.Speed < 0 || req.Speed > 250 {
+	if math.IsNaN(req.Speed) || math.IsInf(req.Speed, 0) || req.Speed < 0 || req.Speed > 250 {
 		return errLocationInvalidSpeed
+	}
+	if math.IsNaN(req.Heading) || math.IsInf(req.Heading, 0) || req.Heading < 0 || req.Heading >= 360 {
+		return errLocationInvalidHeading
+	}
+	if req.AccuracyM != nil && (math.IsNaN(*req.AccuracyM) || math.IsInf(*req.AccuracyM, 0) || *req.AccuracyM < 0 || *req.AccuracyM > maxGPSAccuracyM) {
+		return errLocationInvalidAccuracy
 	}
 
 	now := timeNowUTC()
+	if req.GPSFixedAt != nil {
+		fixedAt := req.GPSFixedAt.UTC()
+		if fixedAt.After(now.Add(maxGPSFutureSkew)) {
+			return errLocationFutureTimestamp
+		}
+		if fixedAt.Before(now.Add(-maxGPSAge)) {
+			return errLocationStaleTimestamp
+		}
+	}
 	h.locationMu.Lock()
 	defer h.locationMu.Unlock()
 
@@ -338,6 +379,10 @@ func (h *Handler) validateLocationUpdate(req DriverLocationRequest) error {
 var (
 	errLocationInvalidCoordinates = locationValidationError("invalid_coordinates")
 	errLocationInvalidSpeed       = locationValidationError("invalid_speed")
+	errLocationInvalidHeading     = locationValidationError("invalid_heading")
+	errLocationInvalidAccuracy    = locationValidationError("invalid_accuracy")
+	errLocationFutureTimestamp    = locationValidationError("future_gps_timestamp")
+	errLocationStaleTimestamp     = locationValidationError("stale_gps_timestamp")
 	errLocationRateLimited        = locationValidationError("rate_limited")
 	errLocationImpossibleJump     = locationValidationError("impossible_jump")
 )
@@ -402,55 +447,60 @@ func (h *Handler) Online(c *fiber.Ctx) error {
 		req.VehicleType = "economy"
 	}
 
-	cmdTag, err := h.db.Exec(context.Background(), `
-		UPDATE public.drivers
-		SET is_online = true,
-		    vehicle_type = $2,
-		    updated_at = NOW()
-		WHERE user_id = $1
-	`,
-		req.DriverID,
-		req.VehicleType,
-	)
+	// Keep the complete operability rule and both presence tables in one SQL
+	// statement. The row lock taken by the drivers UPDATE serializes competing
+	// online/offline/heartbeat transitions for this authenticated driver, while
+	// the data-modifying CTE prevents a half-applied presence state.
+	var transitioned bool
+	err := h.db.QueryRow(middleware.RequestContext(c), `
+		WITH transitioned_driver AS (
+			UPDATE public.drivers AS driver
+			SET is_online = true,
+			    vehicle_type = $2,
+			    updated_at = NOW()
+			WHERE driver.user_id = $1
+			  AND driver.status = 'approved'
+			  AND public.can_driver_operate($1::uuid)
 
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	if cmdTag.RowsAffected() == 0 {
-		return c.Status(404).JSON(fiber.Map{"error": "Driver profile not found"})
-	}
-
-	_, err = h.db.Exec(context.Background(), `
-		INSERT INTO public.live_locations (
-			user_id,
-			user_type,
-			latitude,
-			longitude,
-			heading,
-			speed,
-			is_online,
-			updated_at
+			  AND EXISTS (
+				SELECT 1
+				FROM public.driver_documents AS document
+				WHERE document.driver_id = driver.id
+				  AND document.document_type IN ('personal_photo', 'selfie_with_id')
+				  AND document.status = 'approved'
+			  )
+			RETURNING driver.user_id
+		), location_write AS (
+			INSERT INTO public.live_locations (
+				user_id,
+				user_type,
+				latitude,
+				longitude,
+				heading,
+				speed,
+				is_online,
+				updated_at
+			)
+			SELECT user_id, 'driver', $3, $4, $5, $6, true, NOW()
+			FROM transitioned_driver
+			ON CONFLICT (user_id)
+			DO UPDATE SET
+				latitude = EXCLUDED.latitude,
+				longitude = EXCLUDED.longitude,
+				heading = EXCLUDED.heading,
+				speed = EXCLUDED.speed,
+				is_online = true,
+				updated_at = NOW()
+			RETURNING user_id
 		)
-		VALUES ($1,'driver',$2,$3,$4,$5,true,NOW())
-		ON CONFLICT (user_id)
-		DO UPDATE SET
-			latitude = EXCLUDED.latitude,
-			longitude = EXCLUDED.longitude,
-			heading = EXCLUDED.heading,
-			speed = EXCLUDED.speed,
-			is_online = true,
-			updated_at = NOW()
-	`,
-		req.DriverID,
-		req.Latitude,
-		req.Longitude,
-		req.Heading,
-		req.Speed,
-	)
-
+		SELECT EXISTS (SELECT 1 FROM location_write)
+	`, req.DriverID, req.VehicleType, req.Latitude, req.Longitude, req.Heading, req.Speed).Scan(&transitioned)
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		log.Println("Driver online transition error:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "presence_update_failed"})
+	}
+	if !transitioned {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "driver_not_eligible"})
 	}
 
 	h.writeRedisDriverPresence(middleware.RequestContext(c), geo.DriverPresence{
@@ -503,34 +553,36 @@ func (h *Handler) Heartbeat(c *fiber.Ctx) error {
 	if req.DriverID != "" && req.DriverID != authUserID {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Cannot send heartbeat for another driver"})
 	}
-  req.DriverID = authUserID
+	req.DriverID = authUserID
 
 	// Going online is Online()'s job; a heartbeat only refreshes a driver who is
 	// already online, so an admin force-offline is not undone by the driver's
 	// next beat.
-	commandTag, err := h.db.Exec(context.Background(), `
-		UPDATE public.drivers
-		SET updated_at = NOW()
-		WHERE user_id = $1
-		  AND is_online = true
-	`, req.DriverID)
-
+	var transitioned bool
+	err := h.db.QueryRow(middleware.RequestContext(c), `
+		WITH transitioned_driver AS (
+			UPDATE public.drivers
+			SET updated_at = NOW()
+			WHERE user_id = $1
+			  AND is_online = true
+			RETURNING user_id
+		), location_write AS (
+			UPDATE public.live_locations AS location
+			SET is_online = true,
+			    updated_at = NOW()
+			FROM transitioned_driver
+			WHERE location.user_id = transitioned_driver.user_id
+			  AND location.is_online = true
+			RETURNING location.user_id
+		)
+		SELECT EXISTS (SELECT 1 FROM transitioned_driver)
+	`, req.DriverID).Scan(&transitioned)
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		log.Println("Driver heartbeat transition error:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "presence_update_failed"})
 	}
-
-	if commandTag.RowsAffected() == 0 {
-		return c.Status(409).JSON(fiber.Map{"error": "driver_not_online"})
-	}
-
-	if _, err := h.db.Exec(context.Background(), `
-		UPDATE public.live_locations
-		SET is_online = true,
-		    updated_at = NOW()
-		WHERE user_id = $1
-		  AND is_online = true
-	`, req.DriverID); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+	if !transitioned {
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"error": "driver_not_online"})
 	}
 
 	h.writeRedisDriverPresence(middleware.RequestContext(c), geo.DriverPresence{
@@ -576,28 +628,30 @@ func (h *Handler) Offline(c *fiber.Ctx) error {
 	}
 	body.DriverID = authUserID
 
-	commandTag, err := h.db.Exec(context.Background(), `
-		UPDATE public.drivers
-		SET is_online = false,
-		    updated_at = NOW()
-		WHERE user_id = $1
-	`, body.DriverID)
-
+	var transitioned bool
+	err := h.db.QueryRow(middleware.RequestContext(c), `
+		WITH transitioned_driver AS (
+			UPDATE public.drivers
+			SET is_online = false,
+			    updated_at = NOW()
+			WHERE user_id = $1
+			RETURNING user_id
+		), location_write AS (
+			UPDATE public.live_locations AS location
+			SET is_online = false,
+			    updated_at = NOW()
+			FROM transitioned_driver
+			WHERE location.user_id = transitioned_driver.user_id
+			RETURNING location.user_id
+		)
+		SELECT EXISTS (SELECT 1 FROM transitioned_driver)
+	`, body.DriverID).Scan(&transitioned)
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		log.Println("Driver offline transition error:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "presence_update_failed"})
 	}
-
-	if commandTag.RowsAffected() == 0 {
-		return c.Status(404).JSON(fiber.Map{"error": "Driver session not found"})
-	}
-
-	if _, err := h.db.Exec(context.Background(), `
-		UPDATE public.live_locations
-		SET is_online = false,
-		    updated_at = NOW()
-		WHERE user_id = $1
-	`, body.DriverID); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+	if !transitioned {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Driver session not found"})
 	}
 
 	h.writeRedisDriverPresence(middleware.RequestContext(c), geo.DriverPresence{
@@ -619,10 +673,10 @@ func (h *Handler) canBroadcastLocationToRide(ctx context.Context, rideID string,
 	err := h.db.QueryRow(ctx, `
 		SELECT EXISTS (
 			SELECT 1
-			FROM public.rides
-			WHERE id = $1
-			  AND driver_id = $2
-			  AND ride_status IN ('accepted', 'ongoing')
+			FROM public.rides r JOIN public.drivers d ON d.id = r.driver_id
+			WHERE r.id = $1 AND d.user_id = $2
+			  AND r.status IN ('accepted', 'arrived', 'in_progress')
+			  AND d.status = 'approved' AND d.is_online = true
 		)
 	`, rideID, driverID).Scan(&allowed)
 	if err != nil {

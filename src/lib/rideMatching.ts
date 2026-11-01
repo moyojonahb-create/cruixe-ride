@@ -156,16 +156,18 @@ export async function fetchAssignedDriver(driverId: string): Promise<MatchedDriv
 }
 
 /** Latest known position of the assigned driver (RLS-scoped to active trips). */
-export async function fetchDriverLocation(driverUserId: string): Promise<{ lat: number; lng: number } | null> {
+export interface DriverLocationRecord { lat: number; lng: number; updatedAt: string; }
+
+export async function fetchDriverLocation(driverUserId: string): Promise<DriverLocationRecord | null> {
   const { data, error } = await supabase
     .from('live_locations')
-    .select('latitude, longitude')
+    .select('latitude, longitude, updated_at')
     .eq('user_id', driverUserId)
     .maybeSingle();
   // A discarded error here reads identically to "driver has no location yet"
   // — the car marker just silently never appears, with nothing to search
   // logs for. Surface it instead.
-  if (error) { console.error('fetchDriverLocation failed:', error.message); return null; }
+  if (error) throw new Error(error.message);
   if (!data) return null;
-  return { lat: Number(data.latitude), lng: Number(data.longitude) };
+  return { lat: Number(data.latitude), lng: Number(data.longitude), updatedAt: String(data.updated_at) };
 }

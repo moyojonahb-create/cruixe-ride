@@ -18,6 +18,17 @@ type fakePubSub struct {
 	registered chan struct{}
 }
 
+type failingPubSub struct{}
+
+func (failingPubSub) Publish(context.Context, string, []byte) error {
+	return context.DeadlineExceeded
+}
+
+func (failingPubSub) Subscribe(ctx context.Context, channel string, handler func([]byte)) error {
+	<-ctx.Done()
+	return ctx.Err()
+}
+
 func newFakePubSub() *fakePubSub {
 	return &fakePubSub{
 		handlers:   make(map[string][]func([]byte)),
@@ -243,5 +254,157 @@ func TestHandlePubSubMessageStillDeliversRoomBroadcastsAfterEnvelopeRefactor(t *
 	case <-state.send:
 	default:
 		t.Fatal("expected the room broadcast to reach the client on the other instance")
+	}
+}
+
+func TestRevokeRoomRemovesLocalConnectionAndBlocksFutureRoomEvents(t *testing.T) {
+	m := NewManager()
+	conn, state := addFakeClient(m)
+	m.JoinRoom("ride_cancel", conn)
+
+	m.RevokeRoom("ride_cancel")
+	if got := len(m.RoomSnapshot("ride_cancel")); got != 0 {
+		t.Fatalf("expected room to be empty after revocation, got %d clients", got)
+	}
+	select {
+	case got := <-state.send:
+		var event map[string]string
+		if err := json.Unmarshal(got, &event); err != nil || event["event"] != "room_revoked" {
+			t.Fatalf("expected room_revoked notification, got %s", got)
+		}
+	default:
+		t.Fatal("expected local client to receive room_revoked notification")
+	}
+
+	m.BroadcastRoomLocal("ride_cancel", []byte(`{"event":"driver_location"}`))
+	select {
+	case got := <-state.send:
+		t.Fatalf("revoked connection received a future room event: %s", got)
+	default:
+	}
+}
+
+func TestRevokeRoomPropagatesAcrossInstancesAndBlocksFutureEvents(t *testing.T) {
+	bus := newFakePubSub()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	a := newTestNode(bus, "node-a")
+	b := newTestNode(bus, "node-b")
+	startAndWaitSubscribed(ctx, bus, a, b)
+	conn, state := addFakeClient(b.manager)
+	b.manager.JoinRoom("ride_complete", conn)
+
+	a.manager.RevokeRoom("ride_complete")
+	select {
+	case got := <-state.send:
+		var event map[string]string
+		if err := json.Unmarshal(got, &event); err != nil || event["event"] != "room_revoked" {
+			t.Fatalf("expected remote room_revoked notification, got %s", got)
+		}
+	default:
+		t.Fatal("expected remote room revocation")
+	}
+	if got := len(b.manager.RoomSnapshot("ride_complete")); got != 0 {
+		t.Fatalf("expected remote room to be empty after revocation, got %d clients", got)
+	}
+
+	a.manager.BroadcastRoom("ride_complete", []byte(`{"event":"driver_location"}`))
+	select {
+	case got := <-state.send:
+		t.Fatalf("revoked remote connection received a future event: %s", got)
+	default:
+	}
+}
+
+func TestRevokeRoomPublishesFailureDoesNotUndoLocalRevocation(t *testing.T) {
+	m := NewManager().WithPubSub(failingPubSub{})
+	conn, state := addFakeClient(m)
+	m.JoinRoom("ride_suspend", conn)
+
+	m.RevokeRoom("ride_suspend")
+	if got := len(m.RoomSnapshot("ride_suspend")); got != 0 {
+		t.Fatalf("expected local revocation despite publish failure, got %d clients", got)
+	}
+	select {
+	case <-state.send:
+	default:
+		t.Fatal("expected local revocation notification despite publish failure")
+	}
+}
+
+func TestRevokeRoomSharesSequenceWithRoomBroadcasts(t *testing.T) {
+	m := NewManager().WithPubSub(failingPubSub{})
+	conn, state := addFakeClient(m)
+	m.JoinRoom("ride_order", conn)
+	m.BroadcastRoom("ride_order", []byte(`{"event":"location"}`))
+	select {
+	case <-state.send:
+	default:
+		t.Fatal("expected local room broadcast")
+	}
+
+	// A remote room message older than the revocation is rejected after the
+	// revocation sequence has advanced the shared room stream.
+	m.RevokeRoom("ride_order")
+	select {
+	case <-state.send:
+	default:
+		t.Fatal("expected local room revocation notification")
+	}
+	old := wsEnvelope{Kind: envelopeKindRoom, NodeID: "node-a", RoomID: "ride_order", Seq: 1, Payload: json.RawMessage(`{"event":"late"}`)}
+	raw, err := json.Marshal(old)
+	if err != nil {
+		t.Fatalf("marshal old room envelope: %v", err)
+	}
+	m.handlePubSubMessage(raw)
+	select {
+	case got := <-state.send:
+		t.Fatalf("late room event reached revoked connection: %s", got)
+	default:
+	}
+}
+
+func TestRevokeUserFromRoomTargetsOnlyTheRevokedParticipant(t *testing.T) {
+	bus := newFakePubSub()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	a := newTestNode(bus, "node-a")
+	b := newTestNode(bus, "node-b")
+	startAndWaitSubscribed(ctx, bus, a, b)
+
+	riderConn, riderState := addFakeClient(b.manager)
+	b.riders.Set("rider-1", riderConn)
+	driverConn, driverState := addFakeClient(b.manager)
+	b.drivers.Set("driver-1", driverConn)
+	b.manager.JoinRoom("ride_reassign", riderConn)
+	b.manager.JoinRoom("ride_reassign", driverConn)
+
+	a.manager.RevokeUserFromRoom("ride_reassign", RoleDriver, "driver-1")
+	select {
+	case got := <-driverState.send:
+		var event map[string]string
+		if err := json.Unmarshal(got, &event); err != nil || event["event"] != "room_user_revoked" {
+			t.Fatalf("expected targeted revocation, got %s", got)
+		}
+	default:
+		t.Fatal("expected revoked driver to receive targeted revocation")
+	}
+	if got := len(b.manager.RoomSnapshot("ride_reassign")); got != 1 || !b.manager.RoomSnapshot("ride_reassign")[riderConn] {
+		t.Fatalf("expected only rider to remain in room, got %d clients", got)
+	}
+
+	a.manager.BroadcastRoom("ride_reassign", []byte(`{"event":"location"}`))
+	select {
+	case got := <-riderState.send:
+		if string(got) != `{"event":"location"}` {
+			t.Fatalf("unexpected rider payload: %s", got)
+		}
+	default:
+		t.Fatal("expected remaining rider to receive room event")
+	}
+	select {
+	case got := <-driverState.send:
+		t.Fatalf("revoked driver received future room event: %s", got)
+	default:
 	}
 }

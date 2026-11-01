@@ -1,7 +1,7 @@
 import { useEffect, type CSSProperties } from "react";
 import { Banknote, Smartphone, Wallet, X } from "lucide-react";
 import { haptic } from "@/lib/haptics";
-import RideGlassPanel from "./RideGlassPanel";
+import ModalBottomSheet from "@/components/ui/ModalBottomSheet";
 import { redCta, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2 } from "./rideGlass";
 
 export type PaymentMethod = "cash" | "wallet";
@@ -87,11 +87,8 @@ export default function PaymentMethodSelector({
   };
 
   return (
-    <>
-      <div className="fixed inset-0 z-[60]" style={{ background: "rgba(17,17,17,.28)" }} onClick={onClose} />
-      <div className="fixed left-0 right-0 bottom-0 z-[70]" style={{ maxWidth: 480, margin: "0 auto", width: "100%" }}>
-        <RideGlassPanel panelStyle={panelStyle} style={{ maxHeight: "90vh", paddingBottom: "env(safe-area-inset-bottom)" }} onRibbonClick={onClose}>
-          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+    <ModalBottomSheet open={open} onClose={onClose} title="Choose payment method" description="Select how you will pay for this ride.">
+          <div style={panelStyle}>
             <div className="p-4" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {/* Section 1 — header */}
               <div className="flex items-center" style={{ gap: 11 }}>
@@ -201,8 +198,6 @@ export default function PaymentMethodSelector({
               </div>
             </div>
           </div>
-        </RideGlassPanel>
-      </div>
-    </>
+    </ModalBottomSheet>
   );
 }

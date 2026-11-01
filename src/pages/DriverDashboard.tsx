@@ -14,12 +14,15 @@ import { ArrowLeft } from "lucide-react";
 import { vibrateAlert, showBrowserNotification } from "@/lib/alerts";
 import { playAcceptedSound } from "@/lib/notificationSounds";
 import { updateDriverLocation } from "@/lib/driverLocation";
+import {
+  startDriverLocationTracking,
+  PRESENCE_LOCATION_THROTTLE_MS,
+  type TrackingHandle,
+} from "@/lib/backgroundLocation";
 import { useVoiceNavigation } from "@/hooks/useVoiceNavigation";
 import { normalizeRideRow } from "@/lib/rideContract";
 import { preloadAllTownPricing } from "@/hooks/useTownPricing";
 import { RIDE_RED, RIDE_TEXT } from "@/components/ride/rideGlass";
-
-import { canCurrentDriverOperate } from "@/lib/businessApi";
 
 import DriverSettingsSheet from "@/components/driver/DriverSettingsSheet";
 import type { Coordinates } from "@/lib/osrm";
@@ -27,7 +30,6 @@ import { useAgoraCall } from "@/hooks/useAgoraCall";
 import IncomingCallModal from "@/components/ride/IncomingCallModal";
 import ActiveCallOverlay from "@/components/ride/ActiveCallOverlay";
 import DriverEarningsDashboard from "@/components/driver/DriverEarningsDashboard";
-import DriverSelfieCheck from "@/components/driver/DriverSelfieCheck";
 import FullScreenNavigation, { type RiderInfo } from "@/components/driver/FullScreenNavigation";
 import TripCollectSheet from "@/components/driver/TripCollectSheet";
 
@@ -36,7 +38,8 @@ import { useFatigueMonitor } from "@/hooks/useFatigueMonitor";
 import FatigueAlert from "@/components/driver/FatigueAlert";
 
 import { subscribeRiderComing } from "@/lib/rideSignals";
-import { setDriverOnline, sendPresenceHeartbeat } from "@/lib/driverPresence";
+import { sendPresenceHeartbeat } from "@/lib/driverPresence";
+import { updateDriverAvailability } from "@/lib/driverAvailability";
 import { useDriverRideAlerts, type DriverServiceArea } from "@/hooks/useDriverRideAlerts";
 import { useAppBootstrap } from "@/hooks/useAppBootstrap";
 
@@ -73,8 +76,6 @@ export default function DriverDashboard() {
   const [earningsOpen, setEarningsOpen] = useState(Boolean((location.state as { openEarnings?: boolean } | null)?.openEarnings));
   const [driverCoords, setDriverCoords] = useState<Coordinates | null>(null);
   const [riderPhone, setRiderPhone] = useState<string | null>(null);
-  const [selfieCheckOpen, setSelfieCheckOpen] = useState(false);
-  const [pendingOnlineAfterSelfie, setPendingOnlineAfterSelfie] = useState(false);
   // Availability is three-valued, not two: offline (isOnline=false),
   // online-but-not-accepting (isOnline=true, acceptingRides=false — right
   // after a drop-off, before the driver taps "Take rides"), and
@@ -85,7 +86,13 @@ export default function DriverDashboard() {
   // fresh page load, not just right after this session's own completeTrip().
   const [uncollectedRide, setUncollectedRide] = useState<{ id: string; fare: number; payment_method: string; dropoff_address: string; user_id: string } | null>(null);
 
+  // Retained for the presence heartbeat only — position tracking moved to the
+  // native foreground service via backgroundLocation.ts.
   const locationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const trackingHandleRef = useRef<TrackingHandle | null>(null);
+  // Presence now rides the location stream rather than its own timer.
+  const presenceRefreshRef = useRef<(() => Promise<void>) | null>(null);
+  const lastPresenceAtRef = useRef(0);
   const presenceIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const trackingGenerationRef = useRef(0);
   const latestCoordsRef = useRef<{ lat: number; lng: number } | null>(null);
@@ -194,8 +201,7 @@ export default function DriverDashboard() {
     // open — do not install intervals nothing holds a handle to.
     if (generation !== trackingGenerationRef.current) return;
 
-    const handlePos = (pos: GeolocationPosition) => {
-      const { latitude, longitude } = pos.coords;
+    const handleCoords = (latitude: number, longitude: number) => {
       updateDriverLocation(latitude, longitude);
       const coords = { lat: latitude, lng: longitude };
       setDriverCoords(coords);
@@ -211,12 +217,29 @@ export default function DriverDashboard() {
       }
       prevLocationRef.current = { lat: latitude, lng: longitude, time: Date.now() };
     };
-    // Send initial location
-    navigator.geolocation.getCurrentPosition(handlePos, () => {});
-    // Update every 10 seconds
-    locationIntervalRef.current = setInterval(() => {
-      navigator.geolocation.getCurrentPosition(handlePos, () => {});
-    }, 10000);
+    // Tracking now runs through backgroundLocation.ts, which uses a native
+    // foreground service on device and keeps navigator.geolocation for the
+    // Chrome dashboard. The previous `setInterval` here was the reason a
+    // driver's position froze at screen lock: Android suspends a WebView's JS
+    // timers, so the interval simply stopped firing and the rider watched a
+    // stationary car for the rest of the trip.
+    trackingHandleRef.current = await startDriverLocationTracking({
+      onLocation: ({ lat, lng, isHeartbeat }) => {
+        // Late events from a previous tracking session must not overwrite the
+        // current one — the generation guard above already protects setup, and
+        // this protects delivery.
+        if (generation !== trackingGenerationRef.current) return;
+        handleCoords(lat, lng);
+        // Same stream, so presence cannot silently diverge from position.
+        refreshPresence(isHeartbeat);
+      },
+      onPermissionDenied: () => {
+        toast.error('Location permission needed', {
+          description:
+            'CruiXe needs location access while you are online so riders can see your car. Without it dispatch cannot reach you.',
+        });
+      },
+    });
 
     // Presence heartbeat: the backend expires the Redis presence key after
     // 90s and it is only written by this endpoint, so an online driver must
@@ -241,14 +264,56 @@ export default function DriverDashboard() {
         });
       }
     };
+    // Presence is no longer on its own timer.
+    //
+    // Presence and position answer one question — "is this driver online, and
+    // where" — and two mechanisms answering it can disagree. That disagreement
+    // WAS the bug: a 30s setInterval suspends at screen lock, so fresh
+    // coordinates kept flowing from the native service while dispatch quietly
+    // stopped considering the driver online after the backend's 90s expiry.
+    //
+    // Now both ride the same stream. The native plugin's onLocation covers a
+    // moving driver and onHeartbeat (25s) covers a stationary one, and both
+    // arrive through the single onLocation callback below, which refreshes
+    // presence as well as position. One source, one debounce, no divergence.
+    presenceRefreshRef.current = sendHeartbeat;
     void sendHeartbeat();
-    presenceIntervalRef.current = setInterval(() => {
-      void sendHeartbeat();
-    }, 30000);
+  };
+
+  /**
+   * Presence refresh, debounced against the backend's expiry rule.
+   *
+   * The location stream can deliver far faster than presence needs (a driver in
+   * traffic emits every 10s); POSTing presence at that rate is pure waste. This
+   * throttles to PRESENCE_MIN_INTERVAL_MS while still guaranteeing the backend's
+   * 90s key never lapses.
+   */
+  const refreshPresence = (isHeartbeat: boolean) => {
+    const fn = presenceRefreshRef.current;
+    if (!fn) return;
+    const now = Date.now();
+    // Heartbeats are NEVER throttled. They arrive every 25s and exist solely to
+    // guarantee a floor on refresh rate; dropping one because a 30s window has
+    // not elapsed collapses the effective refresh to 50s against a 60s backend
+    // expiry. That only bites a stationary driver, so it passes every walking
+    // test and fails a driver parked at a rank. See PRESENCE TIMING in
+    // backgroundLocation.ts.
+    if (!isHeartbeat && now - lastPresenceAtRef.current < PRESENCE_LOCATION_THROTTLE_MS) return;
+    lastPresenceAtRef.current = now;
+    void fn();
   };
 
   const stopLocationTracking = () => {
     trackingGenerationRef.current += 1;
+    // Stopping the native service matters more than clearing a timer did: an
+    // un-stopped foreground service keeps its notification up and keeps
+    // draining battery after the driver has gone offline, which is the most
+    // visible possible bug on a driver's phone.
+    if (trackingHandleRef.current) {
+      const handle = trackingHandleRef.current;
+      trackingHandleRef.current = null;
+      void handle.stop().catch((e) => console.warn('[DriverDashboard] stop tracking failed', e));
+    }
     if (locationIntervalRef.current) {
       clearInterval(locationIntervalRef.current);
       locationIntervalRef.current = null;
@@ -272,41 +337,15 @@ export default function DriverDashboard() {
     }
   }, [isOnline, profile?.status]);
 
-  // Toggle online status with can_driver_operate check
+  // The shared coordinator serializes status changes by authenticated user;
+  // the Go endpoint remains the authoritative verification boundary.
   const toggleOnline = async (online: boolean) => {
-    if (!profile || togglingOnline) return;
-
-    // Local dev only: skip the selfie check and operability gate so going
-    // online doesn't require a camera/trial-status round trip while testing
-    // UI. import.meta.env.DEV is false in any real production build, so
-    // this never applies to real drivers.
-    const skipVerification = import.meta.env.DEV;
-
-    // If going online, require selfie check first (once per session)
-    if (online && !pendingOnlineAfterSelfie && !skipVerification) {
-      const lastSelfie = sessionStorage.getItem('pickme-selfie-verified');
-      if (!lastSelfie) {
-        setSelfieCheckOpen(true);
-        return;
-      }
-    }
-    setPendingOnlineAfterSelfie(false);
+    if (!profile || !user || togglingOnline) return;
 
     setTogglingOnline(true);
     try {
-      if (online && !skipVerification) {
-        const canOperate = await canCurrentDriverOperate();
-        if (!canOperate) {
-          toast.error("Cannot go online", {
-            description: "Your trial has ended or your wallet balance is too low. Please deposit to continue.",
-            duration: 8000,
-          });
-          setTogglingOnline(false);
-          return;
-        }
-      }
-
-      await setDriverOnline(online, driverCoords);
+      const result = await updateDriverAvailability(user.id, online, driverCoords);
+      if (!result.applied) return;
 
       setIsOnline(online);
       setProfile({ ...profile, is_online: online });
@@ -654,26 +693,11 @@ export default function DriverDashboard() {
   // screen. /driver/requests (4B) now owns that role — online status,
   // wallet balance, and the request list all live there in the current
   // design. This screen stays mounted only to run the overlays that must
-  // survive regardless of which driver screen is showing (selfie gate,
-  // fatigue alert, in-app calls, uncollected-cash recovery) and to host the
+  // survive regardless of which driver screen is showing (fatigue alert,
+  // in-app calls, uncollected-cash recovery) and to host the
   // Earnings tab's nav-state deep link; otherwise it hands off immediately.
   return (
     <>
-      <DriverSelfieCheck
-        open={selfieCheckOpen}
-        onVerified={() => {
-          setSelfieCheckOpen(false);
-          sessionStorage.setItem('pickme-selfie-verified', Date.now().toString());
-          if (pendingOnlineAfterSelfie) { setPendingOnlineAfterSelfie(false); toggleOnline(true); }
-        }}
-        onSkip={() => {
-          setSelfieCheckOpen(false);
-          sessionStorage.setItem('pickme-selfie-verified', Date.now().toString());
-          setPendingOnlineAfterSelfie(true);
-          toggleOnline(true);
-        }}
-      />
-
       {fatigueState.isFatigued && (
         <FatigueAlert breakTimeRemaining={fatigueState.breakTimeRemaining} totalHours={fatigueState.totalOnlineHours} />
       )}

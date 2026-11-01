@@ -1,0 +1,48 @@
+version: 1
+name: private-driver-location-events
+status: staging-proposal
+transport: supabase-realtime-broadcast
+source_table: public.live_locations
+raw_postgres_changes: disabled
+publisher: trusted-backend-only
+client_publish: forbidden
+events:
+  location_updated:
+    payload:
+      ride_id: uuid
+      driver_id: uuid
+      sequence: integer
+      latitude: number
+      longitude: number
+      gps_fixed_at: timestamp
+    authorization: active-ride-rider-or-own-driver
+  location_temporarily_unavailable:
+    payload:
+      ride_id: uuid
+      driver_id: uuid
+      reason: stale-or-permission-denied
+    authorization: active-ride-rider-or-own-driver
+  driver_offline:
+    payload:
+      ride_id: uuid
+      driver_id: uuid
+      at: timestamp
+    authorization: active-ride-rider-or-own-driver
+  active_ride_ended:
+    payload:
+      ride_id: uuid
+      ended_at: timestamp
+    authorization: prior-active-ride-participant
+  driver_assignment_changed:
+    payload:
+      ride_id: uuid
+      driver_id: uuid
+      sequence: integer
+    authorization: rider-or-assigned-driver
+rules:
+  - Clients cannot publish trusted location lifecycle events.
+  - Backend verifies JWT subject, active ride membership, assignment and revocation before broadcast.
+  - Account switch removes the prior channel before joining the new ride channel.
+  - JWT expiry or ride cancellation removes channel authorization.
+  - DELETE events and raw old_record payloads are never published.
+  - Coordinates are sent only in location_updated for an authorized active ride.

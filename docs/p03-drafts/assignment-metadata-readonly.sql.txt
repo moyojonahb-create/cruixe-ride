@@ -1,0 +1,115 @@
+-- READ-ONLY metadata audit for an explicitly approved Supabase project.
+-- Run in a transaction with a read-only session. Never paste credentials or row data.
+-- Replace only the schema name if the project uses a non-public application schema.
+BEGIN;
+SET TRANSACTION READ ONLY;
+
+-- Tables, columns and types.
+SELECT c.table_schema, c.table_name, c.column_name, c.ordinal_position,
+       c.data_type, c.udt_schema, c.udt_name, c.is_nullable, c.column_default
+FROM information_schema.columns c
+WHERE c.table_schema = 'public'
+  AND c.table_name IN ('rides','drivers','offers','ride_offers')
+ORDER BY c.table_name, c.ordinal_position;
+
+-- Primary, foreign, unique and check constraints.
+SELECT n.nspname AS schema_name, cls.relname AS table_name,
+       con.conname, con.contype, pg_get_constraintdef(con.oid, true) AS definition
+FROM pg_constraint con
+JOIN pg_class cls ON cls.oid = con.conrelid
+JOIN pg_namespace n ON n.oid = cls.relnamespace
+WHERE n.nspname = 'public'
+  AND cls.relname IN ('rides','drivers','offers','ride_offers')
+ORDER BY cls.relname, con.conname;
+
+-- Indexes, including partial predicates and uniqueness.
+SELECT schemaname, tablename, indexname, indexdef
+FROM pg_indexes
+WHERE schemaname = 'public'
+  AND tablename IN ('rides','drivers','offers','ride_offers')
+ORDER BY tablename, indexname;
+
+-- Triggers and trigger functions.
+SELECT n.nspname AS schema_name, c.relname AS table_name,
+       t.tgname, pg_get_triggerdef(t.oid, true) AS definition,
+       p.pronamespace::regnamespace::text AS function_schema,
+       p.proname AS function_name
+FROM pg_trigger t
+JOIN pg_class c ON c.oid = t.tgrelid
+JOIN pg_namespace n ON n.oid = c.relnamespace
+LEFT JOIN pg_proc p ON p.oid = t.tgfoid
+WHERE NOT t.tgisinternal
+  AND n.nspname = 'public'
+  AND c.relname IN ('rides','drivers','offers','ride_offers')
+ORDER BY c.relname, t.tgname;
+
+-- RLS enablement and policies (policy expressions may contain security-sensitive names,
+-- so review output in the approved operator channel and do not commit it).
+SELECT n.nspname AS schema_name, c.relname AS table_name,
+       c.relrowsecurity, c.relforcerowsecurity,
+       pol.polname, pol.polcmd, pol.polpermissive,
+       pg_get_expr(pol.polqual, pol.polrelid, true) AS using_expression,
+       pg_get_expr(pol.polwithcheck, pol.polrelid, true) AS check_expression
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+LEFT JOIN pg_policy pol ON pol.polrelid = c.oid
+WHERE n.nspname = 'public'
+  AND c.relname IN ('rides','drivers','offers','ride_offers')
+ORDER BY c.relname, pol.polname;
+
+-- Table and routine privileges for relevant roles. This returns metadata only.
+SELECT table_schema, table_name, grantee, privilege_type
+FROM information_schema.role_table_grants
+WHERE table_schema = 'public'
+  AND table_name IN ('rides','drivers','offers','ride_offers')
+ORDER BY table_name, grantee, privilege_type;
+
+SELECT routine_schema, routine_name, routine_type, data_type,
+       specific_name, security_type
+FROM information_schema.routines
+WHERE routine_schema = 'public'
+  AND (routine_name ILIKE '%accept%'
+       OR routine_name ILIKE '%offer%'
+       OR routine_name ILIKE '%assign%'
+       OR routine_name ILIKE '%reserv%'
+       OR routine_name ILIKE '%ride%')
+ORDER BY routine_name, specific_name;
+
+-- Exact function source and argument signatures for acceptance-related routines.
+SELECT n.nspname AS schema_name, p.oid::regprocedure AS signature,
+       p.prosecdef AS security_definer, p.provolatile,
+       pg_get_functiondef(p.oid) AS definition
+FROM pg_proc p
+JOIN pg_namespace n ON n.oid = p.pronamespace
+WHERE n.nspname = 'public'
+  AND (p.proname ILIKE '%accept%'
+       OR p.proname ILIKE '%offer%'
+       OR p.proname ILIKE '%assign%'
+       OR p.proname ILIKE '%reserv%');
+
+-- Candidate idempotency, reservation and outbox tables by catalog metadata only.
+SELECT n.nspname AS schema_name, c.relname AS relation_name,
+       CASE c.relkind WHEN 'r' THEN 'table' WHEN 'p' THEN 'partitioned_table'
+            WHEN 'v' THEN 'view' WHEN 'm' THEN 'materialized_view' ELSE c.relkind::text END AS relation_kind
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname IN ('public','private')
+  AND c.relkind IN ('r','p','v','m')
+  AND (c.relname ILIKE '%idempot%'
+       OR c.relname ILIKE '%reserv%'
+       OR c.relname ILIKE '%outbox%'
+       OR c.relname ILIKE '%assign%'
+       OR c.relname ILIKE '%receipt%')
+ORDER BY n.nspname, c.relname;
+
+-- Identity/status mapping without reading trip rows: enum/check definitions and FK targets.
+SELECT n.nspname AS schema_name, t.typname AS type_name,
+       e.enumlabel
+FROM pg_type t
+JOIN pg_namespace n ON n.oid = t.typnamespace
+JOIN pg_enum e ON e.enumtypid = t.oid
+WHERE n.nspname = 'public'
+ORDER BY t.typname, e.enumsortorder;
+
+-- Do not run SELECTs against ride, offer or driver data in this audit.
+ROLLBACK;

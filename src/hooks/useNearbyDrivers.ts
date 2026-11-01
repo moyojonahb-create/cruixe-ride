@@ -103,29 +103,26 @@ export function useNearbyDrivers(
       .on(
         "postgres_changes",
         {
-          event: "*",
+          event: "UPDATE",
           schema: "public",
           table: "live_locations",
           filter: "user_type=eq.driver",
         },
         (payload) => {
-          if (payload.eventType === "DELETE") {
-            const old = payload.old as Record<string, unknown>;
-            if (old?.user_id) driversMapRef.current.delete(old.user_id as string);
-          } else {
-            const row = payload.new as Record<string, unknown>;
-            if (row?.user_id && row.user_type === "driver") {
-              const isOnline = (row.is_online as boolean) ?? true;
-              if (!isOnline) {
-                driversMapRef.current.delete(row.user_id as string);
-              } else {
-                driversMapRef.current.set(row.user_id as string, {
-                  id: row.user_id as string,
-                  lat: row.latitude as number,
-                  lng: row.longitude as number,
-                  isOnline,
-                });
-              }
+          // This channel intentionally subscribes only to UPDATE events.
+
+          const row = payload.new as Record<string, unknown>;
+          if (row?.user_id && row.user_type === "driver") {
+            const isOnline = (row.is_online as boolean) ?? true;
+            if (!isOnline) {
+              driversMapRef.current.delete(row.user_id as string);
+            } else {
+              driversMapRef.current.set(row.user_id as string, {
+                id: row.user_id as string,
+                lat: row.latitude as number,
+                lng: row.longitude as number,
+                isOnline,
+              });
             }
           }
           syncToState();
