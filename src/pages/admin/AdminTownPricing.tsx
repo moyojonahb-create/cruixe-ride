@@ -161,8 +161,6 @@ const AdminTownPricing = () => {
                         {numField(town, 'base_fare', 'Base Fare')}
                         {numField(town, 'per_km_rate', 'Per KM Rate')}
                         {numField(town, 'minimum_fare', 'Minimum Fare')}
-                        {numField(town, 'short_trip_fare', 'Short Trip Fare')}
-                        {numField(town, 'short_trip_km', 'Short Trip KM', '0.5')}
                         {numField(town, 'offer_floor', 'Offer Floor')}
                         {numField(town, 'offer_ceiling', 'Offer Ceiling')}
                         {numField(town, 'night_multiplier', 'Night Multiplier', '0.1')}

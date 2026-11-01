@@ -1,0 +1,282 @@
+{
+  "eventCount": 12719,
+  "lastEvents": [
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "check",
+      "ts": 139818204.6,
+      "name": "checkExpression",
+      "dur": 24907.90000000596,
+      "args": {
+        "kind": 209,
+        "pos": 4512,
+        "end": 4805,
+        "path": "c:/users/musae/documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/lib/towns.ts"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "check",
+      "ts": 139793723,
+      "name": "checkExpression",
+      "dur": 50984.30000001192,
+      "args": {
+        "kind": 210,
+        "pos": 4201,
+        "end": 4896,
+        "path": "c:/users/musae/documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/lib/towns.ts"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "check",
+      "ts": 139849617.6,
+      "name": "checkExpression",
+      "dur": 449.09999999403954,
+      "args": {
+        "kind": 11,
+        "pos": 5427,
+        "end": 5439,
+        "path": "c:/users/musae/documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/lib/towns.ts"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "check",
+      "ts": 139849399.8,
+      "name": "checkExpression",
+      "dur": 8115,
+      "args": {
+        "kind": 210,
+        "pos": 5399,
+        "end": 5488,
+        "path": "c:/users/musae/documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/lib/towns.ts"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "check",
+      "ts": 139847492.8,
+      "name": "checkExpression",
+      "dur": 11177.999999970198,
+      "args": {
+        "kind": 209,
+        "pos": 5219,
+        "end": 5496,
+        "path": "c:/users/musae/documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/lib/towns.ts"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "check",
+      "ts": 139859063,
+      "name": "checkExpression",
+      "dur": 964.0999999940395,
+      "args": {
+        "kind": 210,
+        "pos": 5516,
+        "end": 5581,
+        "path": "c:/users/musae/documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/lib/towns.ts"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "check",
+      "ts": 139845105,
+      "name": "checkExpression",
+      "dur": 16066.299999982119,
+      "args": {
+        "kind": 210,
+        "pos": 4897,
+        "end": 5587,
+        "path": "c:/users/musae/documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/lib/towns.ts"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "check",
+      "ts": 139866962.1,
+      "name": "checkExpression",
+      "dur": 7590.100000023842,
+      "args": {
+        "kind": 210,
+        "pos": 5897,
+        "end": 5986,
+        "path": "c:/users/musae/documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/lib/towns.ts"
+      }
+    }
+  ],
+  "longestEvents": [
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "program",
+      "ts": 5936521.300000001,
+      "name": "processRootFiles",
+      "dur": 63749913.900000006,
+      "args": {
+        "count": 451
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "program",
+      "ts": 5938738,
+      "name": "findSourceFile",
+      "dur": 43604531.4,
+      "args": {
+        "fileName": "C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/App.tsx",
+        "fileIncludeKind": "RootFile"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "program",
+      "ts": 28033372.3,
+      "name": "findSourceFile",
+      "dur": 20811111.999999996,
+      "args": {
+        "fileName": "C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/lib/prefetchPages.ts",
+        "fileIncludeKind": "Import"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "program",
+      "ts": 58390376.1,
+      "name": "findSourceFile",
+      "dur": 10665015.599999987,
+      "args": {
+        "fileName": "C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/test/DestinationSearchPipeline.test.tsx",
+        "fileIncludeKind": "RootFile"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "program",
+      "ts": 17977667.2,
+      "name": "findSourceFile",
+      "dur": 10055418.600000001,
+      "args": {
+        "fileName": "C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/components/RouteErrorBoundary.tsx",
+        "fileIncludeKind": "Import"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "program",
+      "ts": 18011835.1,
+      "name": "findSourceFile",
+      "dur": 10020600.8,
+      "args": {
+        "fileName": "C:/Users/MUSAE/Documents/koloi-ride-with-confidence/node_modules/@sentry/react/build/types/index.d.ts",
+        "fileIncludeKind": "Import"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "program",
+      "ts": 18110580.7,
+      "name": "findSourceFile",
+      "dur": 9566454.8,
+      "args": {
+        "fileName": "C:/Users/MUSAE/Documents/koloi-ride-with-confidence/node_modules/@sentry/browser/build/npm/types/index.d.ts",
+        "fileIncludeKind": "Import"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "program",
+      "ts": 59856669.699999996,
+      "name": "findSourceFile",
+      "dur": 9198008.800000004,
+      "args": {
+        "fileName": "C:/Users/MUSAE/Documents/koloi-ride-with-confidence/node_modules/vitest/dist/index.d.ts",
+        "fileIncludeKind": "Import"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "program",
+      "ts": 60578169,
+      "name": "findSourceFile",
+      "dur": 8066574.299999997,
+      "args": {
+        "fileName": "C:/Users/MUSAE/Documents/koloi-ride-with-confidence/node_modules/vitest/dist/chunks/reporters.d.BFLkQcL6.d.ts",
+        "fileIncludeKind": "Import"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "program",
+      "ts": 32571304,
+      "name": "findSourceFile",
+      "dur": 7478560.5,
+      "args": {
+        "fileName": "C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/pages/Ride.tsx",
+        "fileIncludeKind": "Import"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "program",
+      "ts": 32576836.3,
+      "name": "findSourceFile",
+      "dur": 7472838.400000002,
+      "args": {
+        "fileName": "C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/components/ride/RideView.tsx",
+        "fileIncludeKind": "Import"
+      }
+    },
+    {
+      "pid": 1,
+      "tid": 1,
+      "ph": "X",
+      "cat": "program",
+      "ts": 18542141.400000002,
+      "name": "findSourceFile",
+      "dur": 7430401.3999999985,
+      "args": {
+        "fileName": "C:/Users/MUSAE/Documents/koloi-ride-with-confidence/node_modules/@sentry/browser/build/npm/types/feedbackAsync.d.ts",
+        "fileIncludeKind": "Import"
+      }
+    }
+  ]
+}

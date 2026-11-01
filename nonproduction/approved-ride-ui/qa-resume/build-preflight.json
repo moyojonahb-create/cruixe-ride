@@ -1,0 +1,7 @@
+{
+  "availablePhysicalMiB": 544,
+  "requiredStartMiB": 3072,
+  "authority": "local build verification only; no deployment",
+  "result": "BLOCKED",
+  "reason": "Insufficient free RAM; build was not started."
+}

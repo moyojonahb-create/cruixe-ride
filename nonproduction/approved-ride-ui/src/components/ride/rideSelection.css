@@ -1,0 +1,46 @@
+/* Screen 2 only. Ride home and the existing location-entry screen keep their skins. */
+.ride-booking-sheet--selection {
+  height: min(64dvh, 640px) !important;
+  max-height: calc(100dvh - env(safe-area-inset-top) - 148px) !important;
+}
+.ride-booking-sheet--selection .ride-location-row { display: none; }
+.ride-booking-sheet--selection .ride-sheet-scroll {
+  display: flex; flex-direction: column; overflow: hidden;
+  padding: 4px 14px 0 !important;
+}
+.ride-booking-sheet--selection > div:last-child { padding-bottom: 0; }
+.ride-selection-content { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.ride-selection-header { flex-shrink: 0; padding: 4px 8px 14px; }
+.ride-selection-header h1 { margin: 0; color: #101116; font-size: 1.55rem; font-weight: 750; line-height: 1.25; letter-spacing: -.035em; }
+.ride-selection-cards-scroll { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; padding: 2px 2px 4px; scroll-padding: 4px; }
+.ride-selection-cards { display: grid; grid-auto-rows: minmax(min-content, 1fr); gap: 10px; min-height: 100%; }
+.ride-selection-card {
+  display: grid; grid-template-columns: minmax(70px, 32%) minmax(0, 1fr) 22px;
+  align-items: center; gap: 10px; min-height: 96px; padding: 10px;
+  text-align: left; border: 1.5px solid #eceef1; border-radius: 22px;
+  background: #fff; color: #111218; box-shadow: 0 3px 10px rgb(30 35 45 / 4%);
+  -webkit-tap-highlight-color: transparent;
+}
+.ride-selection-card[data-selected="true"] { border-color: #f50916; background: #fff5f5; }
+.ride-selection-card__vehicle { width: 100%; height: 78px; object-fit: contain; filter: none; }
+.ride-selection-card__body { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.ride-selection-card__heading { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 10px; }
+.ride-selection-card__title { font-size: 1.28rem; line-height: 1.2; font-weight: 750; letter-spacing: -.025em; }
+.ride-selection-card__capacity { display: inline-flex; align-items: center; gap: 5px; font-size: .95rem; color: #68717b; }
+.ride-selection-card__capacity svg { width: 19px; height: 19px; }
+.ride-selection-card__description { font-size: .85rem; line-height: 1.35; color: #68717b; overflow-wrap: break-word; }
+.ride-selection-card__radio { width: 22px; height: 22px; color: #69717c; }
+.ride-selection-card[data-selected="true"] .ride-selection-card__radio { color: #f50916; }
+.ride-selection-card:focus-visible { outline: 3px solid #222; outline-offset: -4px; }
+.ride-selection-nav-space { flex-shrink: 0; height: calc(104px + env(safe-area-inset-bottom)); }
+@media (max-width: 340px) {
+  .ride-selection-card { gap: 7px; padding: 8px; border-radius: 19px; }
+  .ride-selection-card__title { font-size: 1.16rem; }
+  .ride-selection-card__vehicle { height: 72px; }
+}
+@media (max-height: 450px) {
+  .ride-booking-sheet--selection { height: calc(100dvh - 80px) !important; max-height: calc(100dvh - 80px) !important; }
+  .ride-selection-active .ride-map-controls { flex-direction: row; }
+  .ride-selection-header { padding-bottom: 7px; }
+  .ride-selection-header h1 { font-size: 1.25rem; }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "resume-tests",
+  "command": [
+    "C:\\Users\\MUSAE\\AppData\\Local\\Temp\\cruize-p02-node22-5c590de3cb8e46d6a328181d0bbd2143\\node-v22.23.4-win-x64\\node.exe",
+    "--max-old-space-size=512",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "--config",
+    "vitest.stabilization.config.ts",
+    "src/test/NoteToDriverSheet.test.tsx",
+    "src/test/BookingConfiguration.isolated.test.tsx"
+  ],
+  "exitCode": 1,
+  "terminationReason": null,
+  "elapsedSeconds": 14.01,
+  "peakWorkingSetMB": 64.7,
+  "peakPrivateMB": 54.7,
+  "minAvailablePhysicalMB": 640,
+  "cpuSeconds": 1.562
+}

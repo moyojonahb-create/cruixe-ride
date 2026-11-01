@@ -1,4 +1,5 @@
-﻿import { useEffect, useState, type CSSProperties } from 'react';
+﻿import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { DoorOpen, Luggage, PhoneCall, Quote, Repeat, Timer, UserRound, X } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
 import RideGlassPanel from './RideGlassPanel';
@@ -83,6 +84,10 @@ const chipGlassSelected: CSSProperties = {
 export default function NoteToDriverSheet({
   open, onClose, note, onNoteChange, reuseEveryTrip, onReuseEveryTripChange, onSave,
 }: NoteToDriverSheetProps) {
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+  useLayoutEffect(() => {
+    if (open) returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  }, [open]);
   const [draft, setDraft] = useState(note);
   const [reuseDraft, setReuseDraft] = useState(reuseEveryTrip);
 
@@ -109,10 +114,11 @@ export default function NoteToDriverSheet({
   };
 
   return (
-    <>
-      <div className="fixed inset-0 z-[60]" style={{ background: 'rgba(17,17,17,.28)' }} onClick={handleClose} />
-      <div className="fixed left-0 right-0 bottom-0 z-[70]" style={{ maxWidth: 480, margin: '0 auto', width: '100%' }}>
-        <RideGlassPanel panelStyle={panelStyle} style={{ maxHeight: '90vh', paddingBottom: 'env(safe-area-inset-bottom)' }} onRibbonClick={handleClose}>
+    <DialogPrimitive.Root open={open} onOpenChange={next => { if (!next) handleClose(); }}>
+      <DialogPrimitive.Portal>
+      <DialogPrimitive.Overlay className="fixed inset-0 z-[60]" style={{ background: 'rgba(17,17,17,.28)' }} onClick={handleClose} />
+      <DialogPrimitive.Content onCloseAutoFocus={event => { event.preventDefault(); returnFocusRef.current?.focus(); }} className="fixed left-0 right-0 bottom-0 z-[70] outline-none" style={{ maxWidth: 480, margin: '0 auto', width: '100%' }}>
+        <RideGlassPanel panelStyle={panelStyle} style={{ maxHeight: '90dvh', paddingBottom: 'env(safe-area-inset-bottom)' }} onRibbonClick={handleClose}>
           <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
             <div className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
               {/* Section 1 — header */}
@@ -121,15 +127,15 @@ export default function NoteToDriverSheet({
                   <Quote style={{ width: 19, height: 19, color: RIDE_RED }} />
                 </span>
                 <div className="min-w-0" style={{ flex: 1 }}>
-                  <p style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>Note for your driver</p>
-                  <p style={{ marginTop: 3, fontSize: 12.5, fontWeight: 500, lineHeight: 1.2, color: RIDE_TEXT_2 }}>Sent with your request, before they accept</p>
+                  <DialogPrimitive.Title style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>Note for your driver</DialogPrimitive.Title>
+                  <DialogPrimitive.Description style={{ marginTop: 3, fontSize: 12.5, fontWeight: 500, lineHeight: 1.2, color: RIDE_TEXT_2 }}>Sent with your request, before they accept</DialogPrimitive.Description>
                 </div>
                 <button
                   type="button"
                   onClick={handleClose}
                   aria-label="Close"
                   className="shrink-0 flex items-center justify-center active:scale-90 transition-transform"
-                  style={{ width: 32, height: 32, borderRadius: 999, background: 'rgba(17,17,17,.06)' }}
+                  style={{ width: 44, height: 44, borderRadius: 999, background: 'rgba(17,17,17,.06)' }}
                 >
                   <X style={{ width: 16, height: 16, color: RIDE_TEXT }} strokeWidth={2.4} />
                 </button>
@@ -143,8 +149,8 @@ export default function NoteToDriverSheet({
                   placeholder="e.g. Meeting at the blue gate behind the shops"
                   rows={2}
                   maxLength={NOTE_MAX}
-                  className="w-full outline-none bg-transparent resize-none"
-                  style={{ fontSize: 14.5, fontWeight: 500, lineHeight: 1.4, color: RIDE_TEXT }}
+                  className="w-full focus-visible:outline focus-visible:outline-2 bg-transparent resize-none"
+                  style={{ fontSize: 16, fontWeight: 500, lineHeight: 1.4, color: RIDE_TEXT }}
                 />
                 <div className="flex items-center justify-between">
                   <span style={{ fontSize: 11, fontWeight: 500, color: '#9AA1AD' }}>Keep it short — drivers read this while driving</span>
@@ -163,8 +169,9 @@ export default function NoteToDriverSheet({
                         key={label}
                         type="button"
                         onClick={() => handleChipToggle(label)}
+                        aria-pressed={selected}
                         className="flex items-center active:scale-[0.96] transition-transform"
-                        style={{ height: 34, padding: '0 12px', borderRadius: 999, gap: 5, ...(selected ? chipGlassSelected : chipGlass) }}
+                        style={{ minHeight: 44, padding: '0 12px', borderRadius: 999, gap: 5, ...(selected ? chipGlassSelected : chipGlass) }}
                       >
                         <Icon style={{ width: 13, height: 13, color: selected ? RIDE_TEXT : RIDE_TEXT_2 }} />
                         <span style={{ fontSize: 12.5, fontWeight: selected ? 700 : 600, color: RIDE_TEXT }}>{label}</span>
@@ -178,6 +185,7 @@ export default function NoteToDriverSheet({
               <button
                 type="button"
                 onClick={() => setReuseDraft((v) => !v)}
+                aria-pressed={reuseDraft}
                 className="flex items-center w-full text-left active:scale-[0.98] transition-transform"
                 style={{ height: 44, padding: '0 14px', borderRadius: 15, gap: 10, ...chipGlass }}
               >
@@ -224,7 +232,8 @@ export default function NoteToDriverSheet({
             </div>
           </div>
         </RideGlassPanel>
-      </div>
-    </>
+      </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
   );
 }

@@ -1,0 +1,81 @@
+# Review only; starts nothing until an approved operator invokes lab.sh up.
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE:?reviewed digest required}
+    network_mode: none
+    cpus: 0.50
+    mem_limit: 512m
+    pids_limit: 96
+    shm_size: 64m
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/admin_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    command: [postgres, -c, listen_addresses=127.0.0.1, -c, shared_buffers=32MB, -c, max_connections=12, -c, max_wal_size=128MB]
+    tmpfs: ['/var/lib/postgresql/data:rw,size=268435456']
+    volumes:
+      - ./bootstrap-postgres.sh:/docker-entrypoint-initdb.d/010-p03.sh:ro
+    secrets: [admin_password, test_password, run_token]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -h 127.0.0.1 -U postgres -d cruize_p03_test']
+      interval: 2s
+      timeout: 2s
+      retries: 30
+    labels: &labels
+      cruize.purpose: p03-disposable
+      cruize.run: ${RUN_ID:?run ID required}
+    logging: &logging
+      driver: json-file
+      options: {max-size: 5m, max-file: '2'}
+  redis:
+    image: ${REDIS_IMAGE:?reviewed digest required}
+    network_mode: service:postgres
+    user: '65534:65534'
+    cpus: 0.25
+    mem_limit: 96m
+    pids_limit: 32
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs: ['/data:rw,mode=1777,size=16777216']
+    entrypoint: [/bin/sh, /lab/bootstrap-redis.sh]
+    volumes:
+      - ./bootstrap-redis.sh:/lab/bootstrap-redis.sh:ro
+      - ${STATE_DIR:?state directory required}/redis.acl:/lab/redis.acl:ro
+    secrets: [redis_password, run_token]
+    depends_on:
+      postgres: {condition: service_healthy}
+    healthcheck:
+      test: [CMD-SHELL, 'REDISCLI_AUTH=$$(cat /run/secrets/redis_password) redis-cli --no-auth-warning -h 127.0.0.1 ping | grep -qx PONG']
+      interval: 2s
+      timeout: 2s
+      retries: 30
+    labels: *labels
+    logging: *logging
+  runner:
+    profiles: [tests]
+    image: ${RUNNER_IMAGE:?built local runner required}
+    network_mode: service:postgres
+    user: '65534:65534'
+    cpus: 1.25
+    mem_limit: 2g
+    pids_limit: 128
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs: ['/tmp:rw,mode=1777,size=134217728']
+    environment: {HOME: /tmp, GOMAXPROCS: '2'}
+    entrypoint: [/bin/sh, /opt/runner.sh]
+    command: [all]
+    secrets: [test_password, redis_password, run_token]
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    labels: *labels
+    logging: *logging
+secrets:
+  admin_password: {file: '${STATE_DIR}/admin_password'}
+  test_password: {file: '${STATE_DIR}/test_password'}
+  redis_password: {file: '${STATE_DIR}/redis_password'}
+  run_token: {file: '${STATE_DIR}/run_token'}

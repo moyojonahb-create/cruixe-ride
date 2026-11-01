@@ -1,0 +1,12 @@
+{
+  "authority": "MOCKED/ISOLATED UI ONLY",
+  "cases": [],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "blockedRequests": [],
+  "forbiddenWrites": [],
+  "checks": [],
+  "failure": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:8083/ride?view=choose\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:8083/ride?view=choose\", waiting until \"domcontentloaded\"\u001b[22m\n",
+  "pass": false
+}

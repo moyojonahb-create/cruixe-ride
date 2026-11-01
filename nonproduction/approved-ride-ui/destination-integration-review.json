@@ -1,0 +1,22 @@
+{
+  "changed": [
+    "src/components/BottomNavBar.tsx",
+    "src/components/riderNavigation.css",
+    "src/lib/riderNavigation.ts",
+    "src/components/ride/DestinationSearchScreen.tsx",
+    "src/components/ride/destinationScreen.css",
+    "src/components/ride/RideView.tsx",
+    "src/hooks/useAppBootstrap.tsx",
+    "src/hooks/useLandmarks.ts",
+    "src/hooks/useStreets.ts",
+    "src/lib/placeCache.ts",
+    "src/test/RiderNavigation.test.tsx",
+    "src/test/DestinationSearchScreen.test.tsx",
+    "src/test/DestinationSearchPipeline.test.tsx"
+  ],
+  "conflicts": [
+    "src/components/ride/DestinationSearchScreen.tsx changed since baseline",
+    "src/components/ride/destinationScreen.css changed since baseline"
+  ],
+  "complete_patch": false
+}

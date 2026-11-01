@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo } from 'react';
+import { useId, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft, Briefcase, Clock, Crosshair, Home, Loader2, Map as MapIcon, MapPin, X,
@@ -99,52 +99,71 @@ export default function DestinationSearchScreen({
   ];
 
   const searching = query.trim().length >= 3;
+  const fieldId = useId();
+  const activeInputRef = useRef<HTMLInputElement>(null);
 
   const fieldRow = (field: 'pickup' | 'dropoff') => {
     const isActive = activeField === field;
     const value = field === 'pickup' ? pickupName : dropoffName;
+    const label = field === 'pickup' ? 'Pickup' : 'Destination';
     const placeholder = field === 'pickup' ? 'Search pickup' : 'Search destination';
+    const inputId = `${fieldId}-${field}`;
 
     return (
-      <button
-        type="button"
-        onClick={() => !isActive && onActiveFieldChange(field)}
+      <div
         className={cn(
           'w-full flex items-center gap-3 px-3.5 py-3 text-left',
           field === 'pickup' && 'border-b border-border/60'
         )}
       >
         {field === 'pickup' ? (
-          <span className="w-2.5 h-2.5 rounded-full bg-accent ring-[3px] ring-accent/20 shrink-0" />
+          <span aria-hidden="true" className="w-2.5 h-2.5 rounded-full bg-accent ring-[3px] ring-accent/20 shrink-0" />
         ) : (
-          <span className="w-2.5 h-2.5 rounded-[3px] bg-primary ring-[3px] ring-primary/15 shrink-0" />
+          <span aria-hidden="true" className="w-2.5 h-2.5 rounded-[3px] bg-primary ring-[3px] ring-primary/15 shrink-0" />
         )}
-        <div className="flex-1 min-w-0">
-          {isActive ? (
+        {isActive ? (
+          <div className="flex-1 min-w-0">
+            <label htmlFor={inputId} className="block text-xs font-medium text-muted-foreground">
+              {label}
+            </label>
             <input
+              id={inputId}
+              ref={activeInputRef}
               autoFocus
               value={query}
               onChange={(e) => onQueryChange(e.target.value)}
               placeholder={value || placeholder}
-              className="w-full bg-transparent text-[15px] font-medium text-foreground placeholder:text-muted-foreground focus:outline-none"
+              className="w-full rounded-sm bg-transparent text-[15px] font-medium text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
             />
-          ) : (
-            <p className={cn('text-[15px] font-medium truncate', value ? 'text-foreground' : 'text-muted-foreground')}>
-              {value || placeholder}
-            </p>
-          )}
-        </div>
-        {isActive && query.length > 0 && (
-          <span
-            role="button"
-            tabIndex={0}
-            onClick={(e) => { e.stopPropagation(); onQueryChange(''); }}
-            className="p-1 rounded-full hover:bg-foreground/5"
+          </div>
+        ) : (
+          <button
+            type="button"
+            aria-label={`Edit ${label.toLowerCase()}`}
+            aria-describedby={`${inputId}-value`}
+            onClick={() => onActiveFieldChange(field)}
+            className="flex-1 min-w-0 min-h-11 rounded-sm text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
           >
-            <X className="w-3.5 h-3.5 text-muted-foreground" />
-          </span>
+            <span className="block text-xs font-medium text-muted-foreground">{label}</span>
+            <span id={`${inputId}-value`} className={cn('block text-[15px] font-medium truncate', value ? 'text-foreground' : 'text-muted-foreground')}>
+              {value || placeholder}
+            </span>
+          </button>
         )}
-      </button>
+        {isActive && query.length > 0 && (
+          <button
+            type="button"
+            aria-label={`Clear ${label.toLowerCase()}`}
+            onClick={() => {
+              onQueryChange('');
+              activeInputRef.current?.focus();
+            }}
+            className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full hover:bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+          >
+            <X aria-hidden="true" className="w-3.5 h-3.5 text-muted-foreground" />
+          </button>
+        )}
+      </div>
     );
   };
 

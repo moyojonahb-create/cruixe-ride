@@ -1,0 +1,140 @@
+[
+  {
+    "path": "src/components/Footer.tsx",
+    "line": 112,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/components/Footer.tsx",
+    "line": 113,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/components/UserMenu.tsx",
+    "line": 30,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/components/admin/AdminGuard.tsx",
+    "line": 9,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/components/driver/DriverPersonalForm.tsx",
+    "line": 77,
+    "kind": "email",
+    "classification": "fixture_or_placeholder"
+  },
+  {
+    "path": "src/components/ride/TripReceiptButton.tsx",
+    "line": 87,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/data/gwanda-osm-places.json",
+    "line": 845,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/hooks/useAppBootstrap.tsx",
+    "line": 14,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/lib/constants.ts",
+    "line": 4,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/main.tsx",
+    "line": 18,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/pages/Auth.tsx",
+    "line": 275,
+    "kind": "email",
+    "classification": "fixture_or_placeholder"
+  },
+  {
+    "path": "src/pages/Auth.tsx",
+    "line": 369,
+    "kind": "email",
+    "classification": "fixture_or_placeholder"
+  },
+  {
+    "path": "src/pages/DeleteAccount.tsx",
+    "line": 35,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/pages/PrivacyPolicy.tsx",
+    "line": 47,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/pages/PrivacyPolicy.tsx",
+    "line": 47,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/pages/PrivacyPolicy.tsx",
+    "line": 53,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/pages/PrivacyPolicy.tsx",
+    "line": 53,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/pages/RiderProfile.tsx",
+    "line": 157,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/pages/Signup.tsx",
+    "line": 399,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/pages/TermsOfService.tsx",
+    "line": 62,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/pages/TermsOfService.tsx",
+    "line": 62,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/pages/driver/DriverProfile.tsx",
+    "line": 477,
+    "kind": "email",
+    "classification": "REVIEW"
+  },
+  {
+    "path": "src/test/apiCalls.test.ts",
+    "line": 27,
+    "kind": "embedded_credential_assignment",
+    "classification": "REVIEW"
+  }
+]

@@ -20,6 +20,7 @@ import TransactionsSheet from '@/components/wallet/TransactionsSheet';
 import TransferMoneyModal from '@/components/wallet/TransferMoneyModal';
 import WithdrawalModal from '@/components/wallet/WithdrawalModal';
 import WalletCard from '@/components/wallet/WalletCard';
+import MoneyAmount from '@/components/wallet/MoneyAmount';
 import { format, formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -366,7 +367,7 @@ export default function RiderWalletPage() {
                       </p>
                     </div>
                     <span className={`text-[14px] font-extrabold ${isPositive ? 'text-emerald-600' : 'text-foreground'}`}>
-                      {isPositive ? '+' : '-'}${Math.abs(Number(tx.amount)).toFixed(2)}
+                      <MoneyAmount amount={tx.amount} currency={'currency' in tx && typeof tx.currency === 'string' ? tx.currency : undefined} />
                     </span>
                   </div>
                 );

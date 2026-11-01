@@ -1,0 +1,822 @@
+{
+  "mode": "landscape-fixed",
+  "scope": "LABELLED MOCKED FIXTURE ONLY; no real integration certification",
+  "browser": "Microsoft Edge",
+  "cases": [
+    {
+      "name": "812x375",
+      "states": [
+        {
+          "state": "home",
+          "viewport": {
+            "width": 812,
+            "height": 375
+          },
+          "horizontalOverflow": false,
+          "buttons": [
+            {
+              "label": "Menu",
+              "selector": "ride-map-control absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 20,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 70,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Notifications",
+              "selector": "relative flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 742,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 792,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use my location",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 742,
+                "y": 76,
+                "width": 50,
+                "height": 50,
+                "right": 792,
+                "bottom": 126
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Toggle sheet",
+              "selector": "absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity",
+              "bounds": {
+                "x": 374,
+                "y": 123,
+                "width": 64,
+                "height": 44,
+                "right": 438,
+                "bottom": 167
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "selector": "ride-town-pill inline-flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform",
+              "bounds": {
+                "x": 160,
+                "y": 159,
+                "width": 120.46875,
+                "height": 44,
+                "right": 280.46875,
+                "bottom": 203
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Where to? Search destination",
+              "selector": "ride-destination-card flex-1 min-w-0 flex items-center gap-1 rounded-2xl active:scale-[0.98] transition-transform text-left",
+              "bounds": {
+                "x": 160,
+                "y": 211,
+                "width": 326,
+                "height": 80,
+                "right": 486,
+                "bottom": 291
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Set Home address",
+              "selector": "ride-shortcut ride-shortcut--home shrink-0 flex flex-col items-center justify-center gap-1 rounded-2xl active:scale-95 transition-transform disabled:opacity-60",
+              "bounds": {
+                "x": 494,
+                "y": 211,
+                "width": 75,
+                "height": 80,
+                "right": 569,
+                "bottom": 291
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Set Work address",
+              "selector": "ride-shortcut ride-shortcut--work shrink-0 flex flex-col items-center justify-center gap-1 rounded-2xl active:scale-95 transition-transform disabled:opacity-60",
+              "bounds": {
+                "x": 577,
+                "y": 211,
+                "width": 75,
+                "height": 80,
+                "right": 652,
+                "bottom": 291
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Schedule a ride",
+              "selector": "ride-schedule flex-1 flex items-center justify-center gap-1.5 active:scale-95 transition-transform",
+              "bounds": {
+                "x": 160,
+                "y": 299,
+                "width": 240,
+                "height": 58,
+                "right": 400,
+                "bottom": 357
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Let's CruiXe",
+              "selector": "ride-start relative flex-1 flex items-center justify-center gap-2 overflow-hidden active:scale-[0.97] transition-transform",
+              "bounds": {
+                "x": 412,
+                "y": 299,
+                "width": 240,
+                "height": 58,
+                "right": 652,
+                "bottom": 357
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            }
+          ],
+          "primary": [
+            {
+              "label": "Where to? Search destination",
+              "bounds": {
+                "x": 160,
+                "y": 211,
+                "width": 326,
+                "height": 80,
+                "right": 486,
+                "bottom": 291
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            },
+            {
+              "label": "Set Home address",
+              "bounds": {
+                "x": 494,
+                "y": 211,
+                "width": 75,
+                "height": 80,
+                "right": 569,
+                "bottom": 291
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            },
+            {
+              "label": "Set Work address",
+              "bounds": {
+                "x": 577,
+                "y": 211,
+                "width": 75,
+                "height": 80,
+                "right": 652,
+                "bottom": 291
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            },
+            {
+              "label": "Schedule a ride",
+              "bounds": {
+                "x": 160,
+                "y": 299,
+                "width": 240,
+                "height": 58,
+                "right": 400,
+                "bottom": 357
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            },
+            {
+              "label": "Let's CruiXe",
+              "bounds": {
+                "x": 412,
+                "y": 299,
+                "width": 240,
+                "height": 58,
+                "right": 652,
+                "bottom": 357
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            }
+          ],
+          "ribbon": [
+            "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+            "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+          ],
+          "navCount": 0,
+          "navRect": null,
+          "rootFont": "16px",
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "state": "choose",
+          "viewport": {
+            "width": 812,
+            "height": 375
+          },
+          "horizontalOverflow": false,
+          "buttons": [
+            {
+              "label": "Back to ride home",
+              "selector": "ride-map-control absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 20,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 70,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Notifications",
+              "selector": "relative flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 684,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 734,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use my location",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 742,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 792,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Toggle sheet",
+              "selector": "absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity",
+              "bounds": {
+                "x": 374,
+                "y": 73,
+                "width": 64,
+                "height": 44,
+                "right": 438,
+                "bottom": 117
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Choose Economy",
+              "selector": "ride-selection-card",
+              "bounds": {
+                "x": 162,
+                "y": 151,
+                "width": 488,
+                "height": 100,
+                "right": 650,
+                "bottom": 251
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Choose Shared",
+              "selector": "ride-selection-card",
+              "bounds": {
+                "x": 162,
+                "y": 261,
+                "width": 488,
+                "height": 100,
+                "right": 650,
+                "bottom": 361
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Choose Parcel",
+              "selector": "ride-selection-card",
+              "bounds": {
+                "x": 162,
+                "y": 371,
+                "width": 488,
+                "height": 100,
+                "right": 650,
+                "bottom": 471
+              },
+              "withinViewport": false,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Home",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 160,
+                "y": 285,
+                "width": 98.390625,
+                "height": 76,
+                "right": 258.390625,
+                "bottom": 361
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Activity",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 258.390625,
+                "y": 285,
+                "width": 98.40625,
+                "height": 76,
+                "right": 356.796875,
+                "bottom": 361
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Ride",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 356.796875,
+                "y": 285,
+                "width": 98.390625,
+                "height": 76,
+                "right": 455.1875,
+                "bottom": 361
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Wallet",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 455.1875,
+                "y": 285,
+                "width": 98.40625,
+                "height": 76,
+                "right": 553.59375,
+                "bottom": 361
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Account",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 553.59375,
+                "y": 285,
+                "width": 98.40625,
+                "height": 76,
+                "right": 652,
+                "bottom": 361
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            }
+          ],
+          "primary": [],
+          "ribbon": [
+            "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+            "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+          ],
+          "navCount": 5,
+          "navRect": {
+            "x": 160,
+            "y": 285,
+            "width": 492,
+            "height": 76,
+            "right": 652,
+            "bottom": 361
+          },
+          "rootFont": "16px",
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "state": "destination",
+          "viewport": {
+            "width": 812,
+            "height": 375
+          },
+          "horizontalOverflow": false,
+          "buttons": [
+            {
+              "label": "Back",
+              "selector": "ride-map-control absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 20,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 70,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Menu",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 742,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 792,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Notifications",
+              "selector": "relative flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 742,
+                "y": 76,
+                "width": 50,
+                "height": 50,
+                "right": 792,
+                "bottom": 126
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use my location",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 742,
+                "y": 134,
+                "width": 50,
+                "height": 50,
+                "right": 792,
+                "bottom": 184
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Recenter navigation",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 742,
+                "y": 192,
+                "width": 50,
+                "height": 50,
+                "right": 792,
+                "bottom": 242
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Toggle sheet",
+              "selector": "absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity",
+              "bounds": {
+                "x": 374,
+                "y": 221,
+                "width": 64,
+                "height": 44,
+                "right": 438,
+                "bottom": 265
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "selector": "ride-town-pill inline-flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform",
+              "bounds": {
+                "x": 160,
+                "y": 257,
+                "width": 120.46875,
+                "height": 44,
+                "right": 280.46875,
+                "bottom": 301
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Find Drivers",
+              "selector": "w-full flex items-center justify-center",
+              "bounds": {
+                "x": 162,
+                "y": 319,
+                "width": 488,
+                "height": 48,
+                "right": 650,
+                "bottom": 367
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Back",
+              "selector": "w-9 h-9 -ml-1 rounded-full flex items-center justify-center active:scale-90 transition-transform",
+              "bounds": {
+                "x": 12,
+                "y": 12,
+                "width": 44,
+                "height": 44,
+                "right": 56,
+                "bottom": 56
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Edit pickup",
+              "selector": "flex-1 min-w-0 min-h-11 rounded-sm text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card",
+              "bounds": {
+                "x": 71,
+                "y": 89.5,
+                "width": 577,
+                "height": 44,
+                "right": 648,
+                "bottom": 133.5
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use current location",
+              "selector": "destination-gps",
+              "bounds": {
+                "x": 660,
+                "y": 88,
+                "width": 110,
+                "height": 47,
+                "right": 770,
+                "bottom": 135
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Search destination",
+              "selector": "destination-search-text",
+              "bounds": {
+                "x": 108,
+                "y": 177,
+                "width": 609,
+                "height": 46,
+                "right": 717,
+                "bottom": 223
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": "16px"
+            },
+            {
+              "label": "Clear destination",
+              "selector": "destination-search-clear",
+              "bounds": {
+                "x": 725,
+                "y": 178,
+                "width": 44,
+                "height": 44,
+                "right": 769,
+                "bottom": 222
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Fixture destinationISOLATED test data",
+              "selector": "destination-option destination-option--lm-fixture-place-1 w-full flex items-center gap-3.5 px-4 py-3 text-left",
+              "bounds": {
+                "x": 14,
+                "y": 353,
+                "width": 784,
+                "height": 72,
+                "right": 798,
+                "bottom": 425
+              },
+              "withinViewport": false,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Fixture destination 2ISOLATED test data",
+              "selector": "destination-option destination-option--lm-fixture-place-2 w-full flex items-center gap-3.5 px-4 py-3 text-left",
+              "bounds": {
+                "x": 14,
+                "y": 433,
+                "width": 784,
+                "height": 72,
+                "right": 798,
+                "bottom": 505
+              },
+              "withinViewport": false,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Fixture destination 3ISOLATED test data",
+              "selector": "destination-option destination-option--lm-fixture-place-3 w-full flex items-center gap-3.5 px-4 py-3 text-left",
+              "bounds": {
+                "x": 14,
+                "y": 513,
+                "width": 784,
+                "height": 72,
+                "right": 798,
+                "bottom": 585
+              },
+              "withinViewport": false,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Home",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 160,
+                "y": 285,
+                "width": 98.390625,
+                "height": 76,
+                "right": 258.390625,
+                "bottom": 361
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Activity",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 258.390625,
+                "y": 285,
+                "width": 98.40625,
+                "height": 76,
+                "right": 356.796875,
+                "bottom": 361
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Ride",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 356.796875,
+                "y": 285,
+                "width": 98.390625,
+                "height": 76,
+                "right": 455.1875,
+                "bottom": 361
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Wallet",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 455.1875,
+                "y": 285,
+                "width": 98.40625,
+                "height": 76,
+                "right": 553.59375,
+                "bottom": 361
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Account",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 553.59375,
+                "y": 285,
+                "width": 98.40625,
+                "height": 76,
+                "right": 652,
+                "bottom": 361
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            }
+          ],
+          "primary": [],
+          "ribbon": [
+            "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+            "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+          ],
+          "navCount": 5,
+          "navRect": {
+            "x": 160,
+            "y": 285,
+            "width": 492,
+            "height": 76,
+            "right": 652,
+            "bottom": 361
+          },
+          "rootFont": "16px",
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        }
+      ],
+      "checks": [],
+      "failure": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Fixture destination ISOLATED test data', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" class=\"destination-option destination-option--lm-fixture-place-1 w-full flex items-center gap-3.5 px-4 py-3 text-left\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <span aria-hidden=\"true\" class=\"rider-navigation__label\">Ride</span> from <nav data-active-tab=\"ride\" class=\"rider-navigation\" data-location-stage=\"true\" aria-label=\"Rider navigation\">…</nav> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <span aria-hidden=\"true\" class=\"rider-navigation__label\">Ride</span> from <nav data-active-tab=\"ride\" class=\"rider-navigation\" data-location-stage=\"true\" aria-label=\"Rider navigation\">…</nav> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    36 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <span aria-hidden=\"true\" class=\"rider-navigation__label\">Ride</span> from <nav data-active-tab=\"ride\" class=\"rider-navigation\" data-location-stage=\"true\" aria-label=\"Rider navigation\">…</nav> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "blocked": []
+}

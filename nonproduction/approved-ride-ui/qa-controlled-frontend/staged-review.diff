@@ -1,0 +1,13 @@
+diff --git a/index.html b/index.html
+index ad5ebf20..0e7116af 100644
+--- a/index.html
++++ b/index.html
+@@ -2,7 +2,7 @@
+ <html lang="en">
+   <head>
+     <meta charset="UTF-8" />
+-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
++    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+     <title>CruiXe - Your ride, your way.</title>
+     <meta name="description" content="CruiXe is Zimbabwe&#39;s premier ride-hailing service. Request a ride anywhere in Zimbabwe.">
+     <meta name="author" content="CruiXe Technologies" />

@@ -1,0 +1,112 @@
+{
+  "date": "2026-11-01",
+  "timezone": "Africa/Johannesburg",
+  "scope": "Initial real-app source audit plus small responsive corrections; all browser proof is labelled isolated fixture only",
+  "frontendIntegration": "NO-GO",
+  "productionRelease": "NO-GO",
+  "gates": {
+    "sourceAudit": {
+      "status": "PASS"
+    },
+    "responsiveEdgeMatrix": {
+      "status": "PASS",
+      "node": "v22.23.4",
+      "viewports": 9,
+      "states": 36,
+      "screenshots": 37
+    },
+    "axe": {
+      "status": "PASS",
+      "scans": 36,
+      "violations": 0
+    },
+    "manualAccessibility": {
+      "status": "NOT VERIFIED",
+      "incompleteRules": [
+        "aria-prohibited-attr",
+        "color-contrast"
+      ]
+    },
+    "sourceStaticChecks": {
+      "status": "PASS",
+      "evidence": "static-verification.json"
+    },
+    "currentTypeScript": {
+      "status": "BLOCKED",
+      "reason": "Low RAM; no newly approved remote publication"
+    },
+    "currentVitest": {
+      "status": "BLOCKED",
+      "reason": "Low RAM; historical 58-test result preserved separately"
+    },
+    "currentESLint": {
+      "status": "NOT VERIFIED",
+      "reason": "CSS/HTML changes checked by parser/byte assertions; no fresh app lint run"
+    },
+    "currentProductionBuild": {
+      "status": "BLOCKED",
+      "freePhysicalMiB": 758.3125,
+      "requiredStartMiB": 3072
+    },
+    "realMap": {
+      "status": "NOT VERIFIED"
+    },
+    "realBookingLifecycle": {
+      "status": "BLOCKED",
+      "reason": "No approved staging/identities"
+    },
+    "authoritativeBookingBoundary": {
+      "status": "FAIL",
+      "reason": "Direct database fallback and offline synthetic success path remain"
+    },
+    "verifiedRouteAndQuote": {
+      "status": "FAIL",
+      "reason": "Client pricing/defaults and unverified routing estimates remain"
+    },
+    "nativeAndroid": {
+      "status": "BLOCKED"
+    },
+    "nativeIOS": {
+      "status": "BLOCKED"
+    },
+    "originalIndexBranchAndHEAD": {
+      "status": "PASS"
+    },
+    "approvedCIThreeFilePayload": {
+      "status": "PASS",
+      "scope": "Unchanged; does not contain current edits"
+    },
+    "commitsPushesDeploymentsThisTask": {
+      "status": "PASS",
+      "scope": "None performed"
+    }
+  },
+  "sourceFiles": [
+    {
+      "path": "index.html",
+      "beforeSHA256": "251f827c5c6b251f70df56e18a47843b38b214ef72e691070482a94edd1f08fe",
+      "afterSHA256": "a15ea933089f9d2b165b7ba78b7bfbaf6b292da8c8ef58ac0da3e27f013dfad9"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/index.html",
+      "beforeSHA256": "251f827c5c6b251f70df56e18a47843b38b214ef72e691070482a94edd1f08fe",
+      "afterSHA256": "a15ea933089f9d2b165b7ba78b7bfbaf6b292da8c8ef58ac0da3e27f013dfad9"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/approvedRide.css",
+      "beforeSHA256": "dfa71d3bb01c0d2adaecc90ca257adb3104a643c69263d03f4b4106621839576",
+      "afterSHA256": "8b000aad8e442c3b0f8bf01d5e26bc36221374509a7fcd16560d386e6a4b08fc"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/destinationScreen.css",
+      "beforeSHA256": "01eb1367bc44c622da253af0284014a03a22f0e3e0ae6f367f2eebf4df392cda",
+      "afterSHA256": "3d13af94181d7eb77bfaee1254ff2f139a625fa9bcb2e4140d8144d45af153bd"
+    }
+  ],
+  "notes": [
+    "Browser history/intermediate attempts preserved; only after/results.json is current final layout evidence",
+    "A duplicate diagnostic process was stopped before completing; no user process was terminated",
+    "Unrelated renamed dependency cache corruption from earlier task was not accessed or repaired",
+    "No current source is claimed to have passed historical TypeScript/Vitest/ESLint gates"
+  ]
+}

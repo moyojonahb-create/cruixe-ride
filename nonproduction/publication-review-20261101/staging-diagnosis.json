@@ -1,0 +1,9 @@
+{
+  "repository": "C:\\Users\\MUSAE\\AppData\\Local\\Temp\\cruixe-all-changes-20261101-9vvgvtbn",
+  "actualCount": 1975,
+  "expectedCount": 1976,
+  "missing": [
+    "public/brand/cruixe-car-search.png"
+  ],
+  "extra": []
+}

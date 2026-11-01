@@ -1,0 +1,34 @@
+[
+  {
+    "name": "cd.yml",
+    "path": ".github/workflows/cd.yml",
+    "sha": "390eff3e17cd8b9127782724f59b040c5cf9db0e",
+    "size": 2510,
+    "url": "https://api.github.com/repos/moyojonahb-create/cruixe-ride/contents/.github/workflows/cd.yml?ref=1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8",
+    "html_url": "https://github.com/moyojonahb-create/cruixe-ride/blob/1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8/.github/workflows/cd.yml",
+    "git_url": "https://api.github.com/repos/moyojonahb-create/cruixe-ride/git/blobs/390eff3e17cd8b9127782724f59b040c5cf9db0e",
+    "download_url": "https://raw.githubusercontent.com/moyojonahb-create/cruixe-ride/1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8/.github/workflows/cd.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/moyojonahb-create/cruixe-ride/contents/.github/workflows/cd.yml?ref=1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8",
+      "git": "https://api.github.com/repos/moyojonahb-create/cruixe-ride/git/blobs/390eff3e17cd8b9127782724f59b040c5cf9db0e",
+      "html": "https://github.com/moyojonahb-create/cruixe-ride/blob/1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8/.github/workflows/cd.yml"
+    }
+  },
+  {
+    "name": "ci.yml",
+    "path": ".github/workflows/ci.yml",
+    "sha": "75d8b3adbd347ebfef5a3982c6b982b944aa90ac",
+    "size": 2549,
+    "url": "https://api.github.com/repos/moyojonahb-create/cruixe-ride/contents/.github/workflows/ci.yml?ref=1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8",
+    "html_url": "https://github.com/moyojonahb-create/cruixe-ride/blob/1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8/.github/workflows/ci.yml",
+    "git_url": "https://api.github.com/repos/moyojonahb-create/cruixe-ride/git/blobs/75d8b3adbd347ebfef5a3982c6b982b944aa90ac",
+    "download_url": "https://raw.githubusercontent.com/moyojonahb-create/cruixe-ride/1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8/.github/workflows/ci.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/moyojonahb-create/cruixe-ride/contents/.github/workflows/ci.yml?ref=1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8",
+      "git": "https://api.github.com/repos/moyojonahb-create/cruixe-ride/git/blobs/75d8b3adbd347ebfef5a3982c6b982b944aa90ac",
+      "html": "https://github.com/moyojonahb-create/cruixe-ride/blob/1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8/.github/workflows/ci.yml"
+    }
+  }
+]

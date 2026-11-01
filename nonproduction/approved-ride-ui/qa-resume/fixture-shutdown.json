@@ -1,0 +1,7 @@
+﻿{
+    "stoppedFixtureServerPids":  [
+                                     5628
+                                 ],
+    "status":  "PASS",
+    "scope":  "Only this task loopback Vite fixture and its esbuild child"
+}

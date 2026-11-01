@@ -241,3 +241,53 @@ corrupt ledger — there is no financial state to reconcile before building it.
 
 Also flagged, not acted on: `ride_offers` has 0 rows while `offers` has 21. One
 of the two is likely dead.
+
+### `notifications` is the delivery log — and the write belongs to a sender that does not exist yet
+
+`notifications` is reachable (Go `insertOne`, `business/handler.go:276`) and
+correctly shaped for delivery records. **Do not wire the client to write it.**
+
+A client that logs its own received pushes only ever logs pushes that arrived on
+a device awake enough to receive them — precisely the population that does not
+need auditing. The failures worth recording (token expired, device asleep, FCM
+dropped it) leave no client running to write the row.
+
+Delivery logging belongs to the **sender**: it writes the row when it sends and
+updates it on receipt confirmation. **There is no Go push sender yet**, so there
+is nothing to wire, and inventing one is out of scope.
+
+Two halves of the same missing piece, to be built together:
+
+- **No push sender.** Nothing in the backend sends an FCM message on a ride
+  offer. `registerForPush()` in `src/lib/notifications.ts` obtains a token and
+  hands it to `onToken`, but nothing consumes it.
+- **No token storage.** There is no column or table holding a device's FCM
+  token, so even a finished sender would not know where to send.
+
+**S8 evidence therefore comes from outside the app** — the Firebase console's
+delivery report plus `adb logcat` on the receiving device. That is what you want
+when the app is the thing under test.
+
+### Superseded schema — empty by design, not by failure
+
+Two pairs where one side is dead. Recorded so a future reader does not mistake
+either for a live table and "fix" the wrong one:
+
+| Table | Rows | Status |
+|---|---|---|
+| `driver_queue` | 0 | **No writer anywhere** — client, Go and triggers all checked. Mentioned only in its own migrations |
+| `driver_offline_actions` | 0 | **No writer anywhere** — mentioned only in the migration that created it |
+| `ride_offers` | 0 | Superseded by `offers` (21 rows) |
+| `offers` | 21 | The live table |
+
+Not to be fixed. To be deleted or documented as part of a schema tidy-up, which
+is its own decision.
+
+**Method note, because it changes what a verdict is worth:** an earlier sweep of
+`driver_sessions` concluded "the only writer is the client's
+`createFatigueBreak`". That was a **client-only sweep**, and a Go writer existed
+at `business/handler.go:745`. The conclusion survived — that endpoint *is* the
+server side of the same call, so the circular gating is real — but the method
+would have produced a confident false negative on any table written only by the
+backend. **"No writer" must mean client, backend and triggers all checked**, and
+the verdicts above were reached to that standard.

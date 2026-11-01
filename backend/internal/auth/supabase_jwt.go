@@ -39,6 +39,7 @@ type SupabaseJWT struct {
 }
 
 type Claims struct {
+	SessionID string `json:"session_id"`
 	Subject   string `json:"sub"`
 	Role      string `json:"role"`
 	Email     string `json:"email"`

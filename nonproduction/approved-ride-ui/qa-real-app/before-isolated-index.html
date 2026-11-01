@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>CruiXe - Your ride, your way.</title>
+    <meta name="description" content="CruiXe is Zimbabwe&#39;s premier ride-hailing service. Request a ride anywhere in Zimbabwe.">
+    <meta name="author" content="CruiXe Technologies" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#B81104" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#7F0B02" media="(prefers-color-scheme: dark)" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="CruiXe" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="CruiXe" />
+    <meta name="msapplication-TileColor" content="#B81104" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Favicon and Icons -->
+    <link rel="apple-touch-icon" href="/icons/cruixe-icon-1024.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/cruixe-icon-1024.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/cruixe-icon-1024.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/icons/cruixe-icon-1024.png" />
+
+    <!-- iOS Splash / Launch Images -->
+    <link rel="apple-touch-startup-image" href="/icons/cruixe-splash.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/icons/cruixe-splash.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/icons/cruixe-splash.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/icons/cruixe-splash.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/icons/cruixe-splash.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/icons/cruixe-splash.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
+
+    <!-- Open Graph / Social -->
+    
+    
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@pickmeapp" />
+
+    <!-- Leaflet CSS for OpenStreetMap (non-blocking) -->
+    <!-- Leaflet CSS is bundled with the admin / OSM map components that use it,
+         so it is no longer fetched from unpkg on every page load. -->
+
+    <!-- Fonts: preconnect + non-blocking stylesheet (was a render-blocking
+         @import inside index.css, which serialized three round trips). -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" /></noscript>
+
+    <!-- DNS prefetch for external services -->
+    <link rel="dns-prefetch" href="https://maps.googleapis.com" />
+    <link rel="dns-prefetch" href="https://foksbnjtzubsjpeoorvo.supabase.co" />
+    <link rel="preconnect" href="https://maps.googleapis.com" crossorigin="" />
+    <link rel="preconnect" href="https://foksbnjtzubsjpeoorvo.supabase.co" crossorigin="" />
+
+    <!-- Safe area insets for notch devices -->
+    <link rel="stylesheet" href="/src/safe-area.css" />
+    
+  
+  
+  
+  <meta property="og:image" content="https://cruixe-ride.lovable.app/brand/cruixe-og-image.png">
+  <meta name="twitter:image" content="https://cruixe-ride.lovable.app/brand/cruixe-og-image.png">
+  <meta property="og:title" content="CruiXe - Your ride, your way.">
+  <meta name="twitter:title" content="CruiXe - Your ride, your way.">
+  <meta property="og:description" content="CruiXe is Zimbabwe&#39;s premier ride-hailing service. Request a ride anywhere in Zimbabwe.">
+  <meta name="twitter:description" content="CruiXe is Zimbabwe&#39;s premier ride-hailing service. Request a ride anywhere in Zimbabwe.">
+</head>
+
+  <body>
+    <style>
+      html, body { background:#B81104; }
+      @keyframes cruixe-spin {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+    </style>
+    <!-- Always-opaque red backdrop, sits directly under both splash layers
+         and outlives their crossfade. Without it, two independently fading
+         overlays both sitting below 100% opacity at the same instant expose
+         whatever the app has already painted underneath (a map tile, a
+         white unstyled frame) for a frame or two — this backdrop is what
+         actually gets revealed in that gap instead, so it never happens. -->
+    <div id="instant-splash-bg" style="position:fixed;inset:0;z-index:99997;background:#B81104;"></div>
+    <div id="instant-splash" style="position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:#B81104;transition:opacity 0.4s ease;opacity:1;">
+      <img src="/icons/cruixe-icon-1024.png" alt="CruiXe" style="width:130px;height:130px;object-fit:contain;" fetchpriority="high" />
+    </div>
+    <div id="instant-splash-2" style="position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:#B81104;opacity:0;pointer-events:none;transition:opacity 0.4s ease;">
+      <div style="position:relative;width:62%;max-width:300px;aspect-ratio:853/1844;">
+        <img src="/brand/cruixe-splash-tagline.png" alt="Let's CruiXe nicely." style="width:100%;height:100%;object-fit:contain;" />
+        <div style="position:absolute;left:50%;top:94.5%;width:20px;height:20px;border-radius:50%;border:2.5px solid rgba(255,255,255,.3);border-top-color:#FFDD00;animation:cruixe-spin 0.8s linear infinite;"></div>
+      </div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // inDrive-style splash: stays visible until the app's data bootstrap
+      // signals ready (see src/hooks/useAppBootstrap.tsx), with a short floor
+      // so it never flashes on a fast load. A second, brand-tagline splash
+      // then holds for a short beat before revealing the app underneath.
+      (function () {
+        window.__splashReady = false;
+        window.__splashMinDone = false;
+
+        // Start fetching/decoding the tagline image the instant the page
+        // loads, well ahead of the first splash — so it's already ready
+        // to paint rather than popping in blank when the crossfade starts.
+        var preloadTagline = new Image();
+        preloadTagline.src = '/brand/cruixe-splash-tagline.png';
+
+        var SECOND_SPLASH_DURATION = 1200;
+        var secondSplashStarted = false;
+
+        function showSecondSplash() {
+          if (secondSplashStarted) return;
+          secondSplashStarted = true;
+          var first = document.getElementById('instant-splash');
+          var second = document.getElementById('instant-splash-2');
+          if (!second) return;
+          second.style.opacity = '1';
+          if (first) {
+            first.style.opacity = '0';
+            setTimeout(function () { first.remove(); }, 400);
+          }
+          setTimeout(function () {
+            second.style.opacity = '0';
+            setTimeout(function () {
+              second.remove();
+              var bg = document.getElementById('instant-splash-bg');
+              if (bg) bg.remove();
+            }, 400);
+          }, SECOND_SPLASH_DURATION);
+        }
+
+        function tryHide() {
+          if (!window.__splashReady || !window.__splashMinDone) return;
+          showSecondSplash();
+        }
+
+        // First splash floor: keeps the logo visible long enough that it
+        // never flashes on a fast load, while still letting bootstrap drive
+        // the real transition.
+        setTimeout(function () {
+          window.__splashMinDone = true;
+          tryHide();
+        }, 800);
+
+        // React calls window.__dismissSplash() once the bootstrap resolves
+        // (or its own timeout elapses and continues with cached data). Still
+        // gated by the short floor above so it never cuts the splash short.
+        window.__dismissSplash = function () {
+          window.__splashReady = true;
+          tryHide();
+        };
+
+        // Hard fallback only — covers React failing to mount or bootstrap
+        // never resolving. The real dismiss is data-driven above.
+        setTimeout(function () {
+          window.__splashMinDone = true;
+          window.__splashReady = true;
+          tryHide();
+        }, 8000);
+
+      })();
+    </script>
+  </body>
+</html>

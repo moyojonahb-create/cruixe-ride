@@ -33,7 +33,7 @@ export function useRideRealtime(
       }),
       backendSocketClient.on("driver_location", (event) => {
         const eventId = eventRideId(event);
-        if (eventId === rideId || !eventId) callbacksRef.current.onDriverLocation?.(event);
+        if (eventId === rideId) callbacksRef.current.onDriverLocation?.(event);
       }),
       backendSocketClient.on("ride_status_updated", (event) => {
         if (eventRideId(event) === rideId) callbacksRef.current.onRideChange?.(event);
@@ -49,6 +49,13 @@ export function useRideRealtime(
       }),
     ];
 
+    unsubs.push(backendSocketClient.onAny(event => {
+      if (eventRideId(event) !== rideId) return;
+      if (["ride_snapshot", "room_joined", "room_revoked", "room_user_revoked", "join_room_denied"].includes(event.type)) {
+        callbacksRef.current.onRideChange?.(event);
+        callbacksRef.current.onOfferChange?.(event);
+      }
+    }));
     // Chat remains Supabase-backed; ride lifecycle and offers use Go websocket events.
     const channel = supabase
       .channel(`ride-messages-${rideId}`)

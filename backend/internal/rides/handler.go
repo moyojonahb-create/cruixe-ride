@@ -46,27 +46,28 @@ type DriverAuthorizer interface {
 // rider_id/ride_status/pickup_location/estimated_fare names this handler
 // used to assume).
 type rideAPIRecord struct {
-	ID               string
-	RiderID          string
-	DriverID         string
-	PickupAddress    string
-	DropoffAddress   string
-	PickupLat        float64
-	PickupLon        float64
-	DropoffLat       float64
-	DropoffLon       float64
-	FareDecimal      string
-	PaymentMethod    string
-	Status           string
-	DistanceKm       float64
-	DurationMinutes  int
-	RoutePolyline    string
-	VehicleType      string
-	PassengerCount   int
-	TownID           string
-	GenderPreference string
-	CreatedAt        time.Time
-	ExpiresAt        time.Time
+	AssignedDriverUserID string
+	ID                   string
+	RiderID              string
+	DriverID             string
+	PickupAddress        string
+	DropoffAddress       string
+	PickupLat            float64
+	PickupLon            float64
+	DropoffLat           float64
+	DropoffLon           float64
+	FareDecimal          string
+	PaymentMethod        string
+	Status               string
+	DistanceKm           float64
+	DurationMinutes      int
+	RoutePolyline        string
+	VehicleType          string
+	PassengerCount       int
+	TownID               string
+	GenderPreference     string
+	CreatedAt            time.Time
+	ExpiresAt            time.Time
 }
 
 // publicRideStatus is a display-layer alias only — the frontend's own
@@ -115,33 +116,34 @@ func rideAPIResponse(ride rideAPIRecord) fiber.Map {
 		driverID = ride.DriverID
 	}
 	return fiber.Map{
-		"id":                 ride.ID,
-		"ride_id":            ride.ID,
-		"user_id":            ride.RiderID,
-		"rider_id":           ride.RiderID,
-		"driver_id":          driverID,
-		"pickup_address":     ride.PickupAddress,
-		"pickup_location":    ride.PickupAddress,
-		"dropoff_address":    ride.DropoffAddress,
-		"dropoff_location":   ride.DropoffAddress,
-		"pickup_lat":         ride.PickupLat,
-		"pickup_lon":         ride.PickupLon,
-		"dropoff_lat":        ride.DropoffLat,
-		"dropoff_lon":        ride.DropoffLon,
-		"distance_km":        ride.DistanceKm,
-		"duration_minutes":   ride.DurationMinutes,
-		"route_polyline":     ride.RoutePolyline,
-		"vehicle_type":       ride.VehicleType,
-		"passenger_count":    ride.PassengerCount,
-		"town_id":            ride.TownID,
-		"gender_preference":  ride.GenderPreference,
-		"fare":               decimalUSDFromMinor(fareMoney.MinorUnits),
-		"estimated_fare":     decimalUSDFromMinor(fareMoney.MinorUnits),
-		"payment_method":     ride.PaymentMethod,
-		"ride_status":        ride.Status,
-		"status":             status,
-		"created_at":         ride.CreatedAt,
-		"expires_at":         ride.ExpiresAt,
+		"id":                ride.ID,
+		"ride_id":           ride.ID,
+		"user_id":           ride.RiderID,
+		"rider_id":          ride.RiderID,
+		"driver_id":         driverID,
+		"driver_user_id":    ride.AssignedDriverUserID,
+		"pickup_address":    ride.PickupAddress,
+		"pickup_location":   ride.PickupAddress,
+		"dropoff_address":   ride.DropoffAddress,
+		"dropoff_location":  ride.DropoffAddress,
+		"pickup_lat":        ride.PickupLat,
+		"pickup_lon":        ride.PickupLon,
+		"dropoff_lat":       ride.DropoffLat,
+		"dropoff_lon":       ride.DropoffLon,
+		"distance_km":       ride.DistanceKm,
+		"duration_minutes":  ride.DurationMinutes,
+		"route_polyline":    ride.RoutePolyline,
+		"vehicle_type":      ride.VehicleType,
+		"passenger_count":   ride.PassengerCount,
+		"town_id":           ride.TownID,
+		"gender_preference": ride.GenderPreference,
+		"fare":              decimalUSDFromMinor(fareMoney.MinorUnits),
+		"estimated_fare":    decimalUSDFromMinor(fareMoney.MinorUnits),
+		"payment_method":    ride.PaymentMethod,
+		"ride_status":       ride.Status,
+		"status":            status,
+		"created_at":        ride.CreatedAt,
+		"expires_at":        ride.ExpiresAt,
 	}
 }
 
@@ -305,6 +307,9 @@ func (n websocketRideLifecycleNotifier) NotifyRideLifecycle(payload RideLifecycl
 		log.Println("Ride lifecycle marshal error:", err)
 		return
 	}
+	if n.ws == nil {
+		return
+	}
 
 	roomClients := n.ws.RoomSnapshot(payload.Room)
 	n.ws.BroadcastRoom(payload.Room, payloadBytes)
@@ -317,8 +322,12 @@ func (n websocketRideLifecycleNotifier) NotifyRideLifecycle(payload RideLifecycl
 	// the only way a same-instance-unknown rider/driver gets reached.
 	// Its bool return only reports local delivery, so a false here is not
 	// logged as an error (see acceptRide/acceptOffer for the same reasoning).
-	if n.ws == nil {
-		return
+	// Terminal ride states revoke the room after the lifecycle notification.
+	// This is server-side and propagates through the existing Redis-backed
+	// manager, so former participants cannot keep receiving location events by
+	// leaving the frontend mounted.
+	if payload.Event == "ride_cancelled" || payload.Event == "ride_completed" {
+		n.ws.RevokeRoom(payload.Room)
 	}
 	if riderSocket, exists := n.riders.Get(riderID); !exists || !roomClients[riderSocket] {
 		n.ws.SendToUser(websocket.RoleRider, riderID, payloadBytes)
@@ -418,6 +427,7 @@ func RegisterCompatibilityRoutes(app fiber.Router, h *Handler, requireAuth fiber
 	app.Get("/api/rides/:rideId/offers", requireAuth, h.ListOffers)
 	app.Post("/api/rides/:rideId/offers/:offerId/accept", requireAuth, h.AcceptOffer)
 	app.Post("/api/rides/:rideId/offers/:offerId/reject", requireAuth, h.RejectOffer)
+	app.Post("/api/rides/:rideId/offers/:offerId/withdraw", requireAuth, h.WithdrawDriverOffer)
 	app.Post("/api/rides/offers/:offerId/reject", requireAuth, h.RejectOfferByID)
 	app.Post("/api/rides/:rideId/status", requireAuth, h.UpdateStatus)
 	app.Post("/api/rides/:rideId/complete", requireAuth, h.CompleteRide)
@@ -509,10 +519,11 @@ func (h *Handler) GetRide(c *fiber.Ctx) error {
 		       COALESCE(route_polyline, ''), vehicle_type,
 		       passenger_count, COALESCE(town_id, ''),
 		       COALESCE(gender_preference, 'any'), created_at,
-		       COALESCE(expires_at, created_at + interval '5 minutes')
+		       COALESCE(expires_at, created_at + interval '5 minutes'),
+		       COALESCE((SELECT d.user_id::text FROM public.drivers d WHERE d.id=public.rides.driver_id),'')
 		FROM public.rides
 		WHERE id = $1
-		  AND (user_id::text = $2 OR driver_id::text = $2)
+		  AND (user_id::text = $2 OR EXISTS (SELECT 1 FROM public.drivers d WHERE d.id=public.rides.driver_id AND d.user_id::text=$2))
 	`, rideID, authUserID).Scan(
 		&ride.ID,
 		&ride.RiderID,
@@ -535,6 +546,7 @@ func (h *Handler) GetRide(c *fiber.Ctx) error {
 		&ride.GenderPreference,
 		&ride.CreatedAt,
 		&ride.ExpiresAt,
+		&ride.AssignedDriverUserID,
 	)
 	if err != nil {
 		if err == pgx.ErrNoRows {
@@ -991,6 +1003,7 @@ func (h *Handler) acceptRide(c *fiber.Ctx, rideID string) error {
 	// so it is not logged as an error.
 	if h.ws != nil {
 		h.ws.SendToUser(websocket.RoleRider, riderID, msgBytes)
+		h.ws.SendToUser(websocket.RoleDriver, req.DriverID, msgBytes)
 	}
 
 	return c.JSON(fiber.Map{
@@ -1230,48 +1243,7 @@ func (h *Handler) RejectOfferByID(c *fiber.Ctx) error {
 }
 
 func (h *Handler) rejectOffer(c *fiber.Ctx, rideID string, offerID string) error {
-	authUserID, ok := middleware.AuthenticatedUserID(c)
-	if !ok {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Authentication required"})
-	}
-
-	if rideID == "" {
-		err := h.db.QueryRow(context.Background(), `
-			SELECT ride_id
-			FROM public.offers
-			WHERE id = $1
-			  AND driver_id = $2
-		`, offerID, authUserID).Scan(&rideID)
-		if err != nil {
-			if err == pgx.ErrNoRows {
-				return c.Status(404).JSON(fiber.Map{"error": "Offer not found"})
-			}
-			return c.Status(500).JSON(fiber.Map{"error": err.Error()})
-		}
-	}
-
-	commandTag, err := h.db.Exec(context.Background(), `
-		UPDATE public.offers
-		SET status = 'rejected'
-		WHERE id = $1
-		  AND ride_id = $2
-		  AND driver_id = $3
-		  AND status = 'pending'
-	`, offerID, rideID, authUserID)
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	if commandTag.RowsAffected() == 0 {
-		return c.Status(409).JSON(fiber.Map{"error": "Offer cannot be rejected"})
-	}
-	h.setDispatchDriverAvailability(context.Background(), authUserID, "available", "")
-
-	return c.JSON(fiber.Map{
-		"message":  "Offer declined successfully",
-		"offer_id": offerID,
-		"status":   "rejected",
-	})
+	return h.closePendingOffer(c, rideID, offerID, false)
 }
 
 func (h *Handler) PatchRide(c *fiber.Ctx) error {
@@ -1345,6 +1317,22 @@ func (h *Handler) acceptOffer(c *fiber.Ctx, rideID, offerID string) error {
 		_ = tx.Rollback(ctx)
 	}()
 
+	var riderID string
+	var rideStatus string
+	var paymentMethod string
+	err = tx.QueryRow(ctx, `
+		SELECT user_id, status, COALESCE(payment_method, 'cash')
+		FROM public.rides
+		WHERE id = $1
+		FOR UPDATE
+	`, rideID).Scan(&riderID, &rideStatus, &paymentMethod)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return c.Status(404).JSON(fiber.Map{"error": "Ride not found"})
+		}
+		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+	}
+
 	var offer OfferRecord
 	var offerPrice float64
 	err = tx.QueryRow(ctx, `
@@ -1372,22 +1360,6 @@ func (h *Handler) acceptOffer(c *fiber.Ctx, rideID, offerID string) error {
 
 	if offer.Status != "pending" {
 		return c.Status(409).JSON(fiber.Map{"error": "Offer is not pending"})
-	}
-
-	var riderID string
-	var rideStatus string
-	var paymentMethod string
-	err = tx.QueryRow(ctx, `
-		SELECT user_id, status, COALESCE(payment_method, 'cash')
-		FROM public.rides
-		WHERE id = $1
-		FOR UPDATE
-	`, rideID).Scan(&riderID, &rideStatus, &paymentMethod)
-	if err != nil {
-		if err == pgx.ErrNoRows {
-			return c.Status(404).JSON(fiber.Map{"error": "Ride not found"})
-		}
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	if riderID != authUserID {
@@ -1482,6 +1454,7 @@ func (h *Handler) acceptOffer(c *fiber.Ctx, rideID, offerID string) error {
 		// See acceptRide: SendToUser's bool only reports local delivery, so
 		// a false is not treated as an error.
 		h.ws.SendToUser(websocket.RoleRider, riderID, msgBytes)
+		h.ws.SendToUser(websocket.RoleDriver, offer.DriverID, msgBytes)
 	}
 
 	return c.JSON(fiber.Map{
@@ -1688,6 +1661,7 @@ func (h *Handler) updateRideStatus(c *fiber.Ctx, rideID string, rideStatus strin
 
 	var riderID string
 	var driverRowID string
+	var cancelledDriverUserID string
 	var err error
 	if rideStatus == "cancelled" {
 		// A rider cancels by their own user_id; a driver cancels by their
@@ -1705,8 +1679,10 @@ func (h *Handler) updateRideStatus(c *fiber.Ctx, rideID string, rideStatus strin
 			  AND (user_id::text = $2 OR driver_id::text = $3)
 			  AND status = ANY($4)
 			  AND ($5 = '' OR status = $5)
-			RETURNING user_id::text, COALESCE(driver_id::text, '')
-		`, rideID, authUserID, driverLookupID, allowedPrevious, expectedStatus).Scan(&riderID, &driverRowID)
+			RETURNING user_id::text, COALESCE((
+				SELECT d.user_id::text FROM public.drivers d WHERE d.id = public.rides.driver_id
+			), '')
+		`, rideID, authUserID, driverLookupID, allowedPrevious, expectedStatus).Scan(&riderID, &cancelledDriverUserID)
 	} else {
 		authorized, authErr := h.isAssignedDriver(rideID, authUserID)
 		if authErr != nil {
@@ -1744,10 +1720,10 @@ func (h *Handler) updateRideStatus(c *fiber.Ctx, rideID string, rideStatus strin
 
 	// Lifecycle/reputation/dispatch key drivers by auth user ID — see the
 	// comment on resolveDriverRowID.
-	h.emitRideLifecycle(event, rideID, authUserID, rideStatus, riderID)
-	if rideStatus == "cancelled" && driverRowID != "" {
-		h.recordReputationRideCancelled(ctx, authUserID, rideID)
-		h.setDispatchDriverAvailability(ctx, authUserID, "available", "")
+	if rideStatus == "cancelled" {
+		h.NotifyRideCancelled(ctx, rideID, riderID, cancelledDriverUserID)
+	} else {
+		h.emitRideLifecycle(event, rideID, authUserID, rideStatus, riderID)
 	}
 
 	return c.JSON(fiber.Map{

@@ -1,7 +1,6 @@
 package websocket
 
 import (
-	"context"
 	"encoding/json"
 	"log"
 	"time"
@@ -15,6 +14,7 @@ import (
 )
 
 func NewHandler(manager *Manager, riders *ConnectionRegistry, drivers *ConnectionRegistry, verifier *auth.SupabaseJWT, authorizer RoomAuthorizer, driverAuthz DriverAuthorizer) fiber.Handler {
+	manager.WithAuthorization(authorizer, driverAuthz)
 	socketHandler := socketio.New(func(kws *socketio.Websocket) {
 		roomID := localString(kws, LocalsRoomID)
 		userID := localString(kws, LocalsUserID)
@@ -23,7 +23,8 @@ func NewHandler(manager *Manager, riders *ConnectionRegistry, drivers *Connectio
 
 		log.Println("Authenticated WebSocket client connected:", userID)
 
-		manager.AddClient(kws)
+		identity, _ := kws.Locals(LocalsIdentity).(AuthenticatedConnection)
+		manager.AddAuthenticatedClient(kws, identity)
 		kws.Conn.SetReadLimit(64 * 1024)
 		_ = kws.Conn.SetReadDeadline(time.Now().Add(defaultPongWait))
 		kws.Conn.SetPongHandler(func(string) error {
@@ -53,7 +54,7 @@ func NewHandler(manager *Manager, riders *ConnectionRegistry, drivers *Connectio
 		}
 
 		if roomID != "" {
-			manager.JoinRoom(roomID, kws)
+			manager.JoinAuthorizedRoom(kws, roomID)
 			log.Println("Client joined room:", roomID)
 		}
 
@@ -84,14 +85,14 @@ func NewHandler(manager *Manager, riders *ConnectionRegistry, drivers *Connectio
 		messageLimiter := newConnectionMessageLimiter(defaultMessageRateLimit, defaultMessageRateWindow)
 
 		for {
-		_, msg, err := kws.Conn.ReadMessage()
-		if err != nil {
-			if !isBenignDisconnect(err) {
-				observability.CaptureError(err)
+			_, msg, err := kws.Conn.ReadMessage()
+			if err != nil {
+				if !isBenignDisconnect(err) {
+					observability.CaptureError(err)
+				}
+				log.Println("Read error:", err)
+				break
 			}
-			log.Println("Read error:", err)
-			break
-		}
 
 			observability.RecordWebSocketMessageReceived()
 			log.Printf("WEBSOCKET_MESSAGE_RECEIVED user_id=%s bytes=%d", userID, len(msg))
@@ -154,17 +155,16 @@ func handleControlMessage(kws *socketio.Websocket, manager *Manager, authorizer 
 		return true
 	case "join_room":
 		roomID := incoming.RoomID
-		rideID, ok := RideIDFromRoom(roomID)
+		_, ok := RideIDFromRoom(roomID)
 		if !ok {
 			manager.Send(kws, mustJSON(fiber.Map{"event": "join_room_denied", "room_id": roomID, "reason": "invalid_room"}))
 			return true
 		}
-		allowed, err := authorizer.CanJoinRideRoom(context.Background(), rideID, userID)
-		if err != nil || !allowed {
+		if !manager.JoinAuthorizedRoom(kws, roomID) {
 			manager.Send(kws, mustJSON(fiber.Map{"event": "join_room_denied", "room_id": roomID, "reason": "forbidden"}))
 			return true
 		}
-		manager.JoinRoom(roomID, kws)
+
 		manager.Send(kws, mustJSON(fiber.Map{"event": "room_joined", "room_id": roomID, "server_time": time.Now().UTC()}))
 		return true
 	case "leave_room":

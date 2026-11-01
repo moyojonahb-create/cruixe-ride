@@ -1,0 +1,197 @@
+--- before/src/pages/RideMatching.tsx
++++ after/src/pages/RideMatching.tsx
+@@ -1,9 +1,9 @@
+-import { subscribeRideLocation } from "@/lib/rideLocationSubscription";
+-import { backendSocketClient } from "@/lib/backendSocketClient";
++import { subscribeRideLocation } from "@/lib/rideLocationSubscription";
++import { backendSocketClient } from "@/lib/backendSocketClient";
+ import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+ import { useNavigate, useParams } from 'react-router-dom';
+ import { motion, AnimatePresence } from 'framer-motion';
+-import { ArrowLeft, CheckCheck, ChevronRight, Locate, MapPin, MessageCircle, Minus, Phone, Plus, Radar, ShieldAlert, ShieldCheck, Star, User, X } from 'lucide-react';
++import { ArrowLeft, CheckCheck, ChevronRight, Clock, Locate, MapPin, MessageCircle, Minus, Phone, Plus, Radar, ShieldAlert, ShieldCheck, Star, User, Users, X } from 'lucide-react';
+ import LazyMapboxMap from '@/components/map/LazyMapboxMap';
+ import { supabase } from '@/lib/supabaseClient';
+ import { useAuth } from '@/hooks/useAuth';
+@@ -30,6 +30,7 @@
+ import carParcel from '@/assets/cars/car-parcel.png';
+ import CancelReasonSheet from '@/components/ride/CancelReasonSheet';
+ import RideGlassPanel from '@/components/ride/RideGlassPanel';
++import '@/components/ride/approvedRide.css';
+ import NoteToDriverSheet from '@/components/ride/NoteToDriverSheet';
+ import SafetySheet from '@/components/ride/SafetySheet';
+ import ShareTripButton from '@/components/ride/ShareTripButton';
+@@ -116,6 +117,7 @@
+ 
+ const TIER_LABELS: Record<string, string> = { economy: 'Economy', share: 'Share Ride', parcel: 'Parcel' };
+ const TIER_ASSETS: Record<string, string> = { economy: carFrontEconomy, share: carSlantShare, parcel: carParcel };
++const SEARCH_TIER_ASSETS: Record<string, string> = { economy: '/brand/cruize-economy-car.webp', share: '/brand/cruize-shared-car.webp', parcel: '/brand/cruize-parcel-van.webp' };
+ 
+ const ACCEPTED_STATUSES = ['accepted', 'enroute', 'enroute_pickup', 'arrived', 'in_progress'];
+ 
+@@ -532,30 +534,30 @@
+     })();
+   }, [isMatched, ride?.vehicle_type, driver, rideId, etaMinutes]);
+ 
+-  useEffect(() => {
+-    setDriverLocation(null); setDriverLocationSample(null);
+-    setLocationConnected(false); setLocationReconnecting(true);
+-    if (!driver?.user_id || !rideId || !isMatched) return;
+-    const stop = subscribeRideLocation(rideId, driver.user_id, loc => {
+-      const observedAt = Date.parse(loc.updatedAt);
+-      const sample = { lat: loc.lat, lng: loc.lng, observedAt, sequence: observedAt };
+-      setDriverLocationSample(current => {
+-        const accepted = acceptLocationSample(current, sample);
+-        if (accepted === sample) { setDriverLocation({ lat: loc.lat, lng: loc.lng }); setLocationReconnecting(false); }
+-        return accepted;
+-      });
+-    }, connected => { setLocationConnected(connected); setLocationReconnecting(!connected); }, () => {
+-      setDriverLocation(null); setDriverLocationSample(null);
+-    });
+-    const off = backendSocketClient.onAny(event => {
+-      if (event.ride_id === rideId && event.type === "ride_snapshot") void loadRide();
+-    });
+-    const refresh = () => { void backendSocketClient.refreshRide(rideId); };
+-    const poll = setInterval(refresh, 15_000);
+-    const clock = setInterval(() => setLocationNow(Date.now()), 15_000);
+-    const onVisibility = () => { if (document.visibilityState === 'visible') refresh(); };
+-    document.addEventListener('visibilitychange', onVisibility);
+-    return () => { stop(); off(); clearInterval(poll); clearInterval(clock); document.removeEventListener('visibilitychange', onVisibility); };
++  useEffect(() => {
++    setDriverLocation(null); setDriverLocationSample(null);
++    setLocationConnected(false); setLocationReconnecting(true);
++    if (!driver?.user_id || !rideId || !isMatched) return;
++    const stop = subscribeRideLocation(rideId, driver.user_id, loc => {
++      const observedAt = Date.parse(loc.updatedAt);
++      const sample = { lat: loc.lat, lng: loc.lng, observedAt, sequence: observedAt };
++      setDriverLocationSample(current => {
++        const accepted = acceptLocationSample(current, sample);
++        if (accepted === sample) { setDriverLocation({ lat: loc.lat, lng: loc.lng }); setLocationReconnecting(false); }
++        return accepted;
++      });
++    }, connected => { setLocationConnected(connected); setLocationReconnecting(!connected); }, () => {
++      setDriverLocation(null); setDriverLocationSample(null);
++    });
++    const off = backendSocketClient.onAny(event => {
++      if (event.ride_id === rideId && event.type === "ride_snapshot") void loadRide();
++    });
++    const refresh = () => { void backendSocketClient.refreshRide(rideId); };
++    const poll = setInterval(refresh, 15_000);
++    const clock = setInterval(() => setLocationNow(Date.now()), 15_000);
++    const onVisibility = () => { if (document.visibilityState === 'visible') refresh(); };
++    document.addEventListener('visibilitychange', onVisibility);
++    return () => { stop(); off(); clearInterval(poll); clearInterval(clock); document.removeEventListener('visibilitychange', onVisibility); };
+   }, [driver?.user_id, rideId, isMatched, loadRide]);
+ 
+   /* ── Actions ───────────────────────────────────────────────── */
+@@ -922,7 +924,7 @@
+       {/* Bottom sheet — same glass ribbon treatment as the ride-selection screen */}
+       <div ref={sheetWrapRef} className="absolute left-0 right-0 z-20" style={{ bottom: 0 }}>
+       <RideGlassPanel
+-        className="ride-booking-sheet ride-finding-sheet"
++        className="ride-booking-sheet ride-finding-sheet"
+         style={{ maxHeight: '82vh', paddingBottom: 'env(safe-area-inset-bottom)' }}
+       >
+         <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+@@ -1458,16 +1460,16 @@
+               </motion.div>
+             ) : (
+               /* ───────── Searching ───────── */
+-              <motion.div key="searching" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 space-y-3.5">
++              <motion.div key="searching" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="ride-finding-content p-4 space-y-3.5">
+                 {/* Status row: radar badge + title + elapsed M:SS countdown */}
+-                <div className="flex items-center gap-3">
++                <div className="ride-finding-header flex items-center gap-3">
+                   <span className="relative shrink-0 flex items-center justify-center rounded-full" style={{ width: 42, height: 42, ...glassSurface }}>
+                     <Radar className="w-5 h-5" style={{ color: RIDE_RED }} />
+                   </span>
+                   <div className="flex-1 min-w-0">
+                     <div className="flex items-center gap-2">
+-                      <p className="text-[14px] font-bold" style={{ color: RIDE_TEXT }}>Finding drivers near you</p>
+-                      <span className="ml-auto text-[12.5px] font-bold tabular-nums shrink-0" style={{ color: RIDE_RED }}>{countdownText}</span>
++                      <p className="ride-finding-title text-[14px] font-bold" style={{ color: RIDE_TEXT }}>Finding drivers near you</p>
++                      <span className="ride-finding-timer ml-auto text-[12.5px] font-bold tabular-nums shrink-0" style={{ color: RIDE_RED }}>{countdownText}</span>
+                     </div>
+                     {viewerCount > 0 ? (
+                       <div className="flex items-center gap-2 mt-1">
+@@ -1526,23 +1528,23 @@
+                     src={carSearchSide}
+                     alt=""
+                     className="absolute top-0 object-contain"
+-                    style={{ width: 38, height: 15, filter: 'drop-shadow(0 2px 3px rgba(17,17,17,.28))' }}
++                    style={{ width: 48, height: 20, filter: 'drop-shadow(0 2px 3px rgba(17,17,17,.28))' }}
+                     initial={{ left: '0%' }}
+-                    animate={{ left: 'calc(100% - 38px)' }}
++                    animate={{ left: 'calc(100% - 48px)' }}
+                     transition={{ duration: 60, ease: 'linear' }}
+                   />
+                 </div>
+ 
+-                {/* Fare stepper — bare controls, no card, wired to the same
++                {/* Fare stepper surface, wired to the same
+                     updateRideFare offer logic and $0.50 step as elsewhere. */}
+-                <div className="flex items-center justify-center gap-3.5">
++                <div className="ride-finding-fare flex items-center justify-center gap-3.5">
+                   <button
+                     type="button"
+                     onClick={() => handleFareChange(-FARE_STEP)}
+                     disabled={fareBumping || !ride || Number(ride.fare) <= fareFloor}
+                     aria-label="Decrease fare"
+                     className="shrink-0 flex items-center justify-center rounded-full active:scale-90 transition-transform disabled:opacity-40"
+-                    style={{ width: 38, height: 38, background: RIDE_YELLOW }}
++                    style={{ width: 44, height: 44, background: RIDE_YELLOW }}
+                   >
+                     <Minus className="w-[17px] h-[17px]" style={{ color: RIDE_TEXT }} />
+                   </button>
+@@ -1560,20 +1562,24 @@
+                     disabled={fareBumping || !ride || Number(ride.fare) >= fareCeiling}
+                     aria-label="Increase fare"
+                     className="shrink-0 flex items-center justify-center rounded-full active:scale-90 transition-transform disabled:opacity-40"
+-                    style={{ width: 38, height: 38, ...redCta }}
++                    style={{ width: 44, height: 44, ...redCta }}
+                   >
+                     <Plus className="w-[17px] h-[17px] text-white" />
+                   </button>
+                 </div>
+ 
+                 {/* Chosen-ride summary card */}
+-                <div className="flex items-center" style={{ ...tintBlue, borderRadius: 16, gap: 12, padding: '7px 11px 7px 3px' }}>
+-                  <img src={TIER_ASSETS[tierKey]} alt="" style={{ width: 78, height: 56 }} className="object-contain shrink-0" />
++                <div className="ride-finding-summary flex items-center" style={{ ...tintRed, borderRadius: 16, gap: 12, padding: '7px 11px 7px 3px' }}>
++                  <img src={SEARCH_TIER_ASSETS[tierKey]} alt="" style={{ width: 78, height: 56 }} className="object-contain shrink-0" />
+                   <div className="flex-1 min-w-0">
+                     <p className="text-[16px] font-bold leading-tight" style={{ color: RIDE_TEXT }}>{TIER_LABELS[tierKey]}</p>
+                     <p className="text-[12.5px] font-semibold truncate" style={{ color: RIDE_TEXT_3 }}>
+                       {ride?.pickup_address ?? ''} → {ride?.dropoff_address ?? ''}
+                     </p>
++                    <div className="ride-finding-summary__meta">
++                      {Number.isFinite(ride?.passenger_count) && ride.passenger_count > 0 && <span><Users aria-hidden="true" />{ride.passenger_count}</span>}
++                      {Number.isFinite(ride?.duration_minutes) && ride.duration_minutes > 0 && <span><Clock aria-hidden="true" />Trip {Math.round(ride.duration_minutes)} min</span>}
++                    </div>
+                   </div>
+                   <span className="text-[16px] font-bold shrink-0 tabular-nums" style={{ color: RIDE_RED }}>
+                     ${ride ? Number(ride.fare).toFixed(2) : '0.00'}
+@@ -1581,7 +1587,7 @@
+                 </div>
+ 
+                 {/* Cancel / Note row */}
+-                <div className="flex items-center gap-3">
++                <div className="ride-finding-actions flex items-center gap-3">
+                   <button
+                     type="button"
+                     onClick={() => setCancelSheetOpen(true)}
+@@ -1601,11 +1607,11 @@
+                   <button
+                     type="button"
+                     onClick={() => setNoteOpen(true)}
+-                    className="shrink-0 flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
+-                    style={{ width: 132, height: 48, borderRadius: 15, ...redCta }}
++                    className="flex-1 flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
++                    style={{ height: 48, borderRadius: 15, ...redCta }}
+                   >
+                     <MessageCircle className="w-[18px] h-[18px] text-white" />
+-                    <span className="text-[14.5px] font-bold text-white">Note</span>
++                    <span className="text-[14.5px] font-bold text-white">Note for driver</span>
+                   </button>
+                 </div>
+               </motion.div>

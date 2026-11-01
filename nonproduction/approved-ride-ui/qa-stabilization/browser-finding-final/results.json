@@ -1,0 +1,32 @@
+{
+  "authority": "MOCKED/ISOLATED pending UI; no matching success",
+  "cases": [
+    {
+      "width": 393,
+      "height": 852,
+      "overflow": false,
+      "sameRibbon": true,
+      "ribbon": [
+        "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+        "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+      ],
+      "state": "Finding drivers near you\n\n0:03\n\nSearching for nearby drivers…\n\nTRIP FARE\n$6.00\n\nEconomy\n\nFixture pickup → Fixture destination\n\n1\nTrip 9 min\n$6.00\nCancel\nNote for driver",
+      "violations": []
+    },
+    {
+      "width": 360,
+      "height": 800,
+      "overflow": false,
+      "sameRibbon": true,
+      "ribbon": [
+        "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+        "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+      ],
+      "state": "Finding drivers near you\n\n0:01\n\nSearching for nearby drivers…\n\nTRIP FARE\n$6.00\n\nEconomy\n\nFixture pickup → Fixture destination\n\n1\nTrip 9 min\n$6.00\nCancel\nNote for driver",
+      "violations": []
+    }
+  ],
+  "errors": [],
+  "blockedRequests": [],
+  "retries": []
+}

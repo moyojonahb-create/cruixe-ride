@@ -1,0 +1,228 @@
+{
+  "authority": "MOCKED/ISOLATED UI ONLY",
+  "cases": [
+    {
+      "width": 393,
+      "height": 852,
+      "configuration": {
+        "overflow": false,
+        "tierCount": 1,
+        "route": "/ride?view=locations&tier=economy",
+        "buttons": [
+          {
+            "label": "More passengers",
+            "width": 44,
+            "height": 44,
+            "y": 596
+          },
+          {
+            "label": "Fewer passengers",
+            "width": 44,
+            "height": 44,
+            "y": 596
+          }
+        ],
+        "ribbon": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "confirmation": {
+          "arrowInside": true,
+          "labelNotClipped": true,
+          "labelFont": "13.362px"
+        },
+        "configText": "Gwanda25+ km areaPickupGwanda centreDestinationFixture destinationEconomyAffordable rides, everyday$6.004·9 minFast pickupPassengers1Who is riding? · MyselfLuggageOptional photoCashPay the driverScheduleConfirm location & continue"
+      },
+      "accessibility": {
+        "name": "configuration-393",
+        "violations": []
+      },
+      "passengerMaxDisabled": true,
+      "paymentAccessibility": {
+        "name": "payment-393",
+        "violations": []
+      },
+      "paymentReturns": true,
+      "prematureBookingAttempts": 0,
+      "photoPreview": {
+        "complete": true,
+        "naturalWidth": 1
+      },
+      "luggageAccessibility": {
+        "name": "luggage-393",
+        "violations": []
+      },
+      "photoSaved": "Luggage\nPhoto added",
+      "photoRemoved": true,
+      "scheduleAccessibility": {
+        "name": "schedule-393",
+        "violations": []
+      },
+      "deniedAttempt": [
+        {
+          "action": "requestRide denied",
+          "detail": {
+            "pickup_address": "Gwanda centre",
+            "pickup_lat": -20.9355,
+            "pickup_lng": 29.0147,
+            "dropoff_address": "Fixture destination",
+            "dropoff_lat": -20.951,
+            "dropoff_lng": 29.02,
+            "distance_km": 3,
+            "duration_minutes": 9,
+            "fare": 6.5,
+            "route_polyline": null,
+            "passenger_count": 4,
+            "payment_method": "wallet",
+            "vehicle_type": "economy",
+            "town_id": "gwanda",
+            "gender_preference": "any",
+            "scheduled_at": "2026-10-31T22:00:00.000Z"
+          }
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "height": 800,
+      "configuration": {
+        "overflow": false,
+        "tierCount": 1,
+        "route": "/ride?view=locations&tier=economy",
+        "buttons": [
+          {
+            "label": "More passengers",
+            "width": 44,
+            "height": 44,
+            "y": 544
+          },
+          {
+            "label": "Fewer passengers",
+            "width": 44,
+            "height": 44,
+            "y": 544
+          }
+        ],
+        "ribbon": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "confirmation": {
+          "arrowInside": true,
+          "labelNotClipped": true,
+          "labelFont": "12.24px"
+        },
+        "configText": "Gwanda25+ km areaPickupGwanda centreDestinationFixture destinationEconomyAffordable rides, everyday$6.004·9 minFast pickupPassengers1Who is riding? · MyselfLuggageOptional photoCashPay the driverScheduleConfirm location & continue"
+      },
+      "accessibility": {
+        "name": "configuration-360",
+        "violations": []
+      },
+      "passengerMaxDisabled": true,
+      "paymentAccessibility": {
+        "name": "payment-360",
+        "violations": []
+      },
+      "paymentReturns": true,
+      "prematureBookingAttempts": 0,
+      "photoPreview": {
+        "complete": true,
+        "naturalWidth": 1
+      },
+      "luggageAccessibility": {
+        "name": "luggage-360",
+        "violations": []
+      },
+      "photoSaved": "Luggage\nPhoto added",
+      "photoRemoved": true,
+      "scheduleAccessibility": {
+        "name": "schedule-360",
+        "violations": []
+      },
+      "deniedAttempt": [
+        {
+          "action": "requestRide denied",
+          "detail": {
+            "pickup_address": "Gwanda centre",
+            "pickup_lat": -20.9355,
+            "pickup_lng": 29.0147,
+            "dropoff_address": "Fixture destination",
+            "dropoff_lat": -20.951,
+            "dropoff_lng": 29.02,
+            "distance_km": 3,
+            "duration_minutes": 9,
+            "fare": 6.5,
+            "route_polyline": null,
+            "passenger_count": 4,
+            "payment_method": "wallet",
+            "vehicle_type": "economy",
+            "town_id": "gwanda",
+            "gender_preference": "any",
+            "scheduled_at": "2026-10-31T22:00:00.000Z"
+          }
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "blockedRequests": [],
+  "forbiddenWrites": [],
+  "checks": [
+    {
+      "name": "MOCKED pending UI 393",
+      "overflow": false,
+      "accessibility": {
+        "name": "finding-393",
+        "violations": []
+      },
+      "ribbon": [
+        "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+        "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+      ]
+    },
+    {
+      "name": "MOCKED pending UI 360",
+      "overflow": false,
+      "accessibility": {
+        "name": "finding-360",
+        "violations": []
+      },
+      "ribbon": [
+        "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+        "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+      ]
+    }
+  ],
+  "navigation": [
+    {
+      "name": "Account",
+      "interpolatedCurveStates": 11,
+      "url": "http://127.0.0.1:8083/profile",
+      "selected": "page",
+      "curveChanged": true,
+      "reloadSelected": "page",
+      "backSelected": "page"
+    },
+    {
+      "name": "Activity",
+      "interpolatedCurveStates": 12,
+      "url": "http://127.0.0.1:8083/history",
+      "selected": "page",
+      "curveChanged": true,
+      "reloadSelected": "page",
+      "backSelected": "page"
+    },
+    {
+      "name": "Wallet",
+      "interpolatedCurveStates": 11,
+      "url": "http://127.0.0.1:8083/wallet",
+      "selected": "page",
+      "curveChanged": true,
+      "reloadSelected": "page",
+      "backSelected": "page"
+    }
+  ],
+  "reducedMotion": "0s"
+}

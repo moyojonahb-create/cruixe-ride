@@ -1,0 +1,11 @@
+--- before/src/components/ride/ScheduleRide.tsx
++++ after/src/components/ride/ScheduleRide.tsx
+@@ -170,7 +170,7 @@
+             className="fixed left-0 right-0 bottom-0 z-[70]"
+             style={{ maxWidth: 480, margin: '0 auto', width: '100%' }}
+           >
+-            <RideGlassPanel panelStyle={panelStyle} style={{ maxHeight: '86vh', paddingBottom: 'env(safe-area-inset-bottom)' }} onRibbonClick={onClose}>
++            <RideGlassPanel className="ride-booking-sheet" panelStyle={panelStyle} style={{ maxHeight: '86vh', paddingBottom: 'env(safe-area-inset-bottom)' }} onRibbonClick={onClose}>
+           <div className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+             {scheduledAt ? (
+               /* Already scheduled — summary + cancel, not the mockup's fresh-pick flow */

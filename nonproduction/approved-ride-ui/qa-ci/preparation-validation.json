@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "scope": "Static preparation validation only; no application compiler, Vitest, build, Docker or GitHub run executed",
+  "checks": {
+    "read_only_token": "PASS",
+    "branch_limited_push": "PASS",
+    "no_pr_or_deployment_trigger": "PASS",
+    "manual_ref_guard": "PASS",
+    "no_secrets_or_deployment_environment": "PASS",
+    "immutable_action_pins": "PASS",
+    "immutable_node_image": "PASS",
+    "network_none_and_no_docker_socket": "PASS",
+    "locked_install_scripts_disabled": "PASS",
+    "always_retains_artifacts": "PASS",
+    "inline_python_syntax": "PASS",
+    "archive_sha": "PASS",
+    "archive_paths_are_safe": "PASS",
+    "snapshot_file_hashes": "PASS",
+    "all_snapshot_files_present": "PASS",
+    "all_eight_approved_app_hashes_preserved": "PASS",
+    "focused_nine_suites_exist": "PASS"
+  },
+  "snapshotFiles": 550
+}

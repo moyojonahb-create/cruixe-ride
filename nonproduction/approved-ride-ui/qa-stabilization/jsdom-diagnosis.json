@@ -1,0 +1,7 @@
+{
+  "version": "20.0.3",
+  "integrityVerified": true,
+  "expectedFileInLockedArchive": true,
+  "expectedFileBytes": 1396,
+  "installedReadError": "WinError 1392: corrupted and unreadable"
+}

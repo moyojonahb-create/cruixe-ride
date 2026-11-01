@@ -1,0 +1,113 @@
+ M .gitignore
+ M RUNBOOK.md
+ M android/app/build.gradle
+ M android/app/capacitor.build.gradle
+ M android/app/src/main/AndroidManifest.xml
+ M android/capacitor.settings.gradle
+ M backend/cmd/server/main.go
+ M backend/internal/auth/supabase_jwt.go
+ M backend/internal/business/handler.go
+ M backend/internal/business/handler_test.go
+ M backend/internal/drivers/handler.go
+ M backend/internal/drivers/handler_test.go
+ M backend/internal/drivers/types.go
+ M backend/internal/rides/handler.go
+ M backend/internal/rides/handler_test.go
+ M backend/internal/websocket/auth.go
+ M backend/internal/websocket/authorizer.go
+ M backend/internal/websocket/handler.go
+ M backend/internal/websocket/manager.go
+ M backend/internal/websocket/manager_test.go
+ M docs/app-store-review-notes.md
+ M index.html
+ D public/brand/cruixe-car-search.png
+AM scripts/verify.mjs
+ M src/components/HeroSection.tsx
+ M src/components/driver/DriverSelfieCheck.tsx
+ M src/components/luggage/LuggageSheet.tsx
+ M src/components/ride/DestinationSearchScreen.tsx
+ M src/components/ride/NoteToDriverSheet.tsx
+ M src/components/ride/PaymentMethodSelector.tsx
+ M src/components/ride/RideGlassPanel.tsx
+ M src/components/ride/RideView.tsx
+ M src/components/ride/SafetySheet.tsx
+ M src/components/wallet/TransactionsSheet.tsx
+ M src/hooks/useDriverTracking.ts
+ M src/hooks/useNearbyDrivers.ts
+ M src/hooks/useRideRealtime.ts
+ M src/hooks/useTownPricing.ts
+ M src/lib/backendSocketClient.ts
+ M src/lib/driverPresence.ts
+ M src/lib/rideMatching.ts
+ M src/lib/routeProgress.ts
+ M src/pages/DriverDashboard.tsx
+ M src/pages/LiveTrackingPage.tsx
+ M src/pages/RideMatching.tsx
+ M src/pages/RiderWalletPage.tsx
+ M src/pages/admin/AdminDashboard.tsx
+ M src/pages/admin/AdminDriversMap.tsx
+ M src/pages/admin/AdminTownPricing.tsx
+ M src/pages/driver/DriverProfile.tsx
+ M src/pages/driver/DriverRideRequests.tsx
+ M src/test/apiCalls.test.ts
+ M src/test/requestRide.test.ts
+ M src/test/townPricing.test.ts
+?? .agents/
+?? .claude/
+?? .github/workflows/cruixe-approved-frontend-verify.yml
+?? .github/workflows/p03-verification.yml
+?? ECC/
+?? agent/
+?? backend/internal/assignment/
+?? backend/internal/assignmenttest/
+?? backend/internal/business/cancellation_postgres_test.go
+?? backend/internal/business/cancellation_test.go
+?? backend/internal/contracts/
+?? backend/internal/rides/cancellation_effects.go
+?? backend/internal/rides/cancellation_effects_test.go
+?? backend/internal/rides/offer_commands.go
+?? backend/internal/rides/offer_commands_test.go
+?? backend/internal/rides/snapshot_security_test.go
+?? backend/internal/websocket/authorizer_postgres_test.go
+?? backend/internal/websocket/security.go
+?? backend/internal/websocket/security_test.go
+?? backend/internal/websocket/session_security_test.go
+?? "design references/"
+?? docs/CRUIZE-RIDE-EVENT-AND-API-CONTRACTS.md
+?? docs/CRUIZE-RIDE-FULL-STACK-ARCHITECTURE.md
+?? docs/CRUIZE-RIDE-INTEGRATION-INFRASTRUCTURE.md
+?? docs/CRUIZE-RIDE-INTEGRATION-MATRIX.md
+?? docs/CRUIZE-RIDE-P0-IMPLEMENTATION-TRACKER.md
+?? docs/CRUIZE-RIDE-P02-VERIFICATION-RUNBOOK.md
+?? docs/CRUIZE-RIDE-P03-ASSIGNMENT-PREPARATION.md
+?? docs/CRUIZE-RIDE-PRODUCTION-READINESS-GATES.md
+?? docs/PROPOSAL-driver-presence-and-gps-authority.md
+?? docs/PROPOSAL-rides-rls-hardening.md
+?? docs/p03-drafts/
+?? docs/staging/
+?? nonproduction/
+?? public/brand/cruize-economy-car.webp
+?? public/brand/cruize-parcel-van.webp
+?? public/brand/cruize-search-car.webp
+?? public/brand/cruize-shared-car.webp
+?? scripts/schema-check.mjs
+?? skills-lock.json
+?? src/components/driver/DriverAvailabilityControl.tsx
+?? src/components/ride/TripPaymentSelector.tsx
+?? src/components/ui/ModalBottomSheet.tsx
+?? src/components/wallet/MoneyAmount.tsx
+?? src/lib/driverAvailability.ts
+?? src/lib/driverLocationState.ts
+?? src/lib/rideLocationSubscription.ts
+?? src/test/DestinationSearchScreen.test.tsx
+?? src/test/DriverSelfieCheck.test.tsx
+?? src/test/ModalBottomSheet.test.tsx
+?? src/test/SafetySheet.test.tsx
+?? src/test/backendSocketSecurity.test.ts
+?? src/test/driverAvailability.test.ts
+?? src/test/driverLocationState.test.ts
+?? src/test/driverPresence.test.ts
+?? src/test/rideLocationSubscription.test.ts
+?? src/test/trustedRouteProgress.test.ts
+?? src/test/useNearbyDrivers.test.ts
+?? src/test/walletTransactionDisplay.test.tsx

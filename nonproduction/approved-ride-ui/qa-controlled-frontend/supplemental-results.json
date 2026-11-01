@@ -1,0 +1,162 @@
+{
+  "scope": "ISOLATED FIXTURE ONLY; no authenticated or production verification",
+  "node": "v22.23.4",
+  "playwright": "1.64.1",
+  "cases": [
+    {
+      "name": "payment-iphone-x",
+      "status": "FAIL",
+      "measurement": {
+        "overflow": false,
+        "rootFont": "16px",
+        "smallControls": [
+          {
+            "label": "Toggle sheet",
+            "width": 64,
+            "height": 24
+          },
+          {
+            "label": "Close",
+            "width": 32,
+            "height": 32
+          }
+        ],
+        "running": 0,
+        "axe": {
+          "violations": [],
+          "incomplete": [
+            "aria-hidden-focus",
+            "color-contrast"
+          ]
+        }
+      },
+      "failure": "Error: Controls smaller than required 44px"
+    },
+    {
+      "name": "note-long-text-iphone-x",
+      "status": "PASS",
+      "length": 120,
+      "measurement": {
+        "overflow": false,
+        "rootFont": "16px",
+        "smallControls": [
+          {
+            "label": "Fixture reopen",
+            "width": 61.265625,
+            "height": 15
+          },
+          {
+            "label": "Fixture payment",
+            "width": 68.453125,
+            "height": 15
+          },
+          {
+            "label": "Fixture submitting",
+            "width": 76.796875,
+            "height": 15
+          },
+          {
+            "label": "Fixture deny note",
+            "width": 73.890625,
+            "height": 15
+          },
+          {
+            "label": "Close",
+            "width": 32,
+            "height": 32
+          },
+          {
+            "label": "Call when you arrive",
+            "width": 153.234375,
+            "height": 34
+          },
+          {
+            "label": "I have bags",
+            "width": 104.078125,
+            "height": 34
+          },
+          {
+            "label": "Elderly passenger",
+            "width": 138.03125,
+            "height": 34
+          },
+          {
+            "label": "Meet at the gate",
+            "width": 133.46875,
+            "height": 34
+          },
+          {
+            "label": "Give me 2 minutes",
+            "width": 144.234375,
+            "height": 34
+          }
+        ],
+        "running": 0,
+        "axe": {
+          "violations": [],
+          "incomplete": [
+            "color-contrast"
+          ]
+        }
+      }
+    },
+    {
+      "name": "larger-text-iphone-x",
+      "status": "PASS",
+      "home": {
+        "overflow": false,
+        "rootFont": "32px",
+        "smallControls": [],
+        "running": 0,
+        "axe": {
+          "violations": [],
+          "incomplete": [
+            "aria-prohibited-attr",
+            "color-contrast"
+          ]
+        }
+      },
+      "destination": {
+        "overflow": false,
+        "rootFont": "32px",
+        "smallControls": [],
+        "running": 0,
+        "axe": {
+          "violations": [],
+          "incomplete": [
+            "aria-prohibited-attr",
+            "color-contrast"
+          ]
+        }
+      },
+      "method": "CSS root font 200%; fixed px text does not necessarily scale; native Dynamic Type not verified"
+    },
+    {
+      "name": "finding-drivers-iphone-x",
+      "status": "PASS",
+      "measurement": {
+        "overflow": false,
+        "rootFont": "16px",
+        "smallControls": [],
+        "running": 0,
+        "axe": {
+          "violations": [],
+          "incomplete": [
+            "aria-prohibited-attr",
+            "color-contrast"
+          ]
+        }
+      }
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "httpErrors": [],
+  "requestFailures": [],
+  "blockedRequests": [],
+  "browser": {
+    "name": "Microsoft Edge",
+    "version": "156.0.4314.50"
+  },
+  "status": "FAIL"
+}

@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "trackedGitStatusPreserved": true,
+  "protectedFiles": {
+    "src/components/ride/RideView.tsx": true,
+    "src/components/luggage/LuggageSheet.tsx": true,
+    "src/components/ride/RideGlassPanel.tsx": true,
+    "src/components/BottomNavBar.tsx": true,
+    "src/components/riderNavigation.css": true
+  }
+}

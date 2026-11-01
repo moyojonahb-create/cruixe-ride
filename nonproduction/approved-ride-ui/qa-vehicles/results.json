@@ -1,0 +1,447 @@
+{
+  "pageErrors": [],
+  "assetResponses": [
+    {
+      "url": "/brand/cruize-search-car.webp",
+      "status": 200
+    },
+    {
+      "url": "/brand/cruize-search-car.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-economy-car.webp",
+      "status": 200
+    },
+    {
+      "url": "/brand/cruize-shared-car.webp",
+      "status": 200
+    },
+    {
+      "url": "/brand/cruize-parcel-van.webp",
+      "status": 200
+    },
+    {
+      "url": "/brand/cruize-search-car.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-economy-car.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-shared-car.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-parcel-van.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-search-car.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-shared-car.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-economy-car.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-parcel-van.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-search-car.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-shared-car.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-economy-car.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-parcel-van.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-search-car.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-economy-car.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-shared-car.webp",
+      "status": 304
+    },
+    {
+      "url": "/brand/cruize-parcel-van.webp",
+      "status": 304
+    }
+  ],
+  "viewports": [
+    {
+      "name": "android",
+      "width": 360,
+      "height": 800,
+      "search": {
+        "overflow": false,
+        "images": [
+          {
+            "src": "/brand/cruize-search-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 293,
+            "loaded": true,
+            "width": 61.1875,
+            "height": 54,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 196,
+            "cardHeight": 64
+          }
+        ]
+      },
+      "tiers": {
+        "overflow": false,
+        "images": [
+          {
+            "src": "/brand/cruize-economy-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 330,
+            "loaded": true,
+            "width": 68,
+            "height": 52,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 328,
+            "cardHeight": 98.5
+          },
+          {
+            "src": "/brand/cruize-shared-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 364,
+            "loaded": true,
+            "width": 54,
+            "height": 40,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 160,
+            "cardHeight": 52
+          },
+          {
+            "src": "/brand/cruize-parcel-van.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 377,
+            "loaded": true,
+            "width": 54,
+            "height": 40,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 160,
+            "cardHeight": 52
+          }
+        ]
+      }
+    },
+    {
+      "name": "iphone",
+      "width": 390,
+      "height": 844,
+      "search": {
+        "overflow": false,
+        "images": [
+          {
+            "src": "/brand/cruize-search-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 293,
+            "loaded": true,
+            "width": 66.296875,
+            "height": 54,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 226,
+            "cardHeight": 64
+          }
+        ]
+      },
+      "tiers": {
+        "overflow": false,
+        "images": [
+          {
+            "src": "/brand/cruize-economy-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 330,
+            "loaded": true,
+            "width": 68,
+            "height": 52,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 358,
+            "cardHeight": 84.75
+          },
+          {
+            "src": "/brand/cruize-shared-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 364,
+            "loaded": true,
+            "width": 54,
+            "height": 40,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 175,
+            "cardHeight": 52
+          },
+          {
+            "src": "/brand/cruize-parcel-van.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 377,
+            "loaded": true,
+            "width": 54,
+            "height": 40,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 175,
+            "cardHeight": 52
+          }
+        ]
+      }
+    },
+    {
+      "name": "narrow",
+      "width": 320,
+      "height": 568,
+      "search": {
+        "overflow": false,
+        "images": [
+          {
+            "src": "/brand/cruize-search-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 293,
+            "loaded": true,
+            "width": 40,
+            "height": 54,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 180,
+            "cardHeight": 64
+          }
+        ]
+      },
+      "tiers": {
+        "overflow": false,
+        "images": [
+          {
+            "src": "/brand/cruize-economy-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 330,
+            "loaded": true,
+            "width": 68,
+            "height": 52,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 288,
+            "cardHeight": 98.5
+          },
+          {
+            "src": "/brand/cruize-shared-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 364,
+            "loaded": true,
+            "width": 54,
+            "height": 40,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 140,
+            "cardHeight": 52
+          },
+          {
+            "src": "/brand/cruize-parcel-van.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 377,
+            "loaded": true,
+            "width": 54,
+            "height": 40,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 140,
+            "cardHeight": 52
+          }
+        ]
+      }
+    },
+    {
+      "name": "small-height",
+      "width": 375,
+      "height": 480,
+      "search": {
+        "overflow": false,
+        "images": [
+          {
+            "src": "/brand/cruize-search-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 293,
+            "loaded": true,
+            "width": 63.75,
+            "height": 54,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 211,
+            "cardHeight": 64
+          }
+        ]
+      },
+      "tiers": {
+        "overflow": false,
+        "images": [
+          {
+            "src": "/brand/cruize-economy-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 330,
+            "loaded": true,
+            "width": 68,
+            "height": 52,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 343,
+            "cardHeight": 84.75
+          },
+          {
+            "src": "/brand/cruize-shared-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 364,
+            "loaded": true,
+            "width": 54,
+            "height": 40,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 167.5,
+            "cardHeight": 52
+          },
+          {
+            "src": "/brand/cruize-parcel-van.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 377,
+            "loaded": true,
+            "width": 54,
+            "height": 40,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 167.5,
+            "cardHeight": 52
+          }
+        ]
+      }
+    },
+    {
+      "name": "large-phone",
+      "width": 430,
+      "height": 932,
+      "search": {
+        "overflow": false,
+        "images": [
+          {
+            "src": "/brand/cruize-search-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 293,
+            "loaded": true,
+            "width": 70,
+            "height": 54,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 266,
+            "cardHeight": 64
+          }
+        ]
+      },
+      "tiers": {
+        "overflow": false,
+        "images": [
+          {
+            "src": "/brand/cruize-economy-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 330,
+            "loaded": true,
+            "width": 68,
+            "height": 52,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 398,
+            "cardHeight": 84.75
+          },
+          {
+            "src": "/brand/cruize-shared-car.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 364,
+            "loaded": true,
+            "width": 54,
+            "height": 40,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 195,
+            "cardHeight": 52
+          },
+          {
+            "src": "/brand/cruize-parcel-van.webp",
+            "naturalWidth": 664,
+            "naturalHeight": 377,
+            "loaded": true,
+            "width": 54,
+            "height": 40,
+            "objectFit": "contain",
+            "filter": "none",
+            "inViewport": true,
+            "withinCard": true,
+            "cardWidth": 195,
+            "cardHeight": 52
+          }
+        ]
+      }
+    }
+  ],
+  "pass": true
+}

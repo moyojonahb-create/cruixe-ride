@@ -1,0 +1,269 @@
+{
+  "authority": "MOCKED/ISOLATED UI ONLY",
+  "cases": [
+    {
+      "overlay": "note",
+      "width": 393,
+      "height": 852,
+      "status": "PASS",
+      "checks": [
+        "canonical paths, height and white handle; viewport fit",
+        "chip append/remove preserves draft",
+        "reuse forwarded",
+        "single pending save; controls disabled; ribbon cannot close",
+        "denial retains draft and permits retry",
+        "close/reopen and ribbon close"
+      ],
+      "geometry": {
+        "paths": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "svgHeight": 30,
+        "handleColor": "rgb(255, 255, 255)",
+        "handleHeight": 5,
+        "overflow": false,
+        "panelInside": true
+      },
+      "accessibility": {
+        "name": "note-final-393",
+        "violations": []
+      },
+      "helperColor": "rgb(98, 107, 118)"
+    },
+    {
+      "overlay": "note",
+      "width": 360,
+      "height": 800,
+      "status": "PASS",
+      "checks": [
+        "canonical paths, height and white handle; viewport fit",
+        "chip append/remove preserves draft",
+        "reuse forwarded",
+        "single pending save; controls disabled; ribbon cannot close",
+        "denial retains draft and permits retry",
+        "close/reopen and ribbon close"
+      ],
+      "geometry": {
+        "paths": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "svgHeight": 30,
+        "handleColor": "rgb(255, 255, 255)",
+        "handleHeight": 5,
+        "overflow": false,
+        "panelInside": true
+      },
+      "accessibility": {
+        "name": "note-final-360",
+        "violations": []
+      },
+      "helperColor": "rgb(98, 107, 118)"
+    },
+    {
+      "overlay": "schedule",
+      "width": 393,
+      "height": 852,
+      "status": "PASS",
+      "checks": [
+        "canonical paths, height and white handle; viewport fit",
+        "day selection; reminder toggle",
+        "no premature callback; future date and reminder forwarded once",
+        "reopen and ribbon close"
+      ],
+      "geometry": {
+        "paths": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "svgHeight": 30,
+        "handleColor": "rgb(255, 255, 255)",
+        "handleHeight": 5,
+        "overflow": false,
+        "panelInside": true
+      }
+    },
+    {
+      "overlay": "schedule",
+      "width": 360,
+      "height": 800,
+      "status": "PASS",
+      "checks": [
+        "canonical paths, height and white handle; viewport fit",
+        "day selection; reminder toggle",
+        "no premature callback; future date and reminder forwarded once",
+        "reopen and ribbon close"
+      ],
+      "geometry": {
+        "paths": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "svgHeight": 30,
+        "handleColor": "rgb(255, 255, 255)",
+        "handleHeight": 5,
+        "overflow": false,
+        "panelInside": true
+      }
+    },
+    {
+      "overlay": "someone",
+      "width": 393,
+      "height": 852,
+      "status": "PASS",
+      "checks": [
+        "canonical paths, height and white handle; viewport fit",
+        "invalid recipient blocks submit; controlled name/phone",
+        "contacts callback only; notification toggle",
+        "cash payer; wallet fallback and cash-only restriction",
+        "submitting guard; denied local callback",
+        "Myself clears details; Continue closes; reopen/ribbon close"
+      ],
+      "geometry": {
+        "paths": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "svgHeight": 30,
+        "handleColor": "rgb(255, 255, 255)",
+        "handleHeight": 5,
+        "overflow": false,
+        "panelInside": true
+      }
+    },
+    {
+      "overlay": "someone",
+      "width": 360,
+      "height": 800,
+      "status": "PASS",
+      "checks": [
+        "canonical paths, height and white handle; viewport fit",
+        "invalid recipient blocks submit; controlled name/phone",
+        "contacts callback only; notification toggle",
+        "cash payer; wallet fallback and cash-only restriction",
+        "submitting guard; denied local callback",
+        "Myself clears details; Continue closes; reopen/ribbon close"
+      ],
+      "geometry": {
+        "paths": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "svgHeight": 30,
+        "handleColor": "rgb(255, 255, 255)",
+        "handleHeight": 5,
+        "overflow": false,
+        "panelInside": true
+      }
+    },
+    {
+      "overlay": "parcel",
+      "width": 393,
+      "height": 852,
+      "status": "PASS",
+      "checks": [
+        "canonical paths, height and white handle; viewport fit",
+        "recipient required; size, recipient, phone and note editing",
+        "wallet resets recipient payer; recipient option disabled",
+        "Upload opens image chooser; no upload performed",
+        "optional photo remains optional; submitting guard; denied callback payload",
+        "Back/reopen/ribbon close"
+      ],
+      "geometry": {
+        "paths": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "svgHeight": 30,
+        "handleColor": "rgb(255, 255, 255)",
+        "handleHeight": 5,
+        "overflow": false,
+        "panelInside": true
+      }
+    },
+    {
+      "overlay": "parcel",
+      "width": 360,
+      "height": 800,
+      "status": "PASS",
+      "checks": [
+        "canonical paths, height and white handle; viewport fit",
+        "recipient required; size, recipient, phone and note editing",
+        "wallet resets recipient payer; recipient option disabled",
+        "Upload opens image chooser; no upload performed",
+        "optional photo remains optional; submitting guard; denied callback payload",
+        "Back/reopen/ribbon close"
+      ],
+      "geometry": {
+        "paths": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "svgHeight": 30,
+        "handleColor": "rgb(255, 255, 255)",
+        "handleHeight": 5,
+        "overflow": false,
+        "panelInside": true
+      }
+    },
+    {
+      "overlay": "share",
+      "width": 393,
+      "height": 852,
+      "status": "PASS",
+      "checks": [
+        "canonical paths, height and white handle; viewport fit",
+        "Ride alone callback",
+        "submitting guard; denied share callback",
+        "ribbon close/reopen/backdrop close"
+      ],
+      "geometry": {
+        "paths": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "svgHeight": 30,
+        "handleColor": "rgb(255, 255, 255)",
+        "handleHeight": 5,
+        "overflow": false,
+        "panelInside": true
+      }
+    },
+    {
+      "overlay": "share",
+      "width": 360,
+      "height": 800,
+      "status": "PASS",
+      "checks": [
+        "canonical paths, height and white handle; viewport fit",
+        "Ride alone callback",
+        "submitting guard; denied share callback",
+        "ribbon close/reopen/backdrop close"
+      ],
+      "geometry": {
+        "paths": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "svgHeight": 30,
+        "handleColor": "rgb(255, 255, 255)",
+        "handleHeight": 5,
+        "overflow": false,
+        "panelInside": true
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "blockedRequests": [],
+  "forbiddenWrites": [],
+  "checks": [],
+  "browser": {
+    "name": "Microsoft Edge",
+    "executablePath": "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+    "version": "156.0.4314.50"
+  },
+  "status": "PASS"
+}

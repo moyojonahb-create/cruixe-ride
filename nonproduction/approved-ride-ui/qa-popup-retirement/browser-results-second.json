@@ -1,0 +1,1373 @@
+{
+  "scope": "SAFE LABELLED ISOLATED FIXTURE ONLY; no booking/payment writes",
+  "node": "v22.23.4",
+  "playwright": "1.64.1",
+  "cases": [
+    {
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "status": "FAIL",
+      "checks": [
+        "Pickup/destination selected; configuration has no automatic luggage or payment popup",
+        "Optional luggage opens on tap; draft saves and reopens; Escape restores focus",
+        "One inline payment selector; cash/wallet persist through close/reopen; focus and Escape work; no booking service event",
+        "Note chip preserves draft, semantic dialog traps focus, Escape closes"
+      ],
+      "states": [
+        {
+          "name": "configuration",
+          "overflow": false,
+          "targets": [
+            {
+              "label": "Toggle sheet",
+              "x": 128,
+              "y": 165.203125,
+              "w": 64,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "x": 14,
+              "y": 208.203125,
+              "w": 120.46875,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "PickupFixture destination 2",
+              "x": 26,
+              "y": 267.203125,
+              "w": 268,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "DestinationFixture destination",
+              "x": 26,
+              "y": 311.203125,
+              "w": 268,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "EconomyAffordable rides, everyday$6.004·9 minFast pickup",
+              "x": 16,
+              "y": 255.203125,
+              "w": 288,
+              "h": 112.5,
+              "hit": false
+            },
+            {
+              "label": "Fewer passengers",
+              "x": 162,
+              "y": 383.703125,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "More passengers",
+              "x": 246,
+              "y": 383.703125,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Who is riding? · Myself",
+              "x": 16,
+              "y": 448,
+              "w": 288,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "LuggageOptional photo",
+              "x": 16,
+              "y": 502,
+              "w": 140,
+              "h": 68,
+              "hit": true
+            },
+            {
+              "label": "Payment method: Cash",
+              "x": 164,
+              "y": 502,
+              "w": 140,
+              "h": 68,
+              "hit": true
+            },
+            {
+              "label": "Schedule",
+              "x": 16,
+              "y": 570,
+              "w": 96,
+              "h": 48,
+              "hit": true
+            },
+            {
+              "label": "Confirm location & continue",
+              "x": 124,
+              "y": 570,
+              "w": 180,
+              "h": 48,
+              "hit": true
+            }
+          ],
+          "overlap": [
+            [
+              "Toggle sheet",
+              "Select town, currently Gwanda"
+            ]
+          ],
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "name": "luggage",
+          "overflow": false,
+          "targets": [
+            {
+              "label": "Close",
+              "x": 256,
+              "y": 86,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Fixture bags",
+              "x": 20,
+              "y": 190,
+              "w": 280,
+              "h": 90,
+              "hit": true
+            },
+            {
+              "label": "Small1-2 bags",
+              "x": 20,
+              "y": 356,
+              "w": 136,
+              "h": 64,
+              "hit": true
+            },
+            {
+              "label": "Medium3-4 bags",
+              "x": 164,
+              "y": 356,
+              "w": 136,
+              "h": 64,
+              "hit": true
+            },
+            {
+              "label": "LargeBoxes / suitcases",
+              "x": 20,
+              "y": 428,
+              "w": 136,
+              "h": 80,
+              "hit": true
+            },
+            {
+              "label": "Extra LargeFurniture / appliances",
+              "x": 164,
+              "y": 428,
+              "w": 136,
+              "h": 80,
+              "hit": true
+            },
+            {
+              "label": "Camera",
+              "x": 20,
+              "y": 555.5,
+              "w": 88,
+              "h": 88,
+              "hit": false
+            },
+            {
+              "label": "Gallery",
+              "x": 116,
+              "y": 555.5,
+              "w": 88,
+              "h": 88,
+              "hit": false
+            },
+            {
+              "label": "Save Luggage Details",
+              "x": 16,
+              "y": 574,
+              "w": 288,
+              "h": 50,
+              "hit": true
+            }
+          ],
+          "overlap": [],
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-hidden-focus",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "name": "payment",
+          "overflow": false,
+          "targets": [
+            {
+              "label": "Toggle sheet",
+              "x": 128,
+              "y": 165.203125,
+              "w": 64,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "x": 14,
+              "y": 208.203125,
+              "w": 120.46875,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "PickupFixture destination 2",
+              "x": 26,
+              "y": 267.203125,
+              "w": 268,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "DestinationFixture destination",
+              "x": 26,
+              "y": 311.203125,
+              "w": 268,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "EconomyAffordable rides, everyday$6.004·9 minFast pickup",
+              "x": 16,
+              "y": 255.203125,
+              "w": 288,
+              "h": 112.5,
+              "hit": false
+            },
+            {
+              "label": "Fewer passengers",
+              "x": 162,
+              "y": 383.703125,
+              "w": 44,
+              "h": 44,
+              "hit": false
+            },
+            {
+              "label": "More passengers",
+              "x": 246,
+              "y": 383.703125,
+              "w": 44,
+              "h": 44,
+              "hit": false
+            },
+            {
+              "label": "Who is riding? · Myself",
+              "x": 16,
+              "y": 384.203125,
+              "w": 288,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "LuggageDetails added",
+              "x": 16,
+              "y": 438.203125,
+              "w": 140,
+              "h": 68,
+              "hit": true
+            },
+            {
+              "label": "Payment method: Cash",
+              "x": 164,
+              "y": 438.203125,
+              "w": 140,
+              "h": 68,
+              "hit": true
+            },
+            {
+              "label": "Close payment choices",
+              "x": 247,
+              "y": 527.203125,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Cash",
+              "x": 29,
+              "y": 581.203125,
+              "w": 262,
+              "h": 50,
+              "hit": true
+            },
+            {
+              "label": "Wallet",
+              "x": 29,
+              "y": 641.203125,
+              "w": 262,
+              "h": 50,
+              "hit": false
+            },
+            {
+              "label": "Schedule",
+              "x": 16,
+              "y": 704.203125,
+              "w": 96,
+              "h": 48,
+              "hit": false
+            },
+            {
+              "label": "Confirm location & continue",
+              "x": 124,
+              "y": 704.203125,
+              "w": 180,
+              "h": 48,
+              "hit": false
+            }
+          ],
+          "overlap": [
+            [
+              "Toggle sheet",
+              "Select town, currently Gwanda"
+            ]
+          ],
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "name": "note",
+          "overflow": false,
+          "targets": [
+            {
+              "label": "Toggle sheet",
+              "x": 128,
+              "y": 54.828125,
+              "w": 64,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Close",
+              "x": 260,
+              "y": 118.515625,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Note for your driver",
+              "x": 30,
+              "y": 193.21875,
+              "w": 260,
+              "h": 44.78125,
+              "hit": true
+            },
+            {
+              "label": "Call when you arrive",
+              "x": 16,
+              "y": 312,
+              "w": 157.78125,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "I have bags",
+              "x": 180.78125,
+              "y": 312,
+              "w": 104.078125,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Elderly passenger",
+              "x": 16,
+              "y": 363,
+              "w": 138.03125,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Meet at the gate",
+              "x": 161.03125,
+              "y": 363,
+              "w": 133.46875,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Give me 2 minutes",
+              "x": 16,
+              "y": 414,
+              "w": 144.234375,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Use this note every trip",
+              "x": 16,
+              "y": 471,
+              "w": 288,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Cancel",
+              "x": 16,
+              "y": 528,
+              "w": 104,
+              "h": 48,
+              "hit": true
+            },
+            {
+              "label": "Save note",
+              "x": 132,
+              "y": 528,
+              "w": 172,
+              "h": 48,
+              "hit": true
+            }
+          ],
+          "overlap": [],
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-hidden-focus",
+              "color-contrast"
+            ]
+          }
+        }
+      ],
+      "failure": "Error: configuration overlapping controls"
+    },
+    {
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "status": "PASS",
+      "checks": [
+        "Pickup/destination selected; configuration has no automatic luggage or payment popup",
+        "Optional luggage opens on tap; draft saves and reopens; Escape restores focus",
+        "One inline payment selector; cash/wallet persist through close/reopen; focus and Escape work; no booking service event",
+        "Note chip preserves draft, semantic dialog traps focus, Escape closes"
+      ],
+      "states": [
+        {
+          "name": "configuration",
+          "overflow": false,
+          "targets": [
+            {
+              "label": "Toggle sheet",
+              "x": 155.5,
+              "y": 248.25,
+              "w": 64,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "x": 14,
+              "y": 291.25,
+              "w": 120.46875,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "PickupFixture destination 2",
+              "x": 26,
+              "y": 350.25,
+              "w": 323,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "DestinationFixture destination",
+              "x": 26,
+              "y": 394.25,
+              "w": 323,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "EconomyAffordable rides, everyday$6.004·9 minFast pickup",
+              "x": 16,
+              "y": 455.25,
+              "w": 343,
+              "h": 84.75,
+              "hit": true
+            },
+            {
+              "label": "Fewer passengers",
+              "x": 217,
+              "y": 556,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "More passengers",
+              "x": 301,
+              "y": 556,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Who is riding? · Myself",
+              "x": 16,
+              "y": 620,
+              "w": 343,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "LuggageOptional photo",
+              "x": 16,
+              "y": 674,
+              "w": 167.5,
+              "h": 68,
+              "hit": true
+            },
+            {
+              "label": "Payment method: Cash",
+              "x": 191.5,
+              "y": 674,
+              "w": 167.5,
+              "h": 68,
+              "hit": true
+            },
+            {
+              "label": "Schedule",
+              "x": 16,
+              "y": 742,
+              "w": 101.25,
+              "h": 48,
+              "hit": true
+            },
+            {
+              "label": "Confirm location & continue",
+              "x": 129.25,
+              "y": 742,
+              "w": 229.75,
+              "h": 48,
+              "hit": true
+            }
+          ],
+          "overlap": [],
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "name": "luggage",
+          "overflow": false,
+          "targets": [
+            {
+              "label": "Close",
+              "x": 311,
+              "y": 129.671875,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Fixture bags",
+              "x": 20,
+              "y": 233.671875,
+              "w": 335,
+              "h": 90,
+              "hit": true
+            },
+            {
+              "label": "Small1-2 bags",
+              "x": 20,
+              "y": 399.671875,
+              "w": 163.5,
+              "h": 64,
+              "hit": true
+            },
+            {
+              "label": "Medium3-4 bags",
+              "x": 191.5,
+              "y": 399.671875,
+              "w": 163.5,
+              "h": 64,
+              "hit": true
+            },
+            {
+              "label": "LargeBoxes / suitcases",
+              "x": 20,
+              "y": 471.671875,
+              "w": 163.5,
+              "h": 64,
+              "hit": true
+            },
+            {
+              "label": "Extra LargeFurniture / appliances",
+              "x": 191.5,
+              "y": 471.671875,
+              "w": 163.5,
+              "h": 64,
+              "hit": true
+            },
+            {
+              "label": "Camera",
+              "x": 20,
+              "y": 583.171875,
+              "w": 106.328125,
+              "h": 106.328125,
+              "hit": true
+            },
+            {
+              "label": "Gallery",
+              "x": 134.328125,
+              "y": 583.171875,
+              "w": 106.328125,
+              "h": 106.328125,
+              "hit": true
+            },
+            {
+              "label": "Save Luggage Details",
+              "x": 16,
+              "y": 746,
+              "w": 343,
+              "h": 50,
+              "hit": true
+            }
+          ],
+          "overlap": [],
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-hidden-focus",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "name": "payment",
+          "overflow": false,
+          "targets": [
+            {
+              "label": "Toggle sheet",
+              "x": 155.5,
+              "y": 213.375,
+              "w": 64,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "x": 14,
+              "y": 256.375,
+              "w": 120.46875,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "PickupFixture destination 2",
+              "x": 26,
+              "y": 315.375,
+              "w": 323,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "DestinationFixture destination",
+              "x": 26,
+              "y": 359.375,
+              "w": 323,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "EconomyAffordable rides, everyday$6.004·9 minFast pickup",
+              "x": 16,
+              "y": 420.375,
+              "w": 343,
+              "h": 84.75,
+              "hit": false
+            },
+            {
+              "label": "Fewer passengers",
+              "x": 217,
+              "y": 521.125,
+              "w": 44,
+              "h": 44,
+              "hit": false
+            },
+            {
+              "label": "More passengers",
+              "x": 301,
+              "y": 521.125,
+              "w": 44,
+              "h": 44,
+              "hit": false
+            },
+            {
+              "label": "Who is riding? · Myself",
+              "x": 16,
+              "y": 432.375,
+              "w": 343,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "LuggageDetails added",
+              "x": 16,
+              "y": 486.375,
+              "w": 167.5,
+              "h": 68,
+              "hit": true
+            },
+            {
+              "label": "Payment method: Cash",
+              "x": 191.5,
+              "y": 486.375,
+              "w": 167.5,
+              "h": 68,
+              "hit": true
+            },
+            {
+              "label": "Close payment choices",
+              "x": 302,
+              "y": 575.375,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Cash",
+              "x": 29,
+              "y": 629.375,
+              "w": 317,
+              "h": 50,
+              "hit": true
+            },
+            {
+              "label": "Wallet",
+              "x": 29,
+              "y": 689.375,
+              "w": 317,
+              "h": 50,
+              "hit": true
+            },
+            {
+              "label": "Schedule",
+              "x": 16,
+              "y": 752.375,
+              "w": 101.25,
+              "h": 48,
+              "hit": true
+            },
+            {
+              "label": "Confirm location & continue",
+              "x": 129.25,
+              "y": 752.375,
+              "w": 229.75,
+              "h": 48,
+              "hit": true
+            }
+          ],
+          "overlap": [],
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "name": "note",
+          "overflow": false,
+          "targets": [
+            {
+              "label": "Toggle sheet",
+              "x": 155.5,
+              "y": 236.21875,
+              "w": 64,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Close",
+              "x": 315,
+              "y": 295.21875,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Note for your driver",
+              "x": 30,
+              "y": 365.21875,
+              "w": 315,
+              "h": 44.78125,
+              "hit": true
+            },
+            {
+              "label": "Call when you arrive",
+              "x": 16,
+              "y": 484,
+              "w": 157.78125,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "I have bags",
+              "x": 180.78125,
+              "y": 484,
+              "w": 104.078125,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Elderly passenger",
+              "x": 16,
+              "y": 535,
+              "w": 138.03125,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Meet at the gate",
+              "x": 161.03125,
+              "y": 535,
+              "w": 133.46875,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Give me 2 minutes",
+              "x": 16,
+              "y": 586,
+              "w": 144.234375,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Use this note every trip",
+              "x": 16,
+              "y": 643,
+              "w": 343,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Cancel",
+              "x": 16,
+              "y": 700,
+              "w": 104,
+              "h": 48,
+              "hit": true
+            },
+            {
+              "label": "Save note",
+              "x": 132,
+              "y": 700,
+              "w": 227,
+              "h": 48,
+              "hit": true
+            }
+          ],
+          "overlap": [],
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-hidden-focus",
+              "color-contrast"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "status": "PASS",
+      "checks": [
+        "Pickup/destination selected; configuration has no automatic luggage or payment popup",
+        "Optional luggage opens on tap; draft saves and reopens; Escape restores focus",
+        "One inline payment selector; cash/wallet persist through close/reopen; focus and Escape work; no booking service event",
+        "Note chip preserves draft, semantic dialog traps focus, Escape closes"
+      ],
+      "states": [
+        {
+          "name": "configuration",
+          "overflow": false,
+          "targets": [
+            {
+              "label": "Toggle sheet",
+              "x": 164.5,
+              "y": 288.25,
+              "w": 64,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "x": 14,
+              "y": 331.25,
+              "w": 120.46875,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "PickupFixture destination 2",
+              "x": 26,
+              "y": 390.25,
+              "w": 341,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "DestinationFixture destination",
+              "x": 26,
+              "y": 434.25,
+              "w": 341,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "EconomyAffordable rides, everyday$6.004·9 minFast pickup",
+              "x": 16,
+              "y": 495.25,
+              "w": 361,
+              "h": 84.75,
+              "hit": true
+            },
+            {
+              "label": "Fewer passengers",
+              "x": 235,
+              "y": 596,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "More passengers",
+              "x": 319,
+              "y": 596,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Who is riding? · Myself",
+              "x": 16,
+              "y": 660,
+              "w": 361,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "LuggageOptional photo",
+              "x": 16,
+              "y": 714,
+              "w": 176.5,
+              "h": 68,
+              "hit": true
+            },
+            {
+              "label": "Payment method: Cash",
+              "x": 200.5,
+              "y": 714,
+              "w": 176.5,
+              "h": 68,
+              "hit": true
+            },
+            {
+              "label": "Schedule",
+              "x": 16,
+              "y": 782,
+              "w": 106.109375,
+              "h": 48,
+              "hit": true
+            },
+            {
+              "label": "Confirm location & continue",
+              "x": 134.109375,
+              "y": 782,
+              "w": 242.890625,
+              "h": 48,
+              "hit": true
+            }
+          ],
+          "overlap": [],
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "name": "luggage",
+          "overflow": false,
+          "targets": [
+            {
+              "label": "Close",
+              "x": 329,
+              "y": 163.671875,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Fixture bags",
+              "x": 20,
+              "y": 267.671875,
+              "w": 353,
+              "h": 90,
+              "hit": true
+            },
+            {
+              "label": "Small1-2 bags",
+              "x": 20,
+              "y": 433.671875,
+              "w": 172.5,
+              "h": 64,
+              "hit": true
+            },
+            {
+              "label": "Medium3-4 bags",
+              "x": 200.5,
+              "y": 433.671875,
+              "w": 172.5,
+              "h": 64,
+              "hit": true
+            },
+            {
+              "label": "LargeBoxes / suitcases",
+              "x": 20,
+              "y": 505.671875,
+              "w": 172.5,
+              "h": 64,
+              "hit": true
+            },
+            {
+              "label": "Extra LargeFurniture / appliances",
+              "x": 200.5,
+              "y": 505.671875,
+              "w": 172.5,
+              "h": 64,
+              "hit": true
+            },
+            {
+              "label": "Camera",
+              "x": 20,
+              "y": 617.171875,
+              "w": 112.328125,
+              "h": 112.328125,
+              "hit": true
+            },
+            {
+              "label": "Gallery",
+              "x": 140.328125,
+              "y": 617.171875,
+              "w": 112.328125,
+              "h": 112.328125,
+              "hit": true
+            },
+            {
+              "label": "Save Luggage Details",
+              "x": 16,
+              "y": 786,
+              "w": 361,
+              "h": 50,
+              "hit": true
+            }
+          ],
+          "overlap": [],
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-hidden-focus",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "name": "payment",
+          "overflow": false,
+          "targets": [
+            {
+              "label": "Toggle sheet",
+              "x": 164.5,
+              "y": 224.5625,
+              "w": 64,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "x": 14,
+              "y": 267.5625,
+              "w": 120.46875,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "PickupFixture destination 2",
+              "x": 26,
+              "y": 326.5625,
+              "w": 341,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "DestinationFixture destination",
+              "x": 26,
+              "y": 370.5625,
+              "w": 341,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "EconomyAffordable rides, everyday$6.004·9 minFast pickup",
+              "x": 16,
+              "y": 431.5625,
+              "w": 361,
+              "h": 84.75,
+              "hit": false
+            },
+            {
+              "label": "Fewer passengers",
+              "x": 235,
+              "y": 532.3125,
+              "w": 44,
+              "h": 44,
+              "hit": false
+            },
+            {
+              "label": "More passengers",
+              "x": 319,
+              "y": 532.3125,
+              "w": 44,
+              "h": 44,
+              "hit": false
+            },
+            {
+              "label": "Who is riding? · Myself",
+              "x": 16,
+              "y": 462,
+              "w": 361,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "LuggageDetails added",
+              "x": 16,
+              "y": 516,
+              "w": 176.5,
+              "h": 68,
+              "hit": true
+            },
+            {
+              "label": "Payment method: Cash",
+              "x": 200.5,
+              "y": 516,
+              "w": 176.5,
+              "h": 68,
+              "hit": true
+            },
+            {
+              "label": "Close payment choices",
+              "x": 320,
+              "y": 605,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Cash",
+              "x": 29,
+              "y": 659,
+              "w": 335,
+              "h": 50,
+              "hit": true
+            },
+            {
+              "label": "Wallet",
+              "x": 29,
+              "y": 719,
+              "w": 335,
+              "h": 50,
+              "hit": true
+            },
+            {
+              "label": "Schedule",
+              "x": 16,
+              "y": 782,
+              "w": 106.109375,
+              "h": 48,
+              "hit": true
+            },
+            {
+              "label": "Confirm location & continue",
+              "x": 134.109375,
+              "y": 782,
+              "w": 242.890625,
+              "h": 48,
+              "hit": true
+            }
+          ],
+          "overlap": [],
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "name": "note",
+          "overflow": false,
+          "targets": [
+            {
+              "label": "Toggle sheet",
+              "x": 164.5,
+              "y": 276.21875,
+              "w": 64,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Close",
+              "x": 333,
+              "y": 335.21875,
+              "w": 44,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Note for your driver",
+              "x": 30,
+              "y": 405.21875,
+              "w": 333,
+              "h": 44.78125,
+              "hit": true
+            },
+            {
+              "label": "Call when you arrive",
+              "x": 16,
+              "y": 524,
+              "w": 157.78125,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "I have bags",
+              "x": 180.78125,
+              "y": 524,
+              "w": 104.078125,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Elderly passenger",
+              "x": 16,
+              "y": 575,
+              "w": 138.03125,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Meet at the gate",
+              "x": 161.03125,
+              "y": 575,
+              "w": 133.46875,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Give me 2 minutes",
+              "x": 16,
+              "y": 626,
+              "w": 144.234375,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Use this note every trip",
+              "x": 16,
+              "y": 683,
+              "w": 361,
+              "h": 44,
+              "hit": true
+            },
+            {
+              "label": "Cancel",
+              "x": 16,
+              "y": 740,
+              "w": 104,
+              "h": 48,
+              "hit": true
+            },
+            {
+              "label": "Save note",
+              "x": 132,
+              "y": 740,
+              "w": 245,
+              "h": 48,
+              "hit": true
+            }
+          ],
+          "overlap": [],
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-hidden-focus",
+              "color-contrast"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [
+    "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Primitive.div.SlotClone`. \n    at AnimatePresence (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/framer-motion.js?v=085adcaa:8030:26)\n    at http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-ELTHOTTD.js?v=085adcaa:79:13\n    at http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-ELTHOTTD.js?v=085adcaa:56:13\n    at http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-3IR2LTQ3.js?v=085adcaa:43:13\n    at http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-D47DNWMG.js?v=085adcaa:566:22\n    at Presence (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-D47DNWMG.js?v=085adcaa:584:11)\n    at Provider (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-G25YKNMU.js?v=085adcaa:38:15)\n    at DialogPortal (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-D47DNWMG.js?v=085adcaa:1641:11)\n    at Provider (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-G25YKNMU.js?v=085adcaa:38:15)\n    at Dialog (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-D47DNWMG.js?v=085adcaa:1581:5)\n    at LuggageSheet (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/components/luggage/LuggageSheet.tsx?t=1793542076091:55:40)\n    at div\n    at RideView (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/components/ride/RideView.tsx?t=1793543060824:110:22)\n    at RenderedRoute (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/react-router-dom.js?v=085adcaa:4088:5)\n    at Routes (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/react-router-dom.js?v=085adcaa:4558:5)\n    at Fixture (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/fixture.tsx?t=1793543060824:43:22)\n    at RiderNavigationProvider (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/components/RiderNavigationProvider.tsx:29:134)\n    at Router (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/react-router-dom.js?v=085adcaa:4501:15)\n    at BrowserRouter (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/react-router-dom.js?v=085adcaa:5247:5)\n    at QueryClientProvider (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/@tanstack_react-query.js?v=085adcaa:2934:3)",
+    "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Primitive.div.SlotClone`. \n    at AnimatePresence (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/framer-motion.js?v=085adcaa:8030:26)\n    at http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-ELTHOTTD.js?v=085adcaa:79:13\n    at http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-ELTHOTTD.js?v=085adcaa:56:13\n    at http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-3IR2LTQ3.js?v=085adcaa:43:13\n    at http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-D47DNWMG.js?v=085adcaa:566:22\n    at Presence (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-D47DNWMG.js?v=085adcaa:584:11)\n    at Provider (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-G25YKNMU.js?v=085adcaa:38:15)\n    at DialogPortal (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-D47DNWMG.js?v=085adcaa:1641:11)\n    at Provider (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-G25YKNMU.js?v=085adcaa:38:15)\n    at Dialog (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-D47DNWMG.js?v=085adcaa:1581:5)\n    at LuggageSheet (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/components/luggage/LuggageSheet.tsx?t=1793542076091:55:40)\n    at div\n    at RideView (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/components/ride/RideView.tsx?t=1793543060824:110:22)\n    at RenderedRoute (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/react-router-dom.js?v=085adcaa:4088:5)\n    at Routes (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/react-router-dom.js?v=085adcaa:4558:5)\n    at Fixture (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/fixture.tsx?t=1793543060824:43:22)\n    at RiderNavigationProvider (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/components/RiderNavigationProvider.tsx:29:134)\n    at Router (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/react-router-dom.js?v=085adcaa:4501:15)\n    at BrowserRouter (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/react-router-dom.js?v=085adcaa:5247:5)\n    at QueryClientProvider (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/@tanstack_react-query.js?v=085adcaa:2934:3)",
+    "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Primitive.div.SlotClone`. \n    at AnimatePresence (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/framer-motion.js?v=085adcaa:8030:26)\n    at http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-ELTHOTTD.js?v=085adcaa:79:13\n    at http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-ELTHOTTD.js?v=085adcaa:56:13\n    at http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-3IR2LTQ3.js?v=085adcaa:43:13\n    at http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-D47DNWMG.js?v=085adcaa:566:22\n    at Presence (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-D47DNWMG.js?v=085adcaa:584:11)\n    at Provider (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-G25YKNMU.js?v=085adcaa:38:15)\n    at DialogPortal (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-D47DNWMG.js?v=085adcaa:1641:11)\n    at Provider (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-G25YKNMU.js?v=085adcaa:38:15)\n    at Dialog (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/chunk-D47DNWMG.js?v=085adcaa:1581:5)\n    at LuggageSheet (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/components/luggage/LuggageSheet.tsx?t=1793542076091:55:40)\n    at div\n    at RideView (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/components/ride/RideView.tsx?t=1793543060824:110:22)\n    at RenderedRoute (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/react-router-dom.js?v=085adcaa:4088:5)\n    at Routes (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/react-router-dom.js?v=085adcaa:4558:5)\n    at Fixture (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/fixture.tsx?t=1793543060824:43:22)\n    at RiderNavigationProvider (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/src/components/RiderNavigationProvider.tsx:29:134)\n    at Router (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/react-router-dom.js?v=085adcaa:4501:15)\n    at BrowserRouter (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/react-router-dom.js?v=085adcaa:5247:5)\n    at QueryClientProvider (http://127.0.0.1:8083/@fs/C:/Users/MUSAE/Documents/koloi-ride-with-confidence/nonproduction/approved-ride-ui/qa-stabilization/vite-fixture-cache/deps/@tanstack_react-query.js?v=085adcaa:2934:3)"
+  ],
+  "httpErrors": [],
+  "requestFailures": [],
+  "blocked": [],
+  "browser": {
+    "name": "Microsoft Edge",
+    "version": "156.0.4314.50"
+  },
+  "status": "FAIL"
+}

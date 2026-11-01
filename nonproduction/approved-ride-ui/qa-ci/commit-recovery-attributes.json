@@ -1,0 +1,18 @@
+{
+  "original": {
+    "conversionConfiguration": "file:C:/Program Files/Git/etc/gitconfig\tfilter.lfs.clean git-lfs clean -- %f\nfile:C:/Program Files/Git/etc/gitconfig\tfilter.lfs.smudge git-lfs smudge -- %f\nfile:C:/Program Files/Git/etc/gitconfig\tfilter.lfs.process git-lfs filter-process\nfile:C:/Program Files/Git/etc/gitconfig\tfilter.lfs.required true\nfile:C:/Program Files/Git/etc/gitconfig\tcore.autocrlf true",
+    "allAttributes": "",
+    "explicitAttributes": ".github/workflows/cruixe-approved-frontend-verify.yml: text: unspecified\n.github/workflows/cruixe-approved-frontend-verify.yml: eol: unspecified\n.github/workflows/cruixe-approved-frontend-verify.yml: filter: unspecified\n.github/workflows/cruixe-approved-frontend-verify.yml: working-tree-encoding: unspecified\nnonproduction/approved-ride-ui/qa-ci/review/approved-frontend-ci.tgz: text: unspecified\nnonproduction/approved-ride-ui/qa-ci/review/approved-frontend-ci.tgz: eol: unspecified\nnonproduction/approved-ride-ui/qa-ci/review/approved-frontend-ci.tgz: filter: unspecified\nnonproduction/approved-ride-ui/qa-ci/review/approved-frontend-ci.tgz: working-tree-encoding: unspecified\nnonproduction/approved-ride-ui/qa-ci/review/review-manifest.json: text: unspecified\nnonproduction/approved-ride-ui/qa-ci/review/review-manifest.json: eol: unspecified\nnonproduction/approved-ride-ui/qa-ci/review/review-manifest.json: filter: unspecified\nnonproduction/approved-ride-ui/qa-ci/review/review-manifest.json: working-tree-encoding: unspecified",
+    "attributeFiles": [],
+    "authorNameAvailable": true,
+    "authorEmailAvailable": true
+  },
+  "temporaryClone": {
+    "conversionConfiguration": "file:C:/Program Files/Git/etc/gitconfig\tfilter.lfs.clean git-lfs clean -- %f\nfile:C:/Program Files/Git/etc/gitconfig\tfilter.lfs.smudge git-lfs smudge -- %f\nfile:C:/Program Files/Git/etc/gitconfig\tfilter.lfs.process git-lfs filter-process\nfile:C:/Program Files/Git/etc/gitconfig\tfilter.lfs.required true\nfile:C:/Program Files/Git/etc/gitconfig\tcore.autocrlf true",
+    "allAttributes": "",
+    "explicitAttributes": "",
+    "attributeFiles": [],
+    "authorNameAvailable": false,
+    "authorEmailAvailable": false
+  }
+}

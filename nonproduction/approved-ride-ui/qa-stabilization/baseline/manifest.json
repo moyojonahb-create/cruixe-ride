@@ -1,0 +1,38 @@
+[
+  {
+    "file": "src/components/ride/RideView.tsx",
+    "sha256": "9ca943cf04804abaae5266ba44f56c2f568ab951d3991de3dedb04ac81636bd4"
+  },
+  {
+    "file": "src/pages/RideMatching.tsx",
+    "sha256": "991af53b2f5d4ab548d570068e59ff8c8eecf7329417c9d9cb3fd13ae5e05056"
+  },
+  {
+    "file": "src/components/ride/approvedRide.css",
+    "sha256": "317cd0f0c8559ba817aa7f8f3fb21c8f985edafba1e804ad91064e5fb3522f90"
+  },
+  {
+    "file": "src/components/ride/RideGlassPanel.tsx",
+    "sha256": "7dafe11672b599b0e8f3d852a332f0f4304b82f520d69dac8b1e2736b9db931a"
+  },
+  {
+    "file": "src/components/BottomNavBar.tsx",
+    "sha256": "7c6db68008885a193ad9c2ec29fa38ad243a8f837ccb7261e8e78bc4b7edd311"
+  },
+  {
+    "file": "src/components/riderNavigation.css",
+    "sha256": "7aff2df00eb6eb12391a4caea0e00ce0c68078516aa9a771f730d57f861094ed"
+  },
+  {
+    "file": "src/components/luggage/LuggageSheet.tsx",
+    "sha256": "3a6b418107ea70bebf45d28a43062b42677bd2f97d251f5c7995a8ff44c2dc51"
+  },
+  {
+    "file": "src/components/ride/ScheduleRide.tsx",
+    "sha256": "3383949482ed76e0bd4c17f65b21b9fab2aef2392153dffe9461d273bf5193d1"
+  },
+  {
+    "file": "src/components/ride/RideTierSelector.tsx",
+    "sha256": "917070cb0d3500ac5c0b4cce7a1f5fe8b78a354a3890ffc182abd5b607f9fb2b"
+  }
+]

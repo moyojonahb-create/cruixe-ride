@@ -1,0 +1,14 @@
+--- before/src/components/ride/RideTierSelector.tsx
++++ after/src/components/ride/RideTierSelector.tsx
+@@ -218,7 +218,10 @@
+         <div className="ride-passenger-control flex items-center justify-between rounded-2xl px-3.5 py-2" style={{ ...tintBlue }}>
+           <span className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold" style={{ color: RIDE_TEXT }}>
+             <Users className="w-3.5 h-3.5" style={{ color: RIDE_TEXT_2 }} />
+-            Passengers
++            <span className="flex flex-col">
++              <span>Passengers</span>
++              {configuration && <span className="ride-passenger-count">{passengerCount} {passengerCount === 1 ? 'passenger' : 'passengers'}</span>}
++            </span>
+           </span>
+           <div className="flex items-center gap-3">
+             <button

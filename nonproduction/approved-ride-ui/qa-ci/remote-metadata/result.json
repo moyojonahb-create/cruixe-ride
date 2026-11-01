@@ -1,0 +1,10 @@
+{
+  "ci.yml": {
+    "status": "PASS",
+    "source": "https://raw.githubusercontent.com/moyojonahb-create/PickMe-App/1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8/.github/workflows/ci.yml"
+  },
+  "cd.yml": {
+    "status": "PASS",
+    "source": "https://raw.githubusercontent.com/moyojonahb-create/PickMe-App/1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8/.github/workflows/cd.yml"
+  }
+}

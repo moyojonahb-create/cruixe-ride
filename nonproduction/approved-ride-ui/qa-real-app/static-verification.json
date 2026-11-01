@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "node": "v22.23.4",
+  "scope": "Lightweight source/static checks only, not compiler/Vitest/build verification",
+  "checks": [
+    {
+      "name": "main HTML preserves all other bytes and allows zoom",
+      "status": "PASS"
+    },
+    {
+      "name": "isolated HTML preserves all other bytes and allows zoom",
+      "status": "PASS"
+    },
+    {
+      "name": "src/components/ride/approvedRide.css CSS parsing",
+      "status": "PASS"
+    },
+    {
+      "name": "src/components/ride/destinationScreen.css CSS parsing",
+      "status": "PASS"
+    },
+    {
+      "name": "Frozen three-file CI payload unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "src/components/ride/RideGlassPanel.tsx unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "src/components/BottomNavBar.tsx unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "src/components/riderNavigation.css unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "Original index byte-identical",
+      "status": "PASS"
+    }
+  ]
+}

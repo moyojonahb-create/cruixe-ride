@@ -1,0 +1,15 @@
+{
+  "authority": "MOCKED/ISOLATED UI ONLY",
+  "cases": [],
+  "pageErrors": [
+    "PickMe is misconfigured: VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY were not set when this build was created."
+  ],
+  "consoleErrors": [
+    "[PickMe] PickMe is misconfigured: VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY were not set when this build was created."
+  ],
+  "httpErrors": [],
+  "blockedRequests": [],
+  "forbiddenWrites": [],
+  "checks": [],
+  "failure": "TimeoutError: locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Choose Economy', exact: true }) to be visible\u001b[22m\n"
+}

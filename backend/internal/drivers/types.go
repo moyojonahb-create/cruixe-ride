@@ -3,14 +3,16 @@ package drivers
 import "time"
 
 type DriverLocationRequest struct {
-	DriverID    string  `json:"driver_id"`
-	RideID      string  `json:"ride_id"`
-	Latitude    float64 `json:"latitude"`
-	Longitude   float64 `json:"longitude"`
-	Speed       float64 `json:"speed"`
-	Heading     float64 `json:"heading"`
-	City        string  `json:"city,omitempty"`
-	VehicleType string  `json:"vehicle_type,omitempty"`
+	DriverID    string     `json:"driver_id"`
+	RideID      string     `json:"ride_id"`
+	Latitude    float64    `json:"latitude"`
+	Longitude   float64    `json:"longitude"`
+	Speed       float64    `json:"speed"`
+	Heading     float64    `json:"heading"`
+	GPSFixedAt  *time.Time `json:"gps_fixed_at,omitempty"`
+	AccuracyM   *float64   `json:"accuracy_m,omitempty"`
+	City        string     `json:"city,omitempty"`
+	VehicleType string     `json:"vehicle_type,omitempty"`
 }
 
 type DriverOnlineRequest struct {
@@ -38,6 +40,7 @@ type NearbyDriver struct {
 }
 
 type DriverLocationBroadcast struct {
+	UpdatedAt string  `json:"updated_at"`
 	Event     string  `json:"event"`
 	Room      string  `json:"room,omitempty"`
 	RideID    string  `json:"ride_id,omitempty"`

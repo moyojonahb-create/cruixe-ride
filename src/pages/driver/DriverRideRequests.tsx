@@ -16,6 +16,7 @@ import SwipeDismissCard from '@/components/driver/SwipeDismissCard';
 import GenderChip from '@/components/driver/GenderChip';
 import DriverBottomNav from '@/components/driver/DriverBottomNav';
 import { redCta, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, glassSurface } from '@/components/ride/rideGlass';
+import DriverAvailabilityControl from '@/components/driver/DriverAvailabilityControl';
 
 function fmtUSD(n: number): string {
   return n % 1 === 0 ? `$${n}` : `$${n.toFixed(2)}`;
@@ -55,6 +56,10 @@ export default function DriverRideRequests() {
   }, []);
 
   const [driverRowId, setDriverRowId] = useState<string | null>(null);
+  const handleAvailabilityChange = useCallback((online: boolean) => {
+    setIsOnline(online);
+    if (!online) { setRides([]); lastRideIds.current = new Set(); }
+  }, []);
   useEffect(() => {
     getDriverProfile().then((p) => { setIsOnline(p?.is_online ?? false); setDriverRowId(p?.id ?? null); }).catch(() => {});
   }, []);
@@ -228,13 +233,14 @@ export default function DriverRideRequests() {
 
       {/* Floating top chrome — status pill sits in the top-left corner,
           wallet pill stays on its own row below-right. */}
-      <span
+      <div
         className="absolute z-20 inline-flex items-center shrink-0"
         style={{ top: 'calc(env(safe-area-inset-top) + 10px)', left: 16, height: 40, padding: '0 14px', borderRadius: 999, gap: 7, ...glassSurface }}
       >
         <span className="rounded-full" style={{ width: 7, height: 7, background: isOnline ? '#22A447' : '#9AA1AD' }} />
         <span style={{ fontSize: 13, fontWeight: 700, color: RIDE_TEXT }}>{isOnline ? 'Online' : 'Offline'}</span>
-      </span>
+        <DriverAvailabilityControl isOnline={isOnline} onChange={handleAvailabilityChange} coords={driverCoords} compact />
+      </div>
       <div className="absolute inset-x-0 z-20 flex items-center" style={{ top: 59, left: 16, right: 16, gap: 10 }}>
         <button
           type="button"
@@ -275,7 +281,7 @@ export default function DriverRideRequests() {
                 </div>
               ) : visibleRides.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-border py-14 text-center">
-                  <p className="text-sm text-muted-foreground">No open ride requests right now.</p>
+                  <p className="text-sm text-muted-foreground">{isOnline ? 'No open ride requests right now.' : 'You are offline. Go online to receive ride requests.'}</p>
                 </div>
               ) : (
                 visibleRides.map(({ ride, km, minutes }) => (

@@ -1,0 +1,464 @@
+{
+  "pageErrors": [],
+  "bookingPosts": [],
+  "viewports": [
+    {
+      "name": "small",
+      "width": 320,
+      "height": 640,
+      "horizontalOverflow": false,
+      "selectedIcons": 1,
+      "visibleLabels": [
+        "Ride"
+      ],
+      "labelsInside": true,
+      "activeCircleClearance": 4.08001708984375,
+      "activeCircleUnclipped": true,
+      "navInViewport": true,
+      "scrollable": true,
+      "cards": [
+        {
+          "name": "Economy",
+          "width": 288,
+          "height": 96,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Shared",
+          "width": 288,
+          "height": 96,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Parcel",
+          "width": 288,
+          "height": 96,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        }
+      ],
+      "panelBackground": "rgb(255, 255, 255)"
+    },
+    {
+      "name": "android",
+      "width": 360,
+      "height": 800,
+      "horizontalOverflow": false,
+      "selectedIcons": 1,
+      "visibleLabels": [
+        "Ride"
+      ],
+      "labelsInside": true,
+      "activeCircleClearance": 4.08001708984375,
+      "activeCircleUnclipped": true,
+      "navInViewport": true,
+      "scrollable": false,
+      "cards": [
+        {
+          "name": "Economy",
+          "width": 328,
+          "height": 100,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Shared",
+          "width": 328,
+          "height": 100,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Parcel",
+          "width": 328,
+          "height": 100.015625,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        }
+      ],
+      "panelBackground": "rgb(255, 255, 255)"
+    },
+    {
+      "name": "iphone-small",
+      "width": 375,
+      "height": 812,
+      "horizontalOverflow": false,
+      "selectedIcons": 1,
+      "visibleLabels": [
+        "Ride"
+      ],
+      "labelsInside": true,
+      "activeCircleClearance": 4.08001708984375,
+      "activeCircleUnclipped": true,
+      "navInViewport": true,
+      "scrollable": false,
+      "cards": [
+        {
+          "name": "Economy",
+          "width": 343,
+          "height": 102.5625,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Shared",
+          "width": 343,
+          "height": 102.5625,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Parcel",
+          "width": 343,
+          "height": 102.5625,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        }
+      ],
+      "panelBackground": "rgb(255, 255, 255)"
+    },
+    {
+      "name": "iphone",
+      "width": 390,
+      "height": 844,
+      "horizontalOverflow": false,
+      "selectedIcons": 1,
+      "visibleLabels": [
+        "Ride"
+      ],
+      "labelsInside": true,
+      "activeCircleClearance": 4.08001708984375,
+      "activeCircleUnclipped": true,
+      "navInViewport": true,
+      "scrollable": false,
+      "cards": [
+        {
+          "name": "Economy",
+          "width": 358,
+          "height": 109.390625,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Shared",
+          "width": 358,
+          "height": 109.390625,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Parcel",
+          "width": 358,
+          "height": 109.390625,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        }
+      ],
+      "panelBackground": "rgb(255, 255, 255)"
+    },
+    {
+      "name": "pixel",
+      "width": 393,
+      "height": 852,
+      "horizontalOverflow": false,
+      "selectedIcons": 1,
+      "visibleLabels": [
+        "Ride"
+      ],
+      "labelsInside": true,
+      "activeCircleClearance": 4.08001708984375,
+      "activeCircleUnclipped": true,
+      "navInViewport": true,
+      "scrollable": false,
+      "cards": [
+        {
+          "name": "Economy",
+          "width": 361,
+          "height": 111.09375,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Shared",
+          "width": 361,
+          "height": 111.09375,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Parcel",
+          "width": 361,
+          "height": 111.09375,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        }
+      ],
+      "panelBackground": "rgb(255, 255, 255)"
+    },
+    {
+      "name": "large",
+      "width": 430,
+      "height": 932,
+      "horizontalOverflow": false,
+      "selectedIcons": 1,
+      "visibleLabels": [
+        "Ride"
+      ],
+      "labelsInside": true,
+      "activeCircleClearance": 4.08001708984375,
+      "activeCircleUnclipped": true,
+      "navInViewport": true,
+      "scrollable": false,
+      "cards": [
+        {
+          "name": "Economy",
+          "width": 398,
+          "height": 128.15625,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Shared",
+          "width": 398,
+          "height": 128.15625,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Parcel",
+          "width": 398,
+          "height": 128.15625,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        }
+      ],
+      "panelBackground": "rgb(255, 255, 255)"
+    },
+    {
+      "name": "short",
+      "width": 375,
+      "height": 480,
+      "horizontalOverflow": false,
+      "selectedIcons": 1,
+      "visibleLabels": [
+        "Ride"
+      ],
+      "labelsInside": true,
+      "activeCircleClearance": 4.079986572265625,
+      "activeCircleUnclipped": true,
+      "navInViewport": true,
+      "scrollable": true,
+      "cards": [
+        {
+          "name": "Economy",
+          "width": 343,
+          "height": 100,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Shared",
+          "width": 343,
+          "height": 100,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Parcel",
+          "width": 343,
+          "height": 100,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        }
+      ],
+      "panelBackground": "rgb(255, 255, 255)"
+    },
+    {
+      "name": "landscape",
+      "width": 800,
+      "height": 400,
+      "horizontalOverflow": false,
+      "selectedIcons": 1,
+      "visibleLabels": [
+        "Ride"
+      ],
+      "labelsInside": true,
+      "activeCircleClearance": 4.079986572265625,
+      "activeCircleUnclipped": true,
+      "navInViewport": true,
+      "scrollable": true,
+      "cards": [
+        {
+          "name": "Economy",
+          "width": 488,
+          "height": 100,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Shared",
+          "width": 488,
+          "height": 100,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        },
+        {
+          "name": "Parcel",
+          "width": 488,
+          "height": 100,
+          "touchTarget": true,
+          "imageContained": true,
+          "objectFit": "contain",
+          "titleWithinBody": true
+        }
+      ],
+      "panelBackground": "rgb(255, 255, 255)"
+    }
+  ],
+  "selectionJourneys": [
+    {
+      "name": "Economy",
+      "id": "economy",
+      "url": "http://localhost:8081/ride?view=locations&tier=economy",
+      "navHidden": true,
+      "selectedRestored": true
+    },
+    {
+      "name": "Shared",
+      "id": "share",
+      "url": "http://localhost:8081/ride?view=locations&tier=share",
+      "navHidden": true,
+      "selectedRestored": true
+    },
+    {
+      "name": "Parcel",
+      "id": "parcel",
+      "url": "http://localhost:8081/ride?view=locations&tier=parcel",
+      "navHidden": true,
+      "selectedRestored": true
+    }
+  ],
+  "protectedRoutes": [
+    {
+      "name": "Account",
+      "url": "http://localhost:8081/auth",
+      "authenticationRequired": true
+    },
+    {
+      "name": "Activity",
+      "url": "http://localhost:8081/auth",
+      "authenticationRequired": true
+    },
+    {
+      "name": "Wallet",
+      "url": "http://localhost:8081/auth",
+      "authenticationRequired": true
+    }
+  ],
+  "homeNavHidden": true,
+  "entryUrl": "http://localhost:8081/ride?view=choose",
+  "initialRideSelected": true,
+  "largeText": {
+    "horizontalOverflow": false,
+    "selectedIcons": 1,
+    "visibleLabels": [
+      "Ride"
+    ],
+    "labelsInside": true,
+    "activeCircleClearance": 4.08001708984375,
+    "activeCircleUnclipped": true,
+    "navInViewport": true,
+    "scrollable": false,
+    "cards": [
+      {
+        "name": "Economy",
+        "width": 358,
+        "height": 106.796875,
+        "touchTarget": true,
+        "imageContained": true,
+        "objectFit": "contain",
+        "titleWithinBody": true
+      },
+      {
+        "name": "Shared",
+        "width": 358,
+        "height": 106.796875,
+        "touchTarget": true,
+        "imageContained": true,
+        "objectFit": "contain",
+        "titleWithinBody": true
+      },
+      {
+        "name": "Parcel",
+        "width": 358,
+        "height": 106.8125,
+        "touchTarget": true,
+        "imageContained": true,
+        "objectFit": "contain",
+        "titleWithinBody": true
+      }
+    ],
+    "panelBackground": "rgb(255, 255, 255)"
+  },
+  "accessibility": [],
+  "reducedMotion": "0s",
+  "smallParcelReachable": true,
+  "keyboardFocus": {
+    "label": "Activity",
+    "outline": "3px"
+  },
+  "homeReturn": {
+    "url": "http://localhost:8081/ride",
+    "navHidden": true
+  },
+  "backToHome": true,
+  "normalMotion": "0.24s, 0.2s, 0.2s, 0.2s"
+}

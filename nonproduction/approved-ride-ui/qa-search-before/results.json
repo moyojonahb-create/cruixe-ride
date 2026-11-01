@@ -1,0 +1,140 @@
+{
+  "console": [],
+  "network": [
+    {
+      "path": "/src/lib/streetSearchRank.ts",
+      "status": 200,
+      "query": null
+    },
+    {
+      "path": "/src/hooks/useLandmarks.ts",
+      "status": 200,
+      "query": null
+    },
+    {
+      "path": "/src/hooks/useStreets.ts",
+      "status": 200,
+      "query": null
+    },
+    {
+      "path": "/styles/v1/mapbox/streets-v12",
+      "status": 200,
+      "query": null
+    },
+    {
+      "path": "/styles/v1/mapbox/streets-v12/iconset.pbf",
+      "status": 200,
+      "query": null
+    },
+    {
+      "path": "/rest/v1/koloi_landmarks",
+      "status": 200,
+      "query": null,
+      "count": 11791
+    },
+    {
+      "path": "/rest/v1/koloi_landmarks",
+      "status": 200,
+      "query": null,
+      "count": 11791
+    },
+    {
+      "path": "/v4/mapbox.mapbox-streets-v8,mapbox.mapbox-terrain-v2,mapbox.mapbox-bathymetry-v2/14/9512/9166.vector.pbf",
+      "status": 200,
+      "query": null
+    },
+    {
+      "path": "/v4/mapbox.mapbox-streets-v8,mapbox.mapbox-terrain-v2,mapbox.mapbox-bathymetry-v2/14/9512/9167.vector.pbf",
+      "status": 200,
+      "query": null
+    },
+    {
+      "path": "/v4/mapbox.mapbox-streets-v8,mapbox.mapbox-terrain-v2,mapbox.mapbox-bathymetry-v2/15/19024/18333.vector.pbf",
+      "status": 200,
+      "query": null
+    },
+    {
+      "path": "/v4/mapbox.mapbox-streets-v8,mapbox.mapbox-terrain-v2,mapbox.mapbox-bathymetry-v2/15/19025/18332.vector.pbf",
+      "status": 200,
+      "query": null
+    },
+    {
+      "path": "/v4/mapbox.mapbox-streets-v8,mapbox.mapbox-terrain-v2,mapbox.mapbox-bathymetry-v2/15/19024/18332.vector.pbf",
+      "status": 200,
+      "query": null
+    },
+    {
+      "path": "/v4/mapbox.mapbox-streets-v8,mapbox.mapbox-terrain-v2,mapbox.mapbox-bathymetry-v2/15/19025/18334.vector.pbf",
+      "status": 200,
+      "query": null
+    },
+    {
+      "path": "/v4/mapbox.mapbox-streets-v8,mapbox.mapbox-terrain-v2,mapbox.mapbox-bathymetry-v2/15/19025/18333.vector.pbf",
+      "status": 200,
+      "query": null
+    },
+    {
+      "path": "/rest/v1/koloi_landmarks",
+      "status": 200,
+      "query": null,
+      "count": 26
+    },
+    {
+      "path": "/v4/mapbox.mapbox-streets-v8,mapbox.mapbox-terrain-v2,mapbox.mapbox-bathymetry-v2/15/19024/18334.vector.pbf",
+      "status": 200,
+      "query": null
+    },
+    {
+      "path": "/rest/v1/koloi_landmarks",
+      "status": 200,
+      "query": null,
+      "count": 30
+    },
+    {
+      "path": "/rest/v1/koloi_landmarks",
+      "status": 200,
+      "query": null,
+      "count": 30
+    },
+    {
+      "path": "/rest/v1/streets",
+      "status": 200,
+      "query": null,
+      "count": 2
+    },
+    {
+      "path": "/rest/v1/streets",
+      "status": 200,
+      "query": null,
+      "count": 2
+    },
+    {
+      "path": "/rest/v1/places_cache",
+      "status": 401,
+      "query": null
+    },
+    {
+      "path": "/rest/v1/places_cache",
+      "status": 401,
+      "query": null
+    },
+    {
+      "path": "/rest/v1/places_cache",
+      "status": 401,
+      "query": null
+    },
+    {
+      "path": "/rest/v1/streets",
+      "status": 200,
+      "query": null,
+      "count": 15
+    }
+  ],
+  "one": "Type 2 more characters to search.",
+  "valid": "Some search services are unavailable.\n\nGwanda\n\nTown\n\nGwanda Public Swimming Pool\n\nLeisure\n\nGwanda Airport\n\nTransport\n\nGwanda Show Grounds way\n\nRoad\n\nGwanda Show Grounds Road\n\nRoad\n\nGwanda Substation\n\nInfrastructure\n\nGwanda\n\ntown\n\nGwanda Train Crosing\n\nbus_station\n\nGwanda Christian Pry School\n\nschool\n\nGwanda Adventist Pry School\n\nschool\n\nGwanda RDC Workshop\n\nshop\n\nGwanda Hotel\n\nhotel\n\nGwanda ZIMSEC Offices\n\noffice\n\nGwanda Magazine\n\nshop\n\nGwanda Tax Rank\n\nother\n\nGwanda Traders Market\n\nmarket\n\nGwanda Lodge\n\nhotel\n\nGwanda Post Office\n\ngovernment\n\nGwanda Hair Mall\n\nshop\n\nGwanda Court\n\ngovernment\n\nGwanda P.A.O.Z\n\nworship\n\nGwanda Airport\n\nairport\n\nGwanda Public Swimming Pool\n\nother\n\nGwanda Park\n\npark\n\nGwanda High School\n\nschool\n\nGwanda Provincial Hospital\n\nhospital\n\nGwanda Show Grounds way\n\nresidential · Gwanda\n\nGwanda Show Grounds Road\n\nresidential · Gwanda\n\nJoshua Mqabuko Nkomo Gwanda Polytechnical College\n\nUniversity\n\nZTDC Gwanda Off Town\n\nOffice\n\nWVI GWANDA\n\noffice\n\nSingwazi Lorge Gwanda\n\nhotel\n\nMasvingo-Mbalabala Road\n\ntrunk · Gwanda\n\nBulawayo-Beitbridge Highway\n\ntrunk · Gwanda\n\nPhakama Road\n\ntertiary · Gwanda\n\nGeniva Road\n\ntertiary · Gwanda\n\nSpitzkop Road\n\ntertiary · Gwanda\n\n2nd Avenue\n\nresidential · Gwanda\n\n1st Avenue\n\nresidential · Gwanda\n\n3rd Avenue\n\nresidential · Gwanda\n\nLawley street\n\nresidential · Gwanda\n\nMtshabezi Bridge\n\ntertiary · Gwanda\n\nMarriage Phakathi Road\n\nresidential · Gwanda\n\nByo - GDA-BB road\n\ntrunk · Gwanda\n\nJacaranda Way\n\ntertiary · Gwanda\n\nSaved place search is unavailable. Retry search.\n\nRetry searchChoose on map",
+  "focus": {
+    "border": "0px none rgb(17, 21, 32)",
+    "shadow": "none",
+    "outline": "rgb(17, 21, 32) none 3px"
+  }
+}

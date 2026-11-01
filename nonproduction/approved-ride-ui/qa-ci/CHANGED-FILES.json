@@ -1,0 +1,165 @@
+{
+  "scope": "This CI preparation and read-only smoke continuation; no application source changes",
+  "files": [
+    {
+      "path": ".github/workflows/cruixe-approved-frontend-verify.yml",
+      "kind": "new CI preparation/evidence",
+      "sha256": "df87da029f44ed0cbb0a64b95e778d261bb2b45f8f3e44d19300c6090f4f3f2d"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/local-smoke/.playwright-cli/page-2026-11-01T08-42-57-647Z.yml",
+      "kind": "new CI preparation/evidence",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/local-smoke/capture-log.txt",
+      "kind": "new CI preparation/evidence",
+      "sha256": "aa28f992b4da1f34ce82bffa489ed4ce5cb1841d8d7f69066af27112db08e04e"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/local-smoke/cli-close.log",
+      "kind": "new CI preparation/evidence",
+      "sha256": "651a24ca9d40becece46969dfdf7443fc5d4d0b7e9fc5f31667c5e21b61d6507"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/local-smoke/cli-open-edge.log",
+      "kind": "new CI preparation/evidence",
+      "sha256": "8d0f0a57f6dcf8885d02e695fdf302b6daf7a81587880d33f241b6e490ffff57"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/local-smoke/cli-resize.log",
+      "kind": "new CI preparation/evidence",
+      "sha256": "ce454520ce17139b2edf89ecfe898fa38000095add15dfed1a13b894c65392d4"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/local-smoke/log.txt",
+      "kind": "new CI preparation/evidence",
+      "sha256": "0f97039ddf194d427c09aa720d70a17cd380356c96385c0dd584810c185dab46"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/local-smoke/result.initial-blocked.json",
+      "kind": "new CI preparation/evidence",
+      "sha256": "91e9d4340dfeb55c9eec6183f44dd43c8e2cafe1d971ae93fe9600078c98b06c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/local-smoke/result.json",
+      "kind": "new CI preparation/evidence",
+      "sha256": "e66e500d1713722ff4930e8c7b3ea17c9fd81f51dbdb97bfea8620c7b98ba73e"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/local-smoke/smoke-capture.mjs",
+      "kind": "new CI preparation/evidence",
+      "sha256": "3930164457bc3dd5db7bc7c977074a8354d11c8e79a5f800482cfaeed957f0b4"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/local-smoke/smoke.mjs",
+      "kind": "new CI preparation/evidence",
+      "sha256": "1e589a84f4d7c777fa8903fd5667b7e8b5547cf46643ceabfb5e8742b376871d"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/local-smoke/unavailable-8081-edge-393.png",
+      "kind": "new CI preparation/evidence",
+      "sha256": "37f6aa0b3b1673247cbfe86e80be821afa100b337077785c9ab971382e9a80c6"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/parse-workflow.mjs",
+      "kind": "new CI preparation/evidence",
+      "sha256": "a274dac46fa7da866dc6cf9b9f0c817e9c3f93f36c24ea7366b26d4dc1c2fcdb"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/preparation-validation.json",
+      "kind": "new CI preparation/evidence",
+      "sha256": "8fb43af7ebbe608e5537414791fdedd9651e4b813dbb34157a02a038085741a0"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/preparation-validation.log",
+      "kind": "new CI preparation/evidence",
+      "sha256": "6b12421a4f89b599a3d37e164e8cba497fef9749cff241f2e19cbe4115103f5e"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/prepare_snapshot.py",
+      "kind": "new CI preparation/evidence",
+      "sha256": "00fef531bf6ef7d2dac40604e0c2bd5bd91260b0b508a6059a37261c8a9d0dd5"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/preservation.json",
+      "kind": "new CI preparation/evidence",
+      "sha256": "aeacc7aee41b15ce4491d257cbdf1592307e0e15cf7485b472df20ac473afdb4"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/publication-plan.json",
+      "kind": "new CI preparation/evidence",
+      "sha256": "29bca40e12ebefdd4e79d3f6f92b3ac82d151c58b25cd953d1f5b8862b7b6141"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/PUBLISH-AFTER-APPROVAL.ps1",
+      "kind": "new CI preparation/evidence",
+      "sha256": "6ef56231e1412f0565d105de03537948f5d5b053b949272198a6c3c94d551c78"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/remote-metadata/cd.yml",
+      "kind": "new CI preparation/evidence",
+      "sha256": "6a7c8030ab60bdd21a119a639d2d2fac25582bd9195b8f42daec22b72dc32db5"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/remote-metadata/ci.yml",
+      "kind": "new CI preparation/evidence",
+      "sha256": "8f3ea407059fab046948ac2bba5ae045fe98f102b6a9a25cc62dd955b4e2341d"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/remote-metadata/result.json",
+      "kind": "new CI preparation/evidence",
+      "sha256": "4ec0bccba279012b49007a84c19a2202cb70aeb1aa7136da18c683715520a1b8"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/REMOTE-VERIFICATION-READINESS.md",
+      "kind": "new CI preparation/evidence",
+      "sha256": "f65aac3e89327a40b9262d59ed6455e2459bb81a55581f140444c2d59d2b3e91"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/remote-verification-status.json",
+      "kind": "new CI preparation/evidence",
+      "sha256": "61e8d92cdde327bcfecab2f23e6ec8da374d66c69cfe83239ecb8df2c859607d"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/review/approved-frontend-ci.tgz",
+      "kind": "new CI preparation/evidence",
+      "sha256": "2a3ff7756e8f1ab4cafa4aeceb44c73f05fc0268392aacf91af6a417878f4879"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/review/review-manifest.json",
+      "kind": "new CI preparation/evidence",
+      "sha256": "a62194cc43b2756f8cac74f52e1d8c9b73df2cb3336b85ea1dcf75b1d315ee9c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/run-remote.mjs",
+      "kind": "new CI preparation/evidence",
+      "sha256": "25dabf2e6ca0aa020e9ae0d80f9bee46a5f2f61817e79e3dbeb5888fdb903c17"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/snapshot-preparation.json",
+      "kind": "new CI preparation/evidence",
+      "sha256": "eec013833aa3f78a48915821a4517651023772bf60d4637004eef406f0aefc14"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/validate_preparation.py",
+      "kind": "new CI preparation/evidence",
+      "sha256": "4c4c59e9b59c877d124384b2a65f41ef25e2a28a2557d899a625e9dab9c4c753"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/vite.ci-build.config.ts",
+      "kind": "new CI preparation/evidence",
+      "sha256": "2a282167cf1a6176339e27c24c341d1316d6055f7e68e2fc93cbe1a2c4a95968"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/workflow-parsed.json",
+      "kind": "new CI preparation/evidence",
+      "sha256": "0039288b936bd86444bd32d4975d0248c6daec38c0d3158990b120878c9c0cd6"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-resume/FRONTEND-RESUME-REPORT.md",
+      "kind": "existing report updated",
+      "sha256": "c834af9792b92c2d6ebc0335e38e4215be9373ac2035824aa0076c3e6693755e"
+    }
+  ]
+}

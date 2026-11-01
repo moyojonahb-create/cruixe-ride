@@ -1,0 +1,10 @@
+{
+  "path": "nonproduction/approved-ride-ui/src/components/ride/approvedRide.css",
+  "beforeSHA256": "dfa71d3bb01c0d2adaecc90ca257adb3104a643c69263d03f4b4106621839576",
+  "afterSHA256": "2e6ce54b58952f7491da0b725568ee6ed26533c4c0ab6a0e33a3092a8214ab43",
+  "changes": [
+    "Home greeting #777 -> #626b76; Axe measured 4.47:1 failure",
+    "Route buttons min-height 42px -> 44px; user touch-target requirement"
+  ],
+  "scope": "Exactly two value replacements; canonical ribbon and navigation rules unchanged"
+}

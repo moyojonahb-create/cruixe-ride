@@ -31,7 +31,7 @@ import { useTownPricing, calculateRecommendedFare, formatFare } from '@/hooks/us
 import { useStudentDiscountAvailable } from '@/hooks/useStudentProfile';
 
 import { useWallet } from '@/hooks/useWallet';
-import PaymentMethodSelector from './PaymentMethodSelector';
+import TripPaymentSelector from './TripPaymentSelector';
 import { Button } from '@/components/ui/button';
 import {
   Loader2, MapPin, Navigation, Crosshair, ArrowLeft, User, Search,
@@ -144,9 +144,6 @@ export default function RideView() {
   const [parcelSize, setParcelSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [schedulePickerOpen, setSchedulePickerOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
-  // Payment method row is only shown until the rider explicitly confirms a
-  // method (tapping Cash or Wallet in the sheet) — it then hides for good.
-  const [paymentMethodConfirmed, setPaymentMethodConfirmed] = useState(false);
   const { balance: walletBalance } = useWallet();
   const [passengerCount, setPassengerCount] = useState(1);
   const [bookForSomeoneElse, setBookForSomeoneElse] = useState(false);
@@ -164,9 +161,6 @@ export default function RideView() {
   const [offers, setOffers] = useState<DriverOffer[]>([]);
   const [luggageDraft, setLuggageDraft] = useState<import('@/components/luggage/LuggageSheet').LuggageDraft | null>(null);
   const [luggageOpen, setLuggageOpen] = useState(false);
-  const [luggagePromptOpen, setLuggagePromptOpen] = useState(false);
-  const [luggagePromptShown, setLuggagePromptShown] = useState(false);
-  const [paymentPopupOpen, setPaymentPopupOpen] = useState(false);
   const [riderNote, setRiderNote] = useState('');
   const [noteReuseEveryTrip, setNoteReuseEveryTrip] = useState(false);
   const [noteSheetOpen, setNoteSheetOpen] = useState(false);
@@ -242,20 +236,6 @@ export default function RideView() {
       window.history.replaceState({}, '');
     }
   }, []);
-
-  // One-time luggage prompt as soon as a drop-off is chosen for this booking.
-  // Never fires for Parcel — a parcel is not a passenger, so "travelling
-  // with luggage?" doesn't apply.
-  useEffect(() => {
-    if (dropoffLocation && !luggagePromptShown && selectedTier !== 'parcel') {
-      setLuggagePromptShown(true);
-      setLuggagePromptOpen(true);
-    }
-    if (!dropoffLocation || selectedTier === 'parcel') {
-      setLuggagePromptShown(false);
-      setLuggagePromptOpen(false);
-    }
-  }, [dropoffLocation, luggagePromptShown, selectedTier]);
 
   // Check the browser's actual permission state before ever touching
   // navigator.geolocation, so a first-time visitor sees our explicit
@@ -1084,9 +1064,7 @@ export default function RideView() {
     } catch (error: unknown) {toast({ title: 'Failed to send offer', description: (error as Error).message, variant: 'destructive' });setRideStatus('idle');} finally {setIsRequesting(false);}
   };
 
-  // Shared by the "Find drivers"/"Choose <tier>" CTA and the payment-method
-  // popup's confirm — payment selection now happens inline the first time
-  // the rider tries to book, instead of as its own card in the list above.
+  // Only the explicit booking action submits; payment choices edit local state.
   const proceedToBook = () => {
     if (selectedTier === 'parcel') { setParcelSheetOpen(true); return; }
     if (selectedTier === 'share') { setShareSheetOpen(true); return; }
@@ -1593,27 +1571,6 @@ export default function RideView() {
             </div>
           ) : pickupLocation && dropoffLocation && fareBreakdown ? (
             <>
-              {/* Luggage prompt — shown once, right after drop-off is picked */}
-              {luggagePromptOpen && (
-                <div className="relative mb-1.5 flex items-center justify-between gap-2 px-3.5 py-2 overflow-hidden" style={{ borderRadius: 15, ...redCta }}>
-                  <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,0))' }} />
-                  <span className="relative text-[12.5px] font-semibold text-white">🧳 Travelling with luggage?</span>
-                  <div className="relative flex items-center gap-1.5">
-                    <button
-                      onClick={() => { setLuggagePromptOpen(false); setLuggageOpen(true); }}
-                      className="px-3 py-1 rounded-full bg-white text-[11px] font-bold active:scale-95 transition-transform" style={{ color: RIDE_RED }}>
-                      Yes
-                    </button>
-                    <button
-                      onClick={() => setLuggagePromptOpen(false)}
-                      className="px-3 py-1 rounded-full text-white text-[11px] font-semibold active:scale-95 transition-transform"
-                      style={{ background: 'rgba(255,255,255,.22)', boxShadow: 'inset 0 0 0 .5px rgba(255,255,255,.35)' }}>
-                      No
-                    </button>
-                  </div>
-                </div>
-              )}
-
               {selectedTier !== 'parcel' && (
                 <button
                   type="button"
@@ -1627,6 +1584,19 @@ export default function RideView() {
                   <ChevronRight className="w-[17px] h-[17px]" style={{ color: RIDE_TEXT_2 }} />
                 </button>
               )}
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 8, marginBottom: 10 }}>
+                <button type="button" onClick={() => setLuggageOpen(true)} style={{ minHeight: 68, borderRadius: 22, padding: 12, background: '#fff', color: RIDE_TEXT, textAlign: 'left', ...glassSurface }}>
+                  <strong style={{ display: 'block', fontSize: 14 }}>Luggage</strong>
+                  <small>{luggageDraft ? 'Details added' : 'Optional details'}</small>
+                </button>
+                  <TripPaymentSelector
+                    selected={paymentMethod} onSelect={setPaymentMethod}
+                    walletBalance={walletBalance} estimatedFare={fareBreakdown?.totalFare ?? 0}
+                    restrictToCash={bookForSomeoneElse && thirdPartyPayer === 'passenger'}
+                    restrictReason="This passenger pays cash on arrival."
+                  />
+              </div>
 
               <div className="flex items-center gap-3">
                 {/* Scheduling a Parcel isn't supported yet — ScheduleRide's
@@ -1656,7 +1626,6 @@ export default function RideView() {
                 <button
                   type="button"
                   onClick={() => {
-                    if (!paymentMethodConfirmed) { setPaymentPopupOpen(true); return; }
                     proceedToBook();
                   }}
                   disabled={isRequesting}
@@ -1747,18 +1716,6 @@ export default function RideView() {
         onClose={() => setLuggageOpen(false)}
         initial={luggageDraft}
         onSave={setLuggageDraft}
-      />
-      <PaymentMethodSelector
-        open={paymentPopupOpen}
-        onClose={() => setPaymentPopupOpen(false)}
-        selected={paymentMethod}
-        onSelect={setPaymentMethod}
-        onConfirm={() => { setPaymentMethodConfirmed(true); proceedToBook(); }}
-        walletBalance={walletBalance}
-        estimatedFare={fareBreakdown?.totalFare ?? 0}
-        tierLabel={fareBreakdown ? `${RIDE_TIER_LABELS[selectedTier]} · ${fareBreakdown.fmt(selectedTierPrice)}` : RIDE_TIER_LABELS[selectedTier]}
-        restrictToCash={bookForSomeoneElse && thirdPartyPayer === 'passenger'}
-        restrictReason={bookForSomeoneElse && thirdPartyPayer === 'passenger' ? `${passengerName.trim().split(' ')[0] || 'They'} pays cash on arrival — only cash works for a third-party ride` : undefined}
       />
       <NoteToDriverSheet
         open={noteSheetOpen}

@@ -1,0 +1,49 @@
+{
+  "scope": "Authorized verification attempt; local evidence only. Approved three files and application source unchanged. No remote commit/push.",
+  "files": [
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/authorization-preflight.json",
+      "kind": "new"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/authorization-content-review.json",
+      "kind": "new"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/authorization-remote-repository.json",
+      "kind": "new"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/authorization-remote-workflows.json",
+      "kind": "new"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/authorization-remote-runs.json",
+      "kind": "new"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/authorization-preservation-before.json",
+      "kind": "new"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/authorization-publication.json",
+      "kind": "new"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/authorization-preservation-after.json",
+      "kind": "new"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/remote-verification-status.json",
+      "kind": "updated"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/REMOTE-VERIFICATION-READINESS.md",
+      "kind": "updated"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/authorization-changed-files.json",
+      "kind": "new"
+    }
+  ]
+}

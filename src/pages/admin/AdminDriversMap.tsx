@@ -80,7 +80,7 @@ const AdminDriversMap = () => {
     const channel = supabase
       .channel('admin-driver-locations')
       .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'live_locations' },
+        { event: 'UPDATE', schema: 'public', table: 'live_locations' },
         () => {
           fetchLocations();
         }

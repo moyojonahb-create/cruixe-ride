@@ -1,0 +1,18 @@
+{
+  "name": "production-build",
+  "command": [
+    "C:\\Users\\MUSAE\\AppData\\Local\\Temp\\cruize-p02-node22-5c590de3cb8e46d6a328181d0bbd2143\\node-v22.23.4-win-x64\\node.exe",
+    "--max-old-space-size=1536",
+    "C:\\Users\\MUSAE\\Documents\\koloi-ride-with-confidence\\nonproduction\\approved-ride-ui\\node_modules\\vite\\bin\\vite.js",
+    "build",
+    "--config",
+    "C:\\Users\\MUSAE\\Documents\\koloi-ride-with-confidence\\nonproduction\\approved-ride-ui\\vite.stabilization-build.config.ts"
+  ],
+  "exitCode": 1,
+  "terminationReason": null,
+  "elapsedSeconds": 62.12,
+  "peakWorkingSetMB": 111.3,
+  "peakPrivateMB": 156.5,
+  "minAvailablePhysicalMB": 1023,
+  "cpuSeconds": 4.438
+}

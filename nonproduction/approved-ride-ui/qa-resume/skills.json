@@ -1,0 +1,158 @@
+{
+  "inventory": [
+    {
+      "name": "animate",
+      "readable": true
+    },
+    {
+      "name": "animate-expo",
+      "readable": true
+    },
+    {
+      "name": "animation-performance",
+      "readable": true
+    },
+    {
+      "name": "animation-vocabulary",
+      "readable": true
+    },
+    {
+      "name": "apple-design",
+      "readable": true
+    },
+    {
+      "name": "ask-sonner",
+      "readable": true
+    },
+    {
+      "name": "banner-design",
+      "readable": true
+    },
+    {
+      "name": "brand",
+      "readable": true
+    },
+    {
+      "name": "break-ui",
+      "readable": true
+    },
+    {
+      "name": "code-quality",
+      "readable": true
+    },
+    {
+      "name": "design",
+      "readable": true
+    },
+    {
+      "name": "design-system",
+      "readable": true
+    },
+    {
+      "name": "design-taste-frontend",
+      "readable": true
+    },
+    {
+      "name": "emil-design-eng",
+      "readable": true
+    },
+    {
+      "name": "find-animation-opportunities",
+      "readable": true
+    },
+    {
+      "name": "frontend-design",
+      "readable": true
+    },
+    {
+      "name": "gsap",
+      "readable": true
+    },
+    {
+      "name": "improve-animations",
+      "readable": true
+    },
+    {
+      "name": "mobile-native",
+      "readable": true
+    },
+    {
+      "name": "pick-ui-library",
+      "readable": true
+    },
+    {
+      "name": "playwright-cli",
+      "readable": true
+    },
+    {
+      "name": "prototype",
+      "readable": true
+    },
+    {
+      "name": "remotion-best-practices",
+      "readable": true
+    },
+    {
+      "name": "remove-animations",
+      "readable": true
+    },
+    {
+      "name": "review-animations",
+      "readable": true
+    },
+    {
+      "name": "security-review",
+      "readable": true
+    },
+    {
+      "name": "slides",
+      "readable": true
+    },
+    {
+      "name": "supabase",
+      "readable": true
+    },
+    {
+      "name": "supabase-postgres-best-practices",
+      "readable": true
+    },
+    {
+      "name": "ui-styling",
+      "readable": true
+    },
+    {
+      "name": "ui-ux-pro-max",
+      "readable": true
+    },
+    {
+      "name": "vercel-composition-patterns",
+      "readable": true
+    },
+    {
+      "name": "vercel-react-best-practices",
+      "readable": true
+    },
+    {
+      "name": "web-css-animations",
+      "readable": true
+    },
+    {
+      "name": "web-design-guidelines",
+      "readable": true
+    },
+    {
+      "name": "web-waapi",
+      "readable": true
+    },
+    {
+      "name": "write-swift",
+      "readable": true
+    }
+  ],
+  "used": [
+    "frontend-design",
+    "playwright-cli",
+    "code-quality",
+    "animation-performance"
+  ]
+}

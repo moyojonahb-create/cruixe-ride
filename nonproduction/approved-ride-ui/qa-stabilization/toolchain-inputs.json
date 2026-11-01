@@ -1,0 +1,10 @@
+[
+  {
+    "file": "package.json",
+    "sha256": "23a0e2154ba65a413029ebe30359d7f05c4fa9b14fcff27f9bc2f6f4fae4f55b"
+  },
+  {
+    "file": "package-lock.json",
+    "sha256": "0ff08efabea93cfeab75b8af73fec44569fd3bf93a339a4e27aab9ff8424b782"
+  }
+]

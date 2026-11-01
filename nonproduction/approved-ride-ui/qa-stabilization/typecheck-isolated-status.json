@@ -1,0 +1,21 @@
+{
+  "name": "typecheck-isolated",
+  "command": [
+    "C:\\Users\\MUSAE\\AppData\\Local\\Temp/cruize-p02-node22-5c590de3cb8e46d6a328181d0bbd2143/node-v22.23.4-win-x64/node.exe",
+    "--max-old-space-size=1536",
+    "node_modules/typescript/bin/tsc",
+    "--noEmit",
+    "-p",
+    "tsconfig.app.json",
+    "--extendedDiagnostics",
+    "--pretty",
+    "false"
+  ],
+  "exitCode": 2,
+  "terminationReason": null,
+  "elapsedSeconds": 188.77,
+  "peakWorkingSetMB": 861.6,
+  "peakPrivateMB": 865.4,
+  "minAvailablePhysicalMB": 625,
+  "cpuSeconds": 185.062
+}

@@ -1,0 +1,7 @@
+{
+  "path": "nonproduction/approved-ride-ui/src/components/ride/destinationScreen.css",
+  "beforeSHA256": "01eb1367bc44c622da253af0284014a03a22f0e3e0ae6f367f2eebf4df392cda",
+  "afterSHA256": "bb4fa34557e317b9cbc052803175924320905a0ec78cfd2133498a0ae585d74e",
+  "change": "Append a short-screen height constraint; existing scroll container remains usable.",
+  "mainFrontend": "Corresponding stylesheet absent in main; no unused stylesheet created or design integrated."
+}

@@ -1,0 +1,55 @@
+{
+  "changes": [
+    {
+      "path": "src/components/ride/RideTierSelector.tsx",
+      "beforeSHA256": "61565de45736b281ce978eb60861241b85faf8c94a9a947928df1df8b7a218b0",
+      "afterSHA256": "08ef8428d338c3f1c8ec022b663a567f58603902a2d7d642a75c6b3c024ec05c"
+    },
+    {
+      "path": "src/components/ride/approvedRide.css",
+      "beforeSHA256": "35b35dfd5c84dea88db4a33fb6b3eeaa66eaa2de2c229fbce96c002ec1aca0d9",
+      "afterSHA256": "dfa71d3bb01c0d2adaecc90ca257adb3104a643c69263d03f4b4106621839576"
+    },
+    {
+      "path": "src/components/ride/NoteToDriverSheet.tsx",
+      "beforeSHA256": "a5ab6574d7b0afe7adbe39552b84ed49cd2727fca52f913d87769a410495139a",
+      "afterSHA256": "706208720b2dfc1c9e24ecdfe6bd90c99e446d6b3b9e536d1eb21c65b81ab4c6"
+    },
+    {
+      "path": "src/pages/RideMatching.tsx",
+      "beforeSHA256": "acb7a46491515a2d5fc9d3ce8d0310458271656e0b5638f2f5da85115a5e14ba",
+      "afterSHA256": "c04d678d225a2904a86ceb0d9ffde3a24b3f2ea08703407b77142ed57a998837"
+    },
+    {
+      "path": "src/components/ride/ScheduleRide.tsx",
+      "beforeSHA256": "3383949482ed76e0bd4c17f65b21b9fab2aef2392153dffe9461d273bf5193d1",
+      "afterSHA256": "47f876b3a8e4adbf5761122ac21e09369e4a8f1b2436a9a38152469538bbe998",
+      "onlyRibbonClassChanged": true
+    },
+    {
+      "path": "src/components/ride/BookingForSomeoneElse.tsx",
+      "beforeSHA256": "62472eff71917ff104fc80a8419428a79e22bd34c910cc57553d4f1aeb1806e3",
+      "afterSHA256": "55eca7b27bce68b5941aa0e9b226bd759ecbc94f67b81dc8628b756fa6087105",
+      "onlyRibbonClassChanged": true
+    },
+    {
+      "path": "src/components/ride/ParcelBookingSheet.tsx",
+      "beforeSHA256": "cdc97a1f68bf0deb55b469cd1c6150092719803520109d59b0e5b8359a632938",
+      "afterSHA256": "73fadab9910d103bd1965ae4c003ecca1b169ee0a553aeb4bca82519796b3dff",
+      "onlyRibbonClassChanged": true
+    },
+    {
+      "path": "src/components/ride/ShareRideSheet.tsx",
+      "beforeSHA256": "ab8e9443a606e76af8e6228fd7572294684ea16ee8871261c8fee7466890f9b8",
+      "afterSHA256": "96c12ea8b7a8cb038490808ba4108cad04992edf7de4301070d51671207479e6",
+      "onlyRibbonClassChanged": true
+    }
+  ],
+  "preservedBaselineFiles": {
+    "src/components/ride/RideView.tsx": true,
+    "src/components/luggage/LuggageSheet.tsx": true,
+    "src/components/ride/RideGlassPanel.tsx": true,
+    "src/components/BottomNavBar.tsx": true,
+    "src/components/riderNavigation.css": true
+  }
+}

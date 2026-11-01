@@ -1,0 +1,71 @@
+{
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 401 ()",
+    "Failed to load resource: the server responded with a status of 401 ()",
+    "Failed to load resource: the server responded with a status of 401 ()",
+    "Failed to load resource: the server responded with a status of 401 ()"
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "httpErrors": [
+    {
+      "url": "https://foksbnjtzubsjpeoorvo.supabase.co/rest/v1/town_pricing",
+      "status": 401
+    },
+    {
+      "url": "https://foksbnjtzubsjpeoorvo.supabase.co/rest/v1/pricing_settings",
+      "status": 401
+    },
+    {
+      "url": "https://foksbnjtzubsjpeoorvo.supabase.co/rest/v1/live_locations",
+      "status": 401
+    },
+    {
+      "url": "https://foksbnjtzubsjpeoorvo.supabase.co/rest/v1/pricing_settings",
+      "status": 401
+    }
+  ],
+  "rendered": {
+    "mapCanvas": true,
+    "loadingMap": false,
+    "mapMessages": [],
+    "styles": [
+      {
+        "selector": ".ride-booking-sheet > div:last-child",
+        "background": "rgb(255, 255, 255)",
+        "backgroundImage": "none",
+        "paddingBottom": "14px"
+      },
+      {
+        "selector": ".ride-shortcut--home",
+        "background": "rgb(255, 243, 243)",
+        "backgroundImage": "none",
+        "paddingBottom": "0px"
+      },
+      {
+        "selector": ".ride-shortcut--work",
+        "background": "rgb(255, 249, 217)",
+        "backgroundImage": "none",
+        "paddingBottom": "0px"
+      },
+      {
+        "selector": ".ride-town-pill",
+        "background": "rgb(255, 255, 255)",
+        "backgroundImage": "none",
+        "paddingBottom": "0px"
+      },
+      {
+        "selector": ".ride-area-pill",
+        "background": "rgb(255, 255, 255)",
+        "backgroundImage": "none",
+        "paddingBottom": "0px"
+      },
+      {
+        "selector": ".ride-start",
+        "background": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "linear-gradient(135deg, rgb(255, 86, 59) 0%, rgb(255, 16, 16) 50%, rgb(233, 0, 0) 100%)",
+        "paddingBottom": "0px"
+      }
+    ]
+  }
+}

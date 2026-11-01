@@ -1,0 +1,60 @@
+.destination-screen { background: #fff; color: #111520; }
+.destination-header { background: linear-gradient(120deg,#ec0808,#ce0000); padding: max(14px,env(safe-area-inset-top)) 12px 16px; }
+.destination-header > div:first-child { min-height: 44px; margin-bottom: 12px; gap: 14px; }
+.destination-header h1 { font-size: 21px; font-weight: 700; }
+.destination-header > div:first-child button { width: 44px; height: 44px; }
+.destination-address-card { background: #fff; border-radius: 22px; padding: 8px 12px 12px; position: relative; }
+.destination-address-card::before { content: ''; position: absolute; left: 23px; top: 47px; height: 54px; border-left: 1px dashed #cdd0d7; }
+.destination-field { position: relative; padding: 8px 0; gap: 12px; }
+.destination-field > span:first-child { width: 12px; height: 12px; border-radius: 50%; background: #ffd11a; box-shadow: 0 0 0 4px #fff8d5; z-index: 1; margin-left: 5px; }
+.destination-field:nth-child(2) > span:first-child { background: #f50916; box-shadow: 0 0 0 4px #ffe2e5; }
+.destination-field label,.destination-field button > span:first-child { font-size: 13px; color: #667080; }
+.destination-field button > span:last-child { color: #10131d; font-size: 14px; white-space: normal; font-weight: 650; }
+.destination-input { position: relative; }
+.destination-search-control { display: flex; align-items: center; gap: 8px; min-width: 0; border: 1px solid #bbc1cb; border-radius: 13px; padding-left: 10px; background: #fff; }
+.destination-search-control:focus-within { border-color: #e0000c; }
+.destination-search-text { flex: 1; width: 0; min-width: 0; min-height: 46px; padding: 8px 4px; font-size: 16px; color: #111520; background: transparent; border: 0; border-radius: 12px; }
+.destination-search-text:focus, .destination-search-text:focus-visible { border: 0; outline: none; box-shadow: none; }
+.destination-search-clear { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 11px; color: #667080; }
+.destination-search-clear svg { width: 20px; height: 20px; }
+.destination-search-clear:focus-visible { outline-offset: -4px !important; }
+.destination-search-icon { width: 18px; height: 18px; flex-shrink: 0; color: #697382; pointer-events: none; }
+.destination-gps { color: #cf0010; background: #fff0f2; border-radius: 14px; padding: 7px; font-size: 11px; font-weight: 600; min-height: 44px; width: 110px; display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.destination-gps svg { width: 17px; flex-shrink: 0; }
+.destination-body { min-height: 0; border-radius: 22px 22px 0 0; padding: 12px 14px calc(116px + env(safe-area-inset-bottom)); margin-top: -1px; background: #fff; }
+.destination-option { border: 1px solid #eceef2; border-radius: 20px; padding: 12px 10px; min-height: 72px; margin-bottom: 8px; gap: 12px; }
+.destination-option > span { border-radius: 50%; width: 44px; height: 44px; background: #f5f6f7; }
+.destination-option p { white-space: normal; overflow-wrap: anywhere; }
+.destination-option p:first-child { font-size: 15px; font-weight: 650; color: #111520; }
+.destination-option p:nth-child(2) { font-size: 13px; color: #667080; }
+.destination-option--map { background: #fff0f2; border-color: #fff0f2; }
+.destination-option--map > span { background: #ffe0e3; }
+.destination-option--home > span,.destination-option--work > span { background: #fff9db; }
+.destination-option > span svg { color: #e0000c; }
+.destination-chevron { width: 18px; color: #7b8492; flex-shrink: 0; }
+.destination-body .h-2 { display: none; }
+.destination-recents-title { font-size: 18px; font-weight: 700; margin: 18px 2px 12px; }
+.destination-empty,.destination-status { color: #626b79; font-size: 14px; padding: 12px; }
+.destination-screen button:focus-visible { outline: 3px solid #242b39; outline-offset: 2px; }
+@media (max-width: 340px) { .destination-gps { width: 88px; font-size: 10px; } .destination-header h1 { font-size: 19px; } .destination-field { gap: 8px; } }
+@media (max-height: 500px) { .destination-screen { overflow-y: auto; } .destination-header,.destination-body { flex-shrink: 0; } .destination-body { overflow: visible; } }
+
+.destination-recents-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.destination-recents-heading button { display: inline-flex; align-items: center; min-height: 44px; color: #ce0010; font-size: 14px; font-weight: 650; }
+
+.destination-screen { bottom: auto; height: 100dvh; }
+.destination-header { flex-shrink: 0; }
+
+.destination-search-feedback { font-size: 14px; color: #586372; margin: 0 2px 12px; }
+.destination-results { padding-top: 0; }
+.destination-search-error { padding: 12px; border-radius: 14px; background: #fff0f2; color: #871523; font-size: 14px; }
+.destination-search-error button { min-height: 44px; padding: 8px 12px; margin: 4px 6px 0 0; border: 1px solid #b6000b; border-radius: 10px; font-weight: 600; }
+.destination-search-error button:disabled { opacity: .55; }
+.destination-field--editing-pickup { flex-wrap: wrap; }
+.destination-field--editing-pickup .destination-input { flex-basis: calc(100% - 36px); }
+.destination-field--editing-pickup .destination-gps { margin-left: 29px; width: auto; }
+
+/* Keep landscape search results reachable above the floating rider navigation. */
+@media (max-height: 500px) {
+ .destination-screen { max-height: calc(100dvh - 116px - env(safe-area-inset-bottom, 0px)); }
+}

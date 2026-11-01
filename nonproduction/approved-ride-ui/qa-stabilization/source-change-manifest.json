@@ -1,0 +1,45 @@
+{
+  "changes": [
+    {
+      "file": "src/components/ride/RideView.tsx",
+      "beforeSHA256": "9ca943cf04804abaae5266ba44f56c2f568ab951d3991de3dedb04ac81636bd4",
+      "afterSHA256": "833d75749e0848b0ddd937c7130b2add32eb3b8619dce645e7e04540e475c1d1",
+      "diff": "qa-stabilization/diffs/RideView.diff"
+    },
+    {
+      "file": "src/pages/RideMatching.tsx",
+      "beforeSHA256": "991af53b2f5d4ab548d570068e59ff8c8eecf7329417c9d9cb3fd13ae5e05056",
+      "afterSHA256": "acb7a46491515a2d5fc9d3ce8d0310458271656e0b5638f2f5da85115a5e14ba",
+      "diff": "qa-stabilization/diffs/RideMatching.diff"
+    },
+    {
+      "file": "src/components/ride/approvedRide.css",
+      "beforeSHA256": "317cd0f0c8559ba817aa7f8f3fb21c8f985edafba1e804ad91064e5fb3522f90",
+      "afterSHA256": "35b35dfd5c84dea88db4a33fb6b3eeaa66eaa2de2c229fbce96c002ec1aca0d9",
+      "diff": "qa-stabilization/diffs/approvedRide.diff"
+    },
+    {
+      "file": "src/components/luggage/LuggageSheet.tsx",
+      "beforeSHA256": "3a6b418107ea70bebf45d28a43062b42677bd2f97d251f5c7995a8ff44c2dc51",
+      "afterSHA256": "63d3e1b4c0fec66f940e53af49f0ea7bac998239fb6ec93384dc9a7df8aa9b57",
+      "diff": "qa-stabilization/diffs/LuggageSheet.diff"
+    },
+    {
+      "file": "src/components/ride/RideTierSelector.tsx",
+      "beforeSHA256": "917070cb0d3500ac5c0b4cce7a1f5fe8b78a354a3890ffc182abd5b607f9fb2b",
+      "afterSHA256": "61565de45736b281ce978eb60861241b85faf8c94a9a947928df1df8b7a218b0",
+      "diff": "qa-stabilization/diffs/RideTierSelector.diff"
+    }
+  ],
+  "byteIdentical": [
+    "src/components/ride/RideGlassPanel.tsx",
+    "src/components/BottomNavBar.tsx",
+    "src/components/riderNavigation.css",
+    "src/components/ride/ScheduleRide.tsx"
+  ],
+  "preservedLogicAssertions": {
+    "matchingFunctionBeforePendingView": true,
+    "matchingAssignedAndCompletedViews": true,
+    "luggageHandlers": true
+  }
+}

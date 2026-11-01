@@ -1,0 +1,71 @@
+{
+  "errors": [],
+  "console": [
+    "Failed to load resource: the server responded with a status of 401 ()",
+    "Failed to load resource: the server responded with a status of 401 ()",
+    "Failed to load resource: the server responded with a status of 401 ()",
+    "Failed to load resource: the server responded with a status of 401 ()"
+  ],
+  "failures": [],
+  "responses": [
+    {
+      "url": "http://localhost:8081/brand/cruize-economy-car.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "url": "http://localhost:8081/brand/cruize-shared-car.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "url": "http://localhost:8081/brand/cruize-parcel-van.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "url": "https://foksbnjtzubsjpeoorvo.supabase.co/rest/v1/pricing_settings?select=*&limit=1",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "body": "{\"code\":\"42501\",\"details\":null,\"hint\":null,\"message\":\"permission denied for table pricing_settings\"}"
+    },
+    {
+      "url": "https://foksbnjtzubsjpeoorvo.supabase.co/rest/v1/live_locations?select=user_id%2Clatitude%2Clongitude%2Cis_online&user_type=eq.driver&is_online=eq.true&limit=200",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "body": "{\"code\":\"42501\",\"details\":null,\"hint\":null,\"message\":\"permission denied for table live_locations\"}"
+    },
+    {
+      "url": "https://foksbnjtzubsjpeoorvo.supabase.co/rest/v1/town_pricing?select=*&town_id=eq.gwanda",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "body": "{\"code\":\"42501\",\"details\":null,\"hint\":null,\"message\":\"permission denied for table town_pricing\"}"
+    },
+    {
+      "url": "https://foksbnjtzubsjpeoorvo.supabase.co/rest/v1/pricing_settings?select=*&limit=1",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "body": "{\"code\":\"42501\",\"details\":null,\"hint\":null,\"message\":\"permission denied for table pricing_settings\"}"
+    }
+  ],
+  "images": [
+    {
+      "src": "http://localhost:8081/brand/cruize-economy-car.webp",
+      "complete": true,
+      "width": 664
+    },
+    {
+      "src": "http://localhost:8081/brand/cruize-shared-car.webp",
+      "complete": true,
+      "width": 664
+    },
+    {
+      "src": "http://localhost:8081/brand/cruize-parcel-van.webp",
+      "complete": true,
+      "width": 664
+    }
+  ],
+  "matchingImport": {
+    "ok": true
+  }
+}

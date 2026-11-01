@@ -1,0 +1,515 @@
+{
+  "scope": "This frontend stabilization pass. Generated Vite/npm caches are excluded; no application dependencies were changed. This inventory omits its own hash.",
+  "files": [
+    {
+      "path": "src/components/ride/RideTierSelector.tsx",
+      "kind": "modified application source",
+      "sha256": "08ef8428d338c3f1c8ec022b663a567f58603902a2d7d642a75c6b3c024ec05c"
+    },
+    {
+      "path": "src/components/ride/approvedRide.css",
+      "kind": "modified application source",
+      "sha256": "dfa71d3bb01c0d2adaecc90ca257adb3104a643c69263d03f4b4106621839576"
+    },
+    {
+      "path": "src/components/ride/NoteToDriverSheet.tsx",
+      "kind": "modified application source",
+      "sha256": "706208720b2dfc1c9e24ecdfe6bd90c99e446d6b3b9e536d1eb21c65b81ab4c6"
+    },
+    {
+      "path": "src/pages/RideMatching.tsx",
+      "kind": "modified application source",
+      "sha256": "c04d678d225a2904a86ceb0d9ffde3a24b3f2ea08703407b77142ed57a998837"
+    },
+    {
+      "path": "src/components/ride/ScheduleRide.tsx",
+      "kind": "modified application source",
+      "sha256": "47f876b3a8e4adbf5761122ac21e09369e4a8f1b2436a9a38152469538bbe998"
+    },
+    {
+      "path": "src/components/ride/BookingForSomeoneElse.tsx",
+      "kind": "modified application source",
+      "sha256": "55eca7b27bce68b5941aa0e9b226bd759ecbc94f67b81dc8628b756fa6087105"
+    },
+    {
+      "path": "src/components/ride/ParcelBookingSheet.tsx",
+      "kind": "modified application source",
+      "sha256": "73fadab9910d103bd1965ae4c003ecca1b169ee0a553aeb4bca82519796b3dff"
+    },
+    {
+      "path": "src/components/ride/ShareRideSheet.tsx",
+      "kind": "modified application source",
+      "sha256": "96c12ea8b7a8cb038490808ba4108cad04992edf7de4301070d51671207479e6"
+    },
+    {
+      "path": "src/test/NoteToDriverSheet.test.tsx",
+      "kind": "new test; execution BLOCKED",
+      "sha256": "431a61988a54e98be06e52de6891b2c38a2dab834fe0ab2b96a42f697d5902fd"
+    },
+    {
+      "path": "qa-resume/approvedRide.css.diff",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "5c40cc8e0fbbae56bd242d8b8a5f7033fa89eb819a602e3e71099c6add382192"
+    },
+    {
+      "path": "qa-resume/baseline/src/components/ride/approvedRide.css",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "35b35dfd5c84dea88db4a33fb6b3eeaa66eaa2de2c229fbce96c002ec1aca0d9"
+    },
+    {
+      "path": "qa-resume/baseline/src/components/ride/BookingForSomeoneElse.tsx",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "62472eff71917ff104fc80a8419428a79e22bd34c910cc57553d4f1aeb1806e3"
+    },
+    {
+      "path": "qa-resume/baseline/src/components/ride/NoteToDriverSheet.tsx",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "a5ab6574d7b0afe7adbe39552b84ed49cd2727fca52f913d87769a410495139a"
+    },
+    {
+      "path": "qa-resume/baseline/src/components/ride/ParcelBookingSheet.tsx",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "cdc97a1f68bf0deb55b469cd1c6150092719803520109d59b0e5b8359a632938"
+    },
+    {
+      "path": "qa-resume/baseline/src/components/ride/RideTierSelector.tsx",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "61565de45736b281ce978eb60861241b85faf8c94a9a947928df1df8b7a218b0"
+    },
+    {
+      "path": "qa-resume/baseline/src/components/ride/ScheduleRide.tsx",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "3383949482ed76e0bd4c17f65b21b9fab2aef2392153dffe9461d273bf5193d1"
+    },
+    {
+      "path": "qa-resume/baseline/src/components/ride/ShareRideSheet.tsx",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "ab8e9443a606e76af8e6228fd7572294684ea16ee8871261c8fee7466890f9b8"
+    },
+    {
+      "path": "qa-resume/baseline/src/pages/RideMatching.tsx",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "acb7a46491515a2d5fc9d3ce8d0310458271656e0b5638f2f5da85115a5e14ba"
+    },
+    {
+      "path": "qa-resume/BookingForSomeoneElse.tsx.diff",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "b33542fdfe2fd507646470c84708a09d8ac6d8659818a3fbc86249f95c847a80"
+    },
+    {
+      "path": "qa-resume/browser/choose-360.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "35de79a8b61ff3a27812705017a5b70bb5673f38fe86d8b59f6c9184f5b817fa"
+    },
+    {
+      "path": "qa-resume/browser/choose-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "624c91bd94361f3b99cfd945c28565234d677795d2ec20bd21f25e87159f18dc"
+    },
+    {
+      "path": "qa-resume/browser/configuration-360.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "e5c5a37a2d5cc25674e5b4723a1a61cdd484869704f8ff8191e7e5fd21b61644"
+    },
+    {
+      "path": "qa-resume/browser/configuration-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "3a8ff746ee5a3b0d24e3f38cef901b94a524cadf43a78dc5cd5a65f0556e8e40"
+    },
+    {
+      "path": "qa-resume/browser/destination-360.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "ae35e44f1e4e0224430ec2cba51dcf727826cbabdcd6f3b3e4c4168ad1df731f"
+    },
+    {
+      "path": "qa-resume/browser/destination-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "4219ec4e24add6df68a6bbbac2a2e9cda27ede8b80692fae5b9bf35f5958de9d"
+    },
+    {
+      "path": "qa-resume/browser/finding-drivers-360.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "6249a61fc2dc99f4f3c76a96ee8ac1cf25975a587e810acee2b9bc96d1cdc25c"
+    },
+    {
+      "path": "qa-resume/browser/finding-drivers-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "b8ea8977b909b30056d57dafc32f57c17353fe2d3a13d1851aed58f5e3d52085"
+    },
+    {
+      "path": "qa-resume/browser/finding-drivers-stable-360.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "e7e8132f5d7d3c70b56fe416937cc225cde9848ef39bd0b801db7871900141d7"
+    },
+    {
+      "path": "qa-resume/browser/finding-drivers-stable-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "5b89e866197cb62005c9111a347cbce6d23b5e8c7dd24411f46ee0a5fd2dda61"
+    },
+    {
+      "path": "qa-resume/browser/note-before-contrast-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "43207209ee370c9726e296e9d64284b7a1ee99c5a4ccc0c51f6efa378e4f6146"
+    },
+    {
+      "path": "qa-resume/browser/note-canonical-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "4b5b061da27270d064b683f0d2077b4e7a0f31c31ad77f9cbd8f910a7f2a415f"
+    },
+    {
+      "path": "qa-resume/browser/note-denied-retry.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "746ecdfb51c20485eb441ffb9a44cef2e64ef1dcdb40ae220ceaf6d9dd0a2817"
+    },
+    {
+      "path": "qa-resume/browser/note-denied.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "b1ae2617e8d452381faed44ece755adaeeed43b0f53bb94ad898fcf21079d6fb"
+    },
+    {
+      "path": "qa-resume/browser/results.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "c33af32419def017724ffcf59a461fd218d6854f0ff2f4b611796f6277201559"
+    },
+    {
+      "path": "qa-resume/browser/schedule-canonical-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "3f8d38ca4f619d1a59c26f71d74769ee7f6ac9d7720093c23261a94622754075"
+    },
+    {
+      "path": "qa-resume/browser.log",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "cdd69e522f0e58744e198a71bceefb08946faf5c5495c347a9d2d53f3751b360"
+    },
+    {
+      "path": "qa-resume/browser.mjs",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "33c1498da5a13421da893544ecee9a65b73ed0a934189a8b9a10c91a6faf3680"
+    },
+    {
+      "path": "qa-resume/build-preflight.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "9544449de0f83f7f25cc9243113e8384ab4c0bd3d7ecc6791e151dce28948c49"
+    },
+    {
+      "path": "qa-resume/capture-stable.log",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "qa-resume/capture-stable.mjs",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "7474c16cf1aed508744a5efb701998eae67e8fc71b0ae677e4403d669aa9c8b9"
+    },
+    {
+      "path": "qa-resume/contrast-recheck-edge.log",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "d98139c707d6ed003dd3134176e4cfa4323875655d9208c0fc38fc4a68a36753"
+    },
+    {
+      "path": "qa-resume/contrast-recheck-server-unavailable.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "6e5aff0be4fb8e9726637279a5938c334a9b8553aa0829f994d1e2a35fe1d5ce"
+    },
+    {
+      "path": "qa-resume/eslint-final.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "c276042905e08d44f56289d61dab5cb7744cf69e42f398771b13e8c8045a6e36"
+    },
+    {
+      "path": "qa-resume/eslint-ribbons.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "c276042905e08d44f56289d61dab5cb7744cf69e42f398771b13e8c8045a6e36"
+    },
+    {
+      "path": "qa-resume/eslint.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "808e7d9de9835a0252877c7f09a5d1525e8e3fc26a7c186165682f8a4a1f13a2"
+    },
+    {
+      "path": "qa-resume/final-edge/note-denied-final-360.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "828564e2a7c96d1e09ae08b4b9b8e21cf0cdb39c47c9903062a3d3720b679945"
+    },
+    {
+      "path": "qa-resume/final-edge/note-denied-final-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "1e0be54ec34bf61aba425a22808dd61377dda39a9492b7c7ca8116a487d71d5a"
+    },
+    {
+      "path": "qa-resume/final-edge/note-final-360.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "337e2955bae35fd9104ee403f87321eb6600dd30adc0b18d368231745b5b476d"
+    },
+    {
+      "path": "qa-resume/final-edge/note-final-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "07396a26c4438244fd898945e033e9fbc559857040dec36c9a2e26679188d626"
+    },
+    {
+      "path": "qa-resume/final-edge/parcel-final-360.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "525c3c28bc7e392513c35bc0fffdbb9ddb98cbee761a6dedc2343d93daeffbd2"
+    },
+    {
+      "path": "qa-resume/final-edge/parcel-final-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "161ee37bb4a4492f03df9b70a5271b9436cc0724680e3b4779d61dc98f8250c3"
+    },
+    {
+      "path": "qa-resume/final-edge/schedule-final-360.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "95e90cbc79805cd10239780ceb0043be121989f1b82eab0f8845c046877b301c"
+    },
+    {
+      "path": "qa-resume/final-edge/schedule-final-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "e756dfb3d0c468152ffcc784d152863391ab5c190b42ba2f2d9f962943664849"
+    },
+    {
+      "path": "qa-resume/final-edge/share-final-360.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "33ef06eda8df74c0ad5aef9ec7aab92ebbdf8350c201a950e2a0697597474bfa"
+    },
+    {
+      "path": "qa-resume/final-edge/share-final-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "cff73e9c17f642e9c655d2c5f29d6d29335cb735cf0761407c8ef38132badcf2"
+    },
+    {
+      "path": "qa-resume/final-edge/someone-final-360.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "fc56eb34dfae733ea9d30a4e6f6af3b3700485fa5e705c1c7d04d94655eb2f8e"
+    },
+    {
+      "path": "qa-resume/final-edge/someone-final-393.png",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "f6eed7fa923d954f1cc950925664a44facf194d565f818b6adbc8e2bb4b65251"
+    },
+    {
+      "path": "qa-resume/FRONTEND-RESUME-REPORT.before-final-overlays.md",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "4633321f2307eb97924979f50037926ecdcae7af0700e8a04fb72be9bf92c499"
+    },
+    {
+      "path": "qa-resume/FRONTEND-RESUME-REPORT.md",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "252706094aea68bccfe92921ec8f85d91bdae9234abf48ac5fc71b3cc5e62720"
+    },
+    {
+      "path": "qa-resume/git-status-after-tracked.txt",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "6259333202587a634871de6e2435532bf831e0fc3ab637f606fca2602f2273d9"
+    },
+    {
+      "path": "qa-resume/git-status-before.txt",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "b47bf8c2f1cfae01bb925b0ddc3e67156ca81d18196c36a2b53804ca99d8be29"
+    },
+    {
+      "path": "qa-resume/git-status-final-tracked.txt",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "6259333202587a634871de6e2435532bf831e0fc3ab637f606fca2602f2273d9"
+    },
+    {
+      "path": "qa-resume/note-contrast-final.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "a021b29e4c7a4243af743d55cf55fd9d359b146b927fc9531d34a8e2ba191f5a"
+    },
+    {
+      "path": "qa-resume/note-lifecycle-results.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "2e4d880337ecf859f5047ed235c48a594bd893575e98388673b466b18ff866b9"
+    },
+    {
+      "path": "qa-resume/note-lifecycle.log",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "1ff1a14b36dec8766b4fe82ed46bd7f74beb0090abb576d6895461b59647ab4a"
+    },
+    {
+      "path": "qa-resume/note-lifecycle.mjs",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "2c79ff9831415287b6f79c351fc89bdcd3dc9615eeb3b79c094bde47a520d288"
+    },
+    {
+      "path": "qa-resume/note-tests.log",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "61e48ce9b03bb16289bc91f49583abb37f8a54483f58bcf7f9c14e2be70e10bf"
+    },
+    {
+      "path": "qa-resume/NoteToDriverSheet.tsx.diff",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "725ef1e98ec3490b2310812a83469550acefab1a0cafe5eab53d8b1519c78250"
+    },
+    {
+      "path": "qa-resume/overlays-edge-results.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "b4ca2270d3a46631b02b864ff7aebfe56bfedd3099a6f4385669ac1dc2dfb33e"
+    },
+    {
+      "path": "qa-resume/overlays-edge.log",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "a8e7b44df77020411802bec2937135c1bc08ff374028d741415e96b0c84ad252"
+    },
+    {
+      "path": "qa-resume/overlays-edge.mjs",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "fc0d02301af714a19f7aa32636a3271eea40e84621480847db1891ef93513b8d"
+    },
+    {
+      "path": "qa-resume/overlays-fixture.tsx",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "09b7e26d68946ce8ec69c87d5ad45765c0a06457a342955a2e9ef19bfef3db31"
+    },
+    {
+      "path": "qa-resume/ParcelBookingSheet.tsx.diff",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "c2303157df6a9ffec2fa24d56fe3b2da31d3472863f257a4696bb08e42e1d998"
+    },
+    {
+      "path": "qa-resume/preservation-final.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "4ca99109d1095139623f3cfc788cd5b3099230590d85cb6ace5424174409590f"
+    },
+    {
+      "path": "qa-resume/ribbons-before-contrast.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "a6f8405d74f099977e0892b14a6c811f5d00ff9e536bdb980129ff7d1d9d3c9c"
+    },
+    {
+      "path": "qa-resume/ribbons-final.log",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "qa-resume/ribbons-results.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "6e5aff0be4fb8e9726637279a5938c334a9b8553aa0829f994d1e2a35fe1d5ce"
+    },
+    {
+      "path": "qa-resume/ribbons.log",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "77e0952aa858f9a14a1436e1b130a12b3d4b368d065bfc1d2c1f508d1323ce1d"
+    },
+    {
+      "path": "qa-resume/ribbons.mjs",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "419860b32311074a36eb70047f898e5cc2e05edc32011fef40963119f7af96f6"
+    },
+    {
+      "path": "qa-resume/RideMatching.tsx.diff",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "0487de63d4ced1e73a6e28377984732ebb2e3cb7b3dbaf3cbb929f91e230fa00"
+    },
+    {
+      "path": "qa-resume/RideTierSelector.tsx.diff",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "628fafccc6f50a80592b6e4bb240755cc32248f363747435dd0731d5016a6d12"
+    },
+    {
+      "path": "qa-resume/ScheduleRide.tsx.diff",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "eaebb9055c39413e51f46ce219d0457a5c8bb531a980096158dc9dcc258298be"
+    },
+    {
+      "path": "qa-resume/ShareRideSheet.tsx.diff",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "105e4c7e8d245392cd35d23a2f8aa635eb6f0ce650f1a397e626fec6259be24d"
+    },
+    {
+      "path": "qa-resume/skills.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "660c15b8584e84ffa12fe7b676a2a2b3cf51b6db072e54dd4185cae6374a4deb"
+    },
+    {
+      "path": "qa-resume/source-manifest.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "d63cc7001a7158cf1d7a0488da5be1b06867c52ba5c361032d68de794442b419"
+    },
+    {
+      "path": "qa-resume/verify-build.py",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "c44c224137486f75aa68a9b0ba1edc3f32b06a54491b71000cc8b3b03458d69c"
+    },
+    {
+      "path": "qa-resume/vite-resumed.log",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "47f6b494a5389abee376ef1dc0df94a02a31ed148b17320f4b6720c354d8b951"
+    },
+    {
+      "path": "qa-resume/vite.log",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "5144e6e61db344d4f84ae4429b65c7b949c7bfcd8fb10555993d6c5f090516ea"
+    },
+    {
+      "path": "qa-resume/whitespace-check.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "6db23dd11ccb94c3955389d56791587becc7093df985aed47eae14628b106709"
+    },
+    {
+      "path": "qa-resume/whitespace-final.json",
+      "kind": "verification artifact/tool/baseline",
+      "sha256": "ebef574f005dbb8740ec820f4f5d9b1b26a2cc4a31460a7adbc5583fd6ac2ca9"
+    },
+    {
+      "path": "qa-stabilization/fixture-site/secondary-overlays.html",
+      "kind": "new isolated verification entry/evidence",
+      "sha256": "dd97965d303f9b46616308aa2240bb9ffca920b3f09d892379b6a0bf19c953b1"
+    },
+    {
+      "path": "qa-stabilization/resume-tests-authorized-resources.jsonl",
+      "kind": "new isolated verification entry/evidence",
+      "sha256": "d1d8601ff2f987afabc994ac93a320487bf300ab232729afd595710bfb41143a"
+    },
+    {
+      "path": "qa-stabilization/resume-tests-authorized-status.json",
+      "kind": "new isolated verification entry/evidence",
+      "sha256": "866fa025c2ab743a1a014a16c4b8d36f1a793b000998b0f517494dc731730c2e"
+    },
+    {
+      "path": "qa-stabilization/resume-tests-authorized.log",
+      "kind": "new isolated verification entry/evidence",
+      "sha256": "286041acad1d6124e23e1889b5ceaf9480eadc552adb24057f58a8e5f4867af7"
+    },
+    {
+      "path": "qa-stabilization/resume-tests-resources.jsonl",
+      "kind": "new isolated verification entry/evidence",
+      "sha256": "25e300f3989d2155a790e0d55f01e38296544bf0395c37a668c33342b54a28cd"
+    },
+    {
+      "path": "qa-stabilization/resume-tests-status.json",
+      "kind": "new isolated verification entry/evidence",
+      "sha256": "f5992f899964d09a1234283002edaed6dd837af8510e6ce0d601ca568a07a393"
+    },
+    {
+      "path": "qa-stabilization/resume-tests.log",
+      "kind": "new isolated verification entry/evidence",
+      "sha256": "19dcbcec268c84efd1bdcb8bb8b0c63cdafb717ea2668d57de0bf1ed9c3b4faf"
+    },
+    {
+      "path": "qa-stabilization/resume-typecheck-resources.jsonl",
+      "kind": "new isolated verification entry/evidence",
+      "sha256": "3dae73762b4f0159c39495ef4d9a6da2c28a433669ff3a5e41c99aef23049c1d"
+    },
+    {
+      "path": "qa-stabilization/resume-typecheck-status.json",
+      "kind": "new isolated verification entry/evidence",
+      "sha256": "dadd6be82cc18541f0ee64b99d2c6635b6ca528df452d4430d11acb5d12b97f6"
+    },
+    {
+      "path": "qa-stabilization/resume-typecheck.log",
+      "kind": "new isolated verification entry/evidence",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "qa-resume/report-validation.json",
+      "kind": "final verification evidence",
+      "sha256": "304a530834769bab5bed37bd0d3e8c9f76291e6d91c4cb30a65d4d73b442532f"
+    },
+    {
+      "path": "qa-resume/fixture-shutdown.json",
+      "kind": "final verification evidence",
+      "sha256": "34482564073f9227f2999e650dfd931b137bbb1cb766f122840b1e6c5aecd476"
+    }
+  ]
+}

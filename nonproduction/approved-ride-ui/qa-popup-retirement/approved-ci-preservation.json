@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "commit": "bb887feaa86589c47f2d728d3d57a087ef89ffe8",
+  "branch": "verify/cruixe-approved-ui-20261101-2a3ff775",
+  "repository": "C:\\Users\\MUSAE\\AppData\\Local\\Temp\\cruixe-byte-exact-20261101-od_hee1c",
+  "checks": "Read-only branch reference and all three approved committed blob SHA-256 values verified; no settings or refs changed"
+}

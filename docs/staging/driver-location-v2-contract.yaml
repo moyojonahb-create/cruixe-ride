@@ -1,0 +1,132 @@
+status: proposal
+environment: staging-only
+version: 2
+
+endpoint:
+  method: POST
+  path: /api/drivers/me/location
+  authentication: supabase-jwt
+  request:
+    required:
+      latitude: { type: number, minimum: -90, maximum: 90 }
+      longitude: { type: number, minimum: -180, maximum: 180 }
+      gps_fixed_at: { type: string, format: date-time, source: os-location-fix }
+    optional:
+      ride_id: { type: string, format: uuid }
+      accuracy_m: { type: number, minimum: 0, maximum: 1000 }
+      heading: { type: number, minimum: 0, exclusiveMaximum: 360 }
+      speed_mps: { type: number, minimum: 0, maximum: 100 }
+  accepted_response:
+    status: 200
+    fields:
+      latitude: number
+      longitude: number
+      gps_fixed_at: date-time
+      location_received_at: date-time
+      location_sequence: positive-integer
+      accuracy_m: nullable-number
+  errors:
+    unauthenticated: { status: 401, code: authentication_required }
+    unauthorized: { status: 403, code: driver_not_eligible }
+    wrong_ride: { status: 403, code: ride_not_assigned }
+    out_of_order: { status: 409, code: location_out_of_order }
+    invalid_fix: { status: 422, code: invalid_location_fix }
+    persistence_failure: { status: 503, code: location_persistence_failed }
+
+database:
+  table: public.live_locations
+  key: user_id
+  fields:
+    gps_fixed_at:
+      owner: device-fix-via-trusted-backend
+      meaning: OS acquisition time of the accepted fix
+      nullable_for_legacy: true
+    location_received_at:
+      owner: database
+      meaning: database receipt time of the accepted fix
+      nullable_for_legacy: true
+    location_sequence:
+      owner: database
+      meaning: monotonically increasing accepted-fix revision per driver
+      nullable_for_legacy: true
+    accuracy:
+      api_name: accuracy_m
+      owner: device-fix-via-trusted-backend
+      units: metres
+      nullable: true
+    presence_last_seen_at:
+      owner: trusted-presence-endpoint
+      meaning: latest accepted presence heartbeat
+    updated_at:
+      meaning: generic row maintenance timestamp
+      gps_freshness_authority: false
+
+acceptance_rules:
+  authentication:
+    - request user id is taken only from the verified JWT
+    - request driver_id is rejected or ignored; it never selects another account
+  eligibility_atomic_with_write:
+    - drivers.status equals approved
+    - drivers.is_online equals true
+    - public.can_driver_operate(authenticated_user_id) equals true
+    - an approved personal_photo or selfie_with_id document exists for this driver
+    - ride_id, when present, is active and assigned to this driver
+  validation:
+    - all numeric values are finite and within declared bounds
+    - gps_fixed_at is no more than 30 seconds in the future
+    - gps_fixed_at is no more than 120 seconds old
+    - gps_fixed_at is strictly newer than the stored gps_fixed_at
+  ordering:
+    - location_sequence is allocated by PostgreSQL, not accepted from the client
+    - an accepted update increments the stored per-driver sequence by one
+    - equal or older acquisition timestamps leave the stored row unchanged
+    - concurrent writes finish with the newest accepted acquisition timestamp
+  publication:
+    - PostgreSQL commit occurs before Redis, reputation, or WebSocket writes
+    - downstream payloads use the database RETURNING values
+    - rejected or failed persistence produces no downstream location event
+
+presence_heartbeat:
+  endpoint: /api/drivers/me/presence
+  accepted_action: heartbeat
+  may_update:
+    - drivers.updated_at
+    - live_locations.presence_last_seen_at
+    - live_locations.updated_at
+    - redis presence TTL
+  must_not_update:
+    - latitude
+    - longitude
+    - accuracy
+    - heading
+    - speed
+    - gps_fixed_at
+    - location_received_at
+    - location_sequence
+  rule: cached coordinates are never converted into a GPS fix
+
+legacy_compatibility:
+  request_without_gps_fixed_at:
+    temporary_behavior: may be accepted only for a row that has never received authoritative metadata
+    authoritative_fields: remain-null
+    may_overwrite_v2_row: false
+    eta_eligible: false
+  removal_gate:
+    - minimum supported mobile versions send gps_fixed_at and accuracy_m
+    - staging telemetry shows no required legacy requests for the agreed window
+
+eta_restoration_gate:
+  all_required:
+    - gps_fixed_at is present
+    - location_received_at is present
+    - location_sequence is positive and greater than the last client-accepted sequence
+    - gps fix age is at most 30 seconds
+    - server receipt age is at most 30 seconds
+    - gps_fixed_at is not materially later than location_received_at
+    - accuracy_m is present and at most 100 metres
+    - driver is assigned to the active ride
+  failure_behavior:
+    marker: preserve-as-last-known
+    eta: hidden
+    distance_progress: do-not-advance-from-untrusted-sample
+

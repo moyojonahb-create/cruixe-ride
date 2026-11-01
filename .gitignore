@@ -8,6 +8,10 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+**/node_modules*/
+npm-cache
+**/npm-cache*/
+**/vite-fixture-cache/
 dist
 dist-ssr
 *.local
@@ -45,3 +49,5 @@ supabase/.branches/
 *.jks
 *.keystore
 key.properties
+# Playwright CLI output (may contain credentials)
+.playwright-cli/

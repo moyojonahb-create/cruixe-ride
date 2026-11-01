@@ -1,0 +1,10 @@
+[
+  {
+    "file": "src/components/ride/RideView.tsx",
+    "sha256": "5128b53e4a6453074eab13863e987dc7c7be5148bff2875bcd141448f063c752"
+  },
+  {
+    "file": "src/components/ride/RideTierSelector.tsx",
+    "sha256": "497f0c7a8beee47da430c6497b61079c7cda2f29f0297b37613c1e9f8e9f9a49"
+  }
+]

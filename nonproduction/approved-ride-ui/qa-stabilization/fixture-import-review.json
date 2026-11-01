@@ -1,0 +1,40 @@
+{
+  "sourceFilesVisited": 73,
+  "missingFixtureExports": [
+    {
+      "export": "formatCallDuration",
+      "module": "@/hooks/useAgoraCall",
+      "consumer": "src\\components\\ride\\ActiveCallOverlay.tsx"
+    },
+    {
+      "export": "createEmergencyEvent",
+      "module": "@/lib/businessApi",
+      "consumer": "src\\components\\ride\\SafetySheet.tsx"
+    },
+    {
+      "export": "submitDispute",
+      "module": "@/lib/businessApi",
+      "consumer": "src\\components\\ride\\DisputeForm.tsx"
+    },
+    {
+      "export": "markNotificationRead",
+      "module": "@/lib/businessApi",
+      "consumer": "src\\components\\NotificationCenter.tsx"
+    },
+    {
+      "export": "markNotificationsRead",
+      "module": "@/lib/businessApi",
+      "consumer": "src\\components\\NotificationCenter.tsx"
+    },
+    {
+      "export": "createEmergencyEvent",
+      "module": "@/lib/businessApi",
+      "consumer": "src\\components\\ride\\EmergencyButton.tsx"
+    },
+    {
+      "export": "updateMyProfile",
+      "module": "@/lib/businessApi",
+      "consumer": "src\\components\\auth\\AuthForm.tsx"
+    }
+  ]
+}

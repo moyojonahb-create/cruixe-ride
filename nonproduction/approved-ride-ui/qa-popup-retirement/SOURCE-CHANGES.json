@@ -1,0 +1,71 @@
+{
+  "status": "PASS",
+  "sourceFiles": [
+    {
+      "path": "src/components/ride/RideView.tsx",
+      "beforeSHA256": "38354aaaaf575fe05c137291adfa01c3e7099d1fb36a3acea90c6659bd8b689c",
+      "afterSHA256": "3a5b7d0ffeb1fa8126ec726bfbe86ce27ae6131cf8f3f1a19682dec6966bf4c0",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "src/components/ride/NoteToDriverSheet.tsx",
+      "beforeSHA256": "a5ab6574d7b0afe7adbe39552b84ed49cd2727fca52f913d87769a410495139a",
+      "afterSHA256": "3a5266c75a09af48f90752182e128b83d95583c56b4bccd2a06186a5b7235389",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "src/components/ride/RideGlassPanel.tsx",
+      "beforeSHA256": "49bc0161154560d4a63f37cccf77bb706eefcf88fe80a5bf582ec13039391ae9",
+      "afterSHA256": "f011cf8f2b38dcb4bfe89e087f45d7bc458b061701df00007d7a955ab584beab",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "src/components/luggage/LuggageSheet.tsx",
+      "beforeSHA256": "3a6b418107ea70bebf45d28a43062b42677bd2f97d251f5c7995a8ff44c2dc51",
+      "afterSHA256": "5b9a4e67353bcf11f7ebef15ef79b9cc24727334bc0bcba1db339d70291f9637",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/RideView.tsx",
+      "beforeSHA256": "833d75749e0848b0ddd937c7130b2add32eb3b8619dce645e7e04540e475c1d1",
+      "afterSHA256": "6851ede1e850206381a473441d86e7d5fffd197ac299c684face9be538e812bf",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/NoteToDriverSheet.tsx",
+      "beforeSHA256": "706208720b2dfc1c9e24ecdfe6bd90c99e446d6b3b9e536d1eb21c65b81ab4c6",
+      "afterSHA256": "bf5397cf8b87918c15654ea6f97a5f093a81d85a66ab52b3658e15723a01d4e0",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/RideGlassPanel.tsx",
+      "beforeSHA256": "7dafe11672b599b0e8f3d852a332f0f4304b82f520d69dac8b1e2736b9db931a",
+      "afterSHA256": "fb0f768c0b922727c29823faef57ac012b7a93eb7513073bf998dc133583ca81",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/luggage/LuggageSheet.tsx",
+      "beforeSHA256": "63d3e1b4c0fec66f940e53af49f0ea7bac998239fb6ec93384dc9a7df8aa9b57",
+      "afterSHA256": "f3acfd63705368a1bebf7c65b1aedd804697a76f8aa89e3e4985861049b9c09d",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/approvedRide.css",
+      "beforeSHA256": "8b000aad8e442c3b0f8bf01d5e26bc36221374509a7fcd16560d386e6a4b08fc",
+      "afterSHA256": "d5de6a426c00ce1eda62b17e5a8a4c13998a88a4ac3b80260347451a1e230816",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "src/components/ride/TripPaymentSelector.tsx",
+      "afterSHA256": "e03386220edcd142d194a4fecee67af899d9fe8187296a5c39afc119abebc901",
+      "status": "ADDED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/TripPaymentSelector.tsx",
+      "afterSHA256": "e03386220edcd142d194a4fecee67af899d9fe8187296a5c39afc119abebc901",
+      "status": "ADDED"
+    }
+  ],
+  "committed": false,
+  "scopeReview": "No commit created; exact eleven-file source scope available for review"
+}

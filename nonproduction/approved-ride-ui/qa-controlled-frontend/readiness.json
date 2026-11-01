@@ -1,0 +1,122 @@
+{
+  "status": "FAIL",
+  "meaning": "Controlled local commit succeeded; full frontend acceptance still fails/blocked",
+  "gates": [
+    {
+      "gate": "Source integrity",
+      "status": "PASS"
+    },
+    {
+      "gate": "Original changes/index/worktrees/CI preservation",
+      "status": "PASS"
+    },
+    {
+      "gate": "New local commit exact scope/blob verification",
+      "status": "PASS"
+    },
+    {
+      "gate": "Reused nine-device core fixture layout/Axe",
+      "status": "PASS"
+    },
+    {
+      "gate": "Supplemental overall browser acceptance",
+      "status": "FAIL"
+    },
+    {
+      "gate": "Product 44px touch targets",
+      "status": "FAIL"
+    },
+    {
+      "gate": "Supplemental JavaScript/console/network",
+      "status": "PASS"
+    },
+    {
+      "gate": "Supplemental Axe automated violations",
+      "status": "PASS"
+    },
+    {
+      "gate": "Limited CSS-root-font reflow",
+      "status": "PASS"
+    },
+    {
+      "gate": "Full native/text-scaling acceptance",
+      "status": "NOT RUN"
+    },
+    {
+      "gate": "Current TypeScript",
+      "status": "BLOCKED"
+    },
+    {
+      "gate": "Current focused Vitest",
+      "status": "BLOCKED"
+    },
+    {
+      "gate": "Current scoped ESLint",
+      "status": "BLOCKED"
+    },
+    {
+      "gate": "Current production build",
+      "status": "BLOCKED"
+    },
+    {
+      "gate": "Historical TypeScript/58 tests/ESLint baseline",
+      "status": "PASS"
+    },
+    {
+      "gate": "Fresh complete vulnerability audit",
+      "status": "NOT RUN"
+    },
+    {
+      "gate": "Current authenticated staging E2E",
+      "status": "BLOCKED"
+    },
+    {
+      "gate": "Main authenticated application startup",
+      "status": "BLOCKED"
+    },
+    {
+      "gate": "Nine-viewport HTTP/request-failure listeners",
+      "status": "NOT RUN"
+    },
+    {
+      "gate": "Physical device/GPU acceptance",
+      "status": "BLOCKED"
+    },
+    {
+      "gate": "Current remote GitHub Actions verification",
+      "status": "BLOCKED"
+    },
+    {
+      "gate": "Push",
+      "status": "NOT RUN"
+    },
+    {
+      "gate": "Merge",
+      "status": "NOT RUN"
+    },
+    {
+      "gate": "Deploy",
+      "status": "NOT RUN"
+    }
+  ],
+  "commit": "a7650a61854f7cc907baaa9631cc55469e222640",
+  "commitBranch": "fix/cruixe-accessible-viewport-20261101",
+  "committedFiles": [
+    "index.html"
+  ],
+  "sourceEditsThisContinuation": [],
+  "frontendIntegration": "NO-GO",
+  "productionRelease": "NO-GO",
+  "runURL": null,
+  "baseline": "Historical test/compiler/lint passes predate current edits; no new heavy local verification",
+  "memory": {
+    "availableMiB": 364.44,
+    "requiredMiB": 3072,
+    "heavyChecks": "BLOCKED"
+  },
+  "browser": {
+    "name": "Microsoft Edge",
+    "version": "156.0.4314.50"
+  },
+  "playwright": "1.64.1"
+}

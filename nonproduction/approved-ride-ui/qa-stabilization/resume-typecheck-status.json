@@ -1,0 +1,21 @@
+{
+  "name": "resume-typecheck",
+  "command": [
+    "C:\\Users\\MUSAE\\AppData\\Local\\Temp\\cruize-p02-node22-5c590de3cb8e46d6a328181d0bbd2143\\node-v22.23.4-win-x64\\node.exe",
+    "--max-old-space-size=1536",
+    "node_modules/typescript/bin/tsc",
+    "--noEmit",
+    "-p",
+    "tsconfig.app.json",
+    "--extendedDiagnostics",
+    "--pretty",
+    "false"
+  ],
+  "exitCode": 1,
+  "terminationReason": "resource guard: available physical memory below 384 MiB",
+  "elapsedSeconds": 38.69,
+  "peakWorkingSetMB": 171.8,
+  "peakPrivateMB": 158.5,
+  "minAvailablePhysicalMB": 375,
+  "cpuSeconds": 6.828
+}

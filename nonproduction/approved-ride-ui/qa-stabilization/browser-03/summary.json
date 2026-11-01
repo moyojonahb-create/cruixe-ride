@@ -1,0 +1,112 @@
+{
+  "failure": null,
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "blockedRequests": [],
+  "forbiddenWrites": [],
+  "navigation": [
+    {
+      "name": "Account",
+      "interpolatedCurveStates": 11,
+      "url": "http://127.0.0.1:8083/profile",
+      "selected": "page",
+      "curveChanged": true,
+      "reloadSelected": "page",
+      "backSelected": "page"
+    },
+    {
+      "name": "Activity",
+      "interpolatedCurveStates": 12,
+      "url": "http://127.0.0.1:8083/history",
+      "selected": "page",
+      "curveChanged": true,
+      "reloadSelected": "page",
+      "backSelected": "page"
+    },
+    {
+      "name": "Wallet",
+      "interpolatedCurveStates": 11,
+      "url": "http://127.0.0.1:8083/wallet",
+      "selected": "page",
+      "curveChanged": true,
+      "reloadSelected": "page",
+      "backSelected": "page"
+    }
+  ],
+  "reducedMotion": "0s",
+  "cases": [
+    {
+      "width": 393,
+      "overflow": false,
+      "confirmation": {
+        "arrowInside": true,
+        "labelNotClipped": true,
+        "labelFont": "13.362px"
+      },
+      "photoPreview": {
+        "complete": true,
+        "naturalWidth": 1
+      },
+      "passengerMaxDisabled": true,
+      "paymentReturns": true,
+      "prematureBookingAttempts": 0,
+      "photoRemoved": true,
+      "a11y": {
+        "accessibility": [],
+        "paymentAccessibility": [],
+        "luggageAccessibility": [],
+        "scheduleAccessibility": []
+      }
+    },
+    {
+      "width": 360,
+      "overflow": false,
+      "confirmation": {
+        "arrowInside": true,
+        "labelNotClipped": true,
+        "labelFont": "12.24px"
+      },
+      "photoPreview": {
+        "complete": true,
+        "naturalWidth": 1
+      },
+      "passengerMaxDisabled": true,
+      "paymentReturns": true,
+      "prematureBookingAttempts": 0,
+      "photoRemoved": true,
+      "a11y": {
+        "accessibility": [],
+        "paymentAccessibility": [],
+        "luggageAccessibility": [],
+        "scheduleAccessibility": []
+      }
+    }
+  ],
+  "finding": [
+    {
+      "name": "MOCKED pending UI 393",
+      "overflow": false,
+      "accessibility": {
+        "name": "finding-393",
+        "violations": []
+      },
+      "ribbon": [
+        "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+        "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+      ]
+    },
+    {
+      "name": "MOCKED pending UI 360",
+      "overflow": false,
+      "accessibility": {
+        "name": "finding-360",
+        "violations": []
+      },
+      "ribbon": [
+        "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+        "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+      ]
+    }
+  ]
+}

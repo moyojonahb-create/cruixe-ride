@@ -1,0 +1,61 @@
+{
+  "scope": "Local-only recovery evidence; approved payload source files unchanged; only the three reviewed files are in the new commit. No publication.",
+  "commit": "bb887feaa86589c47f2d728d3d57a087ef89ffe8",
+  "files": [
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/commit-recovery-attributes.json",
+      "kind": "new recovery evidence",
+      "sha256": "f313cabd7109766f123a59060264072254eae2fcea251669659dc812250577a7"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/commit-recovery-create-v2.py",
+      "kind": "new recovery evidence",
+      "sha256": "1b0870be630664adcc96528b8d8f7c7011c54aa3035f0d4b01f955a43941fcad"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/commit-recovery-create.py",
+      "kind": "new recovery evidence",
+      "sha256": "4465b4a033f8190fd1060b9489f879b2f118b37b682c6d102b8d1bfbce7deb20"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/commit-recovery-final-checks.json",
+      "kind": "new recovery evidence",
+      "sha256": "2ef9dcabe02f49c4e7a7ec9bcc893c0417e936890a974f63120063041fc6c651"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/commit-recovery-precommit.json",
+      "kind": "new recovery evidence",
+      "sha256": "b0c77770d7605b18033e46b8d82b51c62ad2a7eb32becf9d92d95cc50b2cf9b4"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/commit-recovery-preservation-after.json",
+      "kind": "new recovery evidence",
+      "sha256": "70cd3335a816142bce413e9edf8b5f067cfc3cda93aed31c09ab42ec5e39736b"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/commit-recovery-preservation-before.json",
+      "kind": "new recovery evidence",
+      "sha256": "482634e7d42e3ac996948b69abb2ac0d768ccc3db6b9c4f9a45790ed499c7c8c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/commit-recovery-readiness.md",
+      "kind": "new recovery evidence",
+      "sha256": "2aec2aebd6ffadd789a918d72b48bf3c04f2e8c53b4ed74c33c39a7458e0d32a"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/commit-recovery-result.json",
+      "kind": "new recovery evidence",
+      "sha256": "c9f074d827b4824637b7e93f4702a02c72abbe9c3cb7ffe3ef339ec5c230d216"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/commit-recovery-inventory.json",
+      "kind": "new inventory; self-hash omitted"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/REMOTE-VERIFICATION-READINESS.md",
+      "kind": "append-only update; all previous bytes preserved",
+      "previousContentSHA256": "83bde866e73831af3c00c8883a0e87f3ebe16c6e12c87bd84cf5db4b4ad2ab45",
+      "sha256": "1c0ac9c4e76f1a692dc61291cfa90aa319030583abc345ed98941fb1e551cf90"
+    }
+  ]
+}

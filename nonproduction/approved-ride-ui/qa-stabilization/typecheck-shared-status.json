@@ -1,0 +1,22 @@
+{
+  "name": "typecheck-shared",
+  "command": [
+    "C:\\Users\\MUSAE\\AppData\\Local\\Temp/cruize-p02-node22-5c590de3cb8e46d6a328181d0bbd2143/node-v22.23.4-win-x64/node.exe",
+    "node_modules/typescript/bin/tsc",
+    "--noEmit",
+    "-p",
+    "tsconfig.app.json",
+    "--extendedDiagnostics",
+    "--generateTrace",
+    "qa-stabilization/typecheck-shared-trace",
+    "--pretty",
+    "false"
+  ],
+  "exitCode": 1,
+  "terminationReason": "180-second diagnostic budget reached; inspect sampled CPU/I/O and compiler trace",
+  "elapsedSeconds": 183.14,
+  "peakWorkingSetMB": 554.5,
+  "peakPrivateMB": 549.9,
+  "minAvailablePhysicalMB": 735,
+  "cpuSeconds": 86.531
+}

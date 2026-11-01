@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "checks": {
+    "originalIndexByteIdentical": true,
+    "originalBranchUnchanged": true,
+    "originalHEADUnchanged": true,
+    "originalTrackedStatusUnchanged": true,
+    "allTargetedFileHashesUnchanged": true,
+    "previousCloneIndexAndWorktreeUnchanged": true
+  },
+  "targetedFiles": 60,
+  "unrelatedCacheDiagnostic": {
+    "status": "BLOCKED",
+    "reason": "An unrelated existing node_modules.shared-before-stabilization cache file returned WinError 1392. Cache was not modified or used. No full untracked byte-preservation claim is made."
+  },
+  "preservationMethod": "No worktree/index writes to original or prior clone; commit created in new bare repository. Existing files retained; full untracked cache hashing is not claimed."
+}

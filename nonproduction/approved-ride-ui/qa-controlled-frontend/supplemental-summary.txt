@@ -1,0 +1,34 @@
+Derived from supplemental-results.json; not a raw runner transcript.
+{
+  "browser": {
+    "name": "Microsoft Edge",
+    "version": "156.0.4314.50"
+  },
+  "cases": [
+    {
+      "name": "payment-iphone-x",
+      "status": "FAIL",
+      "failure": "Error: Controls smaller than required 44px"
+    },
+    {
+      "name": "note-long-text-iphone-x",
+      "status": "PASS",
+      "failure": null
+    },
+    {
+      "name": "larger-text-iphone-x",
+      "status": "PASS",
+      "failure": null
+    },
+    {
+      "name": "finding-drivers-iphone-x",
+      "status": "PASS",
+      "failure": null
+    }
+  ],
+  "pageErrors": 0,
+  "consoleErrors": 0,
+  "httpErrors": 0,
+  "requestFailures": 0,
+  "overall": "FAIL"
+}

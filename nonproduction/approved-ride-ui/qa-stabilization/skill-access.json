@@ -1,0 +1,83 @@
+{
+  "installed": [
+    "animate",
+    "animate-expo",
+    "animation-performance",
+    "animation-vocabulary",
+    "apple-design",
+    "ask-sonner",
+    "banner-design",
+    "brand",
+    "break-ui",
+    "code-quality",
+    "design",
+    "design-system",
+    "design-taste-frontend",
+    "emil-design-eng",
+    "find-animation-opportunities",
+    "frontend-design",
+    "gsap",
+    "improve-animations",
+    "mobile-native",
+    "pick-ui-library",
+    "playwright-cli",
+    "prototype",
+    "remotion-best-practices",
+    "remove-animations",
+    "review-animations",
+    "security-review",
+    "slides",
+    "ui-styling",
+    "ui-ux-pro-max",
+    "vercel-composition-patterns",
+    "vercel-react-best-practices",
+    "web-css-animations",
+    "web-design-guidelines",
+    "web-waapi",
+    "write-swift"
+  ],
+  "prioritizedInstructionsRead": [
+    {
+      "skill": "apple-design",
+      "accessible": true,
+      "bytes": 23326,
+      "sha256": "bcab965ec01d05101b817714f8ccaf68632d1697b822f65718e811119a77c049"
+    },
+    {
+      "skill": "animate",
+      "accessible": true,
+      "bytes": 12067,
+      "sha256": "6e7a0d28864bd9cb658913049df6944ce320a3646ac0e339ba8c7d99a9e764e5"
+    },
+    {
+      "skill": "animation-performance",
+      "accessible": true,
+      "bytes": 14188,
+      "sha256": "15220ebda30a5db60f14331769ef28b756f10924463791fb096d2f396a8d1571"
+    },
+    {
+      "skill": "emil-design-eng",
+      "accessible": true,
+      "bytes": 27797,
+      "sha256": "a2ee9da0840c23b509a27e742edbc8f8fdb4416ca7d6ffde67d79023bfb8a5bf"
+    },
+    {
+      "skill": "improve-animations",
+      "accessible": true,
+      "bytes": 8317,
+      "sha256": "4c57bd88188834434022b8ea0ea47f361963db5746198a7ce752eaef9ac221db"
+    },
+    {
+      "skill": "mobile-native",
+      "accessible": true,
+      "bytes": 17149,
+      "sha256": "0952ba031c849ba11dcefa4755f178457b9bca6a794e9bb6fc725aa1c1cc0dea"
+    },
+    {
+      "skill": "ui-ux-pro-max",
+      "accessible": true,
+      "bytes": 55451,
+      "sha256": "e5baf9400d4347e5ed3eb1f6b99cd0b9ba545b8b0e507aabb2b87397bbf73ea1"
+    }
+  ]
+}

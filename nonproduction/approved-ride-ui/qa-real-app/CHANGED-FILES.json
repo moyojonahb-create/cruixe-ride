@@ -1,0 +1,657 @@
+{
+  "applicationSourceFiles": [
+    {
+      "path": "index.html",
+      "beforeSHA256": "251f827c5c6b251f70df56e18a47843b38b214ef72e691070482a94edd1f08fe",
+      "afterSHA256": "a15ea933089f9d2b165b7ba78b7bfbaf6b292da8c8ef58ac0da3e27f013dfad9"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/index.html",
+      "beforeSHA256": "251f827c5c6b251f70df56e18a47843b38b214ef72e691070482a94edd1f08fe",
+      "afterSHA256": "a15ea933089f9d2b165b7ba78b7bfbaf6b292da8c8ef58ac0da3e27f013dfad9"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/approvedRide.css",
+      "beforeSHA256": "dfa71d3bb01c0d2adaecc90ca257adb3104a643c69263d03f4b4106621839576",
+      "afterSHA256": "8b000aad8e442c3b0f8bf01d5e26bc36221374509a7fcd16560d386e6a4b08fc"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/destinationScreen.css",
+      "beforeSHA256": "01eb1367bc44c622da253af0284014a03a22f0e3e0ae6f367f2eebf4df392cda",
+      "afterSHA256": "3d13af94181d7eb77bfaee1254ff2f139a625fa9bcb2e4140d8144d45af153bd"
+    }
+  ],
+  "newAuditEvidenceFiles": [
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/320x640-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "66b14cf51d6a5a6b15cedd157bb223d0e55003572038ca8481819bce85fc8037"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/320x640-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "7ab83e23b3361ebe1d2b174960b874ff66cb1f25df729ff75b2c720140c8775c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/320x640-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "b8fa67c21a2515afa6f97b93a568f355ff5826cc08db17d455fa0af9191673b0"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/320x640-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "82c3ce4def08868439553cf3c78c91bdc063f36806b8e7e108863b413ef12948"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/360x800-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "7341e2ff75c20a95aefdcfedf0fa22126694320c0ad97c338c48795fabb0c442"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/360x800-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "fbcd7119a6b6a1df39da3f763b385c230e92e4f5652e19ae3494e1ebf6987ed1"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/360x800-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "7e589b2619f8690ccf683788ec9a93a577ce3e4ad695ecb0070e8ee619783616"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/360x800-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "1b1c86ab75a15c5d4ca7e8e9614511c50fc4c307e4eed8babf3f370b3ff03e06"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/375x667-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "e1bda348ad10f875cc82dff9c075e71a9ee6cce097572f5e56ddcea8480f22cf"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/375x667-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "ec09ea2ca8b5ba3f1e9c7357a4f233668cf7ef587bafea91f26dfe8ee3177a21"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/375x667-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "589ec4d3e6634c7f8dea1e4ead9746af62ab923692c90d7932c51d6bb689fd0f"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/375x667-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "8db36eca9e0d60918fb691658354b1ff1068bf4bcd9156e7bd22f20844e898bd"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/375x812-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "5f942acb6c2a067a5099c0b06d0d04a07643780b36611982225f9784eb4ba8b9"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/375x812-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "0940a18d51f1432c2738cf818d008aac9f2346e52dd978c6c2d4cf471ecf1feb"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/375x812-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "c2a7d7baeb1c88e8d923eb8ab3e4e2fb76476d2910c002075dc60069425a21e3"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/375x812-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "62310df0553adde3bd0c69953065f01c13956672087990e86ac0344860e6c5dc"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/375x812-keyboard-resize.png",
+      "kind": "new audit/evidence",
+      "sha256": "93d4ac1af33d14c9ff164a4a23090b84ceaacdc3cd8ef0aa7a73e606c7379b78"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/390x844-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "ae06aa2491e7fe4216b1b5a050fa716c66b030b38ff1ec0bb921d0db388cb5e7"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/390x844-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "5b3b6b131ec6687db75950ed21e9882dcbf6479aa0d93ca4ec1eea76bfbfe16c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/390x844-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "2adb3e7195e1a6ff01c31aba186244feb6082b8e0ac202e0e7e5543393776157"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/390x844-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "b85a46d2f09b0dbfbb02844b91e50841e33611991b00dfda4688afd66c7a6b4a"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/393x852-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "febdbe41bcbc67b901d9489c38818ea1e4e47ca4d928c731b56b2915a1535d1e"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/393x852-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "8f217f78af082912bb16aeff6793a8b97391fcb9acf6434ada5df3bc3a091b7d"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/393x852-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "35d7ae47ccfefd8047b1b1df2a9c86ffe4a578f51c574cdd0fb94545cad0aa9f"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/393x852-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "593a499715437883d2a4556463520735645578bc59dbbf32c2973529ca70f344"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/412x915-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "48eadcd3d468ce7b5b510e1c432498e682d34188974f407b30052faa170ffcb0"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/412x915-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "e94f4dd989bb089950bb7a1353971e216e67b5d06b1faaf072be38647b6d917c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/412x915-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "2c34b2140a071a982577cb87c2be1aac0c3b72961d19a245e815bc9eb3ffa88d"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/412x915-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "d539d1c4211ccde63863bced8e8350a339be17d079f1f874824bf86ddf335560"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/768x1024-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "6f2061258c0cd22093d409bc2651284757bf50e7d40992e1ffa0b4f04a60798f"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/768x1024-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "a0472a5af4ddb6454be359640cfde8ccb9860ce7f10156694d0b2cf16a3cc112"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/768x1024-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "de923a740b879364838231c56788ae7a8f88d952b55f47258addf44efd402953"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/768x1024-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "bc921473116092bd5222262819357076610bf4241a5a5e9967f656391598ee15"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/812x375-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "aaa903633f59be5e23ef7246741dadcc8ed2e0712b38f90e0205ccd8d6416565"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/812x375-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "95da815391c86e9c4a771e1a0a23ae613c8d97ae13204a54aef7d83daed5bd1b"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/812x375-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "45f02ab5a1f76a1d832dca495c4945407b7a63daa2ca85c9c281da1175e43831"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/812x375-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "c148d4174c9dd3e1b30be2fb0874d95a965e807e45ff8a94d3834337b7d86f79"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/after/results.json",
+      "kind": "new audit/evidence",
+      "sha256": "b5f96d9348334ce429a82b6da250799934fd942518ef9f6ba9136640fd91f008"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/320x640-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "66b14cf51d6a5a6b15cedd157bb223d0e55003572038ca8481819bce85fc8037"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/320x640-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "3d46c143670754285e4ca470fc9d2ccd57d7f97153437c45007b2de1dfb4044c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/320x640-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "b8fa67c21a2515afa6f97b93a568f355ff5826cc08db17d455fa0af9191673b0"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/320x640-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "d1b317a998ad78ff852913487cb6fee7c435accf249565a15b68fdf20e7782ce"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/360x800-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "7341e2ff75c20a95aefdcfedf0fa22126694320c0ad97c338c48795fabb0c442"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/360x800-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "e5c5a37a2d5cc25674e5b4723a1a61cdd484869704f8ff8191e7e5fd21b61644"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/360x800-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "7e589b2619f8690ccf683788ec9a93a577ce3e4ad695ecb0070e8ee619783616"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/360x800-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "02ad63a81d3c2977a7e90e03e4d23b2bd1db33fe230c8dff2604688392411ce7"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/375x667-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "e1bda348ad10f875cc82dff9c075e71a9ee6cce097572f5e56ddcea8480f22cf"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/375x667-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "5fc98794a4e490c54bed22083b365878503648e3ac931452ceb587d5bb190a62"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/375x667-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "589ec4d3e6634c7f8dea1e4ead9746af62ab923692c90d7932c51d6bb689fd0f"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/375x667-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "2677f7d7dad61837f95aa44457e9666b234cf08b4987b03d016764e88d6cb17c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/375x812-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "5f942acb6c2a067a5099c0b06d0d04a07643780b36611982225f9784eb4ba8b9"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/375x812-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "27fca3b4c9b18dbc414967b131a0d54a1cef97f86fa53ce49dc114690aad2f60"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/375x812-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "c2a7d7baeb1c88e8d923eb8ab3e4e2fb76476d2910c002075dc60069425a21e3"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/375x812-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "2ca9dee6c8568f3169047c50351a022a5d520f29b621342e4ecae88a8c1774be"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/375x812-keyboard-resize.png",
+      "kind": "new audit/evidence",
+      "sha256": "ec630fb8c97502dd4eaa5da143ac3ac1d49498cdf3940207cc032ecf40952a4c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/390x844-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "ae06aa2491e7fe4216b1b5a050fa716c66b030b38ff1ec0bb921d0db388cb5e7"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/390x844-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "ffe38b95527e6809cd2e08de502f92cd7a83e7fa858cb4e08da89c751af54992"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/390x844-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "2adb3e7195e1a6ff01c31aba186244feb6082b8e0ac202e0e7e5543393776157"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/390x844-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "b676d8ffe3a22445a1aaab678e1a34f6427d374d097eb4ddfc9ada7051a780d2"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/393x852-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "febdbe41bcbc67b901d9489c38818ea1e4e47ca4d928c731b56b2915a1535d1e"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/393x852-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "3a8ff746ee5a3b0d24e3f38cef901b94a524cadf43a78dc5cd5a65f0556e8e40"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/393x852-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "35d7ae47ccfefd8047b1b1df2a9c86ffe4a578f51c574cdd0fb94545cad0aa9f"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/393x852-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "7775cd80f3b75d39b0ef2bfe7a4ba8196dc06c2a5f135b9b809e15a6d5bab76f"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/412x915-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "48eadcd3d468ce7b5b510e1c432498e682d34188974f407b30052faa170ffcb0"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/412x915-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "edb24b81b53d3268a7a7e57e545d7c2d1c216b8ecee88a6d7d2e87a016c90386"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/412x915-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "2c34b2140a071a982577cb87c2be1aac0c3b72961d19a245e815bc9eb3ffa88d"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/412x915-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "9d4aa4f01049538cb34c2061240ae5c98905d11e1f2d630a2b55c30812ff5482"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/768x1024-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "6f2061258c0cd22093d409bc2651284757bf50e7d40992e1ffa0b4f04a60798f"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/768x1024-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "21c4736f81d5cc5eeed3b27cd27da4acce56139674bb9e71d591202313feb7da"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/768x1024-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "de923a740b879364838231c56788ae7a8f88d952b55f47258addf44efd402953"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/768x1024-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "ad13d7b6e82601cf9275659cb49de3c227b2e5e2f5f3286de3fe93e22a3e87bd"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/812x375-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "aaa903633f59be5e23ef7246741dadcc8ed2e0712b38f90e0205ccd8d6416565"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/812x375-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "60adcbfa66bd9f39e9c6daabd17a80991ade8c533f3a19b32d7a22d8d8aa39ad"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/812x375-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "43044f693992fd83a89e909f7c80a0794ca4ed9ea8612323e3569815baaff7d5"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit/results.json",
+      "kind": "new audit/evidence",
+      "sha256": "e0e8d9a4612d51df12a3202e053db00b0194005d42b816193ded1a093effca87"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/audit-boundaries.json",
+      "kind": "new audit/evidence",
+      "sha256": "35a275fafee77bcc4fc07fed1d2cce03c1c68e55726aa2cf6835c2c5702bcf60"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before/320x640-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "d1b317a998ad78ff852913487cb6fee7c435accf249565a15b68fdf20e7782ce"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before/360x800-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "02ad63a81d3c2977a7e90e03e4d23b2bd1db33fe230c8dff2604688392411ce7"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before/375x667-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "2677f7d7dad61837f95aa44457e9666b234cf08b4987b03d016764e88d6cb17c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before/375x812-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "2ca9dee6c8568f3169047c50351a022a5d520f29b621342e4ecae88a8c1774be"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before/390x844-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "b676d8ffe3a22445a1aaab678e1a34f6427d374d097eb4ddfc9ada7051a780d2"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before/393x852-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "7775cd80f3b75d39b0ef2bfe7a4ba8196dc06c2a5f135b9b809e15a6d5bab76f"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before/412x915-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "9d4aa4f01049538cb34c2061240ae5c98905d11e1f2d630a2b55c30812ff5482"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before/768x1024-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "ad13d7b6e82601cf9275659cb49de3c227b2e5e2f5f3286de3fe93e22a3e87bd"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before/812x375-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "43044f693992fd83a89e909f7c80a0794ca4ed9ea8612323e3569815baaff7d5"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before/results.json",
+      "kind": "new audit/evidence",
+      "sha256": "97182f942e7c6023baf3df7472a4e4594fcc23962a11b5271724d94f3583d96c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before-approvedRide.css",
+      "kind": "new audit/evidence",
+      "sha256": "dfa71d3bb01c0d2adaecc90ca257adb3104a643c69263d03f4b4106621839576"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before-destinationScreen.css",
+      "kind": "new audit/evidence",
+      "sha256": "01eb1367bc44c622da253af0284014a03a22f0e3e0ae6f367f2eebf4df392cda"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before-isolated-index.html",
+      "kind": "new audit/evidence",
+      "sha256": "251f827c5c6b251f70df56e18a47843b38b214ef72e691070482a94edd1f08fe"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before-main-index.html",
+      "kind": "new audit/evidence",
+      "sha256": "251f827c5c6b251f70df56e18a47843b38b214ef72e691070482a94edd1f08fe"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/before-riderNavigation.css",
+      "kind": "new audit/evidence",
+      "sha256": "7aff2df00eb6eb12391a4caea0e00ce0c68078516aa9a771f730d57f861094ed"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/BOOKING-FLOW-INTEGRATION-GAPS.md",
+      "kind": "new audit/evidence",
+      "sha256": "4dc3b8f3bcea3071304b7aca59c01349cd72abdd0e7d7be73d60d5500dc8a884"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/configuration-landscape-change.json",
+      "kind": "new audit/evidence",
+      "sha256": "93560fa3f18de52b956b6879b54446a4505a4aeae0106907e6d5092eb605b78a"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/css-changes.json",
+      "kind": "new audit/evidence",
+      "sha256": "7eef3cbf719c230b90be286a182a6e1bdf95cd8bf9d759c7fe43dc3a1457534f"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/device-matrix.mjs",
+      "kind": "new audit/evidence",
+      "sha256": "79cb1ec473beb58e959e61c02e6b972bacfe4ab56c433c184ce5ae1054e16552"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/html-changes.json",
+      "kind": "new audit/evidence",
+      "sha256": "96212f9a3432d15d27381873013dac851fe8c1f113379b17ecb0634ad91f278b"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/IMPLEMENTATION-AND-TEST-PLAN.md",
+      "kind": "new audit/evidence",
+      "sha256": "49ebc2aa9048a5a5bd95bf6264bc324c0f559c7c27396f2917b9af2c5931b7c7"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-changes.json",
+      "kind": "new audit/evidence",
+      "sha256": "41adc16c00d8565f79aa804b79fc7c5f7ec996ecacc0c712f4087876b195b31e"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-check/320x640-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "66b14cf51d6a5a6b15cedd157bb223d0e55003572038ca8481819bce85fc8037"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-check/320x640-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "7ab83e23b3361ebe1d2b174960b874ff66cb1f25df729ff75b2c720140c8775c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-check/320x640-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "b8fa67c21a2515afa6f97b93a568f355ff5826cc08db17d455fa0af9191673b0"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-check/320x640-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "82c3ce4def08868439553cf3c78c91bdc063f36806b8e7e108863b413ef12948"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-check/360x800-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "7341e2ff75c20a95aefdcfedf0fa22126694320c0ad97c338c48795fabb0c442"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-check/360x800-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "fbcd7119a6b6a1df39da3f763b385c230e92e4f5652e19ae3494e1ebf6987ed1"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-check/360x800-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "7e589b2619f8690ccf683788ec9a93a577ce3e4ad695ecb0070e8ee619783616"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-check/360x800-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "1b1c86ab75a15c5d4ca7e8e9614511c50fc4c307e4eed8babf3f370b3ff03e06"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-check/results.json",
+      "kind": "new audit/evidence",
+      "sha256": "e05bfcac492bd4968a16f620ae099a8e610666630a1c0f796f652cce4959e7f7"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-constrained/812x375-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "aaa903633f59be5e23ef7246741dadcc8ed2e0712b38f90e0205ccd8d6416565"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-constrained/812x375-configuration.png",
+      "kind": "new audit/evidence",
+      "sha256": "c13267bb9011d0a7189c7ad145b166e69bbc42422958c63b71a2e5296c4d7adf"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-constrained/812x375-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "45f02ab5a1f76a1d832dca495c4945407b7a63daa2ca85c9c281da1175e43831"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-constrained/812x375-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "c148d4174c9dd3e1b30be2fb0874d95a965e807e45ff8a94d3834337b7d86f79"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-constrained/results.json",
+      "kind": "new audit/evidence",
+      "sha256": "595ce61e050e954a30ca277a36b8a0a5a9148ff8bf214e1fb5081725dc8952e3"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-correction.json",
+      "kind": "new audit/evidence",
+      "sha256": "e2d21a40e4cb1e8b33712c673bc866ba415c59dbcdf50a248ac335079c7d367e"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-fixed/812x375-choose.png",
+      "kind": "new audit/evidence",
+      "sha256": "aaa903633f59be5e23ef7246741dadcc8ed2e0712b38f90e0205ccd8d6416565"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-fixed/812x375-destination.png",
+      "kind": "new audit/evidence",
+      "sha256": "60adcbfa66bd9f39e9c6daabd17a80991ade8c533f3a19b32d7a22d8d8aa39ad"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-fixed/812x375-home.png",
+      "kind": "new audit/evidence",
+      "sha256": "c148d4174c9dd3e1b30be2fb0874d95a965e807e45ff8a94d3834337b7d86f79"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/landscape-fixed/results.json",
+      "kind": "new audit/evidence",
+      "sha256": "5b320e15107a4c172c00199dda56e986265d181907c03b05748d705921fc3ef5"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/MAP-INTEGRATION-STATUS.md",
+      "kind": "new audit/evidence",
+      "sha256": "dbcf306bc0e074290c104c653014c42b722bfd59bfd081ca5beb5259e696c628"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/MOBILE-ACCESSIBILITY-REPORT.md",
+      "kind": "new audit/evidence",
+      "sha256": "59aecc18f8ca38d102d7b093ae3672d30e898ce6e373766b251813337325a6ae"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/readiness.json",
+      "kind": "new audit/evidence",
+      "sha256": "843f76655a49483ea5af73a4c5ac2a8679e9c5c27a000b9a3e2282faf2370393"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/REAL-APP-READINESS-AUDIT.md",
+      "kind": "new audit/evidence",
+      "sha256": "d5f0b3223b55e8635b3c1d745a0948a348710c65e0d33c96f9495e17016c9bc8"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/responsive-changes.diff",
+      "kind": "new audit/evidence",
+      "sha256": "c405281496f86056a3d9a9e09f5ae1c95bc698dc0ee2e8edad00b5267456e3e0"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/RESPONSIVE-DEVICE-MATRIX.md",
+      "kind": "new audit/evidence",
+      "sha256": "e4907f1da357a1a4327ee641944fb94435fb33b66ac62cd5468845963a172b6b"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/source-changes.json",
+      "kind": "new audit/evidence",
+      "sha256": "c8b8068c1f5525cec6bef27301f2094c79352aef10b5bb0cc6aaed3133f18cef"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/static-verification.json",
+      "kind": "new audit/evidence",
+      "sha256": "51ec4549a3e6a7f2815878ff46b30d77382a9bdea4d4f7a3ee8577891386c338"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-real-app/verify-static.mjs",
+      "kind": "new audit/evidence",
+      "sha256": "ec0f8e59496f91d5fe976bac1abbdbcb457500ea1698d575483d586e8066b228"
+    }
+  ],
+  "self": "qa-real-app/CHANGED-FILES.json self-hash omitted"
+}

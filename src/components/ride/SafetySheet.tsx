@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from 'react';
+import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import { ChevronRight, Flag, Phone, ShieldCheck, Siren, User, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabaseClient';
 import { haptic } from '@/lib/haptics';
 import { createEmergencyEvent } from '@/lib/businessApi';
 import { resolveEmergencyNumber } from '@/lib/region';
-import RideGlassPanel from './RideGlassPanel';
+import ModalBottomSheet from '@/components/ui/ModalBottomSheet';
 import ShareTripButton from './ShareTripButton';
 import DisputeForm from './DisputeForm';
 import { RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2, tintBlue } from './rideGlass';
@@ -93,6 +93,10 @@ export default function SafetySheet({
   const holdRaf = useRef<number | null>(null);
   const holdStart = useRef<number | null>(null);
   const firedRef = useRef<Set<number>>(new Set());
+  const activatedRef = useRef(false);
+  const openRef = useRef(open);
+  const [activated, setActivated] = useState(false);
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
 
   // Load the rider's saved emergency contact fresh each time the sheet
   // opens — it's small, per-profile data, not worth caching across opens.
@@ -122,9 +126,19 @@ export default function SafetySheet({
   }, [open]);
 
   useEffect(() => {
-    return () => { if (holdRaf.current) cancelAnimationFrame(holdRaf.current); };
-  }, []);
-
+    openRef.current = open;
+    activatedRef.current = false;
+    setActivated(false);
+    setConfirmationOpen(false);
+    setHolding(false);
+    setHoldProgress(0);
+    return () => {
+      openRef.current = false;
+      holdStart.current = null;
+      if (holdRaf.current !== null) cancelAnimationFrame(holdRaf.current);
+      holdRaf.current = null;
+    };
+  }, [open, rideId]);
   const handleSaveContact = async () => {
     const phone = contactPhoneDraft.trim();
     if (!phone) return;
@@ -151,7 +165,13 @@ export default function SafetySheet({
   };
 
   const completeHold = () => {
-    if (holdRaf.current) cancelAnimationFrame(holdRaf.current);
+    // A ref locks synchronously, before React can render disabled controls.
+    if (!openRef.current || activatedRef.current) return;
+    activatedRef.current = true;
+    setActivated(true);
+    setConfirmationOpen(false);
+    if (holdRaf.current !== null) cancelAnimationFrame(holdRaf.current);
+    holdRaf.current = null;
     holdStart.current = null;
     setHolding(false);
     setHoldProgress(1);
@@ -170,7 +190,7 @@ export default function SafetySheet({
   };
 
   const stepHold = () => {
-    if (holdStart.current == null) return;
+    if (holdStart.current == null || !openRef.current || activatedRef.current) return;
     const elapsed = Date.now() - holdStart.current;
     const progress = Math.min(1, elapsed / HOLD_MS);
     setHoldProgress(progress);
@@ -180,8 +200,8 @@ export default function SafetySheet({
     holdRaf.current = requestAnimationFrame(stepHold);
   };
 
-  const startHold = () => {
-    if (holding) return;
+  const startHold = (event: PointerEvent<HTMLButtonElement>) => {
+    if (event.button !== 0 || event.isPrimary === false || holdStart.current !== null || !openRef.current || activatedRef.current || confirmationOpen) return;
     setHolding(true);
     firedRef.current.clear();
     holdStart.current = Date.now();
@@ -190,36 +210,24 @@ export default function SafetySheet({
   };
 
   const cancelHold = () => {
-    if (!holding) return;
-    setHolding(false);
+    if (holdStart.current === null) return;
     holdStart.current = null;
-    if (holdRaf.current) cancelAnimationFrame(holdRaf.current);
+    if (holdRaf.current !== null) cancelAnimationFrame(holdRaf.current);
+    holdRaf.current = null;
+    setHolding(false);
     if (holdProgress > 0 && holdProgress < 1) haptic('error');
     setHoldProgress(0);
   };
 
+  const handleClose = () => {
+    openRef.current = false;
+    cancelHold();
+    setConfirmationOpen(false);
+    onClose();
+  };
   return (
-    <AnimatePresence>
-      {open && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60]"
-            style={{ background: 'rgba(17,17,17,.28)' }}
-            onClick={onClose}
-          />
-          <motion.div
-            initial={{ y: 60, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 60, opacity: 0 }}
-            transition={{ type: 'spring', damping: 28, stiffness: 320 }}
-            className="fixed left-0 right-0 bottom-0 z-[70]"
-            style={{ maxWidth: 480, margin: '0 auto', width: '100%' }}
-          >
-            <RideGlassPanel panelStyle={panelStyle} style={{ maxHeight: '86vh', paddingBottom: 'env(safe-area-inset-bottom)' }} onRibbonClick={onClose}>
-              <div className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+    <ModalBottomSheet open={open} onClose={handleClose} title="Safety" description="Trip safety actions and emergency assistance.">
+              <div className="p-4 min-h-0" style={{ display: 'flex', flexDirection: 'column', gap: 13, ...panelStyle }}>
                 {/* Section 1 — header */}
                 <div className="flex items-center" style={{ gap: 11 }}>
                   <span className="shrink-0 flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 14, ...iconTileGlass }}>
@@ -233,7 +241,7 @@ export default function SafetySheet({
                   </div>
                   <button
                     type="button"
-                    onClick={onClose}
+                    onClick={handleClose}
                     aria-label="Close"
                     className="shrink-0 flex items-center justify-center active:scale-90 transition-transform"
                     style={{ width: 32, height: 32, borderRadius: 999, background: 'rgba(17,17,17,.06)' }}
@@ -365,38 +373,71 @@ export default function SafetySheet({
                   }
                 />
 
-                {/* Section 6 — emergency hold button, the only 56px button in the flow */}
+                {/* Pointer users retain the three-second hold; native clicks have confirmation. */}
                 <button
                   type="button"
+                  disabled={activated}
                   onPointerDown={startHold}
                   onPointerUp={cancelHold}
                   onPointerLeave={cancelHold}
                   onPointerCancel={cancelHold}
-                  className="relative w-full flex items-center justify-center select-none"
+                  onBlur={cancelHold}
+                  onClick={(event) => {
+                    if (event.detail === 0 && !activatedRef.current) {
+                      cancelHold();
+                      setConfirmationOpen(true);
+                    }
+                  }}
+                  className="relative w-full shrink-0 flex items-center justify-center select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-70"
                   style={{ height: 56, borderRadius: 16, overflow: 'hidden', gap: 10, background: RIDE_RED_GRADIENT, boxShadow: '0 12px 26px rgba(184,17,4,.4), inset 0 1px 0 rgba(255,255,255,.3)', touchAction: 'none' }}
                 >
                   <span
+                    aria-hidden="true"
                     className="absolute inset-y-0 left-0 pointer-events-none"
                     style={{ width: `${holdProgress * 100}%`, background: 'rgba(255,255,255,.16)', transition: holding ? 'none' : 'width .25s ease' }}
                   />
-                  <Siren className="relative" style={{ width: 20, height: 20, color: '#FFFFFF' }} />
-                  <div className="relative flex flex-col items-start">
+                  <Siren aria-hidden="true" className="relative" style={{ width: 20, height: 20, color: '#FFFFFF' }} />
+                  <span className="relative flex flex-col items-start">
                     <span style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.15, color: '#FFFFFF' }}>Hold for emergency</span>
                     <span style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.15, color: 'rgba(255,255,255,.78)' }}>
-                      Keep holding to call {resolveEmergencyNumber()}
+                      Hold 3 seconds to call {resolveEmergencyNumber()}
                     </span>
-                  </div>
+                  </span>
                 </button>
-
+                <div role="progressbar" aria-label="Emergency activation" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(holdProgress * 100)} className="sr-only" />
+                <p role="status" className="text-sm" style={{ color: RIDE_TEXT_2 }}>
+                  {activated ? 'Opening emergency call.' : holding ? 'Keep holding. Release to cancel.' : 'Hold for 3 seconds, or choose Call emergency services to confirm.'}
+                </p>
+                <AlertDialog.Root open={open && confirmationOpen} onOpenChange={(nextOpen) => {
+                  cancelHold();
+                  setConfirmationOpen(nextOpen && !activatedRef.current);
+                }}>
+                  <AlertDialog.Trigger asChild>
+                    <button type="button" disabled={activated} className="min-h-12 shrink-0 rounded-xl border border-border px-4 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-70" style={{ color: RIDE_RED }}>
+                      Call emergency services
+                    </button>
+                  </AlertDialog.Trigger>
+                  <AlertDialog.Portal>
+                    <AlertDialog.Overlay className="fixed inset-0 z-[80] bg-black/50" />
+                    <AlertDialog.Content className="fixed left-1/2 top-1/2 z-[90] max-h-[calc(100dvh_-_2rem)] overflow-y-auto w-[calc(100%_-_2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-2xl border bg-background p-5 text-foreground shadow-xl">
+                      <AlertDialog.Title className="text-lg font-semibold">Call emergency services?</AlertDialog.Title>
+                      <AlertDialog.Description className="mt-2 text-sm text-muted-foreground">
+                        This will open your phone to call {resolveEmergencyNumber()} and share your current location with the safety service if available.
+                      </AlertDialog.Description>
+                      <div className="mt-5 flex flex-wrap justify-end gap-3">
+                        <AlertDialog.Cancel className="min-h-12 rounded-xl border px-4 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">Cancel</AlertDialog.Cancel>
+                        <AlertDialog.Action onClick={completeHold} disabled={activated} className="min-h-12 rounded-xl px-4 font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" style={{ background: RIDE_RED }}>
+                          Call {resolveEmergencyNumber()}
+                        </AlertDialog.Action>
+                      </div>
+                    </AlertDialog.Content>
+                  </AlertDialog.Portal>
+                </AlertDialog.Root>
                 {/* Section 7 — iOS home indicator */}
                 <div style={{ padding: '6px 0 10px' }} className="flex justify-center">
                   <span className="rounded-full" style={{ width: 140, height: 5, background: RIDE_TEXT }} />
                 </div>
               </div>
-            </RideGlassPanel>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+    </ModalBottomSheet>
   );
 }

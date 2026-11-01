@@ -1,0 +1,7 @@
+{"elapsedSeconds": 0.0, "cpuSeconds": 0.0, "workingSetMB": 1.6, "privateMB": 3.6, "availablePhysicalMB": 640, "memoryLoadPercent": 91, "readBytes": 0, "readOperations": 0, "outputBytes": 0}
+{"elapsedSeconds": 2.0, "cpuSeconds": 0.078, "workingSetMB": 24.3, "privateMB": 13.4, "availablePhysicalMB": 658, "memoryLoadPercent": 91, "readBytes": 5072, "readOperations": 4, "outputBytes": 0}
+{"elapsedSeconds": 4.0, "cpuSeconds": 0.188, "workingSetMB": 29.1, "privateMB": 14.4, "availablePhysicalMB": 703, "memoryLoadPercent": 91, "readBytes": 29206, "readOperations": 32, "outputBytes": 0}
+{"elapsedSeconds": 6.0, "cpuSeconds": 0.406, "workingSetMB": 45.6, "privateMB": 30.0, "availablePhysicalMB": 698, "memoryLoadPercent": 91, "readBytes": 2558816, "readOperations": 76, "outputBytes": 0}
+{"elapsedSeconds": 8.0, "cpuSeconds": 0.891, "workingSetMB": 54.9, "privateMB": 38.4, "availablePhysicalMB": 713, "memoryLoadPercent": 90, "readBytes": 2903131, "readOperations": 113, "outputBytes": 0}
+{"elapsedSeconds": 10.0, "cpuSeconds": 1.188, "workingSetMB": 61.7, "privateMB": 44.4, "availablePhysicalMB": 713, "memoryLoadPercent": 90, "readBytes": 3777396, "readOperations": 170, "outputBytes": 0}
+{"elapsedSeconds": 12.01, "cpuSeconds": 1.562, "workingSetMB": 64.7, "privateMB": 54.7, "availablePhysicalMB": 694, "memoryLoadPercent": 91, "readBytes": 3995354, "readOperations": 230, "outputBytes": 0}

@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "gate": "Original branch and HEAD",
+      "status": "PASS"
+    },
+    {
+      "gate": "Original index bytes",
+      "status": "PASS"
+    },
+    {
+      "gate": "All pre-existing dirty tracked files",
+      "status": "PASS",
+      "unexpectedChangedFiles": []
+    },
+    {
+      "gate": "Previous device matrix source hashes",
+      "status": "PASS",
+      "files": 4
+    },
+    {
+      "gate": "Approved CI branch, commit and all three original blob checksums",
+      "status": "PASS",
+      "commit": "bb887feaa86589c47f2d728d3d57a087ef89ffe8"
+    },
+    {
+      "gate": "Original worktrees",
+      "status": "PASS"
+    }
+  ],
+  "scope": "Known tracked changes and original index byte-checked. No existing untracked file was written; new evidence was created in a previously absent directory. Dependency caches were not traversed.",
+  "remoteBranchCheck": {
+    "status": "PASS",
+    "command": "git ls-remote --heads origin refs/heads/verify/cruixe-approved-ui-20261101-2a3ff775",
+    "exitCode": 0,
+    "stdout": "",
+    "meaning": "No published ref at inspection time. Read-only operation; no push."
+  }
+}

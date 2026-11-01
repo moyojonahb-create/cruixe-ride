@@ -1,0 +1,15 @@
+[
+  "src/App.tsx",
+  "src/components/BottomNavBar.tsx",
+  "src/components/RiderNavigationProvider.tsx",
+  "src/components/riderNavigation.css",
+  "src/lib/riderNavigation.ts",
+  "src/components/ride/RideView.tsx",
+  "src/components/ride/RideTierSelector.tsx",
+  "src/components/ride/RideSelectionCards.tsx",
+  "src/components/ride/rideSelection.css",
+  "src/components/ride/approvedRide.css",
+  "src/test/RideSelectionCards.test.tsx",
+  "src/test/RiderNavigation.test.tsx",
+  "src/test/RideSelectionDraft.test.tsx"
+]

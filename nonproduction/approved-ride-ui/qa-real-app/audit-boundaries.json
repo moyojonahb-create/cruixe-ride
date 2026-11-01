@@ -1,0 +1,38 @@
+{
+  "phase": "Audit identified integration boundaries before source edits",
+  "boundaries": {
+    "realApp": "src/main.tsx -> App.tsx -> useAuth + AppBootstrapProvider; native HashRouter/web BrowserRouter",
+    "approvedWorkspace": "Separate snapshot; only fixture config aliases real services to labelled in-memory mocks",
+    "map": "src/components/MapboxMap.tsx + mapboxLoader.ts; token/CDN/WebGL required; no live probe",
+    "booking": "requestRide.ts validates Supabase user, tries Go API but permits direct Supabase fallback; offline synthetic id returns ok:true",
+    "quote": "Town default pricing + client calculation; routing fallback uses Haversine multipliers; authoritative quote evidence absent",
+    "wallet": "walletApi.ts uses Go endpoints, useWallet null fallback returns 0; real balance unavailable in fixture",
+    "tracking": "Main useDriverTracking requires rideId and active status; approved snapshot may differ; deployed RLS/realtime access not verified",
+    "scopeOfInitialCorrection": "Only isolated responsive CSS after browser evidence. No authority, services, auth, RLS or backend code changes."
+  },
+  "indexSHA256": "8b3b33f0dddd1db8d074da12d929428a1e675e293b48924006fe2f34ea63dac1",
+  "HEAD": "31c9ae007b8c5e6f4741139a4b2ed98e693e2184",
+  "branch": "fix/ecc-sprint-1-accessibility-wallet",
+  "approvedPayload": [
+    {
+      "path": ".github/workflows/cruixe-approved-frontend-verify.yml",
+      "sha256": "df87da029f44ed0cbb0a64b95e778d261bb2b45f8f3e44d19300c6090f4f3f2d",
+      "actualSHA256": "df87da029f44ed0cbb0a64b95e778d261bb2b45f8f3e44d19300c6090f4f3f2d"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/review/approved-frontend-ci.tgz",
+      "sha256": "2a3ff7756e8f1ab4cafa4aeceb44c73f05fc0268392aacf91af6a417878f4879",
+      "actualSHA256": "2a3ff7756e8f1ab4cafa4aeceb44c73f05fc0268392aacf91af6a417878f4879"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/review/review-manifest.json",
+      "sha256": "a62194cc43b2756f8cac74f52e1d8c9b73df2cb3336b85ea1dcf75b1d315ee9c",
+      "actualSHA256": "a62194cc43b2756f8cac74f52e1d8c9b73df2cb3336b85ea1dcf75b1d315ee9c"
+    }
+  ],
+  "layoutBefore": {
+    "src/components/ride/approvedRide.css": "dfa71d3bb01c0d2adaecc90ca257adb3104a643c69263d03f4b4106621839576",
+    "src/components/ride/destinationScreen.css": "01eb1367bc44c622da253af0284014a03a22f0e3e0ae6f367f2eebf4df392cda",
+    "src/components/riderNavigation.css": "7aff2df00eb6eb12391a4caea0e00ce0c68078516aa9a771f730d57f861094ed"
+  }
+}

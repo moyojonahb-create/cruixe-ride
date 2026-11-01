@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "commit": "bb887feaa86589c47f2d728d3d57a087ef89ffe8",
+  "branch": "verify/cruixe-approved-ui-20261101-2a3ff775",
+  "configuredRemote": "https://github.com/moyojonahb-create/PickMe-App.git",
+  "canonicalRepository": "moyojonahb-create/cruixe-ride",
+  "targetBranchExistsRemotely": false,
+  "remoteReadCommand": "git ls-remote --heads origin refs/heads/verify/cruixe-approved-ui-20261101-2a3ff775",
+  "remoteReadExitCode": 0,
+  "remoteReadOutput": "empty; branch absent",
+  "threeFileAllowlist": "PASS",
+  "stagedAndCommittedSHA256": "PASS; all three full hashes exactly match approved plan",
+  "unrelatedCommitChanges": "NONE",
+  "originalIndexAndTrackedWork": "PASS",
+  "push": "NOT RUN",
+  "workflowRun": "NOT RUN",
+  "runURL": null
+}

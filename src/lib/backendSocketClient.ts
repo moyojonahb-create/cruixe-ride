@@ -1,4 +1,5 @@
-import { getAuthToken, getFreshAuthToken } from "@/lib/backendClient";
+import { goBackend } from "@/lib/goBackendClient";
+import { getFreshAuthToken } from "@/lib/backendClient";
 import { supabase } from "@/integrations/supabase/client";
 
 // Same dev-only proxy story as goBackendClient — the deployed backend
@@ -19,7 +20,12 @@ export type BackendSocketEventType =
   | "ride_status_updated"
   | "ride_cancelled"
   | "ride_started"
-  | "ride_completed";
+  | "ride_completed"
+  | "room_revoked"
+  | "room_user_revoked"
+  | "join_room_denied"
+  | "room_joined"
+  | "ride_snapshot";
 
 export type BackendSocketEvent = {
   type: BackendSocketEventType;
@@ -55,6 +61,7 @@ const canonicalEvents = new Set<BackendSocketEventType>([
   "ride_cancelled",
   "ride_started",
   "ride_completed",
+  "room_revoked", "room_user_revoked", "join_room_denied", "room_joined",
 ]);
 
 function normalizeRideId(value: unknown): string | null {
@@ -81,8 +88,13 @@ function rideIdFromRoom(roomId: unknown): string | null {
   return rideId || null;
 }
 
-class BackendSocketClient {
+export class BackendSocketClient {
   private ws: WebSocket | null = null;
+  private generation = 0;
+  private revokedRooms = new Set<string>();
+  private joinedRooms = new Set<string>();
+  private driverSubjects = new Map<string, string>();
+  private syncing = new Map<string, Promise<void>>();
   private connectPromise: Promise<WebSocket> | null = null;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private heartbeatTimer: ReturnType<typeof setInterval> | null = null;
@@ -112,24 +124,30 @@ class BackendSocketClient {
 
     this.closedByClient = false;
     this.setState(this.ws ? "reconnecting" : "connecting");
+    const generation = ++this.generation;
     this.connectPromise = this.openSocket()
-      .then((socket) => {
+      .then(async (socket) => {
+        if (generation !== this.generation) { socket.close(); throw new Error("Obsolete websocket connection"); }
         this.ws = socket;
         this.backoffMs = 1_000;
         this.setState("open");
         this.startHeartbeat();
-        this.rejoinRooms();
+        await this.rejoinRooms();
         this.flushQueue();
         return socket;
       })
       .finally(() => {
-        this.connectPromise = null;
+        if (generation === this.generation) this.connectPromise = null;
       });
 
     return this.connectPromise;
   }
 
   close() {
+    this.generation++;
+    this.connectPromise = null;
+    this.rooms.clear(); this.roomRefs.clear(); this.queue = [];
+    this.revokedRooms.clear(); this.joinedRooms.clear(); this.driverSubjects.clear(); this.syncing.clear();
     this.closedByClient = true;
     this.clearTimers();
     this.ws?.close();
@@ -138,6 +156,9 @@ class BackendSocketClient {
   }
 
   reconnectWithFreshToken() {
+    this.generation++;
+    this.connectPromise = null;
+    this.joinedRooms.clear(); this.driverSubjects.clear(); this.syncing.clear();
     this.closedByClient = false;
     this.clearTimers();
     this.ws?.close();
@@ -148,6 +169,7 @@ class BackendSocketClient {
   }
 
   send(message: Record<string, unknown>) {
+    if (message.event === "join_room" || message.event === "leave_room") return;
     const serialized = JSON.stringify(message);
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(serialized);
@@ -163,12 +185,13 @@ class BackendSocketClient {
 
   joinRide(rideId: string) {
     if (!rideId) return;
-    const roomId = roomIdForRide(rideId);
-    this.roomRefs.set(roomId, (this.roomRefs.get(roomId) ?? 0) + 1);
-    this.rooms.add(roomId);
-    this.send({ event: "join_room", room_id: roomId });
+    const room = roomIdForRide(rideId);
+    if (this.revokedRooms.has(room)) return;
+    this.roomRefs.set(room, (this.roomRefs.get(room) ?? 0) + 1);
+    this.rooms.add(room);
+    if (this.ws?.readyState === WebSocket.OPEN) void this.reconcileRide(room);
+    else void this.connect().catch(() => {});
   }
-
   leaveRide(rideId: string) {
     if (!rideId) return;
     const roomId = roomIdForRide(rideId);
@@ -179,7 +202,8 @@ class BackendSocketClient {
     }
     this.roomRefs.delete(roomId);
     this.rooms.delete(roomId);
-    this.send({ event: "leave_room", room_id: roomId });
+    this.joinedRooms.delete(roomId); this.driverSubjects.delete(roomId);
+    if (this.ws?.readyState === WebSocket.OPEN) this.ws.send(JSON.stringify({ event: "leave_room", room_id: roomId }));
   }
 
   on(type: BackendSocketEventType, listener: Listener) {
@@ -211,7 +235,8 @@ class BackendSocketClient {
   }
 
   private async openSocket(): Promise<WebSocket> {
-    const token = this.state === "reconnecting" ? await getFreshAuthToken() : await getAuthToken();
+    const generation = this.generation;
+    const token = await getFreshAuthToken();
     const url = new URL(WS_URL);
     url.searchParams.set("token", token);
 
@@ -224,14 +249,17 @@ class BackendSocketClient {
         resolve(socket);
       });
 
-      socket.addEventListener("message", (event) => this.handleMessage(event));
+      socket.addEventListener("message", (event) => { if (generation === this.generation) this.handleMessage(event); });
       socket.addEventListener("close", () => {
+        if (generation !== this.generation) return;
+        this.joinedRooms.clear(); this.driverSubjects.clear();
         if (this.ws === socket) this.ws = null;
         this.clearHeartbeat();
         if (!settled) reject(new Error("Backend websocket closed before opening"));
         if (!this.closedByClient) this.scheduleReconnect();
       });
       socket.addEventListener("error", (event) => {
+        if (generation !== this.generation) return;
         this.setState("error");
         if (!settled) reject(event);
       });
@@ -255,6 +283,21 @@ class BackendSocketClient {
     }
     if (typeof messageType !== "string" || !canonicalEvents.has(messageType as BackendSocketEventType)) return;
 
+    const room = typeof record.room_id === "string" ? record.room_id : typeof record.room === "string" ? record.room : "";
+    if (messageType === "room_revoked" || messageType === "room_user_revoked" || messageType === "join_room_denied") { this.revokeRoom(room); void this.readRevokedSnapshot(room); }
+    if (messageType === "room_joined") {
+      if (!this.rooms.has(room) || this.revokedRooms.has(room)) return;
+      this.joinedRooms.add(room);
+    }
+    const rideId = typeof record.ride_id === "string" ? record.ride_id : rideIdFromRoom(record.room);
+    const rideRoom = rideId ? roomIdForRide(rideId) : "";
+    if (record.room && rideIdFromRoom(record.room) !== rideId) return;
+    if (messageType === "driver_location") {
+      if (!rideRoom || !this.joinedRooms.has(rideRoom) || this.revokedRooms.has(rideRoom)) return;
+      if (record.driver_id !== this.driverSubjects.get(rideRoom)) { void this.reconcileRide(rideRoom); return; }
+    }
+    if (rideRoom && this.revokedRooms.has(rideRoom) && messageType !== "ride_cancelled" && messageType !== "ride_completed") return;
+    if (rideRoom && ["ride_cancelled", "ride_completed"].includes(messageType)) { this.revokeRoom(rideRoom); void this.readRevokedSnapshot(rideRoom); }
     const typed = {
       ...record,
       type: messageType,
@@ -269,6 +312,7 @@ class BackendSocketClient {
     this.heartbeatTimer = setInterval(() => {
       if (this.ws?.readyState !== WebSocket.OPEN) return;
       this.ws.send(JSON.stringify({ event: "ping", timestamp: Date.now() }));
+      this.rooms.forEach(room => { if (!this.joinedRooms.has(room)) void this.reconcileRide(room); });
       this.clearPongTimer();
       this.pongTimer = setTimeout(() => {
         this.ws?.close();
@@ -276,12 +320,61 @@ class BackendSocketClient {
     }, HEARTBEAT_MS);
   }
 
-  private rejoinRooms() {
-    this.rooms.forEach((roomId) => {
-      this.ws?.send(JSON.stringify({ event: "join_room", room_id: roomId }));
-    });
+  refreshRide(rideId: string) { return this.reconcileRide(roomIdForRide(rideId)); }
+
+  private async readRevokedSnapshot(room: string) {
+    const generation = this.generation, rideId = rideIdFromRoom(room);
+    if (!rideId) return;
+    try {
+      const ride = await goBackend.get<Record<string, unknown>>(`/api/rides/${encodeURIComponent(rideId)}`);
+      if (generation !== this.generation || ride.id !== rideId) return;
+      const event = { type: "ride_snapshot", event: "ride_snapshot", ride_id: rideId, room, ride } as BackendSocketEvent;
+      this.listeners.get("ride_snapshot")?.forEach(listener => listener(event));
+      this.anyListeners.forEach(listener => listener(event));
+    } catch { /* Access denial retains revoked state; never retry a weaker read. */ }
   }
 
+  private revokeRoom(room: string) {
+    if (!room) return;
+    this.revokedRooms.add(room); this.rooms.delete(room); this.roomRefs.delete(room);
+    this.joinedRooms.delete(room); this.driverSubjects.delete(room);
+  }
+
+  private async rejoinRooms() {
+    await Promise.all([...this.rooms].filter(room => !this.revokedRooms.has(room)).map(room => this.reconcileRide(room)));
+  }
+
+  private reconcileRide(room: string): Promise<void> {
+    if (this.revokedRooms.has(room) || !this.rooms.has(room)) return Promise.resolve();
+    const existing = this.syncing.get(room); if (existing) return existing;
+    const generation = this.generation;
+    const task = (async () => {
+      try {
+        const rideId = rideIdFromRoom(room); if (!rideId) return;
+        const snapshot = await goBackend.get<Record<string, unknown>>(`/api/rides/${encodeURIComponent(rideId)}`);
+        if (generation !== this.generation || !this.rooms.has(room) || this.revokedRooms.has(room)) return;
+        if (snapshot.id !== rideId) return;
+        const status = String(snapshot.status ?? "");
+        if (!["pending", "scheduled", "accepted", "arrived", "in_progress"].includes(status)) this.revokeRoom(room);
+        else {
+          this.driverSubjects.set(room, String(snapshot.driver_user_id ?? ""));
+          if (this.ws?.readyState === WebSocket.OPEN) this.ws.send(JSON.stringify({ event: "join_room", room_id: room }));
+        }
+        const event = { type: "ride_snapshot", event: "ride_snapshot", ride_id: rideId, room, ride: snapshot } as BackendSocketEvent;
+        this.listeners.get("ride_snapshot")?.forEach(listener => listener(event));
+        this.anyListeners.forEach(listener => listener(event));
+      } catch (error) {
+        if (generation !== this.generation) return;
+        if ([401, 403, 404].includes((error as { status?: number }).status ?? 0)) {
+          this.revokeRoom(room);
+          const event = { type: "room_revoked", event: "room_revoked", room_id: room, room, reason: "snapshot_access_denied" } as BackendSocketEvent;
+          this.listeners.get("room_revoked")?.forEach(listener => listener(event));
+          this.anyListeners.forEach(listener => listener(event));
+        }
+      }
+    })().finally(() => { if (generation === this.generation) this.syncing.delete(room); });
+    this.syncing.set(room, task); return task;
+  }
   private flushQueue() {
     if (this.ws?.readyState !== WebSocket.OPEN) return;
     const pending = [...this.queue];
@@ -330,7 +423,7 @@ export const backendSocketClient = new BackendSocketClient();
 
 export function eventRideId(event: BackendSocketEvent): string | null {
   const ride = nestedRecord(event.ride);
-  return normalizeRideId(event.ride_id) ?? normalizeRideId(event.rideId) ?? normalizeRideId(ride?.id) ?? normalizeRideId(ride?.ride_id) ?? rideIdFromRoom(event.room);
+  return normalizeRideId(event.ride_id) ?? normalizeRideId(event.rideId) ?? normalizeRideId(ride?.id) ?? normalizeRideId(ride?.ride_id) ?? rideIdFromRoom(event.room) ?? rideIdFromRoom(event.room_id);
 }
 
 export function eventDriverId(event: BackendSocketEvent): string | null {
@@ -388,7 +481,11 @@ export function eventString(event: BackendSocketEvent, keys: string[]): string |
   return null;
 }
 
-supabase.auth.onAuthStateChange((event) => {
+let socketUserId: string | null = null;
+supabase.auth.onAuthStateChange((event, session) => {
+  const nextUser = session?.user?.id ?? null;
+  if (event === "SIGNED_IN" && socketUserId !== nextUser) backendSocketClient.close();
+  socketUserId = nextUser;
   if (event === "TOKEN_REFRESHED" || event === "SIGNED_IN") {
     backendSocketClient.reconnectWithFreshToken();
   }

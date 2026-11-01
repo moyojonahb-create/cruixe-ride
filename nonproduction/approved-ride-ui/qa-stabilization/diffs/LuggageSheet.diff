@@ -1,0 +1,71 @@
+--- before/src/components/luggage/LuggageSheet.tsx
++++ after/src/components/luggage/LuggageSheet.tsx
+@@ -1,11 +1,11 @@
+-import { useState, useRef, useEffect } from 'react';
++import { useState, useRef, useEffect, useId } from 'react';
+ import { motion, AnimatePresence } from 'framer-motion';
+ import { X, Camera, ImageIcon, Trash2, Briefcase, Loader2 } from 'lucide-react';
+ import { Textarea } from '@/components/ui/textarea';
+ import { toast } from '@/hooks/use-toast';
+ import { useAuth } from '@/hooks/useAuth';
+ import { uploadLuggagePhoto, deleteLuggagePhoto, getLuggageSignedUrls } from '@/lib/luggageStorage';
+-import { glassPanel, glassSurface, redCta, RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2, RIDE_FONT } from '@/components/ride/rideGlass';
++import { glassPanel, glassSurface, redCta, RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3, RIDE_FONT } from '@/components/ride/rideGlass';
+ 
+ export interface LuggageDraft {
+   description: string;
+@@ -32,6 +32,7 @@
+ 
+ export default function LuggageSheet({ open, onClose, initial, onSave }: LuggageSheetProps) {
+   const { user } = useAuth();
++  const descriptionId = useId();
+   const [description, setDescription] = useState(initial?.description || '');
+   const [weight, setWeight] = useState<LuggageDraft['estimated_weight']>(initial?.estimated_weight || 'small');
+   const [paths, setPaths] = useState<string[]>(initial?.image_paths || []);
+@@ -145,8 +146,9 @@
+             <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
+               {/* Description */}
+               <div className="space-y-2">
+-                <label className="text-[13px] font-bold" style={{ color: RIDE_TEXT }}>What are you transporting?</label>
++                <label htmlFor={descriptionId} className="text-[13px] font-bold" style={{ color: RIDE_TEXT }}>What are you transporting?</label>
+                 <Textarea
++                  id={descriptionId}
+                   value={description}
+                   onChange={e => setDescription(e.target.value)}
+                   placeholder="2 suitcases, groceries, small fridge, bags, TV stand…"
+@@ -154,7 +156,7 @@
+                   className="min-h-[90px] resize-none rounded-2xl border-0 shadow-none focus-visible:ring-0"
+                   style={{ ...glassSurface, color: RIDE_TEXT }}
+                 />
+-                <p className="text-xs text-right" style={{ color: RIDE_TEXT_2 }}>{description.length}/500</p>
++                <p className="text-xs text-right" style={{ color: RIDE_TEXT_3 }}>{description.length}/500</p>
+               </div>
+ 
+               {/* Weight */}
+@@ -189,7 +191,7 @@
+                   {paths.map((_, i) => (
+                     <div key={i} className="relative aspect-square rounded-2xl overflow-hidden" style={glassSurface}>
+                       {previews[i] ? (
+-                        <img src={previews[i]} alt="" className="w-full h-full object-cover" />
++                        <img src={previews[i]} alt={`Luggage photo ${i + 1}`} className="w-full h-full object-cover" />
+                       ) : (
+                         <div className="w-full h-full flex items-center justify-center">
+                           <Loader2 className="w-4 h-4 animate-spin" style={{ color: RIDE_TEXT_2 }} />
+@@ -197,6 +199,8 @@
+                       )}
+                       <button
+                         onClick={() => removePhoto(i)}
++                        aria-label={`Remove luggage photo ${i + 1}`}
++                        type="button"
+                         className="absolute top-1 right-1 w-7 h-7 rounded-full flex items-center justify-center"
+                         style={{ background: 'rgba(17,17,17,.65)', backdropFilter: 'blur(6px)' }}
+                       >
+@@ -235,7 +239,7 @@
+                   ref={fileInputRef} type="file" accept="image/*" multiple
+                   className="hidden" onChange={e => { handleFiles(e.target.files); e.target.value = ''; }}
+                 />
+-                <p className="text-[11px]" style={{ color: RIDE_TEXT_2 }}>
++                <p className="text-[11px]" style={{ color: RIDE_TEXT_3 }}>
+                   🔒 Photos are private and only visible to drivers who view your ride.
+                 </p>
+               </div>

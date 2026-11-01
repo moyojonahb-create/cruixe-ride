@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "allowlist": [
+    "index.html"
+  ],
+  "branch": "fix/cruixe-accessible-viewport-20261101",
+  "base": "31c9ae007b8c5e6f4741139a4b2ed98e693e2184",
+  "repository": "C:\\Users\\MUSAE\\AppData\\Local\\Temp\\cruixe-viewport-review-20261101-lsk1g10i",
+  "index": "C:\\Users\\MUSAE\\AppData\\Local\\Temp\\cruixe-viewport-review-20261101-lsk1g10i\\reviewed.index",
+  "remote": "https://github.com/moyojonahb-create/PickMe-App.git",
+  "workingSHA256": "a15ea933089f9d2b165b7ba78b7bfbaf6b292da8c8ef58ac0da3e27f013dfad9",
+  "expectedBlobSHA256": "33d1ffe14f286f08f3ac19e1cf1403f46fe4b20492b92cd134679cbb18883bef",
+  "stagedBlobSHA256": "33d1ffe14f286f08f3ac19e1cf1403f46fe4b20492b92cd134679cbb18883bef",
+  "blob": "0e7116af4ed63e6d398281e32eeff49e16d72b57",
+  "author": "Existing repository-local identity verified; no global changes",
+  "scope": "Main viewport accessibility only; isolated application sources and QA assets excluded",
+  "publication": "NOT RUN",
+  "sensitiveContentScan": "PASS; no secret markers; public preconnect domains unchanged from HEAD; no authenticated connection strings",
+  "earlierScan": "Stopped before staging on broad supabase.co marker; manual review confirmed existing public preconnect URL, no credential"
+}

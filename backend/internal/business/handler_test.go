@@ -11,6 +11,55 @@ import (
 	"pickme-backend/internal/middleware"
 )
 
+func TestDriverApplicationFieldsIgnoreProtectedInput(t *testing.T) {
+	row := driverApplicationFields(map[string]any{
+		"vehicle_type":  "economy",
+		"status":        "approved",
+		"is_online":     true,
+		"trial_ends_at": "2099-01-01",
+	})
+	if row["status"] != "pending" || row["is_online"] != false {
+		t.Fatalf("expected server-owned pending/offline defaults, got %#v", row)
+	}
+	if _, ok := row["trial_ends_at"]; ok {
+		t.Fatal("eligibility fields must not enter application writes")
+	}
+}
+
+func TestDriverUpsertFieldsCannotDowngradeReviewedState(t *testing.T) {
+	row := driverUpsertFields(map[string]any{
+		"vehicle_make": "Toyota",
+		"status":       "approved",
+		"is_online":    true,
+	})
+	if _, ok := row["status"]; ok {
+		t.Fatal("upsert must not update approval status")
+	}
+	if _, ok := row["is_online"]; ok {
+		t.Fatal("upsert must not update presence")
+	}
+}
+
+func TestDriverDocumentSubmissionForcesPendingAndDropsReviewFields(t *testing.T) {
+	row := driverDocumentSubmissionFields(map[string]any{
+		"driver_id":        "driver-1",
+		"document_type":    "personal_photo",
+		"file_url":         "https://example.invalid/photo",
+		"status":           "approved",
+		"rejection_reason": "forged",
+		"reviewed_by":      "admin-1",
+	})
+	if row["status"] != "pending" {
+		t.Fatalf("expected pending document, got %#v", row["status"])
+	}
+	if _, ok := row["rejection_reason"]; ok {
+		t.Fatal("review metadata must not enter driver document writes")
+	}
+	if _, ok := row["reviewed_by"]; ok {
+		t.Fatal("review actor must not enter driver document writes")
+	}
+}
+
 func TestBusinessWriteRoutesValidateInput(t *testing.T) {
 	app := fiber.New()
 	requireAuth := func(c *fiber.Ctx) error {

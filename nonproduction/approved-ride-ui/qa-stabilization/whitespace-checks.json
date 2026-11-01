@@ -1,0 +1,33 @@
+{
+  "gitDiffCheck": {
+    "exitCode": 0,
+    "diagnostics": "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'RUNBOOK.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'android/app/capacitor.build.gradle', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'android/capacitor.settings.gradle', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/cmd/server/main.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/internal/auth/supabase_jwt.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/internal/business/handler.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/internal/business/handler_test.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/internal/drivers/handler.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/internal/drivers/handler_test.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/internal/drivers/types.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/internal/rides/handler.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/internal/rides/handler_test.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/internal/websocket/auth.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/internal/websocket/authorizer.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/internal/websocket/handler.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/internal/websocket/manager.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backend/internal/websocket/manager_test.go', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/components/ride/DestinationSearchScreen.tsx', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/components/ride/PaymentMethodSelector.tsx', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/components/ride/SafetySheet.tsx', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/components/wallet/TransactionsSheet.tsx', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/hooks/useDriverTracking.ts', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/hooks/useNearbyDrivers.ts', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/hooks/useRideRealtime.ts', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/lib/backendSocketClient.ts', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/pages/LiveTrackingPage.tsx', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/pages/RideMatching.tsx', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/pages/RiderWalletPage.tsx', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/pages/admin/AdminDashboard.tsx', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/test/apiCalls.test.ts', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/test/requestRide.test.ts', LF will be replaced by CRLF the next time Git touches it\n"
+  },
+  "sprintSourceDiffChecks": [
+    {
+      "file": "src/components/ride/RideView.tsx",
+      "exitCode": 1,
+      "diagnostics": "warning: in the working copy of 'qa-stabilization\\baseline\\src\\components\\ride\\RideView.tsx', LF will be replaced by CRLF the next time Git touches it\n"
+    },
+    {
+      "file": "src/pages/RideMatching.tsx",
+      "exitCode": 1,
+      "diagnostics": "warning: in the working copy of 'qa-stabilization\\baseline\\src\\pages\\RideMatching.tsx', LF will be replaced by CRLF the next time Git touches it\n"
+    },
+    {
+      "file": "src/components/ride/approvedRide.css",
+      "exitCode": 1,
+      "diagnostics": "warning: in the working copy of 'qa-stabilization\\baseline\\src\\components\\ride\\approvedRide.css', LF will be replaced by CRLF the next time Git touches it\n"
+    },
+    {
+      "file": "src/components/luggage/LuggageSheet.tsx",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "file": "src/components/ride/RideTierSelector.tsx",
+      "exitCode": 1,
+      "diagnostics": "warning: in the working copy of 'qa-stabilization\\baseline\\src\\components\\ride\\RideTierSelector.tsx', LF will be replaced by CRLF the next time Git touches it\n"
+    }
+  ]
+}

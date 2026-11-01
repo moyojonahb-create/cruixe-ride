@@ -1,0 +1,20 @@
+{
+  "src/components/ride/RideView.tsx": "38354aaaaf575fe05c137291adfa01c3e7099d1fb36a3acea90c6659bd8b689c",
+  "src/components/ride/RideGlassPanel.tsx": "49bc0161154560d4a63f37cccf77bb706eefcf88fe80a5bf582ec13039391ae9",
+  "src/components/ride/RideHomeGreeting.tsx": "2143502c976d11d11613aa8bcd3b431ed6e7e11e782371d7ba3b2c2fbd9d14ac",
+  "src/components/ride/QuickShortcutsRow.tsx": "0b189c1f94a60798093bd56a8cc6f1adbeee29c1efcfb170b67d9057e7bc9e4e",
+  "src/components/ride/TownSelectorSheet.tsx": "e5f7620261a6ed42d72a7fb1aec4992bb6171f843a3c1a0727613615b4a4e5dd",
+  "src/components/MapboxMap.tsx": "f546487170fcf7246549098f0b5a04364a5f6fe623e0567d7b88817dc04fb87c",
+  "src/components/ride/approvedRide.css": null,
+  "src/components/ride/RideTierSelector.tsx": "f206639f6c47ee18867625b5b299fee7b1f2d168c9590d6d894aaf89bb8c24e7",
+  "src/App.tsx": "ee721dc609a4018f107ef654728d55f5f510ba8ec4e48048b8e8496bcae18b7e",
+  "src/components/BottomNavBar.tsx": "4f76f67e684a340848f32146dcc35ff3defa09fa77551d786316093d720988d8",
+  "src/components/RiderNavigationProvider.tsx": null,
+  "src/components/riderNavigation.css": null,
+  "src/lib/riderNavigation.ts": null,
+  "src/components/ride/RideSelectionCards.tsx": null,
+  "src/components/ride/rideSelection.css": null,
+  "src/test/RideSelectionCards.test.tsx": null,
+  "src/test/RiderNavigation.test.tsx": null,
+  "src/test/RideSelectionDraft.test.tsx": null
+}

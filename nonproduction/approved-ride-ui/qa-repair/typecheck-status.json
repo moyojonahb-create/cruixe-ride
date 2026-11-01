@@ -1,0 +1,6 @@
+{
+  "check": "TypeScript",
+  "status": "BLOCKED",
+  "reason": "exceeded 180 seconds without completion",
+  "elapsedSeconds": 185
+}

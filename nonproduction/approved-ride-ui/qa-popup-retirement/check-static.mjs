@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { createRequire } from 'node:module';
+const require=createRequire(path.resolve('package.json')),ts=require('typescript');
+const dir='nonproduction/approved-ride-ui/qa-popup-retirement';
+const before=JSON.parse(fs.readFileSync(dir+'/preservation-before.json','utf8'));
+const files=[...Object.keys(before.sourceBefore),...before.newFiles];
+const report={status:'PASS',node:process.version,scope:'Lightweight TSX parse/transpile only; no type checking, dependency resolution or production build',files:[],checks:[]};
+for(const file of files.filter(f=>f.endsWith(".tsx"))){const source=fs.readFileSync(file,'utf8');const r=ts.transpileModule(source,{compilerOptions:{jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext},reportDiagnostics:true,fileName:file});const errors=(r.diagnostics||[]).filter(d=>d.category===ts.DiagnosticCategory.Error).map(d=>ts.flattenDiagnosticMessageText(d.messageText,'\n'));report.files.push({file,status:errors.length?'FAIL':'PASS',errors,sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});}
+function functions(source){const f=ts.createSourceFile('x.tsx',source,ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX),out={};function visit(n){if(ts.isVariableDeclaration(n)&&n.initializer&&ts.isArrowFunction(n.initializer)&&ts.isIdentifier(n.name))out[n.name.text]=n.initializer.body.getText(f);ts.forEachChild(n,visit);}visit(f);return out;}
+let i=0;for(const file of Object.keys(before.sourceBefore)){const old=fs.readFileSync(dir+'/'+i+++'-before.txt','utf8'),now=fs.readFileSync(file,'utf8');const a=functions(old),b=functions(now);const names=file.endsWith('RideView.tsx')?['handleSendOffer','handleSendParcelOffer','handleAcceptOffer']:file.endsWith('LuggageSheet.tsx')?['handleFiles','removePhoto','handleSave']:[];for(const name of names){if(!a[name]||a[name]!==b[name])throw Error('Service handler changed: '+file+' '+name);}if(names.length)report.checks.push({file,status:'PASS',unchangedHandlers:names});if(file.endsWith('RideGlassPanel.tsx')){const paths=s=>[...s.matchAll(/ d="([^"]+)"/g)].map(m=>m[1]);if(JSON.stringify(paths(old))!==JSON.stringify(paths(now)))throw Error('Ribbon path changed');}}
+for(const prefix of ['', 'nonproduction/approved-ride-ui/']){const ride=fs.readFileSync(prefix+'src/components/ride/RideView.tsx','utf8');if(/paymentPopupOpen|paymentMethodConfirmed|luggagePrompt|<PaymentMethodSelector/.test(ride))throw Error('Retired path still reachable');if((ride.match(/<TripPaymentSelector/g)||[]).length!==1)throw Error('Expected one inline payment selector');}
+report.status=report.files.every(f=>f.status==='PASS')?'PASS':'FAIL';fs.writeFileSync(dir+'/static-results.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));if(report.status==='FAIL')process.exitCode=1;

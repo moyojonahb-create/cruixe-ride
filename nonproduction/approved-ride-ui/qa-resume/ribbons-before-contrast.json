@@ -1,0 +1,49 @@
+{
+  "authority": "MOCKED/ISOLATED UI ONLY",
+  "cases": [],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "blockedRequests": [],
+  "forbiddenWrites": [],
+  "checks": [
+    {
+      "name": "schedule",
+      "same": true,
+      "ribbon": [
+        "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+        "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+      ],
+      "accessibility": {
+        "name": "schedule-canonical",
+        "violations": []
+      }
+    },
+    {
+      "name": "note",
+      "same": true,
+      "ribbon": [
+        "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+        "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+      ],
+      "accessibility": {
+        "name": "note-canonical",
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".justify-between > span:nth-child(1)"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.55 (foreground color: #9aa1ad, background color: #fdfdfd, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "pass": false
+}

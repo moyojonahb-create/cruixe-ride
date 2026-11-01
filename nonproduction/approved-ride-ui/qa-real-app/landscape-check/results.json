@@ -1,0 +1,2284 @@
+{
+  "mode": "landscape-check",
+  "scope": "LABELLED MOCKED FIXTURE ONLY; no real integration certification",
+  "browser": "Microsoft Edge",
+  "cases": [
+    {
+      "name": "320x640",
+      "states": [
+        {
+          "state": "home",
+          "viewport": {
+            "width": 320,
+            "height": 640
+          },
+          "horizontalOverflow": false,
+          "buttons": [
+            {
+              "label": "Menu",
+              "selector": "ride-map-control absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 20,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 70,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Notifications",
+              "selector": "relative flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 250,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 300,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use my location",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 250,
+                "y": 76,
+                "width": 50,
+                "height": 50,
+                "right": 300,
+                "bottom": 126
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Toggle sheet",
+              "selector": "absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity",
+              "bounds": {
+                "x": 128,
+                "y": 404,
+                "width": 64,
+                "height": 44,
+                "right": 192,
+                "bottom": 448
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "selector": "ride-town-pill inline-flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform",
+              "bounds": {
+                "x": 14,
+                "y": 440,
+                "width": 120.46875,
+                "height": 44,
+                "right": 134.46875,
+                "bottom": 484
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Where to? Search destination",
+              "selector": "ride-destination-card flex-1 min-w-0 flex items-center gap-1 rounded-2xl active:scale-[0.98] transition-transform text-left",
+              "bounds": {
+                "x": 14,
+                "y": 492,
+                "width": 180,
+                "height": 64,
+                "right": 194,
+                "bottom": 556
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Set Home address",
+              "selector": "ride-shortcut ride-shortcut--home shrink-0 flex flex-col items-center justify-center gap-1 rounded-2xl active:scale-95 transition-transform disabled:opacity-60",
+              "bounds": {
+                "x": 202,
+                "y": 492,
+                "width": 48,
+                "height": 64,
+                "right": 250,
+                "bottom": 556
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Set Work address",
+              "selector": "ride-shortcut ride-shortcut--work shrink-0 flex flex-col items-center justify-center gap-1 rounded-2xl active:scale-95 transition-transform disabled:opacity-60",
+              "bounds": {
+                "x": 258,
+                "y": 492,
+                "width": 48,
+                "height": 64,
+                "right": 306,
+                "bottom": 556
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Schedule a ride",
+              "selector": "ride-schedule flex-1 flex items-center justify-center gap-1.5 active:scale-95 transition-transform",
+              "bounds": {
+                "x": 14,
+                "y": 564,
+                "width": 140,
+                "height": 58,
+                "right": 154,
+                "bottom": 622
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Let's CruiXe",
+              "selector": "ride-start relative flex-1 flex items-center justify-center gap-2 overflow-hidden active:scale-[0.97] transition-transform",
+              "bounds": {
+                "x": 166,
+                "y": 564,
+                "width": 140,
+                "height": 58,
+                "right": 306,
+                "bottom": 622
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            }
+          ],
+          "primary": [
+            {
+              "label": "Where to? Search destination",
+              "bounds": {
+                "x": 14,
+                "y": 492,
+                "width": 180,
+                "height": 64,
+                "right": 194,
+                "bottom": 556
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            },
+            {
+              "label": "Set Home address",
+              "bounds": {
+                "x": 202,
+                "y": 492,
+                "width": 48,
+                "height": 64,
+                "right": 250,
+                "bottom": 556
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            },
+            {
+              "label": "Set Work address",
+              "bounds": {
+                "x": 258,
+                "y": 492,
+                "width": 48,
+                "height": 64,
+                "right": 306,
+                "bottom": 556
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            },
+            {
+              "label": "Schedule a ride",
+              "bounds": {
+                "x": 14,
+                "y": 564,
+                "width": 140,
+                "height": 58,
+                "right": 154,
+                "bottom": 622
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            },
+            {
+              "label": "Let's CruiXe",
+              "bounds": {
+                "x": 166,
+                "y": 564,
+                "width": 140,
+                "height": 58,
+                "right": 306,
+                "bottom": 622
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            }
+          ],
+          "ribbon": [
+            "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+            "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+          ],
+          "navCount": 0,
+          "navRect": null,
+          "rootFont": "16px",
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "state": "choose",
+          "viewport": {
+            "width": 320,
+            "height": 640
+          },
+          "horizontalOverflow": false,
+          "buttons": [
+            {
+              "label": "Back to ride home",
+              "selector": "ride-map-control absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 20,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 70,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Notifications",
+              "selector": "relative flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 250,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 300,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use my location",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 250,
+                "y": 76,
+                "width": 50,
+                "height": 50,
+                "right": 300,
+                "bottom": 126
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Toggle sheet",
+              "selector": "absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity",
+              "bounds": {
+                "x": 128,
+                "y": 223.40625,
+                "width": 64,
+                "height": 44,
+                "right": 192,
+                "bottom": 267.40625
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Choose Economy",
+              "selector": "ride-selection-card",
+              "bounds": {
+                "x": 16,
+                "y": 314.390625,
+                "width": 288,
+                "height": 96,
+                "right": 304,
+                "bottom": 410.390625
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Choose Shared",
+              "selector": "ride-selection-card",
+              "bounds": {
+                "x": 16,
+                "y": 420.390625,
+                "width": 288,
+                "height": 96,
+                "right": 304,
+                "bottom": 516.390625
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Choose Parcel",
+              "selector": "ride-selection-card",
+              "bounds": {
+                "x": 16,
+                "y": 526.390625,
+                "width": 288,
+                "height": 96,
+                "right": 304,
+                "bottom": 622.390625
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Home",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 14,
+                "y": 550,
+                "width": 58.390625,
+                "height": 76,
+                "right": 72.390625,
+                "bottom": 626
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Activity",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 72.390625,
+                "y": 550,
+                "width": 58.40625,
+                "height": 76,
+                "right": 130.796875,
+                "bottom": 626
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Ride",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 130.796875,
+                "y": 550,
+                "width": 58.390625,
+                "height": 76,
+                "right": 189.1875,
+                "bottom": 626
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Wallet",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 189.1875,
+                "y": 550,
+                "width": 58.40625,
+                "height": 76,
+                "right": 247.59375,
+                "bottom": 626
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Account",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 247.59375,
+                "y": 550,
+                "width": 58.40625,
+                "height": 76,
+                "right": 306,
+                "bottom": 626
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            }
+          ],
+          "primary": [],
+          "ribbon": [
+            "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+            "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+          ],
+          "navCount": 5,
+          "navRect": {
+            "x": 14,
+            "y": 550,
+            "width": 292,
+            "height": 76,
+            "right": 306,
+            "bottom": 626
+          },
+          "rootFont": "16px",
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "state": "destination",
+          "viewport": {
+            "width": 320,
+            "height": 640
+          },
+          "horizontalOverflow": false,
+          "buttons": [
+            {
+              "label": "Back",
+              "selector": "ride-map-control absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 20,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 70,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Menu",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 250,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 300,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Notifications",
+              "selector": "relative flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 250,
+                "y": 76,
+                "width": 50,
+                "height": 50,
+                "right": 300,
+                "bottom": 126
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use my location",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 250,
+                "y": 134,
+                "width": 50,
+                "height": 50,
+                "right": 300,
+                "bottom": 184
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Recenter navigation",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 250,
+                "y": 192,
+                "width": 50,
+                "height": 50,
+                "right": 300,
+                "bottom": 242
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Toggle sheet",
+              "selector": "absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity",
+              "bounds": {
+                "x": 128,
+                "y": 486,
+                "width": 64,
+                "height": 44,
+                "right": 192,
+                "bottom": 530
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "selector": "ride-town-pill inline-flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform",
+              "bounds": {
+                "x": 14,
+                "y": 522,
+                "width": 120.46875,
+                "height": 44,
+                "right": 134.46875,
+                "bottom": 566
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Find Drivers",
+              "selector": "w-full flex items-center justify-center",
+              "bounds": {
+                "x": 16,
+                "y": 584,
+                "width": 288,
+                "height": 48,
+                "right": 304,
+                "bottom": 632
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Back",
+              "selector": "w-9 h-9 -ml-1 rounded-full flex items-center justify-center active:scale-90 transition-transform",
+              "bounds": {
+                "x": 12,
+                "y": 12,
+                "width": 44,
+                "height": 44,
+                "right": 56,
+                "bottom": 56
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Edit pickup",
+              "selector": "flex-1 min-w-0 min-h-11 rounded-sm text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card",
+              "bounds": {
+                "x": 71,
+                "y": 88,
+                "width": 107,
+                "height": 44,
+                "right": 178,
+                "bottom": 132
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use current location",
+              "selector": "destination-gps",
+              "bounds": {
+                "x": 190,
+                "y": 88,
+                "width": 88,
+                "height": 44,
+                "right": 278,
+                "bottom": 132
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Search destination",
+              "selector": "destination-search-text",
+              "bounds": {
+                "x": 108,
+                "y": 174,
+                "width": 117,
+                "height": 46,
+                "right": 225,
+                "bottom": 220
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": "16px"
+            },
+            {
+              "label": "Clear destination",
+              "selector": "destination-search-clear",
+              "bounds": {
+                "x": 233,
+                "y": 175,
+                "width": 44,
+                "height": 44,
+                "right": 277,
+                "bottom": 219
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Fixture destinationISOLATED test data",
+              "selector": "destination-option destination-option--lm-fixture-place-1 w-full flex items-center gap-3.5 px-4 py-3 text-left",
+              "bounds": {
+                "x": 14,
+                "y": 350,
+                "width": 292,
+                "height": 72,
+                "right": 306,
+                "bottom": 422
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Fixture destination 2ISOLATED test data",
+              "selector": "destination-option destination-option--lm-fixture-place-2 w-full flex items-center gap-3.5 px-4 py-3 text-left",
+              "bounds": {
+                "x": 14,
+                "y": 430,
+                "width": 292,
+                "height": 72,
+                "right": 306,
+                "bottom": 502
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Fixture destination 3ISOLATED test data",
+              "selector": "destination-option destination-option--lm-fixture-place-3 w-full flex items-center gap-3.5 px-4 py-3 text-left",
+              "bounds": {
+                "x": 14,
+                "y": 510,
+                "width": 292,
+                "height": 72,
+                "right": 306,
+                "bottom": 582
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Home",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 14,
+                "y": 550,
+                "width": 58.390625,
+                "height": 76,
+                "right": 72.390625,
+                "bottom": 626
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Activity",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 72.390625,
+                "y": 550,
+                "width": 58.40625,
+                "height": 76,
+                "right": 130.796875,
+                "bottom": 626
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Ride",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 130.796875,
+                "y": 550,
+                "width": 58.390625,
+                "height": 76,
+                "right": 189.1875,
+                "bottom": 626
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Wallet",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 189.1875,
+                "y": 550,
+                "width": 58.40625,
+                "height": 76,
+                "right": 247.59375,
+                "bottom": 626
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Account",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 247.59375,
+                "y": 550,
+                "width": 58.40625,
+                "height": 76,
+                "right": 306,
+                "bottom": 626
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            }
+          ],
+          "primary": [],
+          "ribbon": [
+            "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+            "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+          ],
+          "navCount": 5,
+          "navRect": {
+            "x": 14,
+            "y": 550,
+            "width": 292,
+            "height": 76,
+            "right": 306,
+            "bottom": 626
+          },
+          "rootFont": "16px",
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "state": "configuration",
+          "viewport": {
+            "width": 320,
+            "height": 640
+          },
+          "horizontalOverflow": false,
+          "buttons": [
+            {
+              "label": "Back",
+              "selector": "ride-map-control absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 20,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 70,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Menu",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 250,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 300,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Notifications",
+              "selector": "relative flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 250,
+                "y": 76,
+                "width": 50,
+                "height": 50,
+                "right": 300,
+                "bottom": 126
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use my location",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 250,
+                "y": 134,
+                "width": 50,
+                "height": 50,
+                "right": 300,
+                "bottom": 184
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Recenter navigation",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 250,
+                "y": 192,
+                "width": 50,
+                "height": 50,
+                "right": 300,
+                "bottom": 242
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Toggle sheet",
+              "selector": "absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity",
+              "bounds": {
+                "x": 128,
+                "y": 185,
+                "width": 64,
+                "height": 44,
+                "right": 192,
+                "bottom": 229
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "selector": "ride-town-pill inline-flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform",
+              "bounds": {
+                "x": 14,
+                "y": 221,
+                "width": 120.46875,
+                "height": 44,
+                "right": 134.46875,
+                "bottom": 265
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "PickupGwanda centre",
+              "selector": "ride-config-route__row",
+              "bounds": {
+                "x": 26,
+                "y": 280,
+                "width": 268,
+                "height": 44,
+                "right": 294,
+                "bottom": 324
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "DestinationFixture destination",
+              "selector": "ride-config-route__row",
+              "bounds": {
+                "x": 26,
+                "y": 324,
+                "width": 268,
+                "height": 44,
+                "right": 294,
+                "bottom": 368
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "EconomyAffordable rides, everyday$6.004·9 minFast pickup",
+              "selector": "ride-tier-hero w-full flex items-center gap-3 rounded-3xl px-3.5 py-3 text-left",
+              "bounds": {
+                "x": 16,
+                "y": 385,
+                "width": 288,
+                "height": 112.5,
+                "right": 304,
+                "bottom": 497.5
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Fewer passengers",
+              "selector": "w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform disabled:opacity-30",
+              "bounds": {
+                "x": 162,
+                "y": 513.5,
+                "width": 44,
+                "height": 44,
+                "right": 206,
+                "bottom": 557.5
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "More passengers",
+              "selector": "w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform disabled:opacity-30",
+              "bounds": {
+                "x": 246,
+                "y": 513.5,
+                "width": 44,
+                "height": 44,
+                "right": 290,
+                "bottom": 557.5
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Who is riding? · Myself",
+              "selector": "w-full flex items-center gap-2.5 px-3.5 mb-2.5 active:opacity-80 transition-opacity",
+              "bounds": {
+                "x": 16,
+                "y": 448,
+                "width": 288,
+                "height": 44,
+                "right": 304,
+                "bottom": 492
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "LuggageOptional photo",
+              "selector": "ride-config-utility ride-config-utility--luggage",
+              "bounds": {
+                "x": 16,
+                "y": 502,
+                "width": 140,
+                "height": 68,
+                "right": 156,
+                "bottom": 570
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "CashPay the driver",
+              "selector": "ride-config-utility ride-config-utility--cash",
+              "bounds": {
+                "x": 164,
+                "y": 502,
+                "width": 140,
+                "height": 68,
+                "right": 304,
+                "bottom": 570
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Schedule",
+              "selector": "ride-config-schedule shrink-0 flex items-center justify-center gap-2 active:scale-[0.97] transition-transform",
+              "bounds": {
+                "x": 16,
+                "y": 570,
+                "width": 96,
+                "height": 48,
+                "right": 112,
+                "bottom": 618
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Confirm location & continue",
+              "selector": "ride-config-confirm relative flex-1 flex items-center justify-center gap-2 overflow-hidden active:scale-[0.97] transition-transform disabled:opacity-70",
+              "bounds": {
+                "x": 124,
+                "y": 570,
+                "width": 180,
+                "height": 48,
+                "right": 304,
+                "bottom": 618
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            }
+          ],
+          "primary": [
+            {
+              "label": "Confirm location & continue",
+              "bounds": {
+                "x": 124,
+                "y": 570,
+                "width": 180,
+                "height": 48,
+                "right": 304,
+                "bottom": 618
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            }
+          ],
+          "ribbon": [
+            "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+            "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+          ],
+          "navCount": 5,
+          "navRect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "right": 0,
+            "bottom": 0
+          },
+          "rootFont": "16px",
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        }
+      ],
+      "checks": [
+        {
+          "name": "passenger selection increments locally",
+          "status": "PASS"
+        },
+        {
+          "name": "wallet tab routes to existing guarded destination",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "360x800",
+      "states": [
+        {
+          "state": "home",
+          "viewport": {
+            "width": 360,
+            "height": 800
+          },
+          "horizontalOverflow": false,
+          "buttons": [
+            {
+              "label": "Menu",
+              "selector": "ride-map-control absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 20,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 70,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Notifications",
+              "selector": "relative flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 290,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 340,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use my location",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 290,
+                "y": 76,
+                "width": 50,
+                "height": 50,
+                "right": 340,
+                "bottom": 126
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Toggle sheet",
+              "selector": "absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity",
+              "bounds": {
+                "x": 148,
+                "y": 564,
+                "width": 64,
+                "height": 44,
+                "right": 212,
+                "bottom": 608
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "selector": "ride-town-pill inline-flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform",
+              "bounds": {
+                "x": 14,
+                "y": 600,
+                "width": 120.46875,
+                "height": 44,
+                "right": 134.46875,
+                "bottom": 644
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Where to? Search destination",
+              "selector": "ride-destination-card flex-1 min-w-0 flex items-center gap-1 rounded-2xl active:scale-[0.98] transition-transform text-left",
+              "bounds": {
+                "x": 14,
+                "y": 652,
+                "width": 196,
+                "height": 64,
+                "right": 210,
+                "bottom": 716
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Set Home address",
+              "selector": "ride-shortcut ride-shortcut--home shrink-0 flex flex-col items-center justify-center gap-1 rounded-2xl active:scale-95 transition-transform disabled:opacity-60",
+              "bounds": {
+                "x": 218,
+                "y": 652,
+                "width": 60,
+                "height": 64,
+                "right": 278,
+                "bottom": 716
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Set Work address",
+              "selector": "ride-shortcut ride-shortcut--work shrink-0 flex flex-col items-center justify-center gap-1 rounded-2xl active:scale-95 transition-transform disabled:opacity-60",
+              "bounds": {
+                "x": 286,
+                "y": 652,
+                "width": 60,
+                "height": 64,
+                "right": 346,
+                "bottom": 716
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Schedule a ride",
+              "selector": "ride-schedule flex-1 flex items-center justify-center gap-1.5 active:scale-95 transition-transform",
+              "bounds": {
+                "x": 14,
+                "y": 724,
+                "width": 160,
+                "height": 58,
+                "right": 174,
+                "bottom": 782
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Let's CruiXe",
+              "selector": "ride-start relative flex-1 flex items-center justify-center gap-2 overflow-hidden active:scale-[0.97] transition-transform",
+              "bounds": {
+                "x": 186,
+                "y": 724,
+                "width": 160,
+                "height": 58,
+                "right": 346,
+                "bottom": 782
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            }
+          ],
+          "primary": [
+            {
+              "label": "Where to? Search destination",
+              "bounds": {
+                "x": 14,
+                "y": 652,
+                "width": 196,
+                "height": 64,
+                "right": 210,
+                "bottom": 716
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            },
+            {
+              "label": "Set Home address",
+              "bounds": {
+                "x": 218,
+                "y": 652,
+                "width": 60,
+                "height": 64,
+                "right": 278,
+                "bottom": 716
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            },
+            {
+              "label": "Set Work address",
+              "bounds": {
+                "x": 286,
+                "y": 652,
+                "width": 60,
+                "height": 64,
+                "right": 346,
+                "bottom": 716
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            },
+            {
+              "label": "Schedule a ride",
+              "bounds": {
+                "x": 14,
+                "y": 724,
+                "width": 160,
+                "height": 58,
+                "right": 174,
+                "bottom": 782
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            },
+            {
+              "label": "Let's CruiXe",
+              "bounds": {
+                "x": 186,
+                "y": 724,
+                "width": 160,
+                "height": 58,
+                "right": 346,
+                "bottom": 782
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            }
+          ],
+          "ribbon": [
+            "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+            "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+          ],
+          "navCount": 0,
+          "navRect": null,
+          "rootFont": "16px",
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "state": "choose",
+          "viewport": {
+            "width": 360,
+            "height": 800
+          },
+          "horizontalOverflow": false,
+          "buttons": [
+            {
+              "label": "Back to ride home",
+              "selector": "ride-map-control absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 20,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 70,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Notifications",
+              "selector": "relative flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 290,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 340,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use my location",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 290,
+                "y": 76,
+                "width": 50,
+                "height": 50,
+                "right": 340,
+                "bottom": 126
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Toggle sheet",
+              "selector": "absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity",
+              "bounds": {
+                "x": 148,
+                "y": 281,
+                "width": 64,
+                "height": 44,
+                "right": 212,
+                "bottom": 325
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Choose Economy",
+              "selector": "ride-selection-card",
+              "bounds": {
+                "x": 16,
+                "y": 371.984375,
+                "width": 328,
+                "height": 100,
+                "right": 344,
+                "bottom": 471.984375
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Choose Shared",
+              "selector": "ride-selection-card",
+              "bounds": {
+                "x": 16,
+                "y": 481.984375,
+                "width": 328,
+                "height": 100,
+                "right": 344,
+                "bottom": 581.984375
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Choose Parcel",
+              "selector": "ride-selection-card",
+              "bounds": {
+                "x": 16,
+                "y": 591.984375,
+                "width": 328,
+                "height": 100.015625,
+                "right": 344,
+                "bottom": 692
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Home",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 14,
+                "y": 710,
+                "width": 66.390625,
+                "height": 76,
+                "right": 80.390625,
+                "bottom": 786
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Activity",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 80.390625,
+                "y": 710,
+                "width": 66.40625,
+                "height": 76,
+                "right": 146.796875,
+                "bottom": 786
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Ride",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 146.796875,
+                "y": 710,
+                "width": 66.390625,
+                "height": 76,
+                "right": 213.1875,
+                "bottom": 786
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Wallet",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 213.1875,
+                "y": 710,
+                "width": 66.40625,
+                "height": 76,
+                "right": 279.59375,
+                "bottom": 786
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Account",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 279.59375,
+                "y": 710,
+                "width": 66.40625,
+                "height": 76,
+                "right": 346,
+                "bottom": 786
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            }
+          ],
+          "primary": [],
+          "ribbon": [
+            "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+            "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+          ],
+          "navCount": 5,
+          "navRect": {
+            "x": 14,
+            "y": 710,
+            "width": 332,
+            "height": 76,
+            "right": 346,
+            "bottom": 786
+          },
+          "rootFont": "16px",
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "state": "destination",
+          "viewport": {
+            "width": 360,
+            "height": 800
+          },
+          "horizontalOverflow": false,
+          "buttons": [
+            {
+              "label": "Back",
+              "selector": "ride-map-control absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 20,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 70,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Menu",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 290,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 340,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Notifications",
+              "selector": "relative flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 290,
+                "y": 76,
+                "width": 50,
+                "height": 50,
+                "right": 340,
+                "bottom": 126
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use my location",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 290,
+                "y": 134,
+                "width": 50,
+                "height": 50,
+                "right": 340,
+                "bottom": 184
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Recenter navigation",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 290,
+                "y": 192,
+                "width": 50,
+                "height": 50,
+                "right": 340,
+                "bottom": 242
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Toggle sheet",
+              "selector": "absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity",
+              "bounds": {
+                "x": 148,
+                "y": 626,
+                "width": 64,
+                "height": 44,
+                "right": 212,
+                "bottom": 670
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "selector": "ride-town-pill inline-flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform",
+              "bounds": {
+                "x": 14,
+                "y": 662,
+                "width": 120.46875,
+                "height": 44,
+                "right": 134.46875,
+                "bottom": 706
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Find Drivers",
+              "selector": "w-full flex items-center justify-center",
+              "bounds": {
+                "x": 16,
+                "y": 730,
+                "width": 328,
+                "height": 48,
+                "right": 344,
+                "bottom": 778
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Back",
+              "selector": "w-9 h-9 -ml-1 rounded-full flex items-center justify-center active:scale-90 transition-transform",
+              "bounds": {
+                "x": 12,
+                "y": 12,
+                "width": 44,
+                "height": 44,
+                "right": 56,
+                "bottom": 56
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Edit pickup",
+              "selector": "flex-1 min-w-0 min-h-11 rounded-sm text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card",
+              "bounds": {
+                "x": 71,
+                "y": 89.5,
+                "width": 125,
+                "height": 44,
+                "right": 196,
+                "bottom": 133.5
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use current location",
+              "selector": "destination-gps",
+              "bounds": {
+                "x": 208,
+                "y": 88,
+                "width": 110,
+                "height": 47,
+                "right": 318,
+                "bottom": 135
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Search destination",
+              "selector": "destination-search-text",
+              "bounds": {
+                "x": 108,
+                "y": 177,
+                "width": 157,
+                "height": 46,
+                "right": 265,
+                "bottom": 223
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": "16px"
+            },
+            {
+              "label": "Clear destination",
+              "selector": "destination-search-clear",
+              "bounds": {
+                "x": 273,
+                "y": 178,
+                "width": 44,
+                "height": 44,
+                "right": 317,
+                "bottom": 222
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Fixture destinationISOLATED test data",
+              "selector": "destination-option destination-option--lm-fixture-place-1 w-full flex items-center gap-3.5 px-4 py-3 text-left",
+              "bounds": {
+                "x": 14,
+                "y": 353,
+                "width": 332,
+                "height": 72,
+                "right": 346,
+                "bottom": 425
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Fixture destination 2ISOLATED test data",
+              "selector": "destination-option destination-option--lm-fixture-place-2 w-full flex items-center gap-3.5 px-4 py-3 text-left",
+              "bounds": {
+                "x": 14,
+                "y": 433,
+                "width": 332,
+                "height": 72,
+                "right": 346,
+                "bottom": 505
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Fixture destination 3ISOLATED test data",
+              "selector": "destination-option destination-option--lm-fixture-place-3 w-full flex items-center gap-3.5 px-4 py-3 text-left",
+              "bounds": {
+                "x": 14,
+                "y": 513,
+                "width": 332,
+                "height": 72,
+                "right": 346,
+                "bottom": 585
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Retry search",
+              "selector": "",
+              "bounds": {
+                "x": 26,
+                "y": 651,
+                "width": 102.015625,
+                "height": 44,
+                "right": 128.015625,
+                "bottom": 695
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Choose on map",
+              "selector": "",
+              "bounds": {
+                "x": 134.015625,
+                "y": 651,
+                "width": 123.125,
+                "height": 44,
+                "right": 257.140625,
+                "bottom": 695
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Home",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 14,
+                "y": 710,
+                "width": 66.390625,
+                "height": 76,
+                "right": 80.390625,
+                "bottom": 786
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Activity",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 80.390625,
+                "y": 710,
+                "width": 66.40625,
+                "height": 76,
+                "right": 146.796875,
+                "bottom": 786
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Ride",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 146.796875,
+                "y": 710,
+                "width": 66.390625,
+                "height": 76,
+                "right": 213.1875,
+                "bottom": 786
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Wallet",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 213.1875,
+                "y": 710,
+                "width": 66.40625,
+                "height": 76,
+                "right": 279.59375,
+                "bottom": 786
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Account",
+              "selector": "rider-navigation__tab",
+              "bounds": {
+                "x": 279.59375,
+                "y": 710,
+                "width": 66.40625,
+                "height": 76,
+                "right": 346,
+                "bottom": 786
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            }
+          ],
+          "primary": [],
+          "ribbon": [
+            "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+            "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+          ],
+          "navCount": 5,
+          "navRect": {
+            "x": 14,
+            "y": 710,
+            "width": 332,
+            "height": 76,
+            "right": 346,
+            "bottom": 786
+          },
+          "rootFont": "16px",
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        },
+        {
+          "state": "configuration",
+          "viewport": {
+            "width": 360,
+            "height": 800
+          },
+          "horizontalOverflow": false,
+          "buttons": [
+            {
+              "label": "Back",
+              "selector": "ride-map-control absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 20,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 70,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Menu",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 290,
+                "y": 18,
+                "width": 50,
+                "height": 50,
+                "right": 340,
+                "bottom": 68
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Notifications",
+              "selector": "relative flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 290,
+                "y": 76,
+                "width": 50,
+                "height": 50,
+                "right": 340,
+                "bottom": 126
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Use my location",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 290,
+                "y": 134,
+                "width": 50,
+                "height": 50,
+                "right": 340,
+                "bottom": 184
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Recenter navigation",
+              "selector": "flex items-center justify-center rounded-full active:scale-90 transition-transform",
+              "bounds": {
+                "x": 290,
+                "y": 192,
+                "width": 50,
+                "height": 50,
+                "right": 340,
+                "bottom": 242
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Toggle sheet",
+              "selector": "absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity",
+              "bounds": {
+                "x": 148,
+                "y": 243.25,
+                "width": 64,
+                "height": 44,
+                "right": 212,
+                "bottom": 287.25
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Select town, currently Gwanda",
+              "selector": "ride-town-pill inline-flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform",
+              "bounds": {
+                "x": 14,
+                "y": 279.25,
+                "width": 120.46875,
+                "height": 44,
+                "right": 134.46875,
+                "bottom": 323.25
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "PickupGwanda centre",
+              "selector": "ride-config-route__row",
+              "bounds": {
+                "x": 26,
+                "y": 338.25,
+                "width": 308,
+                "height": 44,
+                "right": 334,
+                "bottom": 382.25
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "DestinationFixture destination",
+              "selector": "ride-config-route__row",
+              "bounds": {
+                "x": 26,
+                "y": 382.25,
+                "width": 308,
+                "height": 44,
+                "right": 334,
+                "bottom": 426.25
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "EconomyAffordable rides, everyday$6.004·9 minFast pickup",
+              "selector": "ride-tier-hero w-full flex items-center gap-3 rounded-3xl px-3.5 py-3 text-left",
+              "bounds": {
+                "x": 16,
+                "y": 443.25,
+                "width": 328,
+                "height": 84.75,
+                "right": 344,
+                "bottom": 528
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Fewer passengers",
+              "selector": "w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform disabled:opacity-30",
+              "bounds": {
+                "x": 202,
+                "y": 544,
+                "width": 44,
+                "height": 44,
+                "right": 246,
+                "bottom": 588
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "More passengers",
+              "selector": "w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform disabled:opacity-30",
+              "bounds": {
+                "x": 286,
+                "y": 544,
+                "width": 44,
+                "height": 44,
+                "right": 330,
+                "bottom": 588
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Who is riding? · Myself",
+              "selector": "w-full flex items-center gap-2.5 px-3.5 mb-2.5 active:opacity-80 transition-opacity",
+              "bounds": {
+                "x": 16,
+                "y": 608,
+                "width": 328,
+                "height": 44,
+                "right": 344,
+                "bottom": 652
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "LuggageOptional photo",
+              "selector": "ride-config-utility ride-config-utility--luggage",
+              "bounds": {
+                "x": 16,
+                "y": 662,
+                "width": 160,
+                "height": 68,
+                "right": 176,
+                "bottom": 730
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "CashPay the driver",
+              "selector": "ride-config-utility ride-config-utility--cash",
+              "bounds": {
+                "x": 184,
+                "y": 662,
+                "width": 160,
+                "height": 68,
+                "right": 344,
+                "bottom": 730
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Schedule",
+              "selector": "ride-config-schedule shrink-0 flex items-center justify-center gap-2 active:scale-[0.97] transition-transform",
+              "bounds": {
+                "x": 16,
+                "y": 730,
+                "width": 97.1875,
+                "height": 48,
+                "right": 113.1875,
+                "bottom": 778
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            },
+            {
+              "label": "Confirm location & continue",
+              "selector": "ride-config-confirm relative flex-1 flex items-center justify-center gap-2 overflow-hidden active:scale-[0.97] transition-transform disabled:opacity-70",
+              "bounds": {
+                "x": 125.1875,
+                "y": 730,
+                "width": 218.8125,
+                "height": 48,
+                "right": 344,
+                "bottom": 778
+              },
+              "withinViewport": true,
+              "small": false,
+              "inputFont": null
+            }
+          ],
+          "primary": [
+            {
+              "label": "Confirm location & continue",
+              "bounds": {
+                "x": 125.1875,
+                "y": 730,
+                "width": 218.8125,
+                "height": 48,
+                "right": 344,
+                "bottom": 778
+              },
+              "visible": true,
+              "hit": true,
+              "labelClipped": false
+            }
+          ],
+          "ribbon": [
+            "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+            "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+          ],
+          "navCount": 5,
+          "navRect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "right": 0,
+            "bottom": 0
+          },
+          "rootFont": "16px",
+          "axe": {
+            "violations": [],
+            "incomplete": [
+              "aria-prohibited-attr",
+              "color-contrast"
+            ]
+          }
+        }
+      ],
+      "checks": [
+        {
+          "name": "passenger selection increments locally",
+          "status": "PASS"
+        },
+        {
+          "name": "wallet tab routes to existing guarded destination",
+          "status": "PASS"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "blocked": []
+}

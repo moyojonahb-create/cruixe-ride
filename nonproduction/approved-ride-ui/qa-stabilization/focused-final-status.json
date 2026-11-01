@@ -1,0 +1,6 @@
+﻿{
+    "runtime":  "Node 22.23.4",
+    "exitCode":  0,
+    "authority":  "MOCKED/ISOLATED",
+    "check":  "focused tests"
+}

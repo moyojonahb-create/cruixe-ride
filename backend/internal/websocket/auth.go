@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -13,6 +14,7 @@ import (
 )
 
 const (
+	LocalsIdentity         = "websocket_identity"
 	LocalsUserID           = "websocket_user_id"
 	LocalsRoomID           = "websocket_room_id"
 	LocalsRegisterAsRider  = "websocket_register_as_rider"
@@ -20,6 +22,8 @@ const (
 )
 
 type AuthenticatedConnection struct {
+	SessionID        string
+	ExpiresAt        time.Time
 	UserID           string
 	RoomID           string
 	RegisterAsRider  bool
@@ -47,6 +51,9 @@ func AuthenticateRequest(c *fiber.Ctx, verifier *auth.SupabaseJWT, authorizer Ro
 		return AuthenticatedConnection{}, fiber.StatusUnauthorized, errors.New("invalid or expired websocket token")
 	}
 
+	if claims.Expires <= time.Now().Unix() {
+		return AuthenticatedConnection{}, fiber.StatusUnauthorized, errors.New("expiring websocket token required")
+	}
 	userID := claims.Subject
 	riderID := c.Query("rider_id")
 	driverID := c.Query("driver_id")
@@ -65,9 +72,12 @@ func AuthenticateRequest(c *fiber.Ctx, verifier *auth.SupabaseJWT, authorizer Ro
 			return AuthenticatedConnection{}, fiber.StatusForbidden, errors.New("invalid ride room")
 		}
 
+		if authorizer == nil {
+			return AuthenticatedConnection{}, fiber.StatusServiceUnavailable, errors.New("ride authorization unavailable")
+		}
 		allowed, err := authorizer.CanJoinRideRoom(middleware.RequestContext(c), rideID, userID)
 		if err != nil {
-			return AuthenticatedConnection{}, fiber.StatusInternalServerError, err
+			return AuthenticatedConnection{}, fiber.StatusServiceUnavailable, errors.New("ride authorization unavailable")
 		}
 		if !allowed {
 			return AuthenticatedConnection{}, fiber.StatusForbidden, errors.New("user is not assigned to this ride room")
@@ -91,6 +101,9 @@ func AuthenticateRequest(c *fiber.Ctx, verifier *auth.SupabaseJWT, authorizer Ro
 		}
 	}
 
+	if driverID != "" && !registerAsDriver {
+		return AuthenticatedConnection{}, fiber.StatusForbidden, errors.New("driver access denied")
+	}
 	// If a rider_id was provided explicitly, always register as rider.
 	if riderID != "" {
 		registerAsRider = true
@@ -100,6 +113,8 @@ func AuthenticateRequest(c *fiber.Ctx, verifier *auth.SupabaseJWT, authorizer Ro
 	}
 
 	conn := AuthenticatedConnection{
+		SessionID:        claims.SessionID,
+		ExpiresAt:        time.Unix(claims.Expires, 0),
 		UserID:           userID,
 		RoomID:           roomID,
 		RegisterAsRider:  registerAsRider,
@@ -110,6 +125,7 @@ func AuthenticateRequest(c *fiber.Ctx, verifier *auth.SupabaseJWT, authorizer Ro
 }
 
 func SetAuthenticatedLocals(c *fiber.Ctx, conn AuthenticatedConnection) {
+	c.Locals(LocalsIdentity, conn)
 	c.Locals(LocalsUserID, conn.UserID)
 	c.Locals(LocalsRoomID, conn.RoomID)
 	c.Locals(LocalsRegisterAsRider, conn.RegisterAsRider)
@@ -131,5 +147,5 @@ func websocketToken(c *fiber.Ctx) string {
 
 func RideIDFromRoom(roomID string) (string, bool) {
 	rideID, ok := strings.CutPrefix(roomID, "ride_")
-	return rideID, ok && rideID != ""
+	return rideID, ok && rideID != "" && validRoomName(roomID)
 }

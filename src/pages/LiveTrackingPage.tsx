@@ -1,3 +1,6 @@
+import { goBackend } from "@/lib/goBackendClient";
+import { backendSocketClient, eventRideId } from "@/lib/backendSocketClient";
+import { subscribeRideLocation } from "@/lib/rideLocationSubscription";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
@@ -74,12 +77,8 @@ export default function LiveTrackingPage() {
   useEffect(() => {
     if (!tripId) return;
     (async () => {
-      const { data: rideData, error: rideErr } = await supabase
-        .from("rides")
-        .select("id, pickup_address, dropoff_address, status, driver_id, pickup_lat, pickup_lon, dropoff_lat, dropoff_lon, fare")
-        .eq("id", tripId)
-        .maybeSingle();
-
+      const { data: rideData, error: rideErr } = await goBackend.get<RideInfo>(`/api/rides/${encodeURIComponent(tripId)}`)
+        .then(data => ({ data, error: null })).catch(error => ({ data: null, error }));
       if (rideErr || !rideData) {
         setError("Trip not found or access denied");
         setLoading(false);
@@ -88,6 +87,7 @@ export default function LiveTrackingPage() {
       setRide(rideData as unknown as RideInfo);
       setConnectionStatus('connecting');
 
+      setDriver(null);
       if (rideData.driver_id) {
         const { data: driverData } = await supabase
           .from("drivers")
@@ -105,39 +105,30 @@ export default function LiveTrackingPage() {
       }
       setLoading(false);
     })();
-  }, [tripId]);
+  }, [tripId, ride?.driver_id]);
 
-  // Realtime driver location
+  // Precise tracking has a ride scope and current assignment; no raw-table fallback.
   useEffect(() => {
-    if (!driver?.user_id) return;
-    setConnectionStatus('connecting');
-    supabase
-      .from("live_locations")
-      .select("latitude, longitude, heading, speed, updated_at")
-      .eq("user_id", driver.user_id)
-      .eq("user_type", "driver")
-      .maybeSingle()
-      .then(({ data }) => { if (data) { setDriverLoc(data); setConnectionStatus('live'); } else { setConnectionStatus('offline'); } });
+    setDriverLoc(null); setConnectionStatus('connecting');
+    if (!driver?.user_id || !tripId || !["accepted", "arrived", "in_progress"].includes(ride?.status ?? "")) return;
+    return subscribeRideLocation(tripId, driver.user_id, point => {
+      setDriverLoc({ latitude: point.lat, longitude: point.lng, heading: point.heading, speed: point.speed, updated_at: point.updatedAt });
+    }, connected => setConnectionStatus(connected ? 'live' : 'offline'), () => setDriverLoc(null));
+  }, [driver?.user_id, tripId, ride?.status]);
 
-    const channel = supabase
-      .channel(`track-driver-${driver.user_id}-${Date.now()}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "live_locations", filter: `user_id=eq.${driver.user_id}` },
-        (payload) => { const loc = payload.new as DriverLocation; if (loc?.latitude) { setDriverLoc(loc); setConnectionStatus('live'); } }
-      ).subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [driver?.user_id]);
-
-  // Realtime ride status
   useEffect(() => {
     if (!tripId) return;
-    const channel = supabase
-      .channel(`track-ride-${tripId}-${Date.now()}`)
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "rides", filter: `id=eq.${tripId}` },
-        (payload) => { const updated = payload.new as RideInfo; setRide(prev => prev ? { ...prev, ...updated } : prev); }
-      ).subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [tripId]);
-
+    const off = backendSocketClient.onAny(event => {
+      if (eventRideId(event) !== tripId) return;
+      if (event.type === 'ride_snapshot' && event.ride) setRide(event.ride as unknown as RideInfo);
+      if (['room_revoked', 'room_user_revoked', 'join_room_denied'].includes(event.type)) {
+        setDriverLoc(null); setConnectionStatus('offline');
+      }
+      if (['ride_accepted', 'ride_cancelled', 'ride_completed', 'ride_status_updated', 'ride_started'].includes(event.type)) void backendSocketClient.refreshRide(tripId);
+    });
+    backendSocketClient.joinRide(tripId);
+    return () => { off(); backendSocketClient.leaveRide(tripId); };
+  }, [tripId, ride?.driver_id]);
   const timelineSteps = useMemo(() => {
     const status = ride?.status;
     return [

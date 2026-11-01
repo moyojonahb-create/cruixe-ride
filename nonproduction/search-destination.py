@@ -1,0 +1,10 @@
+﻿from pathlib import Path
+p=Path('nonproduction/approved-ride-ui/src/components/ride/RideView.tsx');s=p.read_text(encoding='utf-8')
+s=s.replace('  const [nominatimLoading,', '  const searchAbortRef = useRef<AbortController | null>(null);\n  const searchVersionRef = useRef(0);\n  const [searchError, setSearchError] = useState<string | null>(null);\n  const [nominatimLoading,')
+s=s.replace('  const handleNominatimSearch = useCallback((query: string) => {','  const handleNominatimSearch = useCallback((query: string) => {\n    searchAbortRef.current?.abort();\n    const version = ++searchVersionRef.current;\n    setSearchError(null);')
+s=s.replace('      const controller = new AbortController();','      const controller = new AbortController();\n      searchAbortRef.current = controller;')
+s=s.replace('        setNominatimResults(\n', '        if (version !== searchVersionRef.current) return;\n        setNominatimResults(\n')
+s=s.replace('      } catch {\n        setNominatimResults([]);\n      } finally {\n        setNominatimLoading(false);','      } catch {\n        if (version === searchVersionRef.current) {\n          setNominatimResults([]);\n          setSearchError("Place search is unavailable. Try again or choose on map.");\n        }\n      } finally {\n        if (version === searchVersionRef.current) setNominatimLoading(false);')
+s=s.replace('  const handleSearchChange = (value: string) => {','  const handleSearchChange = (value: string) => {\n    searchAbortRef.current?.abort();\n    searchVersionRef.current++;\n    setSearchError(null);')
+s=s.replace('          results={searchResultRows}','          searchError={searchError}\n          gpsError={gpsState.error}\n          results={searchResultRows}')
+p.write_text(s,encoding='utf-8')

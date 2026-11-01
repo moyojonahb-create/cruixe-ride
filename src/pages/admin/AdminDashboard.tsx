@@ -163,7 +163,7 @@ const AdminDashboard = () => {
 
     const channel = supabase
       .channel('admin-dashboard')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'live_locations' }, () => refreshAll())
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'live_locations' }, () => refreshAll())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'rides' }, () => refreshAll())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'drivers' }, () => refreshAll())
       .subscribe();

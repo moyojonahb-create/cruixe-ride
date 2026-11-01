@@ -1,0 +1,33 @@
+{
+  "sizes": [],
+  "errors": [],
+  "posts": [],
+  "journeys": [
+    {
+      "name": "Economy",
+      "entryUrl": "http://localhost:8081/ride?view=locations&tier=economy",
+      "preservedTier": true,
+      "destinationVisible": true,
+      "prematurePosts": 0
+    },
+    {
+      "name": "Shared",
+      "entryUrl": "http://localhost:8081/ride?view=locations&tier=share",
+      "preservedTier": true,
+      "destinationVisible": true,
+      "prematurePosts": 0
+    },
+    {
+      "name": "Parcel",
+      "entryUrl": "http://localhost:8081/ride?view=locations&tier=parcel",
+      "preservedTier": true,
+      "destinationVisible": true,
+      "prematurePosts": 0
+    }
+  ],
+  "motion": "0.33s",
+  "reducedMotion": "0s",
+  "Account": "auth guard",
+  "Activity": "auth guard",
+  "Wallet": "auth guard"
+}

@@ -69,6 +69,7 @@ describe("requestRide", () => {
         payment_method: "cash",
         status: "pending",
       }),
+      expect.any(AbortSignal),
     );
   });
 
@@ -135,6 +136,7 @@ describe("requestRide", () => {
     expect(goBackendMock.post).toHaveBeenCalledWith(
       "/api/rides",
       expect.objectContaining({ payment_method: "wallet" }),
+      expect.any(AbortSignal),
     );
     expect(result.ok).toBe(true);
     if (result.ok) expect(result.ride.id).toBe("ride-wallet");

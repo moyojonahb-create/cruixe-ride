@@ -1,0 +1,431 @@
+{
+  "authority": "MOCKED/ISOLATED UI ONLY",
+  "cases": [
+    {
+      "width": 393,
+      "height": 852,
+      "configuration": {
+        "overflow": false,
+        "tierCount": 1,
+        "route": "/ride?view=locations&tier=economy",
+        "buttons": [
+          {
+            "label": "More passengers",
+            "width": 44,
+            "height": 44,
+            "y": 596
+          },
+          {
+            "label": "Fewer passengers",
+            "width": 44,
+            "height": 44,
+            "y": 596
+          }
+        ],
+        "ribbon": "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+        "configText": "Gwanda25+ km areaPickupGwanda centreDestinationFixture destinationEconomyAffordable rides, everyday$6.004·9 minFast pickupPassengers1Who is riding? · MyselfLuggageOptional · add a photoCashPay the driverScheduleConfirm location & continue"
+      },
+      "accessibility": {
+        "name": "configuration-393",
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(1) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(3) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-utility--cash > span:nth-child(2) > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #68717b, background color: #ffe849, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ]
+      },
+      "passengerMaxDisabled": true,
+      "paymentAccessibility": {
+        "name": "payment-393",
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(1) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(3) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-utility--cash > span:nth-child(2) > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #68717b, background color: #ffe849, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ]
+      },
+      "paymentReturns": true,
+      "prematureBookingAttempts": 0,
+      "luggageAccessibility": {
+        "name": "luggage-393",
+        "violations": [
+          {
+            "id": "button-name",
+            "impact": "critical",
+            "nodes": [
+              {
+                "target": [
+                  ".top-1"
+                ],
+                "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(1) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(3) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-utility--cash > span:nth-child(2) > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #68717b, background color: #ffe849, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ]
+      },
+      "photoSaved": "Luggage\nPhoto added",
+      "photoRemoved": true,
+      "scheduleAccessibility": {
+        "name": "schedule-393",
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(1) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(3) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-utility--cash > span:nth-child(2) > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #68717b, background color: #ffe849, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ]
+      },
+      "deniedAttempt": [
+        {
+          "action": "requestRide denied",
+          "detail": {
+            "pickup_address": "Gwanda centre",
+            "pickup_lat": -20.9355,
+            "pickup_lng": 29.0147,
+            "dropoff_address": "Fixture destination",
+            "dropoff_lat": -20.951,
+            "dropoff_lng": 29.02,
+            "distance_km": 3,
+            "duration_minutes": 9,
+            "fare": 6.5,
+            "route_polyline": null,
+            "passenger_count": 4,
+            "payment_method": "wallet",
+            "vehicle_type": "economy",
+            "town_id": "gwanda",
+            "gender_preference": "any",
+            "scheduled_at": "2026-10-31T22:00:00.000Z"
+          }
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "height": 800,
+      "configuration": {
+        "overflow": false,
+        "tierCount": 1,
+        "route": "/ride?view=locations&tier=economy",
+        "buttons": [
+          {
+            "label": "More passengers",
+            "width": 44,
+            "height": 44,
+            "y": 544
+          },
+          {
+            "label": "Fewer passengers",
+            "width": 44,
+            "height": 44,
+            "y": 544
+          }
+        ],
+        "ribbon": "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+        "configText": "Gwanda25+ km areaPickupGwanda centreDestinationFixture destinationEconomyAffordable rides, everyday$6.004·9 minFast pickupPassengers1Who is riding? · MyselfLuggageOptional · add a photoCashPay the driverScheduleConfirm location & continue"
+      },
+      "accessibility": {
+        "name": "configuration-360",
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(1) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(3) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-utility--cash > span:nth-child(2) > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #68717b, background color: #ffe849, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ]
+      },
+      "passengerMaxDisabled": true,
+      "paymentAccessibility": {
+        "name": "payment-360",
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(1) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(3) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-utility--cash > span:nth-child(2) > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #68717b, background color: #ffe849, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ]
+      },
+      "paymentReturns": true,
+      "prematureBookingAttempts": 0,
+      "luggageAccessibility": {
+        "name": "luggage-360",
+        "violations": [
+          {
+            "id": "button-name",
+            "impact": "critical",
+            "nodes": [
+              {
+                "target": [
+                  ".top-1"
+                ],
+                "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(1) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(3) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-utility--cash > span:nth-child(2) > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #68717b, background color: #ffe849, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".text-right"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.87 (foreground color: #666666, background color: #d4d4d4, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".space-y-2:nth-child(3) > .text-\\[11px\\]"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.87 (foreground color: #666666, background color: #d4d4d4, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ]
+      },
+      "photoSaved": "Luggage\nPhoto added",
+      "photoRemoved": true,
+      "scheduleAccessibility": {
+        "name": "schedule-360",
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "nodes": [
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(1) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-route__row[type=\"button\"]:nth-child(3) > span > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.38 (foreground color: #727984, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  ".ride-config-utility--cash > span:nth-child(2) > small"
+                ],
+                "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #68717b, background color: #ffe849, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ]
+      },
+      "deniedAttempt": [
+        {
+          "action": "requestRide denied",
+          "detail": {
+            "pickup_address": "Gwanda centre",
+            "pickup_lat": -20.9355,
+            "pickup_lng": 29.0147,
+            "dropoff_address": "Fixture destination",
+            "dropoff_lat": -20.951,
+            "dropoff_lng": 29.02,
+            "distance_km": 3,
+            "duration_minutes": 9,
+            "fare": 6.5,
+            "route_polyline": null,
+            "passenger_count": 4,
+            "payment_method": "wallet",
+            "vehicle_type": "economy",
+            "town_id": "gwanda",
+            "gender_preference": "any",
+            "scheduled_at": "2026-10-31T22:00:00.000Z"
+          }
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "blockedRequests": [],
+  "forbiddenWrites": [],
+  "checks": [
+    {
+      "name": "MOCKED pending UI 393",
+      "overflow": false,
+      "accessibility": {
+        "name": "finding-393",
+        "violations": []
+      },
+      "ribbon": "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z"
+    },
+    {
+      "name": "MOCKED pending UI 360",
+      "overflow": false,
+      "accessibility": {
+        "name": "finding-360",
+        "violations": []
+      },
+      "ribbon": "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z"
+    }
+  ],
+  "navigation": [
+    {
+      "name": "Account",
+      "url": "http://127.0.0.1:8083/profile",
+      "selected": "page",
+      "curveChanged": true,
+      "reloadSelected": "page",
+      "backSelected": "page"
+    },
+    {
+      "name": "Activity",
+      "url": "http://127.0.0.1:8083/history",
+      "selected": "page",
+      "curveChanged": true,
+      "reloadSelected": "page",
+      "backSelected": "page"
+    },
+    {
+      "name": "Wallet",
+      "url": "http://127.0.0.1:8083/wallet",
+      "selected": "page",
+      "curveChanged": true,
+      "reloadSelected": "page",
+      "backSelected": "page"
+    }
+  ],
+  "reducedMotion": "0s"
+}

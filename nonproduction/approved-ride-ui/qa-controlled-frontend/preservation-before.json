@@ -1,0 +1,81 @@
+{
+  "branch": "fix/ecc-sprint-1-accessibility-wallet",
+  "HEAD": "31c9ae007b8c5e6f4741139a4b2ed98e693e2184",
+  "indexSHA256": "8b3b33f0dddd1db8d074da12d929428a1e675e293b48924006fe2f34ea63dac1",
+  "trackedStatusSHA256": "e126ab902c5ea0263405dd863b9de4e1885b0e68b4b59dfa547be95a95d9901d",
+  "trackedDirtyFiles": {
+    ".gitignore": "73f684f519c0a9f102991c9b4bd0dd026a9ac5c35f34435f2476c7e6f9db0479",
+    "RUNBOOK.md": "f1b01a69eb288a3c586f5729bcae75af6de2a1465dbe19a9d9c64b9fdca21e72",
+    "android/app/build.gradle": "089fe8ddc378ebe301ebd62f199cfafc187fbf3f681933d3c4abf90ee99fb575",
+    "android/app/capacitor.build.gradle": "dc8536fae699096633a032b87afe18a9a635a4c55dd98a8cd6a54be0b158321f",
+    "android/app/src/main/AndroidManifest.xml": "23b2362a83b63bf188ce2ed3a2faf298efa3b130f90fe22c16d77bda28b82668",
+    "android/capacitor.settings.gradle": "80b12a535fb6879e236c5ac1e915e74d37115403fa0a5def97ac9cff34c1a4dc",
+    "backend/cmd/server/main.go": "872cbe12af63b2c94c481646df838b0b1f9c1c613006cd51570a804766d20ff1",
+    "backend/internal/auth/supabase_jwt.go": "6b4af4f1bf7073570f4d21997e99cf920405b48e905cf527ab35b9f291139f70",
+    "backend/internal/business/handler.go": "0718b3ea9da01a3c7b9c0cceaa5aa5216b4f8f5463aeecca5d5d745aaf8b2f5e",
+    "backend/internal/business/handler_test.go": "d380bb51cd15a707f477bf3d4e3af770ec7576d4913b7eb008ecefb07b6a0438",
+    "backend/internal/drivers/handler.go": "629fdb84ee68872e047f0e47d6175720c17e641afe5d5111fe4df69630a6f224",
+    "backend/internal/drivers/handler_test.go": "d95fb45a5b8b8330faed67cf0301e82fe67681525fe6dfc56df4ad750c3c4204",
+    "backend/internal/drivers/types.go": "ac309cf91e13fd3ca072f183b1962e57c14ef9c0d62610fee68be0e3466e28a0",
+    "backend/internal/rides/handler.go": "f706c100ef6f7a6793c1ed888608a04252d4ad84bb3bb7bc37c744cfcd9caff1",
+    "backend/internal/rides/handler_test.go": "8a9d019d4555a230b4bab6a3fe165736c05e99a9c5184cabeb4b8de28fea446e",
+    "backend/internal/websocket/auth.go": "5b58d608f0baea0872503c2f25ee3928473b6014615aca945e66530df542c220",
+    "backend/internal/websocket/authorizer.go": "27fc4a4fad2c483184f9781808f0ff7f691a359fe4256e43c55df4f98dad6820",
+    "backend/internal/websocket/handler.go": "372b514cea17d66a135c1507019939eb1a937478ba2b7232c83d4def782b7650",
+    "backend/internal/websocket/manager.go": "f2e23cbbcec9f4e417114a5e1ff74ad3bab2ed9efd1ea4c4a923672d3333c997",
+    "backend/internal/websocket/manager_test.go": "3d176a4d11456707e8c5a80fc409fb5ddd793b52502b9db1b8c2439b49418bb8",
+    "docs/app-store-review-notes.md": "07923b44f5853841fac4a3d4bea6084d8af81e984118aa224b1f304988782e65",
+    "index.html": "a15ea933089f9d2b165b7ba78b7bfbaf6b292da8c8ef58ac0da3e27f013dfad9",
+    "public/brand/cruixe-car-search.png": null,
+    "scripts/verify.mjs": "5ba819c96543bbd68b5cb07851caa19d2a69edf3d27b3a46ec1d65b57696ba5a",
+    "src/components/HeroSection.tsx": "ca7923d7a8535bb459e7edda4d6a50f612826dddf9ff43b75be01f43b5f5ac5c",
+    "src/components/driver/DriverSelfieCheck.tsx": "2bf47c8a674d7e9fd376ce07b12e818ed90a4f6e381d59ff4be3d847adf3ca0f",
+    "src/components/ride/DestinationSearchScreen.tsx": "50fa2a99d0d2ecc747a2a17429ee9efb8d5005eec8a4e3624065c90d0a0bb7ee",
+    "src/components/ride/PaymentMethodSelector.tsx": "4805e6e05ba85772051b6a0eed67de81d34cfdee9b8723995e09c80c2d1fb6b3",
+    "src/components/ride/SafetySheet.tsx": "27d04085aeb7c82250e7cd99653af12ae4750ef4b365633a9d38eadd496c1283",
+    "src/components/wallet/TransactionsSheet.tsx": "859df933847b8c2c5b7737ab3216e465b36656d71f1a4162fd8ff5fc28e0b785",
+    "src/hooks/useDriverTracking.ts": "0880f8c2217540f0705b46a19f4472306cdcee754d50f60faec99e5cadee5ec9",
+    "src/hooks/useNearbyDrivers.ts": "70f76978abcf91dfab94b3b610b222503d1af69b81b85913e82ddcac80593206",
+    "src/hooks/useRideRealtime.ts": "48711bc1864ea938a489864f36d62a65a24a25df72fa28d00cf0f2bc814b3c5d",
+    "src/hooks/useTownPricing.ts": "1f8a6d7421cc5bfb49830a32efa6cb11c11a8f34fda049763786359c08deea05",
+    "src/lib/backendSocketClient.ts": "8a1f4ad973d5bfd726cd3a14ceb39b844bc22d29bbfceddfd062157a42d57526",
+    "src/lib/driverPresence.ts": "95eb17c7eac4feda03ea35faa015cda59e2c8149fa644fe43b138c93f232ed09",
+    "src/lib/rideMatching.ts": "3cc7f1c7ec976636f371a8d19056488bb72ed057bc435ac76f2ea3caf83d215e",
+    "src/lib/routeProgress.ts": "1c1b6da3e643796f713710de10f886e15dd9ffad2bda7f58d34f17bf7da0fa15",
+    "src/pages/DriverDashboard.tsx": "fc31a0ec12f74538943e2ae3f54f5e18303c1d65cd8cec7dd063d6d0907687d8",
+    "src/pages/LiveTrackingPage.tsx": "c4378eb70bdd7d8ce0ad3a0d98bb3f599981823241ceb06f0ded53af086312a3",
+    "src/pages/RideMatching.tsx": "e2b9088a2fc9f439d66820727f313e8d7c72fe7458704e378184afeedd3a8810",
+    "src/pages/RiderWalletPage.tsx": "e0a77a2e26af391bf68eb67c52e3cba3d0c091fbbbe5c16a23a0a52efe45ad8e",
+    "src/pages/admin/AdminDashboard.tsx": "0ee850dde6748c188491a81da0892ff88b9323bae785a0f944e65b18a75bddda",
+    "src/pages/admin/AdminDriversMap.tsx": "2919d8ea2928984640cd50c49ca168a3dde293a6540eaaef4ce62f9889e5be10",
+    "src/pages/admin/AdminTownPricing.tsx": "463a21bcf8b6b6f57b57379d33307a4ad01c1513424c5ed8e485b93fe9be848a",
+    "src/pages/driver/DriverProfile.tsx": "7cca79e02b3097de1443999c7fd38f8e5b0191a6b974c6fb017096fe5bc2c547",
+    "src/pages/driver/DriverRideRequests.tsx": "7e8e7fe911e75f5347bfbe15add9cc020d3276d1633428856aa16d3d47e0cc01",
+    "src/test/apiCalls.test.ts": "74e4642a8ba2878fe521b1ceb3df2265d97c2633c3d2c70ee4e84c2e90766819",
+    "src/test/requestRide.test.ts": "159090051ef425c8029f32302fd9282a81fe1c1fe16cb22d2805ec307d68adf9",
+    "src/test/townPricing.test.ts": "9b1efb483c922710f25fe5f3edffca3c98f5f93aa7aedb3e9ead6f3ac4404733"
+  },
+  "verifiedFrontendFiles": [
+    {
+      "path": "index.html",
+      "beforeSHA256": "251f827c5c6b251f70df56e18a47843b38b214ef72e691070482a94edd1f08fe",
+      "afterSHA256": "a15ea933089f9d2b165b7ba78b7bfbaf6b292da8c8ef58ac0da3e27f013dfad9"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/index.html",
+      "beforeSHA256": "251f827c5c6b251f70df56e18a47843b38b214ef72e691070482a94edd1f08fe",
+      "afterSHA256": "a15ea933089f9d2b165b7ba78b7bfbaf6b292da8c8ef58ac0da3e27f013dfad9"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/approvedRide.css",
+      "beforeSHA256": "dfa71d3bb01c0d2adaecc90ca257adb3104a643c69263d03f4b4106621839576",
+      "afterSHA256": "8b000aad8e442c3b0f8bf01d5e26bc36221374509a7fcd16560d386e6a4b08fc"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/destinationScreen.css",
+      "beforeSHA256": "01eb1367bc44c622da253af0284014a03a22f0e3e0ae6f367f2eebf4df392cda",
+      "afterSHA256": "3d13af94181d7eb77bfaee1254ff2f139a625fa9bcb2e4140d8144d45af153bd"
+    }
+  ],
+  "node22": "C:/Users/MUSAE/AppData/Local/Temp/cruize-p02-node22-5c590de3cb8e46d6a328181d0bbd2143/node-v22.23.4-win-x64/node.exe"
+}

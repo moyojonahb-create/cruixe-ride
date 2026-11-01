@@ -1,0 +1,28 @@
+--- before/src/components/ride/approvedRide.css
++++ after/src/components/ride/approvedRide.css
+@@ -113,3 +113,25 @@
+ .ride-finding-summary__meta > span { display: inline-flex; align-items: center; gap: 3px; }
+ .ride-finding-summary__meta svg { width: 14px; height: 14px; }
+ .ride-finding-actions > button { min-width: 0; }
++
++/* Keep the approved count subtitle and full pending route visible on phones. */
++.ride-booking-sheet--configuration .ride-passenger-count { color: #626b76; font-size: 11px; font-weight: 500; }
++.ride-finding-summary { display: grid !important; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 4px 12px !important; }
++.ride-finding-summary > img { grid-column: 1; grid-row: 1 / span 3; }
++.ride-finding-summary > div { display: contents; }
++.ride-finding-summary > div > p:first-child { grid-column: 2; grid-row: 1; }
++.ride-finding-summary > span:last-child { grid-column: 3; grid-row: 1; line-height: 1.2; }
++.ride-finding-summary__route { grid-column: 2 / span 2; grid-row: 2; overflow-wrap: anywhere; }
++.ride-finding-summary__meta { grid-column: 2 / span 2; grid-row: 3; margin-top: 0; }
++/* Transform-only search decoration; it conveys no matching completion state. */
++.ride-finding-decoration { position: relative; height: 26px; }
++.ride-finding-decoration__track, .ride-finding-decoration__trail { position: absolute; top: 11px; left: 0; width: 100%; height: 4px; border-radius: 999px; }
++.ride-finding-decoration__track { background: rgb(17 17 17 / 8%); }
++.ride-finding-decoration__trail { background: linear-gradient(90deg, #ffdd00, #b81104); transform: scaleX(0); transform-origin: left; animation: ride-search-trail 60s linear forwards; }
++.ride-finding-decoration__car { position: absolute; top: 0; left: 0; width: calc(100% - 48px); animation: ride-search-car 60s linear forwards; }
++.ride-finding-decoration__car img { width: 48px; height: 20px; object-fit: contain; filter: drop-shadow(0 2px 3px rgb(17 17 17 / 28%)); }
++@keyframes ride-search-trail { to { transform: scaleX(1); } }
++@keyframes ride-search-car { to { transform: translateX(100%); } }
++@media (prefers-reduced-motion: reduce) {
++ .ride-finding-decoration__trail, .ride-finding-decoration__car { animation: none !important; }
++}

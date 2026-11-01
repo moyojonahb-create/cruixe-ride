@@ -1,0 +1,18 @@
+{
+  "name": "production-build-768",
+  "command": [
+    "C:\\Users\\MUSAE\\AppData\\Local\\Temp\\cruize-p02-node22-5c590de3cb8e46d6a328181d0bbd2143\\node-v22.23.4-win-x64\\node.exe",
+    "--max-old-space-size=768",
+    "C:\\Users\\MUSAE\\Documents\\koloi-ride-with-confidence\\nonproduction\\approved-ride-ui/node_modules/vite/bin/vite.js",
+    "build",
+    "--config",
+    "C:\\Users\\MUSAE\\Documents\\koloi-ride-with-confidence\\nonproduction\\approved-ride-ui/vite.stabilization-build.config.ts"
+  ],
+  "exitCode": 1,
+  "terminationReason": "resource guard: available physical memory below 384 MiB",
+  "elapsedSeconds": 44.55,
+  "peakWorkingSetMB": 770.8,
+  "peakPrivateMB": 902.1,
+  "minAvailablePhysicalMB": 353,
+  "cpuSeconds": 49.188
+}

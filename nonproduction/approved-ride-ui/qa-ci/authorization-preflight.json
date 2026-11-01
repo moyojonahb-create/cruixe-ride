@@ -1,0 +1,118 @@
+{
+  "recordedAt": "2026-11-01T09:49:16.054005+00:00",
+  "approvedFileChecksums": [
+    {
+      "path": ".github/workflows/cruixe-approved-frontend-verify.yml",
+      "status": "PASS"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/review/approved-frontend-ci.tgz",
+      "status": "PASS"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/review/review-manifest.json",
+      "status": "PASS"
+    }
+  ],
+  "archiveIntegrity": {
+    "status": "PASS",
+    "members": 550,
+    "mismatches": [],
+    "missing": []
+  },
+  "prohibitedArchivePaths": {
+    "status": "PASS",
+    "paths": []
+  },
+  "contentFindings": [
+    {
+      "path": "index.html",
+      "line": 60,
+      "kind": "production_service_endpoint",
+      "valueSHA256": "dc5233a1aa934f7238ab06d8607a45f69bd155b69dfc234e63fc657e8114cec6"
+    },
+    {
+      "path": "index.html",
+      "line": 62,
+      "kind": "production_service_endpoint",
+      "valueSHA256": "dc5233a1aa934f7238ab06d8607a45f69bd155b69dfc234e63fc657e8114cec6"
+    },
+    {
+      "path": "vite.config.ts",
+      "line": 33,
+      "kind": "production_service_endpoint",
+      "valueSHA256": "2eea9a04a4b8573aaad0ed27eab2a2d6a2c9b3279c90c33796d0c0de3b100166"
+    },
+    {
+      "path": "vite.config.ts",
+      "line": 39,
+      "kind": "production_service_endpoint",
+      "valueSHA256": "2eea9a04a4b8573aaad0ed27eab2a2d6a2c9b3279c90c33796d0c0de3b100166"
+    },
+    {
+      "path": "vite.config.ts",
+      "line": 72,
+      "kind": "production_service_endpoint",
+      "valueSHA256": "dc5233a1aa934f7238ab06d8607a45f69bd155b69dfc234e63fc657e8114cec6"
+    },
+    {
+      "path": "vite.config.ts",
+      "line": 75,
+      "kind": "production_service_endpoint",
+      "valueSHA256": "2eea9a04a4b8573aaad0ed27eab2a2d6a2c9b3279c90c33796d0c0de3b100166"
+    },
+    {
+      "path": "vite.config.ts",
+      "line": 74,
+      "kind": "mapbox_public_token",
+      "valueSHA256": "1d74aa7b9a4e6a1a1de69e4cd352b939e2a94842ff9453536c4b2b19b4edcf47"
+    },
+    {
+      "path": "vite.config.ts",
+      "line": 73,
+      "kind": "supabase_publishable_token",
+      "valueSHA256": "00b740270e9dd6cc474d71df884abceee00963045bdfe11590f9fb87eba3dabc"
+    }
+  ],
+  "note": "Only paths, line numbers, token categories and hashes are recorded; no token or endpoint values are printed. Findings require review before publication.",
+  "status": "BLOCKED",
+  "repository": {
+    "configuredRemote": "https://github.com/moyojonahb-create/PickMe-App.git",
+    "canonicalRepository": "moyojonahb-create/cruixe-ride",
+    "status": "PASS",
+    "note": "GitHub redirects the configured repository to its renamed canonical identity; owner unchanged."
+  },
+  "targetBranch": {
+    "name": "verify/cruixe-approved-ui-20261101-2a3ff775",
+    "status": "PASS",
+    "existsBeforePublication": false
+  },
+  "contentReview": {
+    "status": "PASS",
+    "privateCredentialsDetected": false,
+    "publicDefaults": "Supabase publishable key, Mapbox pk token, Sentry browser DSN, public service endpoints retained unchanged. They are public client configuration, not private/service-role credentials. No production requests were made.",
+    "otherMatches": "Support contacts, admin UI email constants, public OSM contact data, form placeholders and synthetic test access_token. No live sessions or customer records identified.",
+    "limitations": "Static pattern scan and contextual source review; not a guarantee of detecting every possible secret."
+  },
+  "workflowSafety": {
+    "status": "PASS",
+    "evidence": [
+      "contents:read only; no secrets refs or environment credentials",
+      "Application code only executes inside network-none nonprivileged container",
+      "Online dependency phase receives package manifests only and npm lifecycle scripts disabled",
+      "No deploy commands or deployment environments",
+      "Only remote workflows are CI/main-master and CD watching CI/main-master; dedicated workflow name and branch cannot trigger that chain"
+    ],
+    "externalHostingPolicies": "Not independently audited; no external hosting operation invoked by this workflow."
+  },
+  "originalWorktreeExclusion": {
+    "status": "PASS",
+    "method": "Fresh no-checkout clone; only three explicit checksummed paths will be staged; original index never used."
+  },
+  "authorization": "Explicit user authorization for exact branch and three files received; all pre-publication checks pass.",
+  "stagedPayloadIntegrity": {
+    "status": "FAIL",
+    "reason": "Workflow and review manifest were normalized from CRLF to LF by Git; staged hashes differ from approved bytes. Archive bytes match.",
+    "evidence": "authorization-publication.json"
+  }
+}

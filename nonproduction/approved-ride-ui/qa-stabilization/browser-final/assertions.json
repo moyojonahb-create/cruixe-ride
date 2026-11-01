@@ -1,0 +1,13 @@
+{
+  "mobileCases": true,
+  "controlsFit": true,
+  "photoDecodes": true,
+  "paymentAndPassengers": true,
+  "paymentFocus": true,
+  "pendingViews": false,
+  "sharedRibbon": false,
+  "navigation": true,
+  "reducedMotion": true,
+  "accessibility": true,
+  "noLiveTraffic": true
+}

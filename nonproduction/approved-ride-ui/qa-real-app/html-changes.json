@@ -1,0 +1,14 @@
+[
+  {
+    "path": "index.html",
+    "beforeSHA256": "251f827c5c6b251f70df56e18a47843b38b214ef72e691070482a94edd1f08fe",
+    "afterSHA256": "a15ea933089f9d2b165b7ba78b7bfbaf6b292da8c8ef58ac0da3e27f013dfad9",
+    "change": "Remove zoom restrictions only; preserve viewport-fit=cover and all other bytes."
+  },
+  {
+    "path": "nonproduction/approved-ride-ui/index.html",
+    "beforeSHA256": "251f827c5c6b251f70df56e18a47843b38b214ef72e691070482a94edd1f08fe",
+    "afterSHA256": "a15ea933089f9d2b165b7ba78b7bfbaf6b292da8c8ef58ac0da3e27f013dfad9",
+    "change": "Remove zoom restrictions only; preserve viewport-fit=cover and all other bytes."
+  }
+]

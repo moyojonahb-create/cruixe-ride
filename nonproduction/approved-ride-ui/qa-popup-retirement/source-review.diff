@@ -1,0 +1,778 @@
+--- before/src/components/ride/RideView.tsx
++++ after/src/components/ride/RideView.tsx
+@@ -31,7 +31,7 @@
+ import { useStudentDiscountAvailable } from '@/hooks/useStudentProfile';
+ 
+ import { useWallet } from '@/hooks/useWallet';
+-import PaymentMethodSelector from './PaymentMethodSelector';
++import TripPaymentSelector from './TripPaymentSelector';
+ import { Button } from '@/components/ui/button';
+ import {
+   Loader2, MapPin, Navigation, Crosshair, ArrowLeft, User, Search,
+@@ -144,9 +144,6 @@
+   const [parcelSize, setParcelSize] = useState<'small' | 'medium' | 'large'>('medium');
+   const [schedulePickerOpen, setSchedulePickerOpen] = useState(false);
+   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
+-  // Payment method row is only shown until the rider explicitly confirms a
+-  // method (tapping Cash or Wallet in the sheet) — it then hides for good.
+-  const [paymentMethodConfirmed, setPaymentMethodConfirmed] = useState(false);
+   const { balance: walletBalance } = useWallet();
+   const [passengerCount, setPassengerCount] = useState(1);
+   const [bookForSomeoneElse, setBookForSomeoneElse] = useState(false);
+@@ -164,9 +161,6 @@
+   const [offers, setOffers] = useState<DriverOffer[]>([]);
+   const [luggageDraft, setLuggageDraft] = useState<import('@/components/luggage/LuggageSheet').LuggageDraft | null>(null);
+   const [luggageOpen, setLuggageOpen] = useState(false);
+-  const [luggagePromptOpen, setLuggagePromptOpen] = useState(false);
+-  const [luggagePromptShown, setLuggagePromptShown] = useState(false);
+-  const [paymentPopupOpen, setPaymentPopupOpen] = useState(false);
+   const [riderNote, setRiderNote] = useState('');
+   const [noteReuseEveryTrip, setNoteReuseEveryTrip] = useState(false);
+   const [noteSheetOpen, setNoteSheetOpen] = useState(false);
+@@ -242,20 +236,6 @@
+       window.history.replaceState({}, '');
+     }
+   }, []);
+-
+-  // One-time luggage prompt as soon as a drop-off is chosen for this booking.
+-  // Never fires for Parcel — a parcel is not a passenger, so "travelling
+-  // with luggage?" doesn't apply.
+-  useEffect(() => {
+-    if (dropoffLocation && !luggagePromptShown && selectedTier !== 'parcel') {
+-      setLuggagePromptShown(true);
+-      setLuggagePromptOpen(true);
+-    }
+-    if (!dropoffLocation || selectedTier === 'parcel') {
+-      setLuggagePromptShown(false);
+-      setLuggagePromptOpen(false);
+-    }
+-  }, [dropoffLocation, luggagePromptShown, selectedTier]);
+ 
+   // Check the browser's actual permission state before ever touching
+   // navigator.geolocation, so a first-time visitor sees our explicit
+@@ -1084,9 +1064,7 @@
+     } catch (error: unknown) {toast({ title: 'Failed to send offer', description: (error as Error).message, variant: 'destructive' });setRideStatus('idle');} finally {setIsRequesting(false);}
+   };
+ 
+-  // Shared by the "Find drivers"/"Choose <tier>" CTA and the payment-method
+-  // popup's confirm — payment selection now happens inline the first time
+-  // the rider tries to book, instead of as its own card in the list above.
++  // Only the explicit booking action submits; payment choices edit local state.
+   const proceedToBook = () => {
+     if (selectedTier === 'parcel') { setParcelSheetOpen(true); return; }
+     if (selectedTier === 'share') { setShareSheetOpen(true); return; }
+@@ -1593,27 +1571,6 @@
+             </div>
+           ) : pickupLocation && dropoffLocation && fareBreakdown ? (
+             <>
+-              {/* Luggage prompt — shown once, right after drop-off is picked */}
+-              {luggagePromptOpen && (
+-                <div className="relative mb-1.5 flex items-center justify-between gap-2 px-3.5 py-2 overflow-hidden" style={{ borderRadius: 15, ...redCta }}>
+-                  <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,0))' }} />
+-                  <span className="relative text-[12.5px] font-semibold text-white">🧳 Travelling with luggage?</span>
+-                  <div className="relative flex items-center gap-1.5">
+-                    <button
+-                      onClick={() => { setLuggagePromptOpen(false); setLuggageOpen(true); }}
+-                      className="px-3 py-1 rounded-full bg-white text-[11px] font-bold active:scale-95 transition-transform" style={{ color: RIDE_RED }}>
+-                      Yes
+-                    </button>
+-                    <button
+-                      onClick={() => setLuggagePromptOpen(false)}
+-                      className="px-3 py-1 rounded-full text-white text-[11px] font-semibold active:scale-95 transition-transform"
+-                      style={{ background: 'rgba(255,255,255,.22)', boxShadow: 'inset 0 0 0 .5px rgba(255,255,255,.35)' }}>
+-                      No
+-                    </button>
+-                  </div>
+-                </div>
+-              )}
+-
+               {selectedTier !== 'parcel' && (
+                 <button
+                   type="button"
+@@ -1627,6 +1584,19 @@
+                   <ChevronRight className="w-[17px] h-[17px]" style={{ color: RIDE_TEXT_2 }} />
+                 </button>
+               )}
++
++              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 8, marginBottom: 10 }}>
++                <button type="button" onClick={() => setLuggageOpen(true)} style={{ minHeight: 68, borderRadius: 22, padding: 12, background: '#fff', color: RIDE_TEXT, textAlign: 'left', ...glassSurface }}>
++                  <strong style={{ display: 'block', fontSize: 14 }}>Luggage</strong>
++                  <small>{luggageDraft ? 'Details added' : 'Optional details'}</small>
++                </button>
++                  <TripPaymentSelector
++                    selected={paymentMethod} onSelect={setPaymentMethod}
++                    walletBalance={walletBalance} estimatedFare={fareBreakdown?.totalFare ?? 0}
++                    restrictToCash={bookForSomeoneElse && thirdPartyPayer === 'passenger'}
++                    restrictReason="This passenger pays cash on arrival."
++                  />
++              </div>
+ 
+               <div className="flex items-center gap-3">
+                 {/* Scheduling a Parcel isn't supported yet — ScheduleRide's
+@@ -1656,7 +1626,6 @@
+                 <button
+                   type="button"
+                   onClick={() => {
+-                    if (!paymentMethodConfirmed) { setPaymentPopupOpen(true); return; }
+                     proceedToBook();
+                   }}
+                   disabled={isRequesting}
+@@ -1747,18 +1716,6 @@
+         onClose={() => setLuggageOpen(false)}
+         initial={luggageDraft}
+         onSave={setLuggageDraft}
+-      />
+-      <PaymentMethodSelector
+-        open={paymentPopupOpen}
+-        onClose={() => setPaymentPopupOpen(false)}
+-        selected={paymentMethod}
+-        onSelect={setPaymentMethod}
+-        onConfirm={() => { setPaymentMethodConfirmed(true); proceedToBook(); }}
+-        walletBalance={walletBalance}
+-        estimatedFare={fareBreakdown?.totalFare ?? 0}
+-        tierLabel={fareBreakdown ? `${RIDE_TIER_LABELS[selectedTier]} · ${fareBreakdown.fmt(selectedTierPrice)}` : RIDE_TIER_LABELS[selectedTier]}
+-        restrictToCash={bookForSomeoneElse && thirdPartyPayer === 'passenger'}
+-        restrictReason={bookForSomeoneElse && thirdPartyPayer === 'passenger' ? `${passengerName.trim().split(' ')[0] || 'They'} pays cash on arrival — only cash works for a third-party ride` : undefined}
+       />
+       <NoteToDriverSheet
+         open={noteSheetOpen}
+--- before/src/components/ride/NoteToDriverSheet.tsx
++++ after/src/components/ride/NoteToDriverSheet.tsx
+@@ -1,4 +1,5 @@
+-import { useEffect, useState, type CSSProperties } from 'react';
++import * as DialogPrimitive from '@radix-ui/react-dialog';
++import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+ import { DoorOpen, Luggage, PhoneCall, Quote, Repeat, Timer, UserRound, X } from 'lucide-react';
+ import { haptic } from '@/lib/haptics';
+ import RideGlassPanel from './RideGlassPanel';
+@@ -83,6 +84,10 @@
+ export default function NoteToDriverSheet({
+   open, onClose, note, onNoteChange, reuseEveryTrip, onReuseEveryTripChange, onSave,
+ }: NoteToDriverSheetProps) {
++  const returnFocusRef = useRef<HTMLElement | null>(null);
++  useLayoutEffect(() => {
++    if (open) returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
++  }, [open]);
+   const [draft, setDraft] = useState(note);
+   const [reuseDraft, setReuseDraft] = useState(reuseEveryTrip);
+ 
+@@ -109,10 +114,11 @@
+   };
+ 
+   return (
+-    <>
+-      <div className="fixed inset-0 z-[60]" style={{ background: 'rgba(17,17,17,.28)' }} onClick={handleClose} />
+-      <div className="fixed left-0 right-0 bottom-0 z-[70]" style={{ maxWidth: 480, margin: '0 auto', width: '100%' }}>
+-        <RideGlassPanel panelStyle={panelStyle} style={{ maxHeight: '90vh', paddingBottom: 'env(safe-area-inset-bottom)' }} onRibbonClick={handleClose}>
++    <DialogPrimitive.Root open={open} onOpenChange={next => { if (!next) handleClose(); }}>
++      <DialogPrimitive.Portal>
++      <DialogPrimitive.Overlay className="fixed inset-0 z-[60]" style={{ background: 'rgba(17,17,17,.28)' }} onClick={handleClose} />
++      <DialogPrimitive.Content onCloseAutoFocus={event => { event.preventDefault(); returnFocusRef.current?.focus(); }} className="fixed left-0 right-0 bottom-0 z-[70] outline-none" style={{ maxWidth: 480, margin: '0 auto', width: '100%' }}>
++        <RideGlassPanel panelStyle={panelStyle} style={{ maxHeight: '90dvh', paddingBottom: 'env(safe-area-inset-bottom)' }} onRibbonClick={handleClose}>
+           <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+             <div className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+               {/* Section 1 — header */}
+@@ -121,15 +127,15 @@
+                   <Quote style={{ width: 19, height: 19, color: RIDE_RED }} />
+                 </span>
+                 <div className="min-w-0" style={{ flex: 1 }}>
+-                  <p style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>Note for your driver</p>
+-                  <p style={{ marginTop: 3, fontSize: 12.5, fontWeight: 500, lineHeight: 1.2, color: RIDE_TEXT_2 }}>Sent with your request, before they accept</p>
++                  <DialogPrimitive.Title style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>Note for your driver</DialogPrimitive.Title>
++                  <DialogPrimitive.Description style={{ marginTop: 3, fontSize: 12.5, fontWeight: 500, lineHeight: 1.2, color: RIDE_TEXT_2 }}>Sent with your request, before they accept</DialogPrimitive.Description>
+                 </div>
+                 <button
+                   type="button"
+                   onClick={handleClose}
+                   aria-label="Close"
+                   className="shrink-0 flex items-center justify-center active:scale-90 transition-transform"
+-                  style={{ width: 32, height: 32, borderRadius: 999, background: 'rgba(17,17,17,.06)' }}
++                  style={{ width: 44, height: 44, borderRadius: 999, background: 'rgba(17,17,17,.06)' }}
+                 >
+                   <X style={{ width: 16, height: 16, color: RIDE_TEXT }} strokeWidth={2.4} />
+                 </button>
+@@ -143,8 +149,8 @@
+                   placeholder="e.g. Meeting at the blue gate behind the shops"
+                   rows={2}
+                   maxLength={NOTE_MAX}
+-                  className="w-full outline-none bg-transparent resize-none"
+-                  style={{ fontSize: 14.5, fontWeight: 500, lineHeight: 1.4, color: RIDE_TEXT }}
++                  className="w-full focus-visible:outline focus-visible:outline-2 bg-transparent resize-none"
++                  style={{ fontSize: 16, fontWeight: 500, lineHeight: 1.4, color: RIDE_TEXT }}
+                 />
+                 <div className="flex items-center justify-between">
+                   <span style={{ fontSize: 11, fontWeight: 500, color: '#9AA1AD' }}>Keep it short — drivers read this while driving</span>
+@@ -163,8 +169,9 @@
+                         key={label}
+                         type="button"
+                         onClick={() => handleChipToggle(label)}
++                        aria-pressed={selected}
+                         className="flex items-center active:scale-[0.96] transition-transform"
+-                        style={{ height: 34, padding: '0 12px', borderRadius: 999, gap: 5, ...(selected ? chipGlassSelected : chipGlass) }}
++                        style={{ minHeight: 44, padding: '0 12px', borderRadius: 999, gap: 5, ...(selected ? chipGlassSelected : chipGlass) }}
+                       >
+                         <Icon style={{ width: 13, height: 13, color: selected ? RIDE_TEXT : RIDE_TEXT_2 }} />
+                         <span style={{ fontSize: 12.5, fontWeight: selected ? 700 : 600, color: RIDE_TEXT }}>{label}</span>
+@@ -178,6 +185,7 @@
+               <button
+                 type="button"
+                 onClick={() => setReuseDraft((v) => !v)}
++                aria-pressed={reuseDraft}
+                 className="flex items-center w-full text-left active:scale-[0.98] transition-transform"
+                 style={{ height: 44, padding: '0 14px', borderRadius: 15, gap: 10, ...chipGlass }}
+               >
+@@ -224,7 +232,8 @@
+             </div>
+           </div>
+         </RideGlassPanel>
+-      </div>
+-    </>
++      </DialogPrimitive.Content>
++      </DialogPrimitive.Portal>
++    </DialogPrimitive.Root>
+   );
+ }
+--- before/src/components/ride/RideGlassPanel.tsx
++++ after/src/components/ride/RideGlassPanel.tsx
+@@ -38,7 +38,7 @@
+   return (
+     <div
+       ref={ref}
+-      className={cn('relative flex flex-col overflow-hidden', className)}
++      className={cn('relative flex flex-col overflow-visible', className)}
+       style={{
+         borderTopLeftRadius: 26,
+         borderTopRightRadius: 26,
+@@ -67,11 +67,11 @@
+         onClick={onRibbonClick}
+         aria-label="Toggle sheet"
+         className="absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity"
+-        style={{ top: -4, width: 64, height: 24 }}
++        style={{ top: -16, width: Math.max(64, handleWidth), height: 44 }}
+       >
+         <span
+           className="block rounded-full"
+-          style={{ width: handleWidth, height: 5, background: '#FFFFFF', boxShadow: '0 1px 2px rgba(0,0,0,.18)' }}
++          style={{ position: 'absolute', top: 21.5, width: handleWidth, height: 5, background: '#FFFFFF', boxShadow: '0 1px 2px rgba(0,0,0,.18)' }}
+         />
+       </button>
+ 
+--- before/src/components/luggage/LuggageSheet.tsx
++++ after/src/components/luggage/LuggageSheet.tsx
+@@ -1,3 +1,4 @@
++import * as DialogPrimitive from '@radix-ui/react-dialog';
+ import { useState, useRef, useEffect } from 'react';
+ import { motion, AnimatePresence } from 'framer-motion';
+ import { X, Camera, ImageIcon, Trash2, Briefcase, Loader2 } from 'lucide-react';
+@@ -31,6 +32,10 @@
+ ];
+ 
+ export default function LuggageSheet({ open, onClose, initial, onSave }: LuggageSheetProps) {
++  const returnFocusRef = useRef<HTMLElement | null>(null);
++  useLayoutEffect(() => {
++    if (open) returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
++  }, [open]);
+   const { user } = useAuth();
+   const [description, setDescription] = useState(initial?.description || '');
+   const [weight, setWeight] = useState<LuggageDraft['estimated_weight']>(initial?.estimated_weight || 'small');
+@@ -106,22 +111,29 @@
+   };
+ 
+   return (
++    <DialogPrimitive.Root open={open} onOpenChange={next => { if (!next) onClose(); }}>
++      <DialogPrimitive.Portal forceMount>
++      <div>
+     <AnimatePresence>
+       {open && (
+         <>
++          <DialogPrimitive.Overlay asChild forceMount>
+           <motion.div
+             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+             className="fixed inset-0 bg-black/60 z-[70]"
+             onClick={onClose}
+           />
++          </DialogPrimitive.Overlay>
++          <DialogPrimitive.Content onCloseAutoFocus={event => { event.preventDefault(); returnFocusRef.current?.focus(); }} asChild forceMount>
+           <motion.div
+             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+             drag="y" dragConstraints={{ top: 0, bottom: 0 }} dragElastic={0.2}
+             onDragEnd={(_, info) => { if (info.offset.y > 120) onClose(); }}
+-            className="fixed bottom-0 inset-x-0 z-[71] rounded-t-3xl max-h-[90vh] flex flex-col"
++            className="fixed bottom-0 inset-x-0 z-[71] rounded-t-3xl max-h-[90dvh] flex flex-col"
+             style={{ ...glassPanel, fontFamily: RIDE_FONT }}
+           >
++            <DialogPrimitive.Description className="sr-only">Optional luggage details for your trip. Saving updates this booking draft.</DialogPrimitive.Description>
+             <div className="flex justify-center pt-3 pb-1 shrink-0">
+               <div className="w-12 h-1.5 rounded-full bg-muted-foreground/30" />
+             </div>
+@@ -130,13 +142,13 @@
+                 <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: RIDE_RED_GRADIENT, boxShadow: '0 6px 14px rgba(184,17,4,.35)' }}>
+                   <Briefcase className="w-[18px] h-[18px] text-white" />
+                 </div>
+-                <h2 className="text-lg font-bold" style={{ color: RIDE_TEXT }}>Add Luggage</h2>
++                <DialogPrimitive.Title asChild><h2 className="text-lg font-bold" style={{ color: RIDE_TEXT }}>Add Luggage</h2></DialogPrimitive.Title>
+               </div>
+               <button
+                 onClick={onClose}
+                 aria-label="Close"
+                 className="flex items-center justify-center rounded-full active:scale-90 transition-transform"
+-                style={{ width: 32, height: 32, background: 'rgba(17,17,17,.06)' }}
++                style={{ width: 44, height: 44, background: 'rgba(17,17,17,.06)' }}
+               >
+                 <X className="w-4 h-4" style={{ color: RIDE_TEXT }} />
+               </button>
+@@ -166,6 +178,7 @@
+                       key={w.value}
+                       type="button"
+                       onClick={() => setWeight(w.value)}
++                      aria-pressed={weight === w.value}
+                       className="p-3.5 rounded-2xl text-left transition-transform active:scale-[0.98]"
+                       style={{
+                         ...glassSurface,
+@@ -197,7 +210,7 @@
+                       )}
+                       <button
+                         onClick={() => removePhoto(i)}
+-                        className="absolute top-1 right-1 w-7 h-7 rounded-full flex items-center justify-center"
++                        className="absolute top-1 right-1 w-11 h-11 rounded-full flex items-center justify-center"
+                         style={{ background: 'rgba(17,17,17,.65)', backdropFilter: 'blur(6px)' }}
+                       >
+                         <Trash2 className="w-3.5 h-3.5 text-white" />
+@@ -254,8 +267,12 @@
+               </button>
+             </div>
+           </motion.div>
++          </DialogPrimitive.Content>
+         </>
+       )}
+     </AnimatePresence>
++      </div>
++      </DialogPrimitive.Portal>
++    </DialogPrimitive.Root>
+   );
+ }
+--- before/nonproduction/approved-ride-ui/src/components/ride/RideView.tsx
++++ after/nonproduction/approved-ride-ui/src/components/ride/RideView.tsx
+@@ -32,7 +32,7 @@
+ import { useStudentDiscountAvailable } from '@/hooks/useStudentProfile';
+ 
+ import { useWallet } from '@/hooks/useWallet';
+-import PaymentMethodSelector from './PaymentMethodSelector';
++import TripPaymentSelector from './TripPaymentSelector';
+ import { Button } from '@/components/ui/button';
+ import {
+   Loader2, MapPin, Navigation, Crosshair, ArrowLeft, User, Search,
+@@ -189,7 +189,6 @@
+   const [offers, setOffers] = useState<DriverOffer[]>([]);
+   const [luggageDraft, setLuggageDraft] = useState<import('@/components/luggage/LuggageSheet').LuggageDraft | null>(null);
+   const [luggageOpen, setLuggageOpen] = useState(false);
+-  const [paymentPopupOpen, setPaymentPopupOpen] = useState(false);
+   const [riderNote, setRiderNote] = useState('');
+   const [noteReuseEveryTrip, setNoteReuseEveryTrip] = useState(false);
+   const [noteSheetOpen, setNoteSheetOpen] = useState(false);
+@@ -1169,9 +1168,7 @@
+     } catch (error: unknown) {toast({ title: 'Failed to send offer', description: (error as Error).message, variant: 'destructive' });setRideStatus('idle');} finally {setIsRequesting(false);}
+   };
+ 
+-  // Shared by the "Find drivers"/"Choose <tier>" CTA and the payment-method
+-  // popup's confirm — payment selection now happens inline the first time
+-  // the rider tries to book, instead of as its own card in the list above.
++  // Only the explicit booking action submits; payment choices edit local state.
+   const proceedToBook = () => {
+     if (selectedTier === 'parcel') { setParcelSheetOpen(true); return; }
+     if (selectedTier === 'share') { setShareSheetOpen(true); return; }
+@@ -1714,14 +1711,15 @@
+               <div className="ride-config-utilities">
+                 <button type="button" onClick={() => setLuggageOpen(true)} className="ride-config-utility ride-config-utility--luggage">
+                   <span className="ride-config-utility__icon"><Luggage aria-hidden="true" /></span>
+-                  <span><strong>Luggage</strong><small>{luggageDraft ? 'Photo added' : 'Optional photo'}</small></span>
++                  <span><strong>Luggage</strong><small>{luggageDraft ? 'Details added' : 'Optional photo'}</small></span>
+                   <ChevronRight aria-hidden="true" />
+                 </button>
+-                <button type="button" onClick={() => setPaymentPopupOpen(true)} className="ride-config-utility ride-config-utility--cash">
+-                  <span className="ride-config-utility__icon"><Banknote aria-hidden="true" /></span>
+-                  <span><strong>{paymentMethod === 'cash' ? 'Cash' : 'Wallet'}</strong><small>{paymentMethod === 'cash' ? 'Pay the driver' : 'Use wallet balance'}</small></span>
+-                  <ChevronRight aria-hidden="true" />
+-                </button>
++                  <TripPaymentSelector
++                    selected={paymentMethod} onSelect={setPaymentMethod}
++                    walletBalance={walletBalance} estimatedFare={fareBreakdown?.totalFare ?? 0}
++                    restrictToCash={bookForSomeoneElse && thirdPartyPayer === 'passenger'}
++                    restrictReason="This passenger pays cash on arrival."
++                  />
+               </div>
+ 
+               <div className="flex items-center gap-3">
+@@ -1854,18 +1852,6 @@
+         onClose={() => setLuggageOpen(false)}
+         initial={luggageDraft}
+         onSave={setLuggageDraft}
+-      />
+-      <PaymentMethodSelector
+-        open={paymentPopupOpen}
+-        onClose={() => setPaymentPopupOpen(false)}
+-        selected={paymentMethod}
+-        onSelect={setPaymentMethod}
+-        onConfirm={() => setPaymentPopupOpen(false)}
+-        walletBalance={walletBalance}
+-        estimatedFare={fareBreakdown?.totalFare ?? 0}
+-        tierLabel={fareBreakdown ? `${RIDE_TIER_LABELS[selectedTier]} · ${fareBreakdown.fmt(selectedTierPrice)}` : RIDE_TIER_LABELS[selectedTier]}
+-        restrictToCash={bookForSomeoneElse && thirdPartyPayer === 'passenger'}
+-        restrictReason={bookForSomeoneElse && thirdPartyPayer === 'passenger' ? `${passengerName.trim().split(' ')[0] || 'They'} pays cash on arrival — only cash works for a third-party ride` : undefined}
+       />
+       <NoteToDriverSheet
+         open={noteSheetOpen}
+--- before/nonproduction/approved-ride-ui/src/components/ride/NoteToDriverSheet.tsx
++++ after/nonproduction/approved-ride-ui/src/components/ride/NoteToDriverSheet.tsx
+@@ -1,4 +1,5 @@
+-import { useEffect, useRef, useState, type CSSProperties } from 'react';
++import * as DialogPrimitive from '@radix-ui/react-dialog';
++import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+ import { DoorOpen, Luggage, PhoneCall, Quote, Repeat, Timer, UserRound, X } from 'lucide-react';
+ import { haptic } from '@/lib/haptics';
+ import RideGlassPanel from './RideGlassPanel';
+@@ -83,6 +84,10 @@
+ export default function NoteToDriverSheet({
+   open, onClose, note, onNoteChange, reuseEveryTrip, onReuseEveryTripChange, onSave,
+ }: NoteToDriverSheetProps) {
++  const returnFocusRef = useRef<HTMLElement | null>(null);
++  useLayoutEffect(() => {
++    if (open) returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
++  }, [open]);
+   const [draft, setDraft] = useState(note);
+   const [reuseDraft, setReuseDraft] = useState(reuseEveryTrip);
+   const [saving, setSaving] = useState(false);
+@@ -124,10 +129,11 @@
+   };
+ 
+   return (
+-    <>
+-      <div className="fixed inset-0 z-[60]" style={{ background: 'rgba(17,17,17,.28)' }} onClick={handleClose} />
+-      <div className="fixed left-0 right-0 bottom-0 z-[70]" style={{ maxWidth: 480, margin: '0 auto', width: '100%' }}>
+-        <RideGlassPanel className="ride-booking-sheet" panelStyle={panelStyle} style={{ maxHeight: '90vh', paddingBottom: 'env(safe-area-inset-bottom)' }} onRibbonClick={handleClose}>
++    <DialogPrimitive.Root open={open} onOpenChange={next => { if (!next) handleClose(); }}>
++      <DialogPrimitive.Portal>
++      <DialogPrimitive.Overlay className="fixed inset-0 z-[60]" style={{ background: 'rgba(17,17,17,.28)' }} onClick={handleClose} />
++      <DialogPrimitive.Content onCloseAutoFocus={event => { event.preventDefault(); returnFocusRef.current?.focus(); }} className="fixed left-0 right-0 bottom-0 z-[70] outline-none" style={{ maxWidth: 480, margin: '0 auto', width: '100%' }}>
++        <RideGlassPanel className="ride-booking-sheet" panelStyle={panelStyle} style={{ maxHeight: '90dvh', paddingBottom: 'env(safe-area-inset-bottom)' }} onRibbonClick={handleClose}>
+           <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+             <fieldset disabled={saving} aria-busy={saving} className="p-4 min-w-0" style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+               {/* Section 1 — header */}
+@@ -136,15 +142,15 @@
+                   <Quote style={{ width: 19, height: 19, color: RIDE_RED }} />
+                 </span>
+                 <div className="min-w-0" style={{ flex: 1 }}>
+-                  <p style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>Note for your driver</p>
+-                  <p style={{ marginTop: 3, fontSize: 12.5, fontWeight: 500, lineHeight: 1.2, color: RIDE_TEXT_2 }}>Sent with your request, before they accept</p>
++                  <DialogPrimitive.Title style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>Note for your driver</DialogPrimitive.Title>
++                  <DialogPrimitive.Description style={{ marginTop: 3, fontSize: 12.5, fontWeight: 500, lineHeight: 1.2, color: RIDE_TEXT_2 }}>Sent with your request, before they accept</DialogPrimitive.Description>
+                 </div>
+                 <button
+                   type="button"
+                   onClick={handleClose}
+                   aria-label="Close"
+                   className="shrink-0 flex items-center justify-center active:scale-90 transition-transform"
+-                  style={{ width: 32, height: 32, borderRadius: 999, background: 'rgba(17,17,17,.06)' }}
++                  style={{ width: 44, height: 44, borderRadius: 999, background: 'rgba(17,17,17,.06)' }}
+                 >
+                   <X style={{ width: 16, height: 16, color: RIDE_TEXT }} strokeWidth={2.4} />
+                 </button>
+@@ -159,8 +165,8 @@
+                   placeholder="e.g. Meeting at the blue gate behind the shops"
+                   rows={2}
+                   maxLength={NOTE_MAX}
+-                  className="w-full outline-none bg-transparent resize-none"
+-                  style={{ fontSize: 14.5, fontWeight: 500, lineHeight: 1.4, color: RIDE_TEXT }}
++                  className="w-full focus-visible:outline focus-visible:outline-2 bg-transparent resize-none"
++                  style={{ fontSize: 16, fontWeight: 500, lineHeight: 1.4, color: RIDE_TEXT }}
+                 />
+                 <div className="flex items-center justify-between">
+                   <span style={{ fontSize: 11, fontWeight: 500, color: '#626B76' }}>Keep it short — drivers read this while driving</span>
+@@ -179,8 +185,9 @@
+                         key={label}
+                         type="button"
+                         onClick={() => handleChipToggle(label)}
++                        aria-pressed={selected}
+                         className="flex items-center active:scale-[0.96] transition-transform"
+-                        style={{ height: 34, padding: '0 12px', borderRadius: 999, gap: 5, ...(selected ? chipGlassSelected : chipGlass) }}
++                        style={{ minHeight: 44, padding: '0 12px', borderRadius: 999, gap: 5, ...(selected ? chipGlassSelected : chipGlass) }}
+                       >
+                         <Icon style={{ width: 13, height: 13, color: selected ? RIDE_TEXT : RIDE_TEXT_2 }} />
+                         <span style={{ fontSize: 12.5, fontWeight: selected ? 700 : 600, color: RIDE_TEXT }}>{label}</span>
+@@ -194,6 +201,7 @@
+               <button
+                 type="button"
+                 onClick={() => setReuseDraft((v) => !v)}
++                aria-pressed={reuseDraft}
+                 className="flex items-center w-full text-left active:scale-[0.98] transition-transform"
+                 style={{ height: 44, padding: '0 14px', borderRadius: 15, gap: 10, ...chipGlass }}
+               >
+@@ -241,7 +249,8 @@
+             </fieldset>
+           </div>
+         </RideGlassPanel>
+-      </div>
+-    </>
++      </DialogPrimitive.Content>
++      </DialogPrimitive.Portal>
++    </DialogPrimitive.Root>
+   );
+ }
+--- before/nonproduction/approved-ride-ui/src/components/ride/RideGlassPanel.tsx
++++ after/nonproduction/approved-ride-ui/src/components/ride/RideGlassPanel.tsx
+@@ -41,7 +41,7 @@
+   return (
+     <div
+       ref={ref}
+-      className={cn('relative flex flex-col overflow-hidden', className)}
++      className={cn('relative flex flex-col overflow-visible', className)}
+       style={{
+         borderTopLeftRadius: 26,
+         borderTopRightRadius: 26,
+@@ -76,11 +76,11 @@
+         onClick={onRibbonClick}
+         aria-label="Toggle sheet"
+         className="absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity"
+-        style={{ top: approved ? 0 : -4, width: Math.max(64, handleWidth), height: approved ? 30 : 24 }}
++        style={{ top: -16, width: Math.max(64, handleWidth), height: 44 }}
+       >
+         <span
+           className="block rounded-full"
+-          style={{ width: handleWidth, height: 5, background: '#FFFFFF', boxShadow: '0 1px 2px rgba(0,0,0,.18)' }}
++          style={{ position: 'absolute', top: approved ? 28.5 : 21.5, width: handleWidth, height: 5, background: '#FFFFFF', boxShadow: '0 1px 2px rgba(0,0,0,.18)' }}
+         />
+       </button>
+ 
+--- before/nonproduction/approved-ride-ui/src/components/luggage/LuggageSheet.tsx
++++ after/nonproduction/approved-ride-ui/src/components/luggage/LuggageSheet.tsx
+@@ -1,4 +1,5 @@
+-import { useState, useRef, useEffect, useId } from 'react';
++import * as DialogPrimitive from '@radix-ui/react-dialog';
++import { useState, useRef, useEffect, useLayoutEffect, useId } from 'react';
+ import { motion, AnimatePresence } from 'framer-motion';
+ import { X, Camera, ImageIcon, Trash2, Briefcase, Loader2 } from 'lucide-react';
+ import { Textarea } from '@/components/ui/textarea';
+@@ -31,6 +32,10 @@
+ ];
+ 
+ export default function LuggageSheet({ open, onClose, initial, onSave }: LuggageSheetProps) {
++  const returnFocusRef = useRef<HTMLElement | null>(null);
++  useLayoutEffect(() => {
++    if (open) returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
++  }, [open]);
+   const { user } = useAuth();
+   const descriptionId = useId();
+   const [description, setDescription] = useState(initial?.description || '');
+@@ -107,22 +112,29 @@
+   };
+ 
+   return (
++    <DialogPrimitive.Root open={open} onOpenChange={next => { if (!next) onClose(); }}>
++      <DialogPrimitive.Portal forceMount>
++      <div>
+     <AnimatePresence>
+       {open && (
+         <>
++          <DialogPrimitive.Overlay asChild forceMount>
+           <motion.div
+             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+             className="fixed inset-0 bg-black/60 z-[70]"
+             onClick={onClose}
+           />
++          </DialogPrimitive.Overlay>
++          <DialogPrimitive.Content onCloseAutoFocus={event => { event.preventDefault(); returnFocusRef.current?.focus(); }} asChild forceMount>
+           <motion.div
+             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+             drag="y" dragConstraints={{ top: 0, bottom: 0 }} dragElastic={0.2}
+             onDragEnd={(_, info) => { if (info.offset.y > 120) onClose(); }}
+-            className="fixed bottom-0 inset-x-0 z-[71] rounded-t-3xl max-h-[90vh] flex flex-col"
++            className="fixed bottom-0 inset-x-0 z-[71] rounded-t-3xl max-h-[90dvh] flex flex-col"
+             style={{ ...glassPanel, fontFamily: RIDE_FONT }}
+           >
++            <DialogPrimitive.Description className="sr-only">Optional luggage details for your trip. Saving updates this booking draft.</DialogPrimitive.Description>
+             <div className="flex justify-center pt-3 pb-1 shrink-0">
+               <div className="w-12 h-1.5 rounded-full bg-muted-foreground/30" />
+             </div>
+@@ -131,13 +143,13 @@
+                 <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: RIDE_RED_GRADIENT, boxShadow: '0 6px 14px rgba(184,17,4,.35)' }}>
+                   <Briefcase className="w-[18px] h-[18px] text-white" />
+                 </div>
+-                <h2 className="text-lg font-bold" style={{ color: RIDE_TEXT }}>Add Luggage</h2>
++                <DialogPrimitive.Title asChild><h2 className="text-lg font-bold" style={{ color: RIDE_TEXT }}>Add Luggage</h2></DialogPrimitive.Title>
+               </div>
+               <button
+                 onClick={onClose}
+                 aria-label="Close"
+                 className="flex items-center justify-center rounded-full active:scale-90 transition-transform"
+-                style={{ width: 32, height: 32, background: 'rgba(17,17,17,.06)' }}
++                style={{ width: 44, height: 44, background: 'rgba(17,17,17,.06)' }}
+               >
+                 <X className="w-4 h-4" style={{ color: RIDE_TEXT }} />
+               </button>
+@@ -168,6 +180,7 @@
+                       key={w.value}
+                       type="button"
+                       onClick={() => setWeight(w.value)}
++                      aria-pressed={weight === w.value}
+                       className="p-3.5 rounded-2xl text-left transition-transform active:scale-[0.98]"
+                       style={{
+                         ...glassSurface,
+@@ -201,7 +214,7 @@
+                         onClick={() => removePhoto(i)}
+                         aria-label={`Remove luggage photo ${i + 1}`}
+                         type="button"
+-                        className="absolute top-1 right-1 w-7 h-7 rounded-full flex items-center justify-center"
++                        className="absolute top-1 right-1 w-11 h-11 rounded-full flex items-center justify-center"
+                         style={{ background: 'rgba(17,17,17,.65)', backdropFilter: 'blur(6px)' }}
+                       >
+                         <Trash2 className="w-3.5 h-3.5 text-white" />
+@@ -258,8 +271,12 @@
+               </button>
+             </div>
+           </motion.div>
++          </DialogPrimitive.Content>
+         </>
+       )}
+     </AnimatePresence>
++      </div>
++      </DialogPrimitive.Portal>
++    </DialogPrimitive.Root>
+   );
+ }
+--- before/nonproduction/approved-ride-ui/src/components/ride/approvedRide.css
++++ after/nonproduction/approved-ride-ui/src/components/ride/approvedRide.css
+@@ -65,7 +65,7 @@
+ }
+ /* Keep town and ribbon controls at least 44px for touch access. */
+ .approved-ride .ride-town-pill { min-height: 44px; }
+-.ride-booking-sheet > button { min-height: 44px; top: -7px !important; }
++.ride-booking-sheet > button { min-height: 44px; }
+ .ride-booking-sheet--configuration { max-height: min(72dvh, 690px) !important; }
+ .ride-config-route { position: relative; padding: 7px 10px; background: #fff; box-shadow: var(--ride-shadow); }
+ .ride-config-route__row { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; width: 100%; min-height: 44px; text-align: left; }
+--- /dev/null
++++ after/src/components/ride/TripPaymentSelector.tsx
+@@ -0,0 +1,59 @@
++import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
++import { Banknote, ChevronRight, Wallet, X } from 'lucide-react';
++import type { PaymentMethod } from './PaymentMethodSelector';
++import { RIDE_TEXT, RIDE_TEXT_2 } from './rideGlass';
++
++interface Props {
++  selected: PaymentMethod;
++  onSelect: (method: PaymentMethod) => void;
++  walletBalance: number;
++  estimatedFare: number;
++  restrictToCash?: boolean;
++  restrictReason?: string;
++}
++
++/** Local preference editor. Opening, selecting and closing never submit a ride. */
++export default function TripPaymentSelector({ selected, onSelect, walletBalance, estimatedFare, restrictToCash = false, restrictReason }: Props) {
++  const [open, setOpen] = useState(false);
++  const id = useId();
++  const trigger = useRef<HTMLButtonElement>(null);
++  const closeButton = useRef<HTMLButtonElement>(null);
++  const walletDisabled = restrictToCash || walletBalance < estimatedFare;
++  useEffect(() => {
++    if (restrictToCash && selected !== 'cash') onSelect('cash');
++  }, [restrictToCash, selected, onSelect]);
++  useEffect(() => { if (open) closeButton.current?.focus(); }, [open]);
++  const close = () => { setOpen(false); trigger.current?.focus(); };
++  const choice = (method: PaymentMethod): CSSProperties => ({
++    minHeight: 48, width: '100%', padding: '12px', borderRadius: 16,
++    display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left' as const,
++    background: selected === method ? '#fff8ce' : '#fff',
++    border: `1px solid ${selected === method ? '#b08700' : '#d5d7db'}`,
++    color: RIDE_TEXT,
++  });
++  return <>
++    <button ref={trigger} type="button" aria-expanded={open} aria-controls={id}
++      aria-label={`Payment method: ${selected === 'cash' ? 'Cash' : 'Wallet'}`}
++      onClick={() => setOpen(value => !value)}
++      className="ride-config-utility ride-config-utility--cash focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
++      style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0, minHeight: 68, padding: '9px 10px', borderRadius: 20, background: '#ffe849', color: '#171717', textAlign: 'left' }}>
++      <span className="ride-config-utility__icon"><Banknote aria-hidden="true" size={20} /></span>
++      <span style={{ flex: 1, minWidth: 0 }}><strong style={{ display: 'block', fontSize: 14 }}>{selected === 'cash' ? 'Cash' : 'Wallet'}</strong><small style={{ display: 'block', fontSize: 10 }}>{selected === 'cash' ? 'Pay the driver' : 'Use wallet balance'}</small></span>
++      <ChevronRight aria-hidden="true" size={18} />
++    </button>
++    {open && <section id={id} aria-labelledby={id + '-title'}
++      onKeyDown={event => { if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close(); } }}
++      style={{ gridColumn: '1 / -1', minWidth: 0, padding: 12, borderRadius: 20, background: '#fff', border: '1px solid #d5d7db' }}>
++      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
++        <h3 id={id + '-title'} style={{ flex: 1, fontSize: 16, fontWeight: 700 }}>Payment method</h3>
++        <button ref={closeButton} type="button" onClick={close} aria-label="Close payment choices"
++          className="focus-visible:outline focus-visible:outline-2" style={{ width: 44, height: 44, flexShrink: 0, display: 'grid', placeItems: 'center', borderRadius: 22, background: '#f2f3f5' }}><X aria-hidden="true" size={18} /></button>
++      </div>
++      <div role="group" aria-label="Payment choices" style={{ display: 'grid', gap: 10 }}>
++        <button type="button" aria-pressed={selected === 'cash'} onClick={() => onSelect('cash')} style={choice('cash')} className="focus-visible:outline focus-visible:outline-2"><Banknote aria-hidden="true" size={20} /><span>Cash</span></button>
++        <button type="button" aria-pressed={selected === 'wallet'} disabled={walletDisabled} onClick={() => onSelect('wallet')} style={choice('wallet')} className="disabled:opacity-60 focus-visible:outline focus-visible:outline-2"><Wallet aria-hidden="true" size={20} /><span>Wallet{walletDisabled ? ' (unavailable for this trip)' : ''}</span></button>
++      </div>
++      {restrictToCash && restrictReason && <p style={{ fontSize: 13, color: RIDE_TEXT_2, marginTop: 10 }}>{restrictReason}</p>}
++    </section>}
++  </>;
++}
+--- /dev/null
++++ after/nonproduction/approved-ride-ui/src/components/ride/TripPaymentSelector.tsx
+@@ -0,0 +1,59 @@
++import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
++import { Banknote, ChevronRight, Wallet, X } from 'lucide-react';
++import type { PaymentMethod } from './PaymentMethodSelector';
++import { RIDE_TEXT, RIDE_TEXT_2 } from './rideGlass';
++
++interface Props {
++  selected: PaymentMethod;
++  onSelect: (method: PaymentMethod) => void;
++  walletBalance: number;
++  estimatedFare: number;
++  restrictToCash?: boolean;
++  restrictReason?: string;
++}
++
++/** Local preference editor. Opening, selecting and closing never submit a ride. */
++export default function TripPaymentSelector({ selected, onSelect, walletBalance, estimatedFare, restrictToCash = false, restrictReason }: Props) {
++  const [open, setOpen] = useState(false);
++  const id = useId();
++  const trigger = useRef<HTMLButtonElement>(null);
++  const closeButton = useRef<HTMLButtonElement>(null);
++  const walletDisabled = restrictToCash || walletBalance < estimatedFare;
++  useEffect(() => {
++    if (restrictToCash && selected !== 'cash') onSelect('cash');
++  }, [restrictToCash, selected, onSelect]);
++  useEffect(() => { if (open) closeButton.current?.focus(); }, [open]);
++  const close = () => { setOpen(false); trigger.current?.focus(); };
++  const choice = (method: PaymentMethod): CSSProperties => ({
++    minHeight: 48, width: '100%', padding: '12px', borderRadius: 16,
++    display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left' as const,
++    background: selected === method ? '#fff8ce' : '#fff',
++    border: `1px solid ${selected === method ? '#b08700' : '#d5d7db'}`,
++    color: RIDE_TEXT,
++  });
++  return <>
++    <button ref={trigger} type="button" aria-expanded={open} aria-controls={id}
++      aria-label={`Payment method: ${selected === 'cash' ? 'Cash' : 'Wallet'}`}
++      onClick={() => setOpen(value => !value)}
++      className="ride-config-utility ride-config-utility--cash focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
++      style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0, minHeight: 68, padding: '9px 10px', borderRadius: 20, background: '#ffe849', color: '#171717', textAlign: 'left' }}>
++      <span className="ride-config-utility__icon"><Banknote aria-hidden="true" size={20} /></span>
++      <span style={{ flex: 1, minWidth: 0 }}><strong style={{ display: 'block', fontSize: 14 }}>{selected === 'cash' ? 'Cash' : 'Wallet'}</strong><small style={{ display: 'block', fontSize: 10 }}>{selected === 'cash' ? 'Pay the driver' : 'Use wallet balance'}</small></span>
++      <ChevronRight aria-hidden="true" size={18} />
++    </button>
++    {open && <section id={id} aria-labelledby={id + '-title'}
++      onKeyDown={event => { if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close(); } }}
++      style={{ gridColumn: '1 / -1', minWidth: 0, padding: 12, borderRadius: 20, background: '#fff', border: '1px solid #d5d7db' }}>
++      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
++        <h3 id={id + '-title'} style={{ flex: 1, fontSize: 16, fontWeight: 700 }}>Payment method</h3>
++        <button ref={closeButton} type="button" onClick={close} aria-label="Close payment choices"
++          className="focus-visible:outline focus-visible:outline-2" style={{ width: 44, height: 44, flexShrink: 0, display: 'grid', placeItems: 'center', borderRadius: 22, background: '#f2f3f5' }}><X aria-hidden="true" size={18} /></button>
++      </div>
++      <div role="group" aria-label="Payment choices" style={{ display: 'grid', gap: 10 }}>
++        <button type="button" aria-pressed={selected === 'cash'} onClick={() => onSelect('cash')} style={choice('cash')} className="focus-visible:outline focus-visible:outline-2"><Banknote aria-hidden="true" size={20} /><span>Cash</span></button>
++        <button type="button" aria-pressed={selected === 'wallet'} disabled={walletDisabled} onClick={() => onSelect('wallet')} style={choice('wallet')} className="disabled:opacity-60 focus-visible:outline focus-visible:outline-2"><Wallet aria-hidden="true" size={20} /><span>Wallet{walletDisabled ? ' (unavailable for this trip)' : ''}</span></button>
++      </div>
++      {restrictToCash && restrictReason && <p style={{ fontSize: 13, color: RIDE_TEXT_2, marginTop: 10 }}>{restrictReason}</p>}
++    </section>}
++  </>;
++}

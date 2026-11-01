@@ -1,0 +1,14 @@
+{
+  "commit": "00ed94ce471643c6902829114c304d201393f7ac",
+  "project": "cruixe-ride",
+  "projectId": "prj_TKm4dDTywggMLB7BiZiJYSEcrJdR",
+  "teamId": "team_cRNzOCgbNp4VukxLDCEzR9yh",
+  "target": "preview",
+  "projectAccess": "BLOCKED",
+  "reason": "Vercel HTTP 403: team access authorization required. Consent link provided to user; no deployment started.",
+  "deployment": "NOT RUN",
+  "remoteBuild": "NOT RUN",
+  "githubPush": "BLOCKED: earlier automatic approval review requires specific approval for full snapshot publication to public repository.",
+  "productionRelease": "NO-GO",
+  "sourceModified": false
+}

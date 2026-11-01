@@ -13,8 +13,6 @@ const usdTown: TownPricingConfig = {
   minimum_fare: 1,
   offer_floor: 1,
   offer_ceiling: 50,
-  short_trip_fare: 1,
-  short_trip_km: 2,
   night_multiplier: 1.2,
   demand_multiplier: 1.0,
   is_negotiation_enabled: true,

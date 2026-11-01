@@ -1,0 +1,8 @@
+worktree C:/Users/MUSAE/Documents/koloi-ride-with-confidence
+HEAD 31c9ae007b8c5e6f4741139a4b2ed98e693e2184
+branch refs/heads/fix/ecc-sprint-1-accessibility-wallet
+
+worktree C:/Users/MUSAE/Documents/koloi-ride-with-confidence/.p03-verification-worktree
+HEAD b2ea572220f5040231a646882835dba44d65d906
+branch refs/heads/verify/p03-assignment-linux-20261028
+

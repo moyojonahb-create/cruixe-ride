@@ -1,0 +1,78 @@
+{
+  "name": "CruiXe Approved Frontend Verification",
+  "on": {
+    "push": {
+      "branches": [
+        "verify/cruixe-approved-ui-*"
+      ],
+      "paths": [
+        ".github/workflows/cruixe-approved-frontend-verify.yml",
+        "nonproduction/approved-ride-ui/qa-ci/review/**"
+      ]
+    },
+    "workflow_dispatch": null
+  },
+  "permissions": {
+    "contents": "read"
+  },
+  "concurrency": {
+    "group": "cruixe-approved-frontend-${{ github.ref }}",
+    "cancel-in-progress": false
+  },
+  "jobs": {
+    "verify": {
+      "if": "startsWith(github.ref, 'refs/heads/verify/cruixe-approved-ui-')",
+      "runs-on": "ubuntu-24.04",
+      "timeout-minutes": 35,
+      "env": {
+        "NODE_IMAGE": "node:22.23.4-bookworm-slim@sha256:4b150b48b4116e2a22f2c39cc27025fbf4f153e2078fd3b14d159fdb5c7279da",
+        "REVIEW_PATH": "nonproduction/approved-ride-ui/qa-ci/review"
+      },
+      "steps": [
+        {
+          "name": "Checkout verification payload only",
+          "uses": "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "with": {
+            "persist-credentials": false,
+            "fetch-depth": 1,
+            "sparse-checkout-cone-mode": false,
+            "sparse-checkout": "/.github/workflows/cruixe-approved-frontend-verify.yml\n/nonproduction/approved-ride-ui/qa-ci/review/\n"
+          }
+        },
+        {
+          "name": "Validate and extract exact approved snapshot",
+          "shell": "bash",
+          "run": "set -euo pipefail\nmkdir -p \"$RUNNER_TEMP/cruixe-source\" \"$RUNNER_TEMP/cruixe-deps\" \"$RUNNER_TEMP/cruixe-evidence\"\npython3 - <<'PY'\nimport hashlib,json,os,tarfile\nfrom pathlib import Path,PurePosixPath\nreview=Path(os.environ['REVIEW_PATH'])\nmanifest=json.loads((review/'review-manifest.json').read_text())\narchive=review/'approved-frontend-ci.tgz'\nif hashlib.sha256(archive.read_bytes()).hexdigest()!=manifest['archiveSHA256']: raise SystemExit('Archive SHA mismatch')\nif manifest['nodeImage']!=os.environ['NODE_IMAGE']: raise SystemExit('Unexpected runtime image')\nexpected={f['path']:f for f in manifest['files']}\nif len(expected)!=len(manifest['files']): raise SystemExit('Duplicate manifest path')\ntarget=Path(os.environ['RUNNER_TEMP'])/'cruixe-source'\nseen=set();total=0\nwith tarfile.open(archive,'r:gz') as source:\n  for member in source:\n    p=PurePosixPath(member.name)\n    if not member.isfile() or p.is_absolute() or '..' in p.parts or member.name not in expected or member.name in seen: raise SystemExit('Unsafe archive member')\n    if any(part.startswith('.env') or part in ('.git','node_modules','.npmrc') for part in p.parts): raise SystemExit('Forbidden snapshot path')\n    total+=member.size\n    if member.size>32*1024*1024 or total>256*1024*1024: raise SystemExit('Snapshot exceeds size guard')\n    data=source.extractfile(member).read()\n    if hashlib.sha256(data).hexdigest()!=expected[member.name]['sha256']: raise SystemExit('File SHA mismatch: '+member.name)\n    dest=target/member.name;dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(data);seen.add(member.name)\nif seen!=set(expected): raise SystemExit('Missing snapshot files')\nfor name in ('package.json','package-lock.json'):\n  (Path(os.environ['RUNNER_TEMP'])/'cruixe-deps'/name).write_bytes((target/name).read_bytes())\n(Path(os.environ['RUNNER_TEMP'])/'cruixe-evidence'/'snapshot-verified.json').write_text(json.dumps({'status':'PASS','archiveSHA256':manifest['archiveSHA256'],'files':len(seen)},indent=2))\nPY\n"
+        },
+        {
+          "name": "Fetch pinned runtime and locked dependencies without application execution",
+          "shell": "bash",
+          "run": "set -euo pipefail\ndocker pull \"$NODE_IMAGE\"\ndocker image inspect \"$NODE_IMAGE\" > \"$RUNNER_TEMP/cruixe-evidence/runtime-image.json\"\ndocker run --rm --user \"$(id -u):$(id -g)\" --cap-drop ALL --security-opt no-new-privileges \\\n  --env HOME=/tmp --env npm_config_registry=https://registry.npmjs.org/ \\\n  --mount \"type=bind,src=$RUNNER_TEMP/cruixe-deps,dst=/deps\" --workdir /deps \\\n  \"$NODE_IMAGE\" npm ci --ignore-scripts --no-audit --no-fund \\\n  2>&1 | tee \"$RUNNER_TEMP/cruixe-evidence/npm-ci.log\"\n"
+        },
+        {
+          "name": "Run frontend gates with no network or credentials",
+          "shell": "bash",
+          "run": "set -euo pipefail\ndocker run --rm --init --network none --read-only --cpus 2 --memory 5g --memory-swap 5g --pids-limit 256 \\\n  --user \"$(id -u):$(id -g)\" --cap-drop ALL --security-opt no-new-privileges \\\n  --tmpfs /tmp:rw,nosuid,nodev,size=512m --env HOME=/tmp --env CI=true \\\n  --env \"CRUIXE_COMMIT=$GITHUB_SHA\" \\\n  --mount \"type=bind,src=$RUNNER_TEMP/cruixe-source,dst=/work\" \\\n  --mount \"type=bind,src=$RUNNER_TEMP/cruixe-deps/node_modules,dst=/work/node_modules\" \\\n  --mount \"type=bind,src=$RUNNER_TEMP/cruixe-evidence,dst=/evidence\" \\\n  --mount \"type=bind,src=$GITHUB_WORKSPACE/$REVIEW_PATH/review-manifest.json,dst=/review-manifest.json,readonly\" \\\n  --workdir /work \"$NODE_IMAGE\" node --max-old-space-size=256 qa-ci/run-remote.mjs \\\n  2>&1 | tee \"$RUNNER_TEMP/cruixe-evidence/remote-run.log\"\n"
+        },
+        {
+          "name": "Record summary even when a gate fails",
+          "if": "always()",
+          "shell": "bash",
+          "run": "python3 - <<'PY'\nimport json,os,shutil\nfrom pathlib import Path\nfolder=Path(os.environ['RUNNER_TEMP'])/'cruixe-evidence';folder.mkdir(exist_ok=True)\nresult=folder/'readiness.json'\nif not result.exists():\n  result.write_text(json.dumps({'frontendIntegration':'NO-GO','productionRelease':'NO-GO','gates':{k:{'status':'NOT RUN','reason':'Runner setup or dependency installation did not complete'} for k in ['typescript','vitest','eslint','productionBuild','network','source','screenshots','remoteBrowser']},'authenticatedE2E':{'status':'BLOCKED','reason':'No approved staging'}},indent=2))\nbaseline=Path(os.environ['RUNNER_TEMP'])/'cruixe-source/qa-ci/historical-edge-baseline'\nif baseline.is_dir():\n  target=folder/'historical-edge-baseline';target.mkdir(exist_ok=True)\n  for item in baseline.iterdir():\n    if item.is_file() and not (target/item.name).exists(): shutil.copyfile(item,target/item.name)\n  (target/'SCOPE.txt').write_text('Historical isolated Microsoft Edge screenshots; not a fresh remote browser run.\\n')\nwith open(os.environ['GITHUB_STEP_SUMMARY'],'a') as summary:\n  summary.write('## Isolated CruiXe verification\\n\\n```json\\n'+result.read_text()+'\\n```\\n')\nPY\n"
+        },
+        {
+          "name": "Retain logs, build evidence and labelled historical Edge screenshots",
+          "if": "always()",
+          "uses": "actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f",
+          "with": {
+            "name": "cruixe-approved-frontend-${{ github.run_id }}-${{ github.run_attempt }}",
+            "path": "${{ runner.temp }}/cruixe-evidence/",
+            "if-no-files-found": "error",
+            "retention-days": 14,
+            "include-hidden-files": false
+          }
+        }
+      ]
+    }
+  }
+}

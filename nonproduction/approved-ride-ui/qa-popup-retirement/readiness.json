@@ -1,0 +1,26 @@
+{
+  "gates": {
+    "isolatedBrowser": "PASS",
+    "automatedAccessibility": "PASS",
+    "touchTargets": "PASS",
+    "horizontalOverflow": "PASS",
+    "consoleAndNetwork": "PASS",
+    "syntaxTranspile": "PASS",
+    "fullTypeScript": "BLOCKED",
+    "focusedVitest": "BLOCKED",
+    "scopedESLint": "BLOCKED",
+    "productionBuild": "BLOCKED",
+    "remoteVerification": "BLOCKED",
+    "authenticatedStaging": "BLOCKED",
+    "nativeAcceptance": "NOT RUN",
+    "preservation": "PASS",
+    "commit": "NOT RUN",
+    "push": "NOT RUN",
+    "merge": "NOT RUN",
+    "deploy": "NOT RUN"
+  },
+  "frontendIntegration": "NO-GO",
+  "productionRelease": "NO-GO",
+  "sourceFiles": 11,
+  "scope": "Reviewable UI changes only; no current full compiler/build or authenticated-service certification"
+}

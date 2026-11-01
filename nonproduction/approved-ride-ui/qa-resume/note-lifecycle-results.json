@@ -1,0 +1,18 @@
+{
+  "authority": "MOCKED/ISOLATED UI ONLY",
+  "cases": [],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "blockedRequests": [],
+  "forbiddenWrites": [],
+  "checks": [
+    "one pending submission",
+    "pending controls disabled",
+    "ribbon cannot close pending note",
+    "denial retains draft",
+    "denial re-enables controls",
+    "retry reaches denied local adapter"
+  ],
+  "pass": true
+}

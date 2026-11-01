@@ -1,0 +1,356 @@
+{
+  "layouts": [
+    {
+      "name": "android",
+      "width": 360,
+      "height": 800,
+      "overflow": false,
+      "controls": [
+        {
+          "selector": ".ride-booking-sheet",
+          "x": 0,
+          "y": 571,
+          "width": 360,
+          "height": 229,
+          "visible": true
+        },
+        {
+          "selector": ".ride-destination-card",
+          "x": 14,
+          "y": 652,
+          "width": 196,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-shortcut--home",
+          "x": 218,
+          "y": 652,
+          "width": 60,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-shortcut--work",
+          "x": 286,
+          "y": 652,
+          "width": 60,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-schedule",
+          "x": 14,
+          "y": 724,
+          "width": 160,
+          "height": 58,
+          "visible": true
+        },
+        {
+          "selector": ".ride-start",
+          "x": 186,
+          "y": 724,
+          "width": 160,
+          "height": 58,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "iphone",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "selector": ".ride-booking-sheet",
+          "x": 0,
+          "y": 615,
+          "width": 390,
+          "height": 229,
+          "visible": true
+        },
+        {
+          "selector": ".ride-destination-card",
+          "x": 14,
+          "y": 696,
+          "width": 226,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-shortcut--home",
+          "x": 248,
+          "y": 696,
+          "width": 60,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-shortcut--work",
+          "x": 316,
+          "y": 696,
+          "width": 60,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-schedule",
+          "x": 14,
+          "y": 768,
+          "width": 175,
+          "height": 58,
+          "visible": true
+        },
+        {
+          "selector": ".ride-start",
+          "x": 201,
+          "y": 768,
+          "width": 175,
+          "height": 58,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "width": 320,
+      "height": 568,
+      "overflow": false,
+      "controls": [
+        {
+          "selector": ".ride-booking-sheet",
+          "x": 0,
+          "y": 339,
+          "width": 320,
+          "height": 229,
+          "visible": true
+        },
+        {
+          "selector": ".ride-destination-card",
+          "x": 14,
+          "y": 420,
+          "width": 180,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-shortcut--home",
+          "x": 202,
+          "y": 420,
+          "width": 48,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-shortcut--work",
+          "x": 258,
+          "y": 420,
+          "width": 48,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-schedule",
+          "x": 14,
+          "y": 492,
+          "width": 140,
+          "height": 58,
+          "visible": true
+        },
+        {
+          "selector": ".ride-start",
+          "x": 166,
+          "y": 492,
+          "width": 140,
+          "height": 58,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "small-height",
+      "width": 375,
+      "height": 480,
+      "overflow": false,
+      "controls": [
+        {
+          "selector": ".ride-booking-sheet",
+          "x": 0,
+          "y": 251,
+          "width": 375,
+          "height": 229,
+          "visible": true
+        },
+        {
+          "selector": ".ride-destination-card",
+          "x": 14,
+          "y": 332,
+          "width": 211,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-shortcut--home",
+          "x": 233,
+          "y": 332,
+          "width": 60,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-shortcut--work",
+          "x": 301,
+          "y": 332,
+          "width": 60,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-schedule",
+          "x": 14,
+          "y": 404,
+          "width": 167.5,
+          "height": 58,
+          "visible": true
+        },
+        {
+          "selector": ".ride-start",
+          "x": 193.5,
+          "y": 404,
+          "width": 167.5,
+          "height": 58,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "large-phone",
+      "width": 430,
+      "height": 932,
+      "overflow": false,
+      "controls": [
+        {
+          "selector": ".ride-booking-sheet",
+          "x": 0,
+          "y": 703,
+          "width": 430,
+          "height": 229,
+          "visible": true
+        },
+        {
+          "selector": ".ride-destination-card",
+          "x": 14,
+          "y": 784,
+          "width": 266,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-shortcut--home",
+          "x": 288,
+          "y": 784,
+          "width": 60,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-shortcut--work",
+          "x": 356,
+          "y": 784,
+          "width": 60,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "selector": ".ride-schedule",
+          "x": 14,
+          "y": 856,
+          "width": 195,
+          "height": 58,
+          "visible": true
+        },
+        {
+          "selector": ".ride-start",
+          "x": 221,
+          "y": 856,
+          "width": 195,
+          "height": 58,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900,
+      "overflow": false,
+      "controls": [
+        {
+          "selector": ".ride-booking-sheet",
+          "x": 460,
+          "y": 655,
+          "width": 520,
+          "height": 245,
+          "visible": true
+        },
+        {
+          "selector": ".ride-destination-card",
+          "x": 474,
+          "y": 736,
+          "width": 326,
+          "height": 80,
+          "visible": true
+        },
+        {
+          "selector": ".ride-shortcut--home",
+          "x": 808,
+          "y": 736,
+          "width": 75,
+          "height": 80,
+          "visible": true
+        },
+        {
+          "selector": ".ride-shortcut--work",
+          "x": 891,
+          "y": 736,
+          "width": 75,
+          "height": 80,
+          "visible": true
+        },
+        {
+          "selector": ".ride-schedule",
+          "x": 474,
+          "y": 824,
+          "width": 240,
+          "height": 58,
+          "visible": true
+        },
+        {
+          "selector": ".ride-start",
+          "x": 726,
+          "y": 824,
+          "width": 240,
+          "height": 58,
+          "visible": true
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "violations": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "nodes": [
+        {
+          "target": [
+            ".text-\\[13px\\]"
+          ],
+          "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.47 (foreground color: #777777, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+        }
+      ]
+    }
+  ]
+}

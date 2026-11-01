@@ -1,0 +1,1942 @@
+--- a/src/components/ride/RideView.tsx
++++ b/src/components/ride/RideView.tsx
+@@ -2,7 +2,8 @@
+ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+ import { rankTownStreets } from '@/lib/streetSearchRank';
+ import { motion } from 'framer-motion';
+-import { useNavigate, useLocation } from 'react-router-dom';
++import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
++import { useRiderNavigation } from '@/components/RiderNavigationProvider';
+ import { haptic } from '@/lib/haptics';
+ import { requestNativeLocationPermission } from '@/lib/nativeBridge';
+ import { useAuth } from '@/hooks/useAuth';
+@@ -56,6 +57,8 @@
+ import { NotificationBell } from '@/components/NotificationCenter';
+ 
+ import RideHomeGreeting from './RideHomeGreeting';
++import './approvedRide.css';
++import './rideSelection.css';
+ import DropoffAutocomplete from './DropoffAutocomplete';
+ 
+ import QuickShortcutsRow from './QuickShortcutsRow';
+@@ -108,14 +111,20 @@
+   const { user, loading: authLoading } = useAuth();
+   const navigate = useNavigate();
+   const location = useLocation();
++  const [searchParams] = useSearchParams();
++  const view = searchParams.get('view');
++  const { draft: selectionDraft, saveDraft } = useRiderNavigation();
++  const requestedTier = searchParams.get('tier');
++  const initialTier: RideTierId = requestedTier === 'economy' || requestedTier === 'share' || requestedTier === 'parcel'
++    ? requestedTier : selectionDraft?.selectedTier ?? 'economy';
+   const { toast } = useToast();
+   const { data: pricingSettings } = usePricingSettings();
+   const { findNearestLandmark } = useLandmarks({});
+ 
+   // ── state ──
+-  const [pickupLocation, setPickupLocation] = useState<SelectedLocation | null>(null);
+-  const [dropoffLocation, setDropoffLocation] = useState<SelectedLocation | null>(null);
+-  const [serviceType, setServiceType] = useState<ServiceType>('ride');
++  const [pickupLocation, setPickupLocation] = useState<SelectedLocation | null>(selectionDraft?.pickup ?? null);
++  const [dropoffLocation, setDropoffLocation] = useState<SelectedLocation | null>(selectionDraft?.dropoff ?? null);
++  const [serviceType, setServiceType] = useState<ServiceType>(initialTier === 'parcel' ? 'courier' : 'ride');
+   const [gpsState, setGpsState] = useState<GPSState>({ status: 'idle', coords: null, error: null });
+   const [activeField, setActiveField] = useState<'pickup' | 'dropoff' | null>(null);
+   const [mapPickMode, setMapPickMode] = useState(false);
+@@ -124,6 +133,16 @@
+   const [proximityRadius, setProximityRadius] = useState<number | null>(null);
+   const [nominatimResults, setNominatimResults] = useState<Array<{name: string;lat?: number;lng?: number;displayName: string;placeId?: string;source?: 'google' | 'osm';}>>([]);
+   const [cachedPlaceResults, setCachedPlaceResults] = useState<Array<{name: string;lat: number;lng: number;displayName: string;}>>([]);
++  const searchAbortRef = useRef<AbortController | null>(null);
++  const searchVersionRef = useRef(0);
++  const providerRequestRef = useRef(0);
++  const [searchError, setSearchError] = useState<string | null>(null);
++  const [cachedSearchError, setCachedSearchError] = useState<string | null>(null);
++  const [searchRetryKey, setSearchRetryKey] = useState(0);
++  const [resolvingDestination, setResolvingDestination] = useState(false);
++  const selectionAbortRef = useRef<AbortController | null>(null);
++  const cacheAbortRef = useRef<AbortController | null>(null);
++  const cacheDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+   const [nominatimLoading, setNominatimLoading] = useState(false);
+   const [cachedPlacesLoading, setCachedPlacesLoading] = useState(false);
+   const nominatimDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+@@ -132,7 +151,7 @@
+   // created on first Google call, cleared once a place is picked.
+   const googleSessionTokenRef = useRef<string | null>(null);
+   const [reverseGeoLoading, setReverseGeoLoading] = useState(false);
+-  const [selectedTier, setSelectedTier] = useState<VehicleTier>('economy');
++  const [selectedTier, setSelectedTier] = useState<VehicleTier>(initialTier);
+   const [parcelSheetOpen, setParcelSheetOpen] = useState(false);
+   const [shareSheetOpen, setShareSheetOpen] = useState(false);
+   // Ride-type selection now happens BEFORE the destination is picked (tap
+@@ -140,7 +159,7 @@
+   // after. A tier's fare genuinely can't be computed without a route yet,
+   // so this step shows tiers with no price ("See fare next") — the same
+   // RideTierSelector re-renders with real fares once destination is known.
+-  const [tierPickerOpen, setTierPickerOpen] = useState(false);
++
+   const [parcelSize, setParcelSize] = useState<'small' | 'medium' | 'large'>('medium');
+   const [schedulePickerOpen, setSchedulePickerOpen] = useState(false);
+   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
+@@ -148,7 +167,7 @@
+   // method (tapping Cash or Wallet in the sheet) — it then hides for good.
+   const [paymentMethodConfirmed, setPaymentMethodConfirmed] = useState(false);
+   const { balance: walletBalance } = useWallet();
+-  const [passengerCount, setPassengerCount] = useState(1);
++  const [passengerCount, setPassengerCount] = useState(selectionDraft?.passengerCount ?? 1);
+   const [bookForSomeoneElse, setBookForSomeoneElse] = useState(false);
+   const [passengerName, setPassengerName] = useState('');
+   const [passengerPhone, setPassengerPhone] = useState('');
+@@ -156,6 +175,15 @@
+   const [notifyBooker, setNotifyBooker] = useState(true);
+   const [bookingForSomeoneElseOpen, setBookingForSomeoneElseOpen] = useState(false);
+   const [rideStatus, setRideStatus] = useState<RideStatus>('idle');
++  const tierPickerOpen = view === 'choose' && rideStatus === 'idle';
++  const setTierPickerOpen = (open: boolean) => {
++    if (open) {
++      if (view !== 'choose') navigate('/ride?view=choose');
++    } else {
++      setActiveField(null);
++      navigate('/ride', { replace: true });
++    }
++  };
+   const [isRequesting, setIsRequesting] = useState(false);
+   const [currentRideId, setCurrentRideId] = useState<string | null>(null);
+   const [matchedDriver, setMatchedDriver] = useState<{name: string;car: string;plate: string;rating: number;avatar?: string;eta: number;} | null>(null);
+@@ -200,10 +228,15 @@
+   // request and subsequent setState don't hit a dead component.
+   useEffect(() => () => {
+     if (nominatimDebounceRef.current) clearTimeout(nominatimDebounceRef.current);
++    if (cacheDebounceRef.current) clearTimeout(cacheDebounceRef.current);
++    searchVersionRef.current++;
++    searchAbortRef.current?.abort();
++    cacheAbortRef.current?.abort();
++    selectionAbortRef.current?.abort();
+   }, []);
+ 
+   const [menuOpen, setMenuOpen] = useState(false);
+-  const [selectedTown, setSelectedTown] = useState<TownConfig>(DEFAULT_TOWN);
++  const [selectedTown, setSelectedTown] = useState<TownConfig>(selectionDraft?.town ?? DEFAULT_TOWN);
+   // Set when the rider explicitly picks a town, so the map recenters there even
+   // if GPS already has a fix. Cleared by a fresh GPS fix or a new pickup, so
+   // "use my location" still wins after a manual town selection.
+@@ -214,9 +247,23 @@
+   const [gpsPermissionState, setGpsPermissionState] = useState<'unknown' | 'granted' | 'prompt' | 'denied' | 'unsupported'>('unknown');
+   const [locationPromptDismissed, setLocationPromptDismissed] = useState(false);
+   const [profileName, setProfileName] = useState<string>('');
+-  const [rideStops, setRideStops] = useState<RideStop[]>([]);
+-  const [scheduledAt, setScheduledAt] = useState<Date | null>(null);
++  const [rideStops, setRideStops] = useState<RideStop[]>(selectionDraft?.stops ?? []);
++  const [scheduledAt, setScheduledAt] = useState<Date | null>(selectionDraft?.scheduledAt ?? null);
+   const [activeStopId, setActiveStopId] = useState<string | null>(null);
++  useEffect(() => {
++    if (view === 'choose') {
++      setActiveField(null);
++      setMapPickMode(false);
++      setSearchQuery('');
++    } else if (view === 'locations' && !dropoffLocation) {
++      setActiveField('dropoff');
++    }
++  }, [view]);
++  useEffect(() => {
++    if (view !== 'choose' && view !== 'locations') return;
++    saveDraft({ selectedTier, pickup: pickupLocation, dropoff: dropoffLocation,
++      stops: rideStops, scheduledAt, passengerCount, town: selectedTown });
++  }, [view, selectedTier, pickupLocation, dropoffLocation, rideStops, scheduledAt, passengerCount, selectedTown, saveDraft]);
+   const { pricing: townPricing } = useTownPricing(selectedTown?.id ?? null);
+   const { prefs: riderPrefs, loaded: prefsLoaded } = useRiderPreferences();
+   const genderPreference = riderPrefs.gender === 'female' ? (riderPrefs.gender_preference as GenderPreference) : 'any';
+@@ -225,8 +272,8 @@
+   const wavRequired = riderPrefs.wav_required;
+   const hearingImpaired = riderPrefs.hearing_impaired;
+ 
+-  const { landmarks, loading: landmarksLoading } = useLandmarksSearch({ searchQuery, limit: 30, userLocation: gpsState.coords, radiusKm: proximityRadius, townCenter: selectedTown.center, townRadiusKm: selectedTown.radiusKm });
+-  const { streets, loading: streetsLoading } = useStreets({ searchQuery, townName: selectedTown.name, limit: 15 });
++  const { landmarks, loading: landmarksLoading, error: landmarksSearchError } = useLandmarksSearch({ searchQuery, retryKey: searchRetryKey, limit: 30, userLocation: gpsState.coords, radiusKm: proximityRadius, townCenter: selectedTown.center, townRadiusKm: selectedTown.radiusKm });
++  const { streets, loading: streetsLoading, error: streetsSearchError } = useStreets({ searchQuery, retryKey: searchRetryKey, townName: selectedTown.name, limit: 15 });
+   const nearbyDrivers = useNearbyDrivers(
+     rideStatus === 'idle' || rideStatus === 'searching',
+     gpsState.coords ? { lat: gpsState.coords.lat, lng: gpsState.coords.lng } : (pickupLocation ?? selectedTown.center),
+@@ -305,10 +352,13 @@
+   // into the destination search until drop-off is picked too, so the flow
+   // is always: entering places → choosing the ride, no dead middle screen.
+   useEffect(() => {
++    // A retained pickup is also valid on the chooser and ride home. Only the
++    // actual place-entry flow should automatically reopen destination entry.
++    if (view === 'choose' || (view === null && selectionDraft)) return;
+     if (pickupLocation && !dropoffLocation && !activeField && rideStatus === 'idle') {
+       setActiveField('dropoff');
+     }
+-  }, [pickupLocation, dropoffLocation, activeField, rideStatus]);
++  }, [pickupLocation, dropoffLocation, activeField, rideStatus, view, selectionDraft]);
+ 
+   // Prefer the rider's saved profile name (nickname) for the greeting
+   useEffect(() => {
+@@ -632,37 +682,45 @@
+   };
+ 
+   const handleNominatimSelect = async (result: {name: string;lat?: number;lng?: number;placeId?: string;}) => {
+-    let { lat, lng, name } = result as { lat?: number; lng?: number; name: string };
+-
+-    // Google Places Autocomplete predictions don't include coordinates —
+-    // resolve them via a details lookup before placing the pin.
+-    if ((lat === undefined || lng === undefined) && result.placeId) {
++    let { lat, lng, name } = result;
++    const version = searchVersionRef.current;
++    selectionAbortRef.current?.abort();
++    const controller = new AbortController();
++    selectionAbortRef.current = controller;
++    setSearchError(null);
++    if ((!Number.isFinite(lat) || !Number.isFinite(lng)) && result.placeId) {
++      setResolvingDestination(true);
++      const timeoutId = setTimeout(() => controller.abort(), 5000);
+       try {
+-        const base = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/google-places-search`;
+-        const url = new URL(base);
++        const url = new URL(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/google-places-search`);
+         url.searchParams.set('placeId', result.placeId);
+         if (googleSessionTokenRef.current) url.searchParams.set('sessionToken', googleSessionTokenRef.current);
+         const res = await fetch(url.toString(), {
++          signal: controller.signal,
+           headers: {
+             Accept: 'application/json',
+             apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+           },
+         });
+-        const details = res.ok ? await res.json() : null;
+-        if (typeof details?.lat === 'number' && typeof details?.lng === 'number') {
+-          lat = details.lat;
+-          lng = details.lng;
+-          name = details.name || name;
+-        }
++        if (!res.ok) throw new Error('Place details unavailable');
++        const details = await res.json();
++        lat = details?.lat; lng = details?.lng; name = details?.name || name;
+       } catch {
+-        // handled by the guard below
++        if (version === searchVersionRef.current)
++          setSearchError('Could not resolve this destination. Select it again or retry search.');
++        return;
+       } finally {
+-        // Selection ends the autocomplete session — next search starts a fresh token.
++        clearTimeout(timeoutId);
++        if (version === searchVersionRef.current) setResolvingDestination(false);
+         googleSessionTokenRef.current = null;
+       }
+     }
+-    if (lat === undefined || lng === undefined) return;
++    if (controller.signal.aborted || version !== searchVersionRef.current) return;
++    if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat!) > 90 || Math.abs(lng!) > 180) {
++      setSearchError('This place has no usable coordinates. Try another result or choose on map.');
++      return;
++    }
+ 
+     const loc: SelectedLocation = { name, lat, lng };
+     if (activeStopId) {
+@@ -718,7 +776,23 @@
+     maxDistanceKm: selectedTown.maxDistanceKm,
+   }), [selectedTown, gpsState.coords]);
+ 
++  useEffect(() => {
++    setResolvingDestination(false);
++    return () => {
++    searchVersionRef.current++;
++    searchAbortRef.current?.abort();
++    cacheAbortRef.current?.abort();
++    selectionAbortRef.current?.abort();
++    if (nominatimDebounceRef.current) clearTimeout(nominatimDebounceRef.current);
++    if (cacheDebounceRef.current) clearTimeout(cacheDebounceRef.current);
++    };
++  }, [searchQuery, activeField, selectedTown, searchRetryKey]);
++
+   const handleNominatimSearch = useCallback((query: string) => {
++    const request = ++providerRequestRef.current;
++    searchAbortRef.current?.abort();
++    const version = searchVersionRef.current;
++    setSearchError(null);
+     if (nominatimDebounceRef.current) clearTimeout(nominatimDebounceRef.current);
+     if (query.trim().length < 3) {setNominatimResults([]);setNominatimLoading(false);return;}
+     setNominatimLoading(true);
+@@ -729,6 +803,7 @@
+       // Only invoked (see the gating effect below) once our own landmarks +
+       // streets data has already come up thin, so this never outranks local data.
+       const controller = new AbortController();
++      searchAbortRef.current = controller;
+       const timeoutId = setTimeout(() => controller.abort(), 5000);
+       try {
+         if (!googleSessionTokenRef.current) {
+@@ -754,11 +829,13 @@
+         });
+         if (!res.ok) throw new Error(`Place search failed: ${res.status}`);
+         const results: Array<{ placeId: string; name: string; description: string; category?: string; lat?: number; lng?: number; source?: 'google' | 'osm' }> = await res.json();
++        if (!Array.isArray(results)) throw new Error('Invalid place-search response');
+         if (import.meta.env.DEV) {
+           const googleCount = results.filter((r) => r.source === 'google').length;
+           const osmCount = results.filter((r) => r.source === 'osm').length;
+           console.log(`[search] fallback tail for "${query.trim()}": ${googleCount} google, ${osmCount} nominatim`);
+         }
++        if (version !== searchVersionRef.current || request !== providerRequestRef.current) return;
+         setNominatimResults(
+           (Array.isArray(results) ? results : []).map((r) => ({
+             name: r.name,
+@@ -770,9 +847,12 @@
+           }))
+         );
+       } catch {
+-        setNominatimResults([]);
++        if (version === searchVersionRef.current && request === providerRequestRef.current) {
++          setNominatimResults([]);
++          setSearchError("Place search is unavailable. Try again or choose on map.");
++        }
+       } finally {
+-        setNominatimLoading(false);
++        if (version === searchVersionRef.current && request === providerRequestRef.current) setNominatimLoading(false);
+         clearTimeout(timeoutId);
+       }
+     }, 150);
+@@ -785,7 +865,14 @@
+   const GOOGLE_FALLBACK_LOCAL_RESULT_THRESHOLD = 5;
+   useEffect(() => {
+     const trimmed = searchQuery.trim();
+-    if (trimmed.length < GOOGLE_FALLBACK_MIN_QUERY_LENGTH) {
++    const cancelFallback = () => {
++      providerRequestRef.current++;
++      searchAbortRef.current?.abort();
++      if (nominatimDebounceRef.current) clearTimeout(nominatimDebounceRef.current);
++      setNominatimLoading(false);
++    };
++    if (!activeField || trimmed.length < GOOGLE_FALLBACK_MIN_QUERY_LENGTH) {
++      cancelFallback();
+       setNominatimResults([]);
+       setNominatimLoading(false);
+       return;
+@@ -793,10 +880,11 @@
+     // Wait for our own landmarks + streets results to settle before deciding
+     // local coverage is thin — both are now server-side searches, so a
+     // premature check would fire Google before the local answer is in.
+-    if (landmarksLoading || streetsLoading) return;
++    if (landmarksLoading || streetsLoading) { cancelFallback(); return; }
+ 
+     const localCount = landmarks.length + streets.length;
+     if (localCount >= GOOGLE_FALLBACK_LOCAL_RESULT_THRESHOLD) {
++      cancelFallback();
+       if (import.meta.env.DEV) {
+         console.log(`[search] "${trimmed}" has ${localCount} local matches — skipping Google fallback`);
+       }
+@@ -806,32 +894,46 @@
+     }
+     handleNominatimSearch(trimmed);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+-  }, [searchQuery, landmarks, streets, landmarksLoading, streetsLoading, handleNominatimSearch]);
+-
+-  const handleCachedPlacesSearch = useCallback((query: string) => {
+-    const trimmed = query.trim();
+-    if (trimmed.length < 3) {
+-      setCachedPlaceResults([]);
+-      setCachedPlacesLoading(false);
+-      return;
+-    }
+-
++  }, [searchQuery, landmarks, streets, landmarksLoading, streetsLoading, handleNominatimSearch, searchRetryKey, activeField]);
++
++  useEffect(() => {
++    const trimmed = searchQuery.trim();
++    const version = searchVersionRef.current;
++    setCachedPlaceResults([]);
++    setCachedSearchError(null);
++    if (trimmed.length < 3 || !activeField) { setCachedPlacesLoading(false); return; }
+     setCachedPlacesLoading(true);
+-    searchCachedPlacesPrefix(trimmed, 12, selectedTown.nominatimViewbox)
+-      .then((results) => {
+-        const mapped = results.map((row) => ({
+-          name: row.name || row.display_name.split(',')[0],
+-          lat: Number(row.lat),
+-          lng: Number(row.lon),
+-          displayName: row.display_name,
+-          class: (row as { class?: string }).class,
+-          type: (row as { type?: string }).type,
+-        }));
+-        setCachedPlaceResults(rankTownStreets(mapped, rankContext));
+-      })
+-      .catch(() => setCachedPlaceResults([]))
+-      .finally(() => setCachedPlacesLoading(false));
+-  }, [selectedTown, rankContext]);
++    const controller = new AbortController();
++    cacheAbortRef.current = controller;
++    cacheDebounceRef.current = setTimeout(() => {
++      const timeoutId = setTimeout(() => {
++        controller.abort();
++        if (version === searchVersionRef.current && cacheAbortRef.current === controller) {
++          setCachedSearchError('Saved place search timed out. Retry search.');
++          setCachedPlacesLoading(false);
++        }
++      }, 5000);
++      searchCachedPlacesPrefix(trimmed, 12, selectedTown.nominatimViewbox, controller.signal)
++        .then((results) => {
++          if (controller.signal.aborted || version !== searchVersionRef.current) return;
++          const mapped = results.map((row) => ({
++            name: row.name || row.display_name.split(',')[0],
++            lat: Number(row.lat), lng: Number(row.lon), displayName: row.display_name,
++            class: (row as { class?: string }).class, type: (row as { type?: string }).type,
++          })).filter((row) => Number.isFinite(row.lat) && Number.isFinite(row.lng));
++          setCachedPlaceResults(rankTownStreets(mapped, rankContext));
++        })
++        .catch(() => {
++          if (!controller.signal.aborted && version === searchVersionRef.current)
++            setCachedSearchError('Saved place search is unavailable. Retry search.');
++        })
++        .finally(() => {
++          clearTimeout(timeoutId);
++          if (version === searchVersionRef.current && cacheAbortRef.current === controller) setCachedPlacesLoading(false);
++        });
++    }, 200);
++    return () => { controller.abort(); if (cacheDebounceRef.current) clearTimeout(cacheDebounceRef.current); };
++  }, [searchQuery, activeField, selectedTown, rankContext, searchRetryKey]);
+ 
+   const handleMapClick = useCallback(async (coords: {lat: number;lng: number;}) => {
+     if (!activeField) return;
+@@ -1227,8 +1329,18 @@
+   };
+ 
+   const handleSearchChange = (value: string) => {
++    searchAbortRef.current?.abort();
++    searchVersionRef.current++;
++    if (nominatimDebounceRef.current) clearTimeout(nominatimDebounceRef.current);
++    setNominatimResults([]);
++    setNominatimLoading(false);
++    setSearchError(null);
+     setSearchQuery(value);
+-    handleCachedPlacesSearch(value);
++    cacheAbortRef.current?.abort();
++    selectionAbortRef.current?.abort();
++    setResolvingDestination(false);
++    setCachedPlaceResults([]);
++    setCachedSearchError(null);
+     // Google fallback is triggered by the gating effect above, once landmarks
+     // + streets results for this query are known to be thin.
+   };
+@@ -1283,7 +1395,7 @@
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [landmarks, streets, cachedPlaceResults, nominatimResults, activeField, activeStopId]);
+ 
+-  const showHomeContent = rideStatus === 'idle' && !pickupLocation && !dropoffLocation;
++  const showHomeContent = rideStatus === 'idle' && ((!pickupLocation && !dropoffLocation) || (Boolean(selectionDraft) && view === null && !activeField));
+   const unifiedPlaceResults = [...cachedPlaceResults, ...nominatimResults.map((item) => ({ ...item, source: 'nominatim' as const }))]
+     .filter((item, index, arr) => {
+       const key = `${item.name}-${item.displayName}`.toLowerCase();
+@@ -1294,24 +1406,24 @@
+   // MAIN RIDE BOOKING UI
+   // ═══════════════════════════════════════════
+   return (
+-    <div className="relative h-[100dvh] w-full overflow-hidden bg-background">
++    <div className={cn("approved-ride relative h-[100dvh] w-full overflow-hidden bg-background", tierPickerOpen && "ride-selection-active")}>
+       {/* ── MAP ── */}
+       <div className="absolute inset-0">
+-        <MapboxMap pickup={pickupLocation} dropoff={dropoffLocation} routeGeometry={routeData?.geometry} onMapClick={handleMapClick} defaultCenter={mapCenter} preferredCenter={preferredCenter} defaultZoom={mapZoom} className="w-full h-full" height="100%" drivers={nearbyDrivers} stops={rideStops.filter(s => s.lat && s.lng)} riderGender={(riderPrefs?.gender as "male" | "female" | undefined) ?? null} bottomInset={sheetHeight + 24} />
++        <MapboxMap currentLocation={gpsState.status === 'success' ? gpsState.coords : null} pickup={pickupLocation} dropoff={dropoffLocation} routeGeometry={routeData?.geometry} onMapClick={handleMapClick} defaultCenter={mapCenter} preferredCenter={preferredCenter} defaultZoom={mapZoom} className="w-full h-full" height="100%" drivers={nearbyDrivers} stops={rideStops.filter(s => s.lat && s.lng)} riderGender={(riderPrefs?.gender as "male" | "female" | undefined) ?? null} bottomInset={sheetHeight + 24} />
+ 
+         {/* Map chrome — back button (top-left) + menu/notifications/locate/navigation
+             stack (top-right). Nothing else floats over the map, per the reference. */}
+         <button
+-          onClick={() => showHomeContent ? setMenuOpen(true) : navigate(-1)}
+-          aria-label={showHomeContent ? 'Menu' : 'Back'}
+-          className="absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform"
++          onClick={() => tierPickerOpen ? setTierPickerOpen(false) : showHomeContent ? setMenuOpen(true) : navigate(-1)}
++          aria-label={tierPickerOpen ? 'Back to ride home' : showHomeContent ? 'Menu' : 'Back'}
++          className="ride-map-control absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform"
+           style={{ top: 'calc(env(safe-area-inset-top) + 7px)', width: 52, height: 52, ...glassSurface }}
+         >
+-          {showHomeContent ? <Menu className="w-5 h-5" style={{ color: RIDE_TEXT }} /> : <ArrowLeft className="w-5 h-5" style={{ color: RIDE_TEXT }} />}
++          {showHomeContent && !tierPickerOpen ? <Menu className="w-5 h-5" style={{ color: RIDE_TEXT }} /> : <ArrowLeft className="w-5 h-5" style={{ color: RIDE_TEXT }} />}
+         </button>
+ 
+-        <div className="absolute right-3 z-40 flex flex-col gap-3" style={{ top: 'calc(env(safe-area-inset-top) + 7px)' }}>
+-          {!showHomeContent && (
++        <div className="ride-map-controls absolute right-3 z-40 flex flex-col gap-3" style={{ top: 'calc(env(safe-area-inset-top) + 7px)' }}>
++          {!showHomeContent && !tierPickerOpen && (
+             <button
+               onClick={() => setMenuOpen(true)}
+               aria-label="Menu"
+@@ -1333,7 +1445,7 @@
+           >
+             {gpsState.status === 'loading' ? <Loader2 className="w-5 h-5 animate-spin" style={{ color: RIDE_RED }} /> : <Locate className="w-5 h-5" style={{ color: RIDE_TEXT }} />}
+           </button>
+-          {!showHomeContent && (
++          {!showHomeContent && !tierPickerOpen && (
+             <button
+               onClick={() => handleUseMyLocation()}
+               aria-label="Recenter navigation"
+@@ -1356,7 +1468,6 @@
+         }
+ 
+         {/* Top gradient */}
+-        <div className="absolute top-0 left-0 right-0 h-28 z-10 pointer-events-none" style={{ background: 'linear-gradient(to bottom, hsl(217 85% 29% / 0.12), transparent)' }} />
+ 
+         {/* Route loading */}
+         {routeLoading && pickupLocation && dropoffLocation &&
+@@ -1430,25 +1541,25 @@
+       {/* ── BOTTOM SHEET ── */}
+       <RideGlassPanel
+         ref={sheetRef}
+-        className="absolute left-0 right-0 z-50"
++        className={cn("ride-booking-sheet absolute z-50", showHomeContent && !tierPickerOpen && "ride-booking-sheet--home", tierPickerOpen && "ride-booking-sheet--selection")}
+         onRibbonClick={() => setSheetExpanded((e) => !e)}
+-        handleWidth={showHomeContent ? 140 : undefined}
++        handleWidth={showHomeContent ? 52 : undefined}
+         style={{
+           bottom: 0,
+           // Idle content is fixed and compact (three row-2 tiles + row-3 buttons) —
+           // size to it exactly instead of capping by viewport height, so nothing
+           // in row 2 or row 3 ever needs a scroll to come into view.
+-          maxHeight: showHomeContent ? 'none' : (sheetExpanded ? '60vh' : '38vh'),
++          maxHeight: showHomeContent ? 'calc(100dvh - env(safe-area-inset-top) - 150px)' : (sheetExpanded ? '70dvh' : '54dvh'),
+           transition: 'max-height 0.3s cubic-bezier(0.32,0.72,0,1)',
+-          paddingBottom: 'env(safe-area-inset-bottom)',
++
+         }}>
+ 
+         {/* Location pills row — pinned above the content, always visible, never scrolls.
+             Same treatment on every screen, including idle (row 1 of the 4e layout). */}
+-        <div className="shrink-0 flex items-center gap-2.5 px-4 pt-2 pb-1">
++        <div className="ride-location-row shrink-0 flex items-center justify-between gap-2.5 px-4 pt-2 pb-1">
+           <TownSelectorSheet currentTown={selectedTown} onSelect={handleTownSelect} />
+           <span
+-            className="ml-auto inline-flex items-center gap-1.5 shrink-0"
++            className="ride-area-pill ml-auto inline-flex items-center gap-1.5 shrink-0"
+             style={{ height: 36, padding: '0 12px', borderRadius: 999, ...glassSurface }}
+           >
+             <Sparkles className="w-[13px] h-[13px]" style={{ color: RIDE_TEXT }} />
+@@ -1458,7 +1569,7 @@
+ 
+         {/* Scrollable content */}
+         <div
+-          className="flex-1 px-4 pt-1 pb-1.5 space-y-2 min-h-0 overflow-y-auto overscroll-contain"
++          className="ride-sheet-scroll flex-1 px-4 pt-1 pb-1.5 space-y-2 min-h-0 overflow-y-auto overscroll-contain"
+           style={showHomeContent ? { paddingBottom: 4 } : undefined}
+         >
+           {/* ── HOME CONTENT (idle state, before booking starts) ──
+@@ -1480,7 +1591,7 @@
+               setSheetExpanded(true);
+             };
+             return (
+-              <div className="flex items-center gap-2" style={{ height: 62 }}>
++              <div className="ride-home-tiles flex items-stretch gap-2">
+                 <RideHomeGreeting
+                   name={firstName}
+                   onSearchClick={() => setTierPickerOpen(true)}
+@@ -1494,38 +1605,32 @@
+               Choosing a tier here just records the choice and moves on to
+               destination entry; RideTierSelector re-renders with real fares
+               once pickup/dropoff (and so a route) exist, below. */}
+-          {showHomeContent && tierPickerOpen && (
+-            <div className="space-y-2">
+-              <div className="flex items-center justify-between px-1">
+-                <p className="text-[13px] font-bold" style={{ color: RIDE_TEXT }}>Choose a ride</p>
+-                <button
+-                  type="button"
+-                  onClick={() => setTierPickerOpen(false)}
+-                  aria-label="Close"
+-                  className="flex items-center justify-center rounded-full active:scale-90 transition-transform"
+-                  style={{ width: 28, height: 28, background: 'rgba(17,17,17,.06)' }}
+-                >
+-                  <X className="w-3.5 h-3.5" style={{ color: RIDE_TEXT }} />
+-                </button>
++          {tierPickerOpen && (
++            <section className="ride-selection-content" aria-labelledby="ride-selection-title">
++              <header className="ride-selection-header">
++                <h1 id="ride-selection-title">Choose a ride</h1>
++              </header>
++              <div className="ride-selection-cards-scroll">
++                <RideTierSelector
++                  presentation="selection"
++                  options={rideTierOptionsNoFare}
++                  selected={selectedTier}
++                  onSelect={(id) => {
++                    handleSelectTier(id);
++                    ensurePickup();
++                    setActiveField('dropoff');
++                    setSearchQuery('');
++                    setSheetExpanded(true);
++                    navigate(`/ride?view=locations&tier=${id}`);
++                  }}
++                  currencySymbol={fareBreakdown?.sym ?? '$'}
++                />
+               </div>
+-              <RideTierSelector
+-                options={rideTierOptionsNoFare}
+-                selected={selectedTier}
+-                onSelect={(id) => {
+-                  handleSelectTier(id);
+-                  setTierPickerOpen(false);
+-                  ensurePickup();
+-                  setActiveField('dropoff');
+-                  setSearchQuery('');
+-                  setSheetExpanded(true);
+-                }}
+-                currencySymbol={fareBreakdown?.sym ?? '$'}
+-              />
+-            </div>
++            </section>
+           )}
+ 
+           {/* Service type indicator */}
+-          {serviceType !== 'ride' &&
++          {!tierPickerOpen && !(selectionDraft && showHomeContent) && serviceType !== 'ride' &&
+           <div className="flex items-center justify-between px-1">
+               <span className="text-xs font-bold text-primary uppercase tracking-wider">
+                 {SERVICE_TABS.find((t) => t.id === serviceType)?.icon} {SERVICE_TABS.find((t) => t.id === serviceType)?.label} Mode
+@@ -1536,7 +1641,7 @@
+ 
+ 
+           {/* Ride tier list — Economy / Share Ride / Parcel */}
+-          {pickupLocation && dropoffLocation && rideTierOptions.length > 0 && (
++          {!tierPickerOpen && !showHomeContent && pickupLocation && dropoffLocation && rideTierOptions.length > 0 && (
+             <RideTierSelector
+               options={rideTierOptions}
+               selected={selectedTier}
+@@ -1561,17 +1666,18 @@
+             Hidden while the "Choose a ride" tier list is open — Schedule/Let's
+             CruiXe underneath it is redundant with the tier list's own selection
+             step and just clutters the screen. */}
++        {tierPickerOpen && <div className="ride-selection-nav-space" aria-hidden="true" />}
+         {!tierPickerOpen && <div
+-          className="shrink-0 px-4 pb-2 pt-1.5"
++          className="ride-sheet-actions shrink-0 px-4 pb-2 pt-1.5"
+           style={showHomeContent ? { paddingTop: 4 } : undefined}
+         >
+           {showHomeContent ? (
+-            <div className="flex items-center gap-3">
++            <div className="ride-home-actions flex items-center gap-3">
+               <button
+                 type="button"
+                 onClick={() => setSchedulePickerOpen(true)}
+                 aria-label={scheduledAt ? 'Scheduled ride' : 'Schedule a ride'}
+-                className="flex-1 flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
++                className="ride-schedule flex-1 flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
+                 style={{ height: 44, borderRadius: 16, ...glassSurface }}>
+                 <Calendar className="w-[18px] h-[18px]" style={{ color: RIDE_RED }} />
+                 <span className="text-[14px] font-semibold" style={{ color: RIDE_TEXT }}>Schedule</span>
+@@ -1582,7 +1688,7 @@
+               <button
+                 type="button"
+                 onClick={() => setTierPickerOpen(true)}
+-                className="relative flex-1 flex items-center justify-center gap-2 overflow-hidden active:scale-[0.97] transition-transform"
++                className="ride-start relative flex-1 flex items-center justify-center gap-2 overflow-hidden active:scale-[0.97] transition-transform"
+                 style={{ height: 44, borderRadius: 16, ...redCta }}>
+                 <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,0))' }} />
+                 <span className="relative text-[16px] font-bold text-white whitespace-nowrap">Let's Crui<span className="italic">X</span>e</span>
+@@ -1699,7 +1805,7 @@
+       </RideGlassPanel>
+ 
+       {/* ═══ DESTINATION SEARCH SCREEN ═══ */}
+-      {activeField && !mapPickMode && (
++      {!tierPickerOpen && activeField && !mapPickMode && (
+         <DestinationSearchScreen
+           activeField={activeField}
+           onActiveFieldChange={(f) => {setActiveField(f);setSearchQuery('');setNominatimResults([]);}}
+@@ -1708,6 +1814,13 @@
+           query={searchQuery}
+           onQueryChange={handleSearchChange}
+           onClose={() => {
++            if (view === 'locations') {
++              setActiveField(null);
++              setSearchQuery('');
++              setNominatimResults([]);
++              navigate('/ride?view=choose', { replace: true });
++              return;
++            }
+             setActiveField(null);
+             setSearchQuery('');
+             setNominatimResults([]);
+@@ -1727,6 +1840,11 @@
+             saveFavoriteIfSetting(loc);
+           }}
+           loading={landmarksLoading || streetsLoading || cachedPlacesLoading || nominatimLoading}
++          onSeeAll={() => navigate('/history')}
++          searchError={searchError || (searchQuery.trim().length >= 3 ? [landmarksSearchError, streetsSearchError, cachedSearchError].filter(Boolean).join(' ') || null : null)}
++          resolving={resolvingDestination}
++          onRetrySearch={() => { setSearchError(null); setSearchRetryKey((value) => value + 1); }}
++          gpsError={gpsState.error}
+           results={searchResultRows}
+           settingFavorite={settingFavorite}
+           onRequestSetFavorite={setSettingFavorite}
+@@ -1830,5 +1948,3 @@
+     </div>);
+ 
+ }
+-
+-
+--- a/src/components/ride/RideGlassPanel.tsx
++++ b/src/components/ride/RideGlassPanel.tsx
+@@ -1,6 +1,7 @@
+ import { ReactNode, CSSProperties, forwardRef } from 'react';
+ import { cn } from '@/lib/utils';
+ import { glassPanel, RIDE_RED_GRADIENT, RIDE_FONT } from './rideGlass';
++import { useId } from 'react';
+ 
+ interface RideGlassPanelProps {
+   children: ReactNode;
+@@ -35,6 +36,8 @@
+   handleWidth = 44,
+   panelStyle,
+ }, ref) {
++  const curveId = useId().replace(/:/g, '');
++  const approved = className?.includes('ride-booking-sheet');
+   return (
+     <div
+       ref={ref}
+@@ -46,12 +49,18 @@
+         ...style,
+       }}
+     >
++      {approved && <svg className="ride-sheet-curve" viewBox="0 0 400 30" preserveAspectRatio="none" aria-hidden="true">
++        <defs><linearGradient id={curveId} x2="1" y2="1"><stop stopColor="#ff3434" /><stop offset="1" stopColor="#ed0000" /></linearGradient></defs>
++        <path fill={`url(#${curveId})`} d="M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z" />
++        <path fill="#fff" d="M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z" />
++      </svg>}
+       {/* Red glow — behind the glass panel, curves with the top corners and
+           fades toward the bottom so only a curved sliver shows above/around
+           the panel. */}
+       <div
+         className="absolute top-0 left-0 right-0 z-0 pointer-events-none"
+         style={{
++          display: approved ? 'none' : undefined,
+           height: 40,
+           background: RIDE_RED_GRADIENT,
+           borderTopLeftRadius: 26,
+@@ -67,7 +76,7 @@
+         onClick={onRibbonClick}
+         aria-label="Toggle sheet"
+         className="absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity"
+-        style={{ top: -4, width: 64, height: 24 }}
++        style={{ top: approved ? 0 : -4, width: Math.max(64, handleWidth), height: approved ? 30 : 24 }}
+       >
+         <span
+           className="block rounded-full"
+@@ -81,10 +90,11 @@
+         className="relative z-10 flex-1 min-h-0 flex flex-col overflow-hidden"
+         style={{
+           ...glassPanel,
++          ...(approved ? { background: '#fff', backdropFilter: 'none', WebkitBackdropFilter: 'none', boxShadow: 'none' } : {}),
+           ...panelStyle,
+-          marginTop: 16,
+-          borderTopLeftRadius: 22,
+-          borderTopRightRadius: 22,
++          marginTop: approved ? 29 : 16,
++          borderTopLeftRadius: approved ? 0 : 22,
++          borderTopRightRadius: approved ? 0 : 22,
+         }}
+       >
+         {children}
+--- a/src/components/ride/RideHomeGreeting.tsx
++++ b/src/components/ride/RideHomeGreeting.tsx
+@@ -1,6 +1,5 @@
+-import { motion } from 'framer-motion';
++import { motion, useReducedMotion } from 'framer-motion';
+ import { Search } from 'lucide-react';
+-import pickMeCarIcon from '@/assets/pickme-car-icon.png';
+ import { RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3, tintBlue } from './rideGlass';
+ 
+ interface RideHomeGreetingProps {
+@@ -18,12 +17,15 @@
+ /** The "Where to?" card — row 2's wide tile, alongside the Home/Work
+  * squares from QuickShortcutsRow. Fixed height so all three tiles align. */
+ export default function RideHomeGreeting({ name, onSearchClick }: RideHomeGreetingProps) {
++  const reduceMotion = useReducedMotion();
+   return (
+     <motion.button
+-      initial={{ opacity: 0, y: 8 }}
++      initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+       animate={{ opacity: 1, y: 0 }}
++      type="button"
++      aria-label="Where to? Search destination"
+       onClick={onSearchClick}
+-      className="flex-1 min-w-0 flex items-center gap-1 rounded-2xl active:scale-[0.98] transition-transform text-left"
++      className="ride-destination-card flex-1 min-w-0 flex items-center gap-1 rounded-2xl active:scale-[0.98] transition-transform text-left"
+       style={{
+         height: 62,
+         padding: '8px 12px 8px 6px',
+@@ -34,7 +36,7 @@
+       {/* Sized to fill the card edge-to-edge vertically — deliberately taller
+           than the padded content area, matching the mockup's car photo bleed. */}
+       <img
+-        src={pickMeCarIcon}
++        src="/brand/cruize-search-car.webp"
+         alt=""
+         className="shrink-0 object-contain"
+         style={{ width: 62, height: 62 }}
+--- a/src/components/ride/QuickShortcutsRow.tsx
++++ b/src/components/ride/QuickShortcutsRow.tsx
+@@ -1,5 +1,5 @@
+ import { useEffect, useState, type CSSProperties } from 'react';
+-import { motion } from 'framer-motion';
++import { motion, useReducedMotion } from 'framer-motion';
+ import { supabase } from '@/lib/supabaseClient';
+ import { useAuth } from '@/hooks/useAuth';
+ import { Home, Briefcase } from 'lucide-react';
+@@ -37,6 +37,7 @@
+  * Home and Work always keep their own tint (pink / yellow) regardless of
+  * whether the rider has saved an address for them yet. */
+ export default function QuickShortcutsRow({ onSelect, onRequestSet }: QuickShortcutsRowProps) {
++  const reduceMotion = useReducedMotion();
+   const { user } = useAuth();
+   const [places, setPlaces] = useState<QuickPlace[]>([]);
+   const [loading, setLoading] = useState(true);
+@@ -72,15 +73,17 @@
+     <>
+       {tiles.map((tile, i) => (
+         <motion.button
++          type="button"
++          aria-label={tile.fav ? `Go to ${tile.label}` : `Set ${tile.label} address`}
+           key={tile.key}
+-          initial={{ opacity: 0, y: 8 }}
++          initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ delay: i * 0.04 }}
+           disabled={loading}
+           onClick={() => tile.fav
+             ? onSelect({ name: tile.fav.name, lat: tile.fav.latitude, lng: tile.fav.longitude })
+             : onRequestSet(tile.key)}
+-          className="shrink-0 flex flex-col items-center justify-center gap-1 rounded-2xl active:scale-95 transition-transform disabled:opacity-60"
++          className={`ride-shortcut ride-shortcut--${tile.key} shrink-0 flex flex-col items-center justify-center gap-1 rounded-2xl active:scale-95 transition-transform disabled:opacity-60`}
+           style={{ width: 58, height: 62, padding: 0, ...tile.glass }}
+         >
+           <tile.Icon className="w-5 h-5" style={{ color: RIDE_RED }} />
+--- a/src/components/ride/TownSelectorSheet.tsx
++++ b/src/components/ride/TownSelectorSheet.tsx
+@@ -33,7 +33,7 @@
+       left: rect.left,
+       top: rect.top,
+       width: rect.width,
+-      minWidth: Math.max(rect.width, 320),
++      minWidth: Math.min(Math.max(rect.width, 280), window.innerWidth - 24),
+     });
+   };
+ 
+@@ -60,8 +60,11 @@
+       {/* Trigger button — glass pill per the /ride redesign spec */}
+       <button
+         ref={triggerRef}
++        type="button"
++        aria-label={`Select town, currently ${currentTown.name}`}
++        aria-expanded={open}
+         onClick={handleOpen}
+-        className="inline-flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform"
++        className="ride-town-pill inline-flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform"
+         style={{
+           height: 36,
+           padding: '0 12px',
+@@ -102,7 +105,7 @@
+               <div className="shrink-0 pb-3 px-4 pt-4" style={{ background: 'var(--gradient-primary)' }}>
+                 <div className="flex items-center justify-between">
+                   <h2 className="text-base font-semibold font-display text-primary-foreground">Select Town</h2>
+-                  <button onClick={() => setOpen(false)} className="w-8 h-8 rounded-full flex items-center justify-center bg-primary-foreground/15 active:scale-90 transition-all">
++                  <button aria-label="Close town selector" onClick={() => setOpen(false)} className="w-8 h-8 rounded-full flex items-center justify-center bg-primary-foreground/15 active:scale-90 transition-all">
+                     <X className="w-4 h-4 text-primary-foreground" />
+                   </button>
+                 </div>
+@@ -114,6 +117,7 @@
+                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                   <input
+                     type="text"
++                    aria-label="Search towns"
+                     placeholder="Search towns…"
+                     value={search}
+                     onChange={e => setSearch(e.target.value)}
+@@ -164,4 +168,3 @@
+     </>
+   );
+ }
+-
+--- a/src/components/MapboxMap.tsx
++++ b/src/components/MapboxMap.tsx
+@@ -26,6 +26,8 @@
+ }
+ 
+ interface MapboxMapProps {
++  /** Actual GPS fix only; never substitute the town center. */
++  currentLocation?: Coords | null;
+   pickup?: Coords | null;
+   dropoff?: Coords | null;
+   driverLocation?: Coords | null;
+@@ -171,7 +173,7 @@
+   const el = document.createElement("div");
+   el.className = "cruixe-mapbox-marker";
+   el.style.width = `${width}px`;
+-  el.style.filter = "drop-shadow(0 6px 10px rgba(15,23,42,0.35))";
++  el.style.filter = src === carTopWhite ? "drop-shadow(0 0 1px #ef0808) drop-shadow(0 1px 2px rgba(239,8,8,.5))" : "drop-shadow(0 3px 5px rgba(15,23,42,.25))";
+   el.style.opacity = String(opacity);
+   const img = document.createElement("img");
+   img.src = src;
+@@ -405,6 +407,7 @@
+ 
+ function InnerMapboxMap({
+   mapboxgl,
++  currentLocation,
+   pickup,
+   dropoff,
+   driverLocation,
+@@ -529,6 +532,12 @@
+       markersRef.current.push(new mapboxgl.Marker({ element: el, anchor }).setLngLat([coords.lng, coords.lat]).addTo(map));
+     };
+ 
++    if (currentLocation && !pickup && !isNullIslandCoord(currentLocation)) {
++      const dot = markerElement('', '#f10808', '#fff', 20);
++      dot.setAttribute('aria-label', 'Your location');
++      dot.style.boxShadow = '0 0 0 18px rgba(241,8,8,.12), 0 2px 5px rgba(0,0,0,.2)';
++      addMarker(currentLocation, dot);
++    }
+     if (pickup) addMarker(pickup, createPickupPinElement(riderGender), "bottom");
+     if (dropoff) addMarker(dropoff, markerElement("D", "#B81104"));
+     if (driverLocation) addMarker(driverLocation, carImageElement(carTopBlack, 38));
+@@ -582,6 +591,8 @@
+     map.resize();
+   }, [
+     loaded,
++    currentLocation?.lat,
++    currentLocation?.lng,
+     pickup?.lat,
+     pickup?.lng,
+     dropoff?.lat,
+--- /dev/null
++++ b/src/components/ride/approvedRide.css
+@@ -0,0 +1,68 @@
++.approved-ride { --ride-red: #f10808; --ride-shadow: 0 4px 14px rgb(20 20 30 / 9%); color: #111; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
++.approved-ride .ride-map-control, .approved-ride .ride-map-controls > button { width: 50px !important; height: 50px !important; background: #fff !important; box-shadow: 0 7px 18px rgb(30 20 20 / 16%) !important; }
++.approved-ride .ride-map-control { top: calc(env(safe-area-inset-top) + 18px) !important; left: 20px; }
++.approved-ride .ride-map-controls { top: calc(env(safe-area-inset-top) + 18px) !important; right: 20px; gap: 8px; }
++.approved-ride .ride-map-control svg, .approved-ride .ride-map-controls > button > svg { width: 23px; height: 23px; color: #111; }
++.approved-ride .ride-booking-sheet { left: 0; right: 0; border-radius: 28px 28px 0 0 !important; filter: drop-shadow(0 -3px 10px rgb(30 20 20 / 8%)); }
++.ride-sheet-curve { position: absolute; inset: 0 0 auto; width: 100%; height: 30px; }
++.ride-booking-sheet > div:last-child { padding-bottom: max(14px, env(safe-area-inset-bottom)); }
++.ride-booking-sheet .ride-location-row { padding: 0 14px 8px; min-height: 40px; }
++.approved-ride .ride-town-pill, .approved-ride .ride-area-pill { background: #fff !important; box-shadow: var(--ride-shadow) !important; height: 34px !important; padding: 0 14px !important; max-width: 58%; }
++.ride-town-pill span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
++.ride-booking-sheet .ride-town-pill svg { width: 16px; height: 16px; flex-shrink: 0; }
++.ride-booking-sheet .ride-town-pill svg:first-child { color: var(--ride-red) !important; }
++.ride-booking-sheet .ride-town-pill span, .ride-booking-sheet .ride-area-pill span { font-size: 13px !important; font-weight: 650 !important; }
++.ride-booking-sheet--home .ride-sheet-scroll { flex: none; padding: 0 14px 8px !important; }
++.ride-home-tiles { height: 64px; gap: 7px; }
++.approved-ride .ride-destination-card { height: 100% !important; padding: 5px 7px 5px 4px !important; border-radius: 18px; background: #fff !important; box-shadow: var(--ride-shadow) !important; gap: 4px; }
++.ride-destination-card img { width: clamp(45px, 17vw, 70px) !important; height: 54px !important; }
++.ride-destination-card p:first-child { font-size: 11px !important; line-height: 1.2; color: #777 !important; }
++.ride-destination-card p:last-child { font-size: clamp(16px, 4.7vw, 21px) !important; white-space: nowrap; letter-spacing: -.7px !important; }
++.ride-destination-card > span { width: 35px !important; height: 35px !important; background: #f2f2f2 !important; border: 1px solid #e7e7e7; }
++.ride-destination-card > span svg { color: #111 !important; width: 19px; height: 19px; }
++.approved-ride .ride-shortcut { width: 60px !important; height: 100% !important; border-radius: 17px; box-shadow: var(--ride-shadow) !important; gap: 4px; }
++.approved-ride .ride-shortcut--home { background: #fff3f3 !important; border: 1px solid #ffe4e4; }
++.approved-ride .ride-shortcut--work { background: #fff9d9 !important; border: 1px solid #f5e8ac; }
++.ride-shortcut svg { width: 23px; height: 23px; color: var(--ride-red) !important; }
++.ride-shortcut--work svg { color: #b85800 !important; }
++.ride-shortcut span { font-size: 12px !important; }
++.ride-booking-sheet--home .ride-sheet-actions { padding: 0 14px 4px !important; }
++.ride-home-actions { gap: 8px; }
++.approved-ride .ride-schedule, .approved-ride .ride-start { height: 58px !important; border-radius: 18px !important; box-shadow: var(--ride-shadow) !important; }
++.ride-schedule { background: #fff !important; flex: .85; }
++.ride-schedule svg { width: 22px !important; height: 22px !important; color: var(--ride-red) !important; }
++.ride-schedule span { font-size: 16px !important; letter-spacing: -.5px; }
++.ride-start { background: linear-gradient(135deg, #ff563b 0%, #ff1010 50%, #e90000 100%) !important; }
++.ride-start > span:nth-child(2) { font-size: 19px !important; font-weight: 700; letter-spacing: -.5px; }
++.ride-start > span:last-child { width: 38px !important; height: 38px !important; background: rgb(170 0 0 / 32%) !important; box-shadow: inset 0 0 0 1px rgb(140 0 0 / 20%) !important; }
++.ride-start > span:last-child svg { width: 23px !important; height: 23px !important; }
++.approved-ride button:focus-visible { outline: 3px solid #222; outline-offset: 3px; }
++@media (max-width: 359px) {
++ .ride-home-tiles { gap: 5px; }
++ .approved-ride .ride-shortcut { width: 48px !important; }
++ .ride-destination-card img { width: 40px !important; }
++ .ride-destination-card > span { width: 28px !important; height: 28px !important; }
++ .ride-booking-sheet .ride-area-pill { padding: 0 9px !important; }
++ .ride-start > span:nth-child(2) { font-size: 17px !important; }
++}
++@media (min-width: 600px) {
++ .approved-ride .ride-booking-sheet { left: 50%; right: auto; width: 520px; transform: translateX(-50%); }
++ .ride-home-tiles { height: 80px; }
++ .approved-ride .ride-shortcut { width: 75px !important; }
++ .ride-destination-card img { width: 85px !important; height: 68px !important; }
++ .ride-destination-card p:first-child { font-size: 13px !important; }
++ .ride-destination-card p:last-child { font-size: 25px !important; }
++ .ride-shortcut svg { width: 28px; height: 28px; }
++ .ride-shortcut span { font-size: 14px !important; }
++ .ride-home-actions button { height: 68px !important; }
++}
++@media (max-height: 500px) {
++ .approved-ride .ride-booking-sheet--home { max-height: calc(100dvh - 90px) !important; }
++ .ride-booking-sheet--home .ride-sheet-scroll { flex-shrink: 1; }
++}
++@media (prefers-reduced-motion: reduce) {
++ .approved-ride *, .approved-ride *::before, .approved-ride *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
++}
++/* Keep town and ribbon controls at least 44px for touch access. */
++.approved-ride .ride-town-pill { min-height: 44px; }
++.ride-booking-sheet > button { min-height: 44px; top: -7px !important; }
+--- a/src/components/ride/RideTierSelector.tsx
++++ b/src/components/ride/RideTierSelector.tsx
+@@ -1,15 +1,13 @@
+ import { Users, Clock, Zap, Minus, Plus } from 'lucide-react';
+ import { motion } from 'framer-motion';
+ import { cn } from '@/lib/utils';
+-import carFrontEconomy from '@/assets/cars/car-front-economy.png';
+-import carSlantShare from '@/assets/cars/car-slant-share.png';
+-import carParcel from '@/assets/cars/car-parcel.png';
++import RideSelectionCards from './RideSelectionCards';
+ import { tintBlue, tintYellow, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, RIDE_YELLOW } from './rideGlass';
+ 
+ const TIER_THUMBNAILS: Partial<Record<RideTierId, string>> = {
+-  economy: carFrontEconomy,
+-  share: carSlantShare,
+-  parcel: carParcel,
++  economy: '/brand/cruize-economy-car.webp',
++  share: '/brand/cruize-shared-car.webp',
++  parcel: '/brand/cruize-parcel-van.webp',
+ };
+ 
+ export type RideTierId = 'economy' | 'share' | 'parcel';
+@@ -27,6 +25,7 @@
+ }
+ 
+ interface RideTierSelectorProps {
++  presentation?: 'booking' | 'selection';
+   options: RideTierOption[];
+   selected: RideTierId;
+   onSelect: (id: RideTierId) => void;
+@@ -49,6 +48,7 @@
+ 
+ export default function RideTierSelector({
+   options,
++  presentation = 'booking',
+   selected,
+   onSelect,
+   currencySymbol,
+@@ -56,6 +56,7 @@
+   onPassengerCountChange,
+   className,
+ }: RideTierSelectorProps) {
++  if (presentation === 'selection') return <RideSelectionCards options={options} selected={selected} onSelect={onSelect} />;
+   const hero = options.find((o) => o.id === 'economy') ?? options[0];
+   const rest = options.filter((o) => o.id !== hero?.id);
+ 
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -84,6 +84,8 @@
+ const LiveTrackingPage = lazy(() => import("./pages/LiveTrackingPage"));
+ 
+ import PageSkeleton from "./components/PageSkeleton";
++import BottomNavBar from "./components/BottomNavBar";
++import { RiderNavigationProvider } from "./components/RiderNavigationProvider";
+ 
+ function SuspenseWrap({
+   children,
+@@ -134,6 +136,7 @@
+ 
+ 
+       <ErrorBoundary>
++        <RiderNavigationProvider>
+         <Routes>
+           <Route path="/" element={<Navigate to="/ride" replace />} />
+           <Route path="/home" element={<SuspenseWrap><Index /></SuspenseWrap>} />
+@@ -223,6 +226,8 @@
+ 
+           <Route path="*" element={<MarketingShell><NotFound /></MarketingShell>} />
+         </Routes>
++        <BottomNavBar persistent />
++        </RiderNavigationProvider>
+       </ErrorBoundary>
+     </Router>
+   );
+--- a/src/components/BottomNavBar.tsx
++++ b/src/components/BottomNavBar.tsx
+@@ -1,6 +1,9 @@
+ import React from 'react';
+ import { useNavigate, useLocation } from 'react-router-dom';
+-import { Home, Clock, User, Car } from 'lucide-react';
++import { Home, Clock, User, Car, ClipboardList, Wallet, CarFront } from 'lucide-react';
++import { useRiderNavigation } from './RiderNavigationProvider';
++import { activeRiderTab, riderTabs, showRiderNavigation } from '@/lib/riderNavigation';
++import './riderNavigation.css';
+ import { motion } from 'framer-motion';
+ import { cn } from '@/lib/utils';
+ import { useAuth } from '@/hooks/useAuth';
+@@ -19,7 +22,7 @@
+   '/profile': ['/profile', '/edit-profile'],
+ };
+ 
+-const BottomNavBar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(function BottomNavBar(_props, ref) {
++const LegacyBottomNavBar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(function BottomNavBar(_props, ref) {
+   const navigate = useNavigate();
+   const location = useLocation();
+   const { user } = useAuth();
+@@ -87,4 +90,85 @@
+   );
+ });
+ 
++const icons = { home: Home, activity: ClipboardList, ride: CarFront, wallet: Wallet, account: User };
++
++function FloatingRiderNavigation({ forwardedRef }: { forwardedRef: React.ForwardedRef<HTMLDivElement> }) {
++  const navigate = useNavigate();
++  const location = useLocation();
++  const active = activeRiderTab(location.pathname, location.search);
++  const visible = showRiderNavigation(location.pathname, location.search);
++  const cardRef = React.useRef<HTMLDivElement>(null);
++  const [cardWidth, setCardWidth] = React.useState(360);
++  React.useLayoutEffect(() => {
++    const card = cardRef.current;
++    if (!card) return;
++    const measure = () => { if (card.clientWidth) setCardWidth(card.clientWidth); };
++    measure();
++    if (typeof ResizeObserver === 'undefined') return;
++    const observer = new ResizeObserver(measure); observer.observe(card);
++    return () => observer.disconnect();
++  }, []);
++  const center = cardWidth * (Math.max(0, riderTabs.findIndex(tab => tab.id === active)) + .5) / 5;
++  const shoulder = Math.min(40, cardWidth / 10 - 2);
++  const cradlePath = `M 38 22 H ${center-shoulder} C ${center-shoulder*.5} 22 ${center-shoulder*.55} 2 ${center} 2 C ${center+shoulder*.55} 2 ${center+shoulder*.5} 22 ${center+shoulder} 22 H ${cardWidth-38} Q ${cardWidth} 22 ${cardWidth} 60 Q ${cardWidth} 98 ${cardWidth-38} 98 H 38 Q 0 98 0 60 Q 0 22 38 22 Z`;
++  const [homeExit, setHomeExit] = React.useState(false);
++  const [keyboardOpen, setKeyboardOpen] = React.useState(false);
++  React.useEffect(() => {
++    if (!homeExit) return;
++    const timer = window.setTimeout(() => setHomeExit(false), 260);
++    return () => window.clearTimeout(timer);
++  }, [homeExit]);
++  React.useEffect(() => {
++    const viewport = window.visualViewport;
++    const measure = () => {
++      const editing = document.activeElement?.matches('input, textarea, [contenteditable="true"]');
++      setKeyboardOpen(Boolean(editing && viewport && window.innerHeight - viewport.height > 150));
++    };
++    viewport?.addEventListener('resize', measure);
++    document.addEventListener('focusin', measure);
++    document.addEventListener('focusout', measure);
++    return () => {
++      viewport?.removeEventListener('resize', measure);
++      document.removeEventListener('focusin', measure);
++      document.removeEventListener('focusout', measure);
++    };
++  }, []);
++  return (
++    <nav ref={forwardedRef} aria-label="Rider navigation"
++      hidden={(!visible && !(homeExit && active === 'home')) || keyboardOpen}
++      className={cn('rider-navigation', homeExit && active === 'home' && 'rider-navigation--home-exit')}
++      data-location-stage={new URLSearchParams(location.search).get('view') === 'locations' ? 'true' : undefined}
++      data-active-tab={active ?? undefined}>
++      <div ref={cardRef} className="rider-navigation__card">
++        <svg className="rider-navigation__background" aria-hidden="true" viewBox={`0 0 ${cardWidth} 100`} preserveAspectRatio="none"><path d={cradlePath} /></svg>
++        {riderTabs.map(tab => {
++          const Icon = icons[tab.id];
++          const selected = active === tab.id;
++          return <button key={tab.id} type="button" className="rider-navigation__tab"
++            aria-label={tab.label} aria-current={selected ? 'page' : undefined}
++            data-selected={selected ? 'true' : 'false'}
++            onClick={() => {
++              if (selected) return;
++              haptic('light');
++              if (tab.id === 'home') setHomeExit(true);
++              // Destination pages retain their existing AuthGuard. Never bypass it here.
++              navigate(tab.path);
++            }}>
++            <span className="rider-navigation__icon" aria-hidden="true"><Icon strokeWidth={1.8} /></span>
++            <span className="rider-navigation__label" aria-hidden="true">{tab.label}</span>
++          </button>;
++        })}
++      </div>
++    </nav>
++  );
++}
++
++/** The app owns one persistent bar; legacy callers on rider pages become no-ops. */
++const BottomNavBar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { persistent?: boolean }>(function BottomNavBar({ persistent = false, ...props }, ref) {
++  const { managed } = useRiderNavigation();
++  const location = useLocation();
++  if (persistent) return <FloatingRiderNavigation forwardedRef={ref} />;
++  if (managed && activeRiderTab(location.pathname, location.search)) return null;
++  return <LegacyBottomNavBar {...props} ref={ref} />;
++});
+ export default BottomNavBar;
+--- /dev/null
++++ b/src/components/RiderNavigationProvider.tsx
+@@ -0,0 +1,36 @@
++import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
++import { useAuth } from '@/hooks/useAuth';
++import type { RideTierId } from '@/components/ride/RideTierSelector';
++import type { RideStop } from '@/components/ride/MultiStopInput';
++import type { TownConfig } from '@/lib/towns';
++
++interface DraftLocation { name: string; lat: number; lng: number }
++export interface RideSelectionDraft {
++  selectedTier: RideTierId;
++  pickup: DraftLocation | null;
++  dropoff: DraftLocation | null;
++  stops: RideStop[];
++  scheduledAt: Date | null;
++  passengerCount: number;
++  town: TownConfig;
++}
++const RiderNavigationContext = createContext<{
++  managed: boolean;
++  draft: RideSelectionDraft | null;
++  saveDraft: (draft: RideSelectionDraft) => void;
++}>({ managed: false, draft: null, saveDraft: () => {} });
++
++/** In-memory UI draft only. GPS fixes and authentication credentials are never stored. */
++export function RiderNavigationProvider({ children }: { children: ReactNode }) {
++  const { user } = useAuth();
++  const [draft, saveDraft] = useState<RideSelectionDraft | null>(null);
++  const identity = useRef(user?.id);
++  useEffect(() => {
++    // Keep a guest draft through sign-in; clear it on sign-out or account switch.
++    if (identity.current && identity.current !== user?.id) saveDraft(null);
++    identity.current = user?.id;
++  }, [user?.id]);
++  const value = useMemo(() => ({ managed: true, draft, saveDraft }), [draft]);
++  return <RiderNavigationContext.Provider value={value}>{children}</RiderNavigationContext.Provider>;
++}
++export const useRiderNavigation = () => useContext(RiderNavigationContext);
+--- /dev/null
++++ b/src/components/riderNavigation.css
+@@ -0,0 +1,54 @@
++.rider-navigation {
++  --rider-nav-duration: 240ms;
++  --rider-nav-ease: cubic-bezier(.22, 1, .36, 1);
++  position: fixed;
++  z-index: 75;
++  bottom: max(14px, env(safe-area-inset-bottom));
++  left: 50%;
++  transform: translateX(-50%);
++  width: min(calc(100% - 28px), 492px);
++  color: #616975;
++  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
++}
++.rider-navigation[hidden] { display: none; }
++.rider-navigation__card {
++  display: grid;
++  grid-template-columns: repeat(5, minmax(0, 1fr));
++  height: 76px;
++  border-radius: 38px;
++  position: relative;
++  isolation: isolate;
++}
++.rider-navigation__tab { position: relative; min-width: 0; min-height: 64px; border-radius: 30px; -webkit-tap-highlight-color: transparent; }
++.rider-navigation__icon {
++  position: absolute; top: 8px; left: 50%;
++  display: flex; align-items: center; justify-content: center;
++  width: 48px; height: 48px; border-radius: 50%;
++  transform: translate(-50%, 0) scale(.9);
++  color: #616975;
++  transition: transform var(--rider-nav-duration) var(--rider-nav-ease), color 200ms, background-color 200ms, box-shadow 200ms;
++}
++.rider-navigation__icon svg { width: 27px; height: 27px; }
++.rider-navigation__tab[data-selected="true"] .rider-navigation__icon {
++  transform: translate(-50%, -17px) scale(1.08);
++  background: #f50916; color: #fff;
++  box-shadow: 0 4px 12px rgb(245 9 22 / 15%);
++}
++.rider-navigation__label {
++  position: absolute; bottom: 8px; left: 0; right: 0;
++  text-align: center; font-size: .8rem; line-height: 1.2; font-weight: 600;
++  opacity: 0; transform: translateY(4px); color: #d40711;
++  transition: opacity 180ms, transform 180ms var(--rider-nav-ease);
++}
++.rider-navigation__tab[data-selected="true"] .rider-navigation__label { opacity: 1; transform: translateY(0); }
++.rider-navigation__tab:focus-visible { outline: 3px solid #222; outline-offset: 2px; }
++.rider-navigation--home-exit { animation: rider-nav-exit 260ms both; }
++@keyframes rider-nav-exit { 0%, 75% { opacity: 1; } 100% { opacity: 0; } }
++@media (prefers-reduced-motion: reduce) {
++  .rider-navigation *, .rider-navigation { transition: none !important; animation: none !important; }
++}
++
++.rider-navigation__background { position: absolute; inset: -22px 0 auto; width: 100%; height: 100px; overflow: visible; z-index: -1; filter: drop-shadow(0 5px 12px rgb(25 30 40 / 9%)); pointer-events: none; }
++.rider-navigation__background path { fill: white; transition: d 330ms var(--rider-nav-ease); }
++
++body:not(:has(.destination-screen)) .rider-navigation[data-location-stage="true"] { display: none; }
+--- /dev/null
++++ b/src/lib/riderNavigation.ts
+@@ -0,0 +1,20 @@
++export type RiderTab = 'home' | 'activity' | 'ride' | 'wallet' | 'account';
++export const riderTabs: ReadonlyArray<{ id: RiderTab; label: string; path: string }> = [
++  { id: 'home', label: 'Home', path: '/ride' },
++  { id: 'activity', label: 'Activity', path: '/history' },
++  { id: 'ride', label: 'Ride', path: '/ride?view=choose' },
++  { id: 'wallet', label: 'Wallet', path: '/wallet' },
++  { id: 'account', label: 'Account', path: '/profile' },
++];
++export function activeRiderTab(pathname: string, search = ''): RiderTab | null {
++  if (pathname === '/ride') return ['choose', 'locations'].includes(new URLSearchParams(search).get('view') || '') ? 'ride' : 'home';
++  if (pathname.startsWith('/ride/')) return 'ride';
++  if (pathname === '/history' || pathname === '/ride-history') return 'activity';
++  if (pathname === '/wallet') return 'wallet';
++  if (pathname === '/profile' || pathname === '/edit-profile') return 'account';
++  return null;
++}
++export function showRiderNavigation(pathname: string, search = ''): boolean {
++  return (pathname === '/ride' && ['choose', 'locations'].includes(new URLSearchParams(search).get('view') || '')) ||
++    ['/history', '/wallet', '/profile', '/edit-profile'].includes(pathname);
++}
+--- /dev/null
++++ b/src/components/ride/RideSelectionCards.tsx
+@@ -0,0 +1,41 @@
++import { Circle, CircleDot, Package, Users } from 'lucide-react';
++import type { RideTierId, RideTierOption } from './RideTierSelector';
++
++const vehicles: Record<RideTierId, string> = {
++  economy: '/brand/cruize-economy-car.webp',
++  share: '/brand/cruize-shared-car.webp',
++  parcel: '/brand/cruize-parcel-van.webp',
++};
++const labels: Record<RideTierId, string> = { economy: 'Economy', share: 'Shared', parcel: 'Parcel' };
++const descriptions: Record<RideTierId, string> = {
++  economy: 'Affordable rides, everyday', share: 'Share a ride', parcel: 'Package delivery',
++};
++
++/** Pre-route selection. Availability, prices, ETAs and unsupported claims do not belong here. */
++export default function RideSelectionCards({ options, selected, onSelect }: {
++  options: RideTierOption[];
++  selected: RideTierId;
++  onSelect: (id: RideTierId) => void;
++}) {
++  return <div className="ride-selection-cards" role="group" aria-label="Ride categories">
++    {options.map(option => {
++      const isSelected = selected === option.id;
++      const Radio = isSelected ? CircleDot : Circle;
++      return <button key={option.id} type="button" className="ride-selection-card"
++        aria-label={`Choose ${labels[option.id]}`} aria-pressed={isSelected}
++        data-selected={isSelected ? 'true' : 'false'} onClick={() => onSelect(option.id)}>
++        <img src={vehicles[option.id]} alt="" className="ride-selection-card__vehicle" />
++        <span className="ride-selection-card__body">
++          <span className="ride-selection-card__heading">
++            <span className="ride-selection-card__title">{labels[option.id]}</span>
++            <span className="ride-selection-card__capacity">
++              {option.id === 'parcel' ? <Package aria-label="Parcel delivery" /> : <><Users aria-hidden="true" /><span aria-label={`${option.capacity} passengers`}>{option.capacity}</span></>}
++            </span>
++          </span>
++          <span className="ride-selection-card__description">{descriptions[option.id]}</span>
++        </span>
++        <Radio className="ride-selection-card__radio" aria-hidden="true" />
++      </button>;
++    })}
++  </div>;
++}
+--- /dev/null
++++ b/src/components/ride/rideSelection.css
+@@ -0,0 +1,46 @@
++/* Screen 2 only. Ride home and the existing location-entry screen keep their skins. */
++.ride-booking-sheet--selection {
++  height: min(64dvh, 640px) !important;
++  max-height: calc(100dvh - env(safe-area-inset-top) - 148px) !important;
++}
++.ride-booking-sheet--selection .ride-location-row { display: none; }
++.ride-booking-sheet--selection .ride-sheet-scroll {
++  display: flex; flex-direction: column; overflow: hidden;
++  padding: 4px 14px 0 !important;
++}
++.ride-booking-sheet--selection > div:last-child { padding-bottom: 0; }
++.ride-selection-content { flex: 1; min-height: 0; display: flex; flex-direction: column; }
++.ride-selection-header { flex-shrink: 0; padding: 4px 8px 14px; }
++.ride-selection-header h1 { margin: 0; color: #101116; font-size: 1.55rem; font-weight: 750; line-height: 1.25; letter-spacing: -.035em; }
++.ride-selection-cards-scroll { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; padding: 2px 2px 4px; scroll-padding: 4px; }
++.ride-selection-cards { display: grid; grid-auto-rows: minmax(min-content, 1fr); gap: 10px; min-height: 100%; }
++.ride-selection-card {
++  display: grid; grid-template-columns: minmax(70px, 32%) minmax(0, 1fr) 22px;
++  align-items: center; gap: 10px; min-height: 96px; padding: 10px;
++  text-align: left; border: 1.5px solid #eceef1; border-radius: 22px;
++  background: #fff; color: #111218; box-shadow: 0 3px 10px rgb(30 35 45 / 4%);
++  -webkit-tap-highlight-color: transparent;
++}
++.ride-selection-card[data-selected="true"] { border-color: #f50916; background: #fff5f5; }
++.ride-selection-card__vehicle { width: 100%; height: 78px; object-fit: contain; filter: none; }
++.ride-selection-card__body { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
++.ride-selection-card__heading { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 10px; }
++.ride-selection-card__title { font-size: 1.28rem; line-height: 1.2; font-weight: 750; letter-spacing: -.025em; }
++.ride-selection-card__capacity { display: inline-flex; align-items: center; gap: 5px; font-size: .95rem; color: #68717b; }
++.ride-selection-card__capacity svg { width: 19px; height: 19px; }
++.ride-selection-card__description { font-size: .85rem; line-height: 1.35; color: #68717b; overflow-wrap: break-word; }
++.ride-selection-card__radio { width: 22px; height: 22px; color: #69717c; }
++.ride-selection-card[data-selected="true"] .ride-selection-card__radio { color: #f50916; }
++.ride-selection-card:focus-visible { outline: 3px solid #222; outline-offset: -4px; }
++.ride-selection-nav-space { flex-shrink: 0; height: calc(104px + env(safe-area-inset-bottom)); }
++@media (max-width: 340px) {
++  .ride-selection-card { gap: 7px; padding: 8px; border-radius: 19px; }
++  .ride-selection-card__title { font-size: 1.16rem; }
++  .ride-selection-card__vehicle { height: 72px; }
++}
++@media (max-height: 450px) {
++  .ride-booking-sheet--selection { height: calc(100dvh - 80px) !important; max-height: calc(100dvh - 80px) !important; }
++  .ride-selection-active .ride-map-controls { flex-direction: row; }
++  .ride-selection-header { padding-bottom: 7px; }
++  .ride-selection-header h1 { font-size: 1.25rem; }
++}
+--- /dev/null
++++ b/src/test/RideSelectionCards.test.tsx
+@@ -0,0 +1,35 @@
++import { fireEvent, render, screen } from '@testing-library/react';
++import { describe, expect, it, vi } from 'vitest';
++import RideTierSelector, { type RideTierOption } from '@/components/ride/RideTierSelector';
++const options: RideTierOption[] = [
++  { id: 'economy', name: 'Economy', capacity: 4, etaMinutes: null, price: null, badge: 'Fast pickup', badgeVariant: 'primary' },
++  { id: 'share', name: 'Share Ride', capacity: 4, etaMinutes: null, price: null, badge: 'Save more', badgeVariant: 'accent' },
++  { id: 'parcel', name: 'Parcel', capacity: 1, etaMinutes: null, price: null, badge: 'Send anything', badgeVariant: 'accent' },
++];
++describe('pre-route ride selection', () => {
++ it('shows three fully named categories with actual capacities and verified vehicle paths', () => {
++  const { container } = render(<RideTierSelector presentation="selection" options={options} selected="economy" onSelect={() => {}} currencySymbol="$" />);
++  expect(screen.getByRole('button', { name: 'Choose Economy' })).toHaveAttribute('aria-pressed', 'true');
++  expect(screen.getByText('Shared')).toBeVisible();
++  expect(screen.getByText('Parcel')).toBeVisible();
++  expect(screen.getAllByLabelText('4 passengers')).toHaveLength(2);
++  expect(Array.from(container.querySelectorAll('img')).map(i => i.getAttribute('src'))).toEqual([
++   '/brand/cruize-economy-car.webp', '/brand/cruize-shared-car.webp', '/brand/cruize-parcel-van.webp',
++  ]);
++ });
++ it.each([['Economy', 'economy'], ['Shared', 'share'], ['Parcel', 'parcel']])('forwards %s to its existing service ID exactly once', (name, id) => {
++  const select = vi.fn();
++  render(<RideTierSelector presentation="selection" options={options} selected="economy" onSelect={select} currencySymbol="$" />);
++  fireEvent.click(screen.getByRole('button', { name: `Choose ${name}` }));
++  expect(select).toHaveBeenCalledExactlyOnceWith(id);
++ });
++ it('omits unsupported claims and pre-route fare/ETA/payment content even when metadata contains it', () => {
++  render(<RideTierSelector presentation="selection" options={options.map(o => ({ ...o, price: 12, etaMinutes: 3 }))} selected="economy" onSelect={() => {}} currencySymbol="$" />);
++  expect(screen.queryByText(/Fast pickup|Save more|Send anything|See fare next|12\.00|3 min|payment/i)).not.toBeInTheDocument();
++ });
++ it('keeps the later booking presentation and passenger stepper available', () => {
++  render(<RideTierSelector options={options} selected="economy" onSelect={() => {}} currencySymbol="$" onPassengerCountChange={() => {}} />);
++  expect(screen.getByText('Passengers')).toBeVisible();
++  expect(screen.getAllByText('See fare next', { selector: 'p' })).toHaveLength(3);
++ });
++});
+--- /dev/null
++++ b/src/test/RiderNavigation.test.tsx
+@@ -0,0 +1,52 @@
++import { fireEvent, render, screen, waitFor } from '@testing-library/react';
++import { MemoryRouter, useLocation, useNavigate } from 'react-router-dom';
++import { describe, expect, it, vi } from 'vitest';
++import BottomNavBar from '@/components/BottomNavBar';
++import { RiderNavigationProvider } from '@/components/RiderNavigationProvider';
++import { activeRiderTab } from '@/lib/riderNavigation';
++vi.mock('@/hooks/useAuth', () => ({ useAuth: () => ({ user: { id: 'unit-test-rider' } }) }));
++vi.mock('@/lib/haptics', () => ({ haptic: vi.fn() }));
++function RouteProbe() {
++ const location = useLocation(); const navigate = useNavigate();
++ return <><output data-testid="route">{location.pathname}{location.search}</output><button onClick={() => navigate(-1)}>Browser back</button><BottomNavBar /></>;
++}
++function app(entry = '/ride?view=choose') {
++ return render(<MemoryRouter initialEntries={[entry]}><RiderNavigationProvider><RouteProbe /><BottomNavBar persistent /></RiderNavigationProvider></MemoryRouter>);
++}
++describe('route-driven floating rider navigation', () => {
++ it('starts on Ride with one bar, one selected icon and all five accessible tab names', () => {
++  app();
++  expect(screen.getAllByRole('navigation', { name: 'Rider navigation' })).toHaveLength(1);
++  for (const name of ['Home', 'Activity', 'Ride', 'Wallet', 'Account']) expect(screen.getByRole('button', { name })).toBeVisible();
++  expect(document.querySelectorAll('[data-selected="true"]')).toHaveLength(1);
++  expect(screen.getByRole('button', { name: 'Ride' })).toHaveAttribute('aria-current', 'page');
++ });
++ it.each([['Activity', '/history'], ['Wallet', '/wallet'], ['Account', '/profile']])('transfers selection to %s from the real destination route and restores it on back', async (name, route) => {
++  app(); const bar = screen.getByRole('navigation');
++  const initialCurve = document.querySelector('.rider-navigation__background path')?.getAttribute('d');
++  fireEvent.click(screen.getByRole('button', { name }));
++  expect(screen.getByTestId('route')).toHaveTextContent(route);
++  expect(document.querySelector('.rider-navigation__background path')?.getAttribute('d')).not.toBe(initialCurve);
++  expect(screen.getByRole('navigation')).toBe(bar);
++  expect(screen.getByRole('button', { name })).toHaveAttribute('aria-current', 'page');
++  expect(screen.getByRole('button', { name: 'Ride' })).not.toHaveAttribute('aria-current');
++  expect(document.querySelectorAll('[data-selected="true"]')).toHaveLength(1);
++  fireEvent.click(screen.getByRole('button', { name: 'Browser back' }));
++  await waitFor(() => expect(screen.getByRole('button', { name: 'Ride' })).toHaveAttribute('aria-current', 'page'));
++ });
++ it('uses the existing ride-home route and hides the bar after its exit transition', async () => {
++  app(); fireEvent.click(screen.getByRole('button', { name: 'Home' }));
++  expect(screen.getByTestId('route')).toHaveTextContent('/ride');
++  expect(screen.getByRole('button', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
++  await waitFor(() => expect(screen.queryByRole('navigation')).not.toBeInTheDocument());
++ });
++ it.each([['/wallet', 'Wallet'], ['/profile', 'Account'], ['/history', 'Activity']])('derives active selection after deep linking/reloading %s', (route, name) => {
++  app(route); expect(screen.getByRole('button', { name })).toHaveAttribute('aria-current', 'page');
++ });
++ it('preserves home and derives Ride for location entry', () => {
++  expect(activeRiderTab('/ride', '?view=choose')).toBe('ride');
++  expect(activeRiderTab('/ride', '')).toBe('home');
++  const rendered = app('/ride'); expect(screen.queryByRole('navigation')).not.toBeInTheDocument(); rendered.unmount();
++  expect(activeRiderTab('/ride', '?view=locations&tier=share')).toBe('ride');
++ });
++});
+--- /dev/null
++++ b/src/test/RideSelectionDraft.test.tsx
+@@ -0,0 +1,44 @@
++import { fireEvent, render, screen } from '@testing-library/react';
++import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
++import { beforeEach, describe, expect, it, vi } from 'vitest';
++import { RiderNavigationProvider, useRiderNavigation } from '@/components/RiderNavigationProvider';
++import { DEFAULT_TOWN } from '@/lib/towns';
++const identity = vi.hoisted(() => ({ id: 'draft-test-user' as string | undefined }));
++vi.mock('@/hooks/useAuth', () => ({ useAuth: () => ({ user: identity.id ? { id: identity.id } : null }) }));
++beforeEach(() => { identity.id = 'draft-test-user'; });
++function Editor() {
++ const { draft, saveDraft } = useRiderNavigation(); const navigate = useNavigate();
++ return <><output data-testid="draft">{draft ? `${draft.selectedTier}:${draft.pickup?.name}:${draft.passengerCount}` : 'empty'}</output>
++ <button onClick={() => { saveDraft({ selectedTier: 'share', pickup: { name: 'Chosen pickup', lat: -20.93, lng: 29.01 }, dropoff: null, stops: [], scheduledAt: null, passengerCount: 3, town: DEFAULT_TOWN }); navigate('/profile'); }}>Leave with draft</button></>;
++}
++function Account() { const navigate=useNavigate(); return <button onClick={() => navigate(-1)}>Return to selection</button>; }
++describe('selection draft across rider routes', () => {
++ it('restores the chosen places, tier and passengers after the ride editor unmounts and browser back remounts it', () => {
++  render(<MemoryRouter initialEntries={['/ride?view=choose']}><RiderNavigationProvider><Routes><Route path="/ride" element={<Editor />} /><Route path="/profile" element={<Account />} /></Routes></RiderNavigationProvider></MemoryRouter>);
++  fireEvent.click(screen.getByRole('button', { name: 'Leave with draft' }));
++  expect(screen.queryByTestId('draft')).not.toBeInTheDocument();
++  fireEvent.click(screen.getByRole('button', { name: 'Return to selection' }));
++  expect(screen.getByTestId('draft')).toHaveTextContent('share:Chosen pickup:3');
++ });
++});
++
++function DraftLifecycleProbe() {
++ const { draft, saveDraft } = useRiderNavigation();
++ return <><output data-testid="lifecycle">{draft?.selectedTier ?? 'empty'}</output><button onClick={() => saveDraft({ selectedTier: 'parcel', pickup: null, dropoff: null, stops: [], scheduledAt: null, passengerCount: 1, town: DEFAULT_TOWN })}>Save selection</button></>;
++}
++function lifecycle() { return <RiderNavigationProvider><DraftLifecycleProbe /></RiderNavigationProvider>; }
++describe('draft identity boundaries', () => {
++ it('preserves a guest selection through sign-in', () => {
++  identity.id = undefined;
++  const view = render(lifecycle());
++  fireEvent.click(screen.getByRole('button', { name: 'Save selection' }));
++  identity.id = 'signed-in-rider'; view.rerender(lifecycle());
++  expect(screen.getByTestId('lifecycle')).toHaveTextContent('parcel');
++ });
++ it('clears a signed-in selection on sign-out', () => {
++  const view = render(lifecycle());
++  fireEvent.click(screen.getByRole('button', { name: 'Save selection' }));
++  identity.id = undefined; view.rerender(lifecycle());
++  expect(screen.getByTestId('lifecycle')).toHaveTextContent('empty');
++ });
++});
+--- a/src/hooks/useAppBootstrap.tsx
++++ b/src/hooks/useAppBootstrap.tsx
+@@ -81,6 +81,10 @@
+   const [favorites, setFavorites] = useState<CachedFavoriteLocation[]>([]);
+   const [recentRides, setRecentRides] = useState<CachedRecentRide[]>([]);
+   const startedRef = useRef(false);
++  const currentUserRef = useRef(user?.id);
++  currentUserRef.current = user?.id;
++  const [favoritesOwner, setFavoritesOwner] = useState<string | null>(null);
++  const [recentsOwner, setRecentsOwner] = useState<string | null>(null);
+ 
+   const bumpProgress = useCallback((n: number) => {
+     setProgress((p) => {
+@@ -97,6 +101,8 @@
+       .eq('user_id', uid)
+       .order('created_at', { ascending: false })
+       .limit(20);
++    if (currentUserRef.current !== uid) return;
++    setFavoritesOwner(uid);
+     setFavorites((data as CachedFavoriteLocation[]) ?? []);
+   }, []);
+ 
+@@ -107,6 +113,8 @@
+       .eq('user_id', uid)
+       .order('created_at', { ascending: false })
+       .limit(20);
++    if (currentUserRef.current !== uid) return;
++    setRecentsOwner(uid);
+     setRecentRides((data as CachedRecentRide[]) ?? []);
+   }, []);
+ 
+@@ -196,8 +204,8 @@
+         role,
+         profile,
+         driverProfile,
+-        favorites,
+-        recentRides,
++        favorites: user?.id && favoritesOwner === user.id ? favorites : [],
++        recentRides: user?.id && recentsOwner === user.id ? recentRides : [],
+         refreshFavorites,
+         refreshRecentRides,
+         refreshDriverProfile,
+--- a/src/hooks/useLandmarks.ts
++++ b/src/hooks/useLandmarks.ts
+@@ -40,13 +40,14 @@
+ interface UseLandmarksOptions {
+   userLocation?: { lat: number; lng: number } | null;
+   searchQuery?: string;
++  retryKey?: number;
+   limit?: number;
+   radiusKm?: number | null; // Filter by proximity radius
+   townCenter?: { lat: number; lng: number } | null; // Filter landmarks to this town
+   townRadiusKm?: number | null; // Radius around town center
+ }
+ 
+-export const useLandmarks = ({ userLocation, searchQuery = '', limit = 10, radiusKm = null, townCenter = null, townRadiusKm = null }: UseLandmarksOptions = {}) => {
++export const useLandmarks = ({ userLocation, searchQuery = '', retryKey = 0, limit = 10, radiusKm = null, townCenter = null, townRadiusKm = null }: UseLandmarksOptions = {}) => {
+   const [landmarks, setLandmarks] = useState<Landmark[]>([]);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState<string | null>(null);
+@@ -113,9 +114,14 @@
+   const [searching, setSearching] = useState(false);
+   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+   const searchAbortRef = useRef<AbortController | null>(null);
++  const requestGeneration = useRef(0);
++  const [searchError, setSearchError] = useState<string | null>(null);
+ 
+   useEffect(() => {
+     const q = searchQuery.trim();
++    const generation = ++requestGeneration.current;
++    setSearchError(null);
++    setSearchResults([]);
+     if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+     searchAbortRef.current?.abort();
+ 
+@@ -129,6 +135,12 @@
+     searchDebounceRef.current = setTimeout(() => {
+       const controller = new AbortController();
+       searchAbortRef.current = controller;
++      const timeoutId = setTimeout(() => {
++        if (generation !== requestGeneration.current) return;
++        controller.abort();
++        setSearchError('Local place search timed out. Retry search.');
++        setSearching(false);
++      }, 5000);
+ 
+       const scopedQuery = () => {
+         let query = supabase.from('koloi_landmarks').select('*').eq('is_active', true).abortSignal(controller.signal);
+@@ -152,6 +164,7 @@
+             scopedQuery().ilike('name', `%${q}%`).limit(limit),
+             scopedQuery().contains('keywords', [q.toLowerCase()]).limit(limit),
+           ]);
++          if (controller.signal.aborted || generation !== requestGeneration.current) return;
+           if (prefixRes.error) throw prefixRes.error;
+           if (containsRes.error) throw containsRes.error;
+           if (keywordRes.error) throw keywordRes.error;
+@@ -177,21 +190,24 @@
+           merged.sort((a, b) => (b.matchScore ?? 0) - (a.matchScore ?? 0));
+           setSearchResults(merged.slice(0, limit));
+         } catch (err) {
+-          if ((err as { name?: string })?.name !== 'AbortError') {
++          if (!controller.signal.aborted && generation === requestGeneration.current) {
+             console.error('Landmark search failed:', err);
++            setSearchError('Local place search is unavailable. Retry search.');
+             setSearchResults([]);
+           }
+         } finally {
+-          if (searchAbortRef.current === controller) setSearching(false);
++          clearTimeout(timeoutId);
++          if (generation === requestGeneration.current) setSearching(false);
+         }
+       })();
+     }, 200);
+ 
+     return () => {
++      requestGeneration.current++;
+       if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+       searchAbortRef.current?.abort();
+     };
+-  }, [searchQuery, townCenter?.lat, townCenter?.lng, townRadiusKm, userLocation?.lat, userLocation?.lng, limit]);
++  }, [searchQuery, retryKey, townCenter?.lat, townCenter?.lng, townRadiusKm, userLocation?.lat, userLocation?.lng, limit]);
+ 
+   // Browse mode (no query): sort the already-fetched dataset by proximity.
+   // Search mode (query >= 3 chars): use the server-searched results above.
+@@ -277,7 +293,7 @@
+     landmarks: filteredLandmarks,
+     allLandmarks: landmarks,
+     loading: searchQuery.trim() ? searching : loading,
+-    error,
++    error: searchQuery.trim() ? searchError : error,
+     getNearbyLandmarks,
+     findNearestLandmark,
+     getLandmarksByCategory,
+--- a/src/hooks/useStreets.ts
++++ b/src/hooks/useStreets.ts
+@@ -15,6 +15,7 @@
+ 
+ interface UseStreetsOptions {
+   searchQuery?: string;
++  retryKey?: number;
+   townName?: string | null; // matches selectedTown.name from src/lib/towns.ts, e.g. "Bulawayo"
+   limit?: number;
+ }
+@@ -23,14 +24,19 @@
+ // so this queries the DB directly per keystroke instead of downloading the
+ // whole town's street list and filtering client-side. `streets.name` and
+ // `streets.town` are both pg_trgm/btree indexed for this.
+-export const useStreets = ({ searchQuery = '', townName = null, limit = 10 }: UseStreetsOptions = {}) => {
++export const useStreets = ({ searchQuery = '', retryKey = 0, townName = null, limit = 10 }: UseStreetsOptions = {}) => {
+   const [streets, setStreets] = useState<Street[]>([]);
+   const [loading, setLoading] = useState(false);
+   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+   const abortRef = useRef<AbortController | null>(null);
++  const requestGeneration = useRef(0);
++  const [searchError, setSearchError] = useState<string | null>(null);
+ 
+   useEffect(() => {
+     const q = searchQuery.trim();
++    const generation = ++requestGeneration.current;
++    setSearchError(null);
++    setStreets([]);
+     if (debounceRef.current) clearTimeout(debounceRef.current);
+     abortRef.current?.abort();
+ 
+@@ -44,6 +50,12 @@
+     debounceRef.current = setTimeout(() => {
+       const controller = new AbortController();
+       abortRef.current = controller;
++      const timeoutId = setTimeout(() => {
++        if (generation !== requestGeneration.current) return;
++        controller.abort();
++        setSearchError('Street search timed out. Retry search.');
++        setLoading(false);
++      }, 5000);
+ 
+       // `streets` isn't in the generated DB types yet; untyped client avoids deep type instantiation.
+       const db = supabase as unknown as {
+@@ -60,6 +72,7 @@
+             scoped().ilike('name', `%${q}%`).limit(limit),
+             scoped().contains('keywords', [q.toLowerCase()]).limit(limit),
+           ]);
++          if (controller.signal.aborted || generation !== requestGeneration.current) return;
+           if (prefixRes.error) throw prefixRes.error;
+           if (containsRes.error) throw containsRes.error;
+           if (keywordRes.error) throw keywordRes.error;
+@@ -80,21 +93,24 @@
+           merged.sort((a, b) => (b.matchScore ?? 0) - (a.matchScore ?? 0));
+           setStreets(merged.slice(0, limit));
+         } catch (err) {
+-          if ((err as { name?: string })?.name !== 'AbortError') {
++          if (!controller.signal.aborted && generation === requestGeneration.current) {
+             console.error('Street search failed:', err);
++            setSearchError('Street search is unavailable. Retry search.');
+             setStreets([]);
+           }
+         } finally {
+-          if (abortRef.current === controller) setLoading(false);
++          clearTimeout(timeoutId);
++          if (generation === requestGeneration.current) setLoading(false);
+         }
+       })();
+     }, 200);
+ 
+     return () => {
++      requestGeneration.current++;
+       if (debounceRef.current) clearTimeout(debounceRef.current);
+       abortRef.current?.abort();
+     };
+-  }, [searchQuery, townName, limit]);
++  }, [searchQuery, retryKey, townName, limit]);
+ 
+-  return { streets, loading };
++  return { streets, loading, error: searchError };
+ };
+--- a/src/lib/placeCache.ts
++++ b/src/lib/placeCache.ts
+@@ -73,6 +73,7 @@
+   query: string,
+   limit = 20,
+   bbox?: TownBBox,
++  signal?: AbortSignal,
+ ) {
+   const trimmed = query.trim();
+   if (!trimmed) return [];
+@@ -89,16 +90,20 @@
+     return q.gte('lat', minLat).lte('lat', maxLat).gte('lon', minLng).lte('lon', maxLng);
+   };
+ 
+-  const [{ data: namePrefix }, { data: displayPrefix }, { data: containsMatches }] = await Promise.all([
+-    applyBbox(supabase.from('places_cache').select('*').ilike('name', prefix)).limit(limit),
+-    applyBbox(supabase.from('places_cache').select('*').ilike('display_name', prefix)).limit(limit),
++  const responses = await Promise.all([
++    applyBbox(supabase.from('places_cache').select('*').ilike('name', prefix)).limit(limit).abortSignal(signal ?? new AbortController().signal),
++    applyBbox(supabase.from('places_cache').select('*').ilike('display_name', prefix)).limit(limit).abortSignal(signal ?? new AbortController().signal),
+     applyBbox(
+       supabase
+         .from('places_cache')
+         .select('*')
+         .or(`name.ilike.${contains},display_name.ilike.${contains}`),
+-    ).limit(limit),
++    ).limit(limit).abortSignal(signal ?? new AbortController().signal),
+   ]);
++
++  const failed = responses.find((response) => response.error);
++  if (failed?.error) throw failed.error;
++  const [namePrefix, displayPrefix, containsMatches] = responses.map((response) => response.data);
+ 
+   const merged = [...(namePrefix ?? []), ...(displayPrefix ?? []), ...(containsMatches ?? [])];
+   const seen = new Set<string>();
+--- a/src/test/DestinationSearchScreen.test.tsx
++++ b/src/test/DestinationSearchScreen.test.tsx
+@@ -35,6 +35,8 @@
+       expect(screen.getByRole('textbox', { name: label })).toHaveValue('Harare');
+       const clear = screen.getByRole('button', { name: `Clear ${label.toLowerCase()}` });
+       expect(clear.tagName).toBe('BUTTON');
++      expect(clear.closest('.destination-search-control')).toBe(input.closest('.destination-search-control'));
++      expect(input.closest('.destination-search-control')).not.toBeNull();
+       expect(clear.parentElement?.closest('button')).toBeNull();
+       clear.focus();
+       expect(clear).toHaveFocus();
+@@ -79,3 +81,97 @@
+     expect(callbacks.onSelectPlace).toHaveBeenLastCalledWith({ name: 'Market', lat: -17.83, lng: 31.04, secondary: 'Harare' });
+   });
+ });
++
++ describe('destination status and connected actions', () => {
++ it('exposes GPS, map and network errors with the real callbacks', () => {
++ const callbacks = props(); const {rerender}=render(<DestinationSearchScreen {...callbacks} activeField="dropoff" />);
++ fireEvent.click(screen.getByRole('button', {name: /Use current location/})); expect(callbacks.onUseMyLocation).toHaveBeenCalledOnce();
++ fireEvent.click(screen.getByRole('button', {name: /Choose on map/})); expect(callbacks.onChooseOnMap).toHaveBeenCalledOnce();
++ rerender(<DestinationSearchScreen {...callbacks} activeField="dropoff" query="Gwanda" searchError="Search unavailable" />);
++ expect(screen.getByRole('alert')).toHaveTextContent('Search unavailable');
++ expect(screen.queryByText(/No results for/)).not.toBeInTheDocument();
++ });
++});
++
++
++describe('destination search feedback', () => {
++  it.each([
++    ['', 'Type at least 3 characters to search.'],
++    ['G', 'Type 2 more characters to search.'],
++    ['Gw', 'Type 1 more character to search.'],
++    ['  G  ', 'Type 2 more characters to search.'],
++  ])('explains the threshold for query %j without exposing stale suggestions', (query, instruction) => {
++    const callbacks = props();
++    render(<DestinationSearchScreen {...callbacks} query={query} results={[
++      { id: 'stale', name: 'Previous result', onSelect: vi.fn() },
++    ]} />);
++    expect(screen.getByText(instruction)).toBeVisible();
++    expect(screen.queryByRole('button', { name: 'Previous result' })).not.toBeInTheDocument();
++    expect(screen.queryByText(/No results for/)).not.toBeInTheDocument();
++    if (query.trim()) {
++      expect(screen.queryByRole('button', { name: 'Home 12 Main Road' })).not.toBeInTheDocument();
++    } else {
++      expect(screen.getByRole('button', { name: 'Home 12 Main Road' })).toBeVisible();
++    }
++  });
++
++  it('keeps loading feedback visible while existing results remain', () => {
++    const callbacks = props();
++    render(<DestinationSearchScreen {...callbacks} query="Harare" loading results={[
++      { id: '1', name: 'Harare Gardens', secondary: 'Harare', onSelect: vi.fn() },
++    ]} />);
++    expect(screen.getByText(/Searching places/)).toBeVisible();
++    expect(screen.getByRole('region', { name: 'Search results' })).toContainElement(
++      screen.getByRole('button', { name: 'Harare Gardens Harare' }),
++    );
++    expect(screen.queryByText(/No results for/)).not.toBeInTheDocument();
++  });
++
++  it('distinguishes a settled empty result from searching', () => {
++    const callbacks = props();
++    const { rerender } = render(<DestinationSearchScreen {...callbacks} query="Gwanda" loading />);
++    expect(screen.queryByText(/No results for/)).not.toBeInTheDocument();
++    rerender(<DestinationSearchScreen {...callbacks} query="Gwanda" loading={false} />);
++    expect(screen.getByText(/No results for/)).toBeVisible();
++    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
++  });
++
++  it('offers retry for provider failures without claiming there are no matches', () => {
++    const callbacks = props();
++    const onRetrySearch = vi.fn();
++    render(<DestinationSearchScreen {...callbacks} query="Gwanda" searchError="Place search is unavailable." onRetrySearch={onRetrySearch} />);
++    expect(screen.getByRole('alert')).toHaveTextContent('Place search is unavailable.');
++    expect(screen.queryByText(/No results for/)).not.toBeInTheDocument();
++    fireEvent.click(screen.getByRole('button', { name: 'Retry search' }));
++    expect(onRetrySearch).toHaveBeenCalledOnce();
++    expect(callbacks.onQueryChange).not.toHaveBeenCalled();
++    expect(callbacks.onSelectPlace).not.toHaveBeenCalled();
++  });
++
++  it('announces coordinate resolution without showing an empty result', () => {
++    const callbacks = props();
++    render(<DestinationSearchScreen {...callbacks} query="Gwanda" resolving />);
++    expect(screen.getByText(/Resolving location/)).toBeVisible();
++    expect(screen.queryByText(/No results for/)).not.toBeInTheDocument();
++    expect(callbacks.onSelectPlace).not.toHaveBeenCalled();
++  });
++
++  it('keeps long provider names and addresses accessible in native selectable buttons', () => {
++    const callbacks = props();
++    const onSelect = vi.fn();
++    const name = 'Gwanda Provincial Hospital outpatient entrance';
++    const secondary = 'Hospital Road, Gwanda, Matabeleland South Province, Zimbabwe';
++    render(<DestinationSearchScreen {...callbacks} activeField="dropoff" query="Hospital" results={[
++      { id: 'hospital', name, secondary, onSelect },
++    ]} />);
++    const result = screen.getByRole('button', { name: `${name} ${secondary}` });
++    expect(result.tagName).toBe('BUTTON');
++    expect(result).not.toBeDisabled();
++    result.focus();
++    expect(result).toHaveFocus();
++    fireEvent.click(result);
++    expect(onSelect).toHaveBeenCalledOnce();
++    expect(callbacks.onSelectPlace).not.toHaveBeenCalled();
++    expect(callbacks.onActiveFieldChange).not.toHaveBeenCalled();
++  });
++});
+--- /dev/null
++++ b/src/test/DestinationSearchPipeline.test.tsx
+@@ -0,0 +1,75 @@
++import { act, renderHook } from '@testing-library/react';
++import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
++import { useStreets } from '@/hooks/useStreets';
++import { searchCachedPlacesPrefix } from '@/lib/placeCache';
++
++const db = vi.hoisted(() => ({ response: null as unknown, requests: [] as Array<{ signal?: AbortSignal }> }));
++vi.mock('@/lib/supabaseClient', () => ({ supabase: { from: () => {
++  const request: { signal?: AbortSignal } = {};
++  db.requests.push(request);
++  const builder = {
++    select: () => builder, eq: () => builder, ilike: () => builder,
++    contains: () => builder, gte: () => builder, lte: () => builder,
++    or: () => builder, limit: () => builder,
++    abortSignal: (signal: AbortSignal) => { request.signal = signal; return builder; },
++    then: (resolve: (value: unknown) => unknown, reject: (reason: unknown) => unknown) => Promise.resolve(db.response).then(resolve, reject),
++  };
++  return builder;
++} } }));
++vi.mock('@/lib/businessApi', () => ({ cachePlace: vi.fn() }));
++
++beforeEach(() => { vi.useFakeTimers(); db.requests = []; db.response = { data: [], error: null }; });
++afterEach(() => { vi.useRealTimers(); });
++
++describe('destination provider cancellation and feedback', () => {
++  it('does not query below the three-character threshold', async () => {
++    const { result } = renderHook(() => useStreets({ searchQuery: 'G', townName: 'Gwanda' }));
++    await act(async () => { await vi.advanceTimersByTimeAsync(1000); });
++    expect(db.requests).toHaveLength(0);
++    expect(result.current.loading).toBe(false);
++  });
++
++  it('settles a hung request with a visible error and aborts it', async () => {
++    db.response = new Promise(() => {});
++    const { result } = renderHook(() => useStreets({ searchQuery: 'Gwanda', townName: 'Gwanda' }));
++    await act(async () => { await vi.advanceTimersByTimeAsync(5200); });
++    expect(result.current.loading).toBe(false);
++    expect(result.current.error).toMatch(/timed out/i);
++    expect(db.requests.every((request) => request.signal?.aborted)).toBe(true);
++  });
++
++  it('rejects late data after clearing the input even if transport ignores abort', async () => {
++    let resolve!: (value: unknown) => void;
++    db.response = new Promise((done) => { resolve = done; });
++    const { result, rerender } = renderHook(({ query }) => useStreets({ searchQuery: query, townName: 'Gwanda' }), { initialProps: { query: 'Gwanda' } });
++    await act(async () => { await vi.advanceTimersByTimeAsync(200); });
++    rerender({ query: '' });
++    await act(async () => { resolve({ data: [{ id: 'old', name: 'Old result' }], error: null }); });
++    expect(result.current.streets).toEqual([]);
++    expect(result.current.loading).toBe(false);
++  });
++
++  it('retries the same query when requested', async () => {
++    db.response = { data: null, error: new Error('offline') };
++    const { result, rerender } = renderHook(({ retryKey }) => useStreets({ searchQuery: 'Gwanda', townName: 'Gwanda', retryKey }), { initialProps: { retryKey: 0 } });
++    await act(async () => { await vi.advanceTimersByTimeAsync(200); });
++    expect(result.current.error).toMatch(/unavailable/i);
++    db.response = { data: [{ id: 'real-response', name: 'Provider result' }], error: null };
++    rerender({ retryKey: 1 });
++    await act(async () => { await vi.advanceTimersByTimeAsync(200); });
++    expect(result.current.error).toBeNull();
++    expect(result.current.streets[0].name).toBe('Provider result');
++  });
++
++  it('propagates cache provider failures instead of claiming an empty search', async () => {
++    db.response = { data: null, error: new Error('unauthorized') };
++    await expect(searchCachedPlacesPrefix('Gwanda')).rejects.toThrow('unauthorized');
++  });
++
++  it('passes cancellation to every cache query', async () => {
++    const controller = new AbortController();
++    await searchCachedPlacesPrefix('Gwanda', 12, undefined, controller.signal);
++    expect(db.requests).toHaveLength(3);
++    expect(db.requests.every((request) => request.signal === controller.signal)).toBe(true);
++  });
++});

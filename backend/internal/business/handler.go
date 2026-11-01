@@ -19,12 +19,21 @@ import (
 	"pickme-backend/internal/observability"
 )
 
+// RideCancelledCallback receives auth subjects after commit, never driver row IDs.
+// Durable delivery remains a later milestone.
+type RideCancelledCallback func(context.Context, string, string, string)
+
 type Handler struct {
-	db *pgxpool.Pool
+	db                *pgxpool.Pool
+	beginCancellation func(context.Context, pgx.TxOptions) (pgx.Tx, error)
+	onRideCancelled   RideCancelledCallback
 }
 
-func RegisterRoutes(app *fiber.App, db *pgxpool.Pool, requireAuth fiber.Handler) {
+func RegisterRoutes(app *fiber.App, db *pgxpool.Pool, requireAuth fiber.Handler, callbacks ...RideCancelledCallback) {
 	h := &Handler{db: db}
+	if len(callbacks) > 0 {
+		h.onRideCancelled = callbacks[0]
+	}
 
 	api := app.Group("/api", requireAuth)
 	api.Post("/ratings/driver", h.CreateDriverRating)
@@ -196,55 +205,53 @@ func (h *Handler) cancelRide(ctx context.Context, rideID string, userID string, 
 		CancellationFee float64 `json:"cancellation_fee"`
 		Reason          string  `json:"reason"`
 	}
-	_ = c.BodyParser(&in)
+	if len(c.Body()) > 0 {
+		if err := c.BodyParser(&in); err != nil {
+			return fiber.NewError(fiber.StatusBadRequest, "invalid request body")
+		}
+	}
 	if rideID == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "ride id is required")
 	}
-	if in.CancellationFee < 0 {
-		return fiber.NewError(fiber.StatusBadRequest, "cancellation_fee cannot be negative")
+	// No verified server fee policy exists here. Retain the compatibility field,
+	// but never let a caller select a fee or erase a previously stored fee.
+	if in.CancellationFee != 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"code": "CANCELLATION_FEE_SERVER_OWNED", "error": "cancellation fees must be determined by the server"})
 	}
-
-	tx, err := h.db.BeginTx(ctx, pgx.TxOptions{})
+	begin := h.beginCancellation
+	if begin == nil {
+		begin = h.db.BeginTx
+	}
+	tx, err := begin(ctx, pgx.TxOptions{})
 	if err != nil {
 		return err
 	}
 	defer tx.Rollback(ctx)
-
-	if in.CancellationFee > 0 {
-		_, err = tx.Exec(ctx, `
-			INSERT INTO public.cancellation_fees (ride_id, amount, reason)
-			VALUES ($1, $2, NULLIF($3, ''))`,
-			rideID, in.CancellationFee, strings.TrimSpace(in.Reason))
-		if err != nil {
-			return err
-		}
-	}
-
-	var tag pgconn.CommandTag
-	if admin {
-		tag, err = tx.Exec(ctx, `
-			UPDATE public.rides
-			SET status = 'cancelled', ride_status = 'cancelled', cancellation_fee = $2, updated_at = now()
-			WHERE id = $1`,
-			rideID, in.CancellationFee)
-	} else {
-		tag, err = tx.Exec(ctx, `
-			UPDATE public.rides
-			SET status = 'cancelled', ride_status = 'cancelled', cancellation_fee = $3, updated_at = now()
-			WHERE id = $1 AND (user_id = $2 OR rider_id = $2)`,
-			rideID, userID, in.CancellationFee)
+	// PostgreSQL rechecks the predicate after concurrent row updates. Preserve
+	// known nonterminal states and reject terminal/unknown states and retries.
+	var riderUserID, driverUserID string
+	err = tx.QueryRow(ctx, `
+  UPDATE public.rides AS r
+  SET status = 'cancelled', updated_at = now()
+  WHERE r.id = $1 AND ($3 OR r.user_id::text = $2)
+    AND r.status IN ('pending', 'scheduled', 'accepted', 'arrived', 'in_progress')
+  RETURNING r.user_id::text,
+    COALESCE((SELECT d.user_id::text FROM public.drivers d WHERE d.id = r.driver_id), '')`,
+		rideID, userID, admin).Scan(&riderUserID, &driverUserID)
+	if err == pgx.ErrNoRows {
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"code": "INVALID_STATE", "error": "ride is unavailable for cancellation"})
 	}
 	if err != nil {
 		return err
-	}
-	if tag.RowsAffected() == 0 {
-		return fiber.NewError(fiber.StatusNotFound, "ride not found or not allowed")
 	}
 	if err := tx.Commit(ctx); err != nil {
 		return err
 	}
 	observability.RecordRideCancelled()
-	return c.JSON(fiber.Map{"success": true, "cancelled": tag.RowsAffected()})
+	if h.onRideCancelled != nil {
+		h.onRideCancelled(ctx, rideID, riderUserID, driverUserID)
+	}
+	return c.JSON(fiber.Map{"success": true, "cancelled": 1})
 }
 
 func (h *Handler) CreateNotification(c *fiber.Ctx) error {
@@ -421,14 +428,13 @@ func (h *Handler) CreateDriverApplication(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	row := only(payload, "vehicle_type", "vehicle_make", "vehicle_model", "vehicle_year", "vehicle_color", "plate_number", "gender", "status", "is_online")
+	// Registration is a user-owned profile submission. Approval, presence, and
+	// eligibility are server/admin authorities and must never be mass-assigned
+	// from the request body.
+	row := driverApplicationFields(payload)
 	row["user_id"] = userID
-	if row["status"] == nil {
-		row["status"] = "pending"
-	}
-	if row["is_online"] == nil {
-		row["is_online"] = false
-	}
+	row["status"] = "pending"
+	row["is_online"] = false
 	id, err := h.insertReturningID(c.Context(), "drivers", row)
 	if err != nil {
 		return err
@@ -450,17 +456,13 @@ func (h *Handler) UpsertDriverApplication(c *fiber.Ctx) error {
 	if len(driver) == 0 {
 		driver = payload
 	}
-	driver = only(driver, "vehicle_type", "vehicle_make", "vehicle_model", "vehicle_year", "vehicle_color", "plate_number", "gender", "status", "is_online")
+	driver = driverUpsertFields(driver)
 	if len(driver) == 0 {
 		return fiber.NewError(fiber.StatusBadRequest, "driver fields are required")
 	}
 	driver["user_id"] = userID
-	if driver["status"] == nil {
-		driver["status"] = "pending"
-	}
-	if driver["is_online"] == nil {
-		driver["is_online"] = false
-	}
+	// Leave protected fields out of the upsert. Database defaults apply on a
+	// new row, while an existing reviewed/presence row remains unchanged.
 
 	tx, err := h.db.BeginTx(c.Context(), pgx.TxOptions{})
 	if err != nil {
@@ -495,13 +497,12 @@ func (h *Handler) CreateDriverDocument(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	row := only(payload, "driver_id", "document_type", "file_url", "status", "rejection_reason")
+	row := driverDocumentSubmissionFields(payload)
 	if row["driver_id"] == nil || row["document_type"] == nil || row["file_url"] == nil {
 		return fiber.NewError(fiber.StatusBadRequest, "driver_id, document_type, and file_url are required")
 	}
-	if row["status"] == nil {
-		row["status"] = "pending"
-	}
+	// Review state and review metadata are trusted-server/admin fields.
+	row["status"] = "pending"
 	var allowed bool
 	if err := h.db.QueryRow(c.Context(), `SELECT EXISTS (SELECT 1 FROM public.drivers WHERE id = $1 AND user_id = $2)`, row["driver_id"], userID).Scan(&allowed); err != nil {
 		return err
@@ -938,8 +939,8 @@ func (h *Handler) AdminCancelStuckRides(c *fiber.Ctx) error {
 	}
 	tag, err := h.db.Exec(c.Context(), `
 		UPDATE public.rides
-		SET status = 'cancelled', ride_status = 'cancelled', updated_at = now()
-		WHERE (status = 'accepted' OR ride_status = 'accepted') AND updated_at < $1`, cutoff)
+		SET status = 'cancelled', updated_at = now()
+		WHERE status = 'accepted' AND updated_at < $1`, cutoff)
 	if err != nil {
 		return err
 	}
@@ -1332,6 +1333,25 @@ func only(payload map[string]any, keys ...string) map[string]any {
 		}
 	}
 	return out
+}
+
+func driverApplicationFields(payload map[string]any) map[string]any {
+	row := only(payload, "vehicle_type", "vehicle_make", "vehicle_model", "vehicle_year", "vehicle_color", "plate_number", "gender")
+	row["status"] = "pending"
+	row["is_online"] = false
+	return row
+}
+
+func driverUpsertFields(payload map[string]any) map[string]any {
+	// Protected fields are deliberately absent so an application retry cannot
+	// alter an existing approval or presence state.
+	return only(payload, "vehicle_type", "vehicle_make", "vehicle_model", "vehicle_year", "vehicle_color", "plate_number", "gender")
+}
+
+func driverDocumentSubmissionFields(payload map[string]any) map[string]any {
+	row := only(payload, "driver_id", "document_type", "file_url")
+	row["status"] = "pending"
+	return row
 }
 
 func fieldSet(keys ...string) map[string]bool {

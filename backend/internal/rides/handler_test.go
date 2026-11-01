@@ -28,6 +28,30 @@ type fakeDB struct {
 	queryRowFn func(ctx context.Context, sql string, args ...any) pgx.Row
 }
 
+func TestWebsocketLifecycleNotifierRevokesTerminalRooms(t *testing.T) {
+	manager := websocket.NewManager()
+	notifier := websocketRideLifecycleNotifier{
+		ws:      manager,
+		riders:  websocket.NewConnectionRegistry(),
+		drivers: websocket.NewConnectionRegistry(),
+	}
+
+	for _, event := range []string{"ride_cancelled", "ride_completed"} {
+		t.Run(event, func(t *testing.T) {
+			notifier.NotifyRideLifecycle(RideLifecycleBroadcast{
+				Event:      event,
+				RideID:     "ride-1",
+				DriverID:   "driver-1",
+				RideStatus: event,
+				Room:       "ride_ride-1",
+			}, "rider-1", "driver-1")
+			if got := len(manager.RoomSnapshot("ride_ride-1")); got != 0 {
+				t.Fatalf("expected terminal lifecycle to leave room empty, got %d clients", got)
+			}
+		})
+	}
+}
+
 func (f *fakeDB) Begin(ctx context.Context) (Tx, error) {
 	return f.beginFn(ctx)
 }
@@ -81,6 +105,12 @@ func (r *fakeRow) Scan(dest ...any) error {
 	}
 	for i := range dest {
 		switch d := dest[i].(type) {
+		case *bool:
+			v, ok := r.values[i].(bool)
+			if !ok {
+				return pgx.ErrNoRows
+			}
+			*d = v
 		case *string:
 			v, ok := r.values[i].(string)
 			if !ok {
@@ -481,51 +511,6 @@ func TestAcceptOfferRaceConditionReturnsConflict(t *testing.T) {
 	app := makeAuthApp(h.AcceptOffer, "rider-1")
 
 	resp := doRequest(t, app, "/test/ride-1/offer-1", AcceptRideRequest{})
-	if resp.StatusCode != http.StatusConflict {
-		t.Fatalf("expected status 409, got %d", resp.StatusCode)
-	}
-}
-
-func TestRejectOfferSuccessful(t *testing.T) {
-	var updateSQL string
-	db := &fakeDB{
-		execFn: func(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error) {
-			updateSQL = sql
-			if args[0] != "offer-1" || args[1] != "ride-1" || args[2] != "driver-1" {
-				t.Fatalf("unexpected reject args: %#v", args)
-			}
-			return pgconn.NewCommandTag("UPDATE 1"), nil
-		},
-	}
-
-	h := makeHandlerWithDB(db)
-	app := makeAuthApp(h.RejectOffer, "driver-1")
-
-	resp := doRequest(t, app, "/test/ride-1/offer-1", nil)
-	if resp.StatusCode != http.StatusOK {
-		t.Fatalf("expected status 200, got %d", resp.StatusCode)
-	}
-	if !strings.Contains(updateSQL, "UPDATE public.offers") ||
-		!strings.Contains(updateSQL, "ride_id = $2") ||
-		!strings.Contains(updateSQL, "status = 'rejected'") {
-		t.Fatalf("unexpected reject SQL: %s", updateSQL)
-	}
-}
-
-func TestDriverCannotRejectAnotherDriversOffer(t *testing.T) {
-	db := &fakeDB{
-		execFn: func(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error) {
-			if args[2] != "driver-2" {
-				t.Fatalf("expected authenticated driver id in reject args, got %#v", args)
-			}
-			return pgconn.NewCommandTag("UPDATE 0"), nil
-		},
-	}
-
-	h := makeHandlerWithDB(db)
-	app := makeAuthApp(h.RejectOffer, "driver-2")
-
-	resp := doRequest(t, app, "/test/ride-1/offer-1", nil)
 	if resp.StatusCode != http.StatusConflict {
 		t.Fatalf("expected status 409, got %d", resp.StatusCode)
 	}

@@ -1,0 +1,18 @@
+{
+  "url": "http://127.0.0.1:8083/ride",
+  "scope": "Existing labelled isolated fixture; no live services",
+  "device": "iPhone XR",
+  "browser": "Microsoft Edge (headless diagnostic only)",
+  "errors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "blocked": [],
+  "pending": [],
+  "viewport": {
+    "width": 414,
+    "height": 896
+  },
+  "rootChildren": 4,
+  "visibleText": "MOCKED / ISOLATED UI - NO LIVE SERVICES\nMOCKED MAP / UI ONLY\nGwanda\n25+ km area\n\nGood afternoon, Fixture\n\nWhere to?\n\nHome\nWork\nSchedule\nLet's CruiXe\nEnable location\n\nCruiXe uses your location to set your pickup point and find nearby drivers.\n\nAllow locationSet pickup manually",
+  "status": "PASS"
+}

@@ -1,0 +1,51 @@
+{
+  "local8080BeforeRestart": {
+    "status": "FAIL",
+    "finding": "Connection refused; no server listening"
+  },
+  "isolatedPreview": {
+    "status": "PASS",
+    "url": "http://127.0.0.1:8083/ride",
+    "serverSession": 61282,
+    "scope": "Existing mocked fixture; no live services or successful bookings"
+  },
+  "vscodeMobileView": {
+    "status": "PASS",
+    "device": "iPhone X",
+    "verification": "Confirmed URL input via UI Automation, then visually inspected final screenshot with rendered app and curved red ribbon",
+    "screenshot": "vscode-mobileview-final.png"
+  },
+  "vscodeIphoneXR": {
+    "status": "BLOCKED",
+    "reason": "Installed cirlorm.mobileview 0.0.7 offers only iPhone X, iPhone 8 and Pixel 1"
+  },
+  "headlessEdgeIphoneXR": {
+    "status": "PASS",
+    "viewport": {
+      "width": 414,
+      "height": 896
+    },
+    "pageErrors": 0,
+    "consoleErrors": 0,
+    "httpErrors": 0,
+    "evidence": "pending-diagnostics.json",
+    "screenshot": "pending-iphone-xr.png"
+  },
+  "firstColdLoad": {
+    "status": "FAIL",
+    "reason": "DOMContentLoaded exceeded 60 seconds during cold Vite startup; subsequent navigation rendered with no pending requests"
+  },
+  "heavyLocalChecks": {
+    "status": "NOT RUN"
+  },
+  "approvedPublicationFilesUnchanged": {
+    "status": "PASS"
+  },
+  "applicationSourceChanges": "NONE",
+  "productionWrites": "NONE",
+  "warnings": [
+    "Outdated Browserslist data",
+    "Ambiguous Tailwind easing utility"
+  ],
+  "limitations": "This restores the isolated UI preview. It does not certify the full authenticated app at port 8080."
+}

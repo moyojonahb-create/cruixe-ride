@@ -1,0 +1,78 @@
+--- before/src/pages/RideMatching.tsx
++++ after/src/pages/RideMatching.tsx
+@@ -144,7 +144,6 @@
+   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+   const [noteOpen, setNoteOpen] = useState(false);
+   const [noteValue, setNoteValue] = useState('');
+-  const [noteSaving, setNoteSaving] = useState(false);
+   const [noteReuseEveryTrip, setNoteReuseEveryTrip] = useState(false);
+   const [preferredCenter, setPreferredCenter] = useState<{ lat: number; lng: number } | null>(null);
+   const [driverProfiles, setDriverProfiles] = useState<Record<string, DriverProfile & { full_name?: string | null }>>({});
+@@ -654,8 +653,7 @@
+   };
+ 
+   const handleSaveNote = async (note: string, reuseEveryTrip: boolean) => {
+-    if (!rideId) return;
+-    setNoteSaving(true);
++    if (!rideId) return false;
+     try {
+       const { data: auth } = await supabase.auth.getUser();
+       const { error } = await supabase
+@@ -672,10 +670,10 @@
+       haptic('light');
+       toast({ title: 'Note sent to drivers' });
+       setNoteOpen(false);
++      return true;
+     } catch (e) {
+       toast({ title: 'Could not save note', description: (e as Error).message, variant: 'destructive' });
+-    } finally {
+-      setNoteSaving(false);
++      return false;
+     }
+   };
+ 
+@@ -1511,28 +1509,13 @@
+                   </div>
+                 </div>
+ 
+-                {/* Continuous 60s car/progress trail — remounts each radius cycle so it
+-                    keeps looping in sync with the search, per spec (not per-second steps). */}
+-                <div className="relative" style={{ height: 26 }}>
+-                  <span className="absolute left-0 right-0 rounded-full" style={{ top: 11, height: 4, background: 'rgba(17,17,17,.08)' }} />
+-                  <motion.span
+-                    key={`trail-${radiusIndex}`}
+-                    className="absolute left-0 rounded-full"
+-                    style={{ top: 11, height: 4, background: 'linear-gradient(90deg, #FFDD00, #B81104)' }}
+-                    initial={{ width: '0%' }}
+-                    animate={{ width: '100%' }}
+-                    transition={{ duration: 60, ease: 'linear' }}
+-                  />
+-                  <motion.img
+-                    key={`car-${radiusIndex}`}
+-                    src={carSearchSide}
+-                    alt=""
+-                    className="absolute top-0 object-contain"
+-                    style={{ width: 48, height: 20, filter: 'drop-shadow(0 2px 3px rgba(17,17,17,.28))' }}
+-                    initial={{ left: '0%' }}
+-                    animate={{ left: 'calc(100% - 48px)' }}
+-                    transition={{ duration: 60, ease: 'linear' }}
+-                  />
++                {/* Decorative only: restart with the existing radius cycle, never imply assignment. */}
++                <div key={`search-decoration-${radiusIndex}`} className="ride-finding-decoration" aria-hidden="true">
++                  <span className="ride-finding-decoration__track" />
++                  <span className="ride-finding-decoration__trail" />
++                  <span className="ride-finding-decoration__car">
++                    <img src={carSearchSide} alt="" />
++                  </span>
+                 </div>
+ 
+                 {/* Fare stepper surface, wired to the same
+@@ -1573,7 +1556,7 @@
+                   <img src={SEARCH_TIER_ASSETS[tierKey]} alt="" style={{ width: 78, height: 56 }} className="object-contain shrink-0" />
+                   <div className="flex-1 min-w-0">
+                     <p className="text-[16px] font-bold leading-tight" style={{ color: RIDE_TEXT }}>{TIER_LABELS[tierKey]}</p>
+-                    <p className="text-[12.5px] font-semibold truncate" style={{ color: RIDE_TEXT_3 }}>
++                    <p className="ride-finding-summary__route text-[12.5px] font-semibold" style={{ color: RIDE_TEXT_3 }}>
+                       {ride?.pickup_address ?? ''} → {ride?.dropoff_address ?? ''}
+                     </p>
+                     <div className="ride-finding-summary__meta">

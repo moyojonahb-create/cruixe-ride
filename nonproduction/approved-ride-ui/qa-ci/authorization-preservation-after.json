@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "checks": {
+    "originalTrackedStatusUnchanged": true,
+    "originalIndexByteIdentical": true,
+    "originalDirtyTrackedFileContentsUnchanged": true,
+    "originalBranchUnchanged": true,
+    "originalHEADUnchanged": true,
+    "approvedApplicationSourcesUnchanged": true
+  }
+}

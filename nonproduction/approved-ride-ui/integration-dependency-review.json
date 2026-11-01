@@ -1,0 +1,62 @@
+[
+  {
+    "path": "src/pages/Ride.tsx",
+    "exists_in_both": true,
+    "matches_current_main": true
+  },
+  {
+    "path": "src/App.tsx",
+    "exists_in_both": true,
+    "matches_current_main": false
+  },
+  {
+    "path": "src/hooks/useNearbyDrivers.ts",
+    "exists_in_both": true,
+    "matches_current_main": true
+  },
+  {
+    "path": "src/hooks/useRideRealtime.ts",
+    "exists_in_both": true,
+    "matches_current_main": true
+  },
+  {
+    "path": "src/hooks/useTownPricing.ts",
+    "exists_in_both": true,
+    "matches_current_main": true
+  },
+  {
+    "path": "src/lib/backendSocketClient.ts",
+    "exists_in_both": true,
+    "matches_current_main": true
+  },
+  {
+    "path": "src/lib/driverPresence.ts",
+    "exists_in_both": true,
+    "matches_current_main": true
+  },
+  {
+    "path": "src/lib/requestRide.ts",
+    "exists_in_both": true,
+    "matches_current_main": true
+  },
+  {
+    "path": "src/components/ride/DestinationSearchScreen.tsx",
+    "exists_in_both": true,
+    "matches_current_main": true
+  },
+  {
+    "path": "src/components/ride/ScheduleRide.tsx",
+    "exists_in_both": true,
+    "matches_current_main": true
+  },
+  {
+    "path": "src/components/ride/PaymentMethodSelector.tsx",
+    "exists_in_both": true,
+    "matches_current_main": true
+  },
+  {
+    "path": "src/hooks/useAuth.tsx",
+    "exists_in_both": true,
+    "matches_current_main": true
+  }
+]

@@ -1,0 +1,105 @@
+{
+  "status": "PASS",
+  "node": "v22.23.4",
+  "scope": "Lightweight TSX parse/transpile only; no type checking, dependency resolution or production build",
+  "files": [
+    {
+      "file": "src/components/ride/RideView.tsx",
+      "status": "PASS",
+      "errors": [],
+      "sha256": "3a5b7d0ffeb1fa8126ec726bfbe86ce27ae6131cf8f3f1a19682dec6966bf4c0"
+    },
+    {
+      "file": "src/components/ride/NoteToDriverSheet.tsx",
+      "status": "PASS",
+      "errors": [],
+      "sha256": "3a5266c75a09af48f90752182e128b83d95583c56b4bccd2a06186a5b7235389"
+    },
+    {
+      "file": "src/components/ride/RideGlassPanel.tsx",
+      "status": "PASS",
+      "errors": [],
+      "sha256": "f011cf8f2b38dcb4bfe89e087f45d7bc458b061701df00007d7a955ab584beab"
+    },
+    {
+      "file": "src/components/luggage/LuggageSheet.tsx",
+      "status": "PASS",
+      "errors": [],
+      "sha256": "5b9a4e67353bcf11f7ebef15ef79b9cc24727334bc0bcba1db339d70291f9637"
+    },
+    {
+      "file": "nonproduction/approved-ride-ui/src/components/ride/RideView.tsx",
+      "status": "PASS",
+      "errors": [],
+      "sha256": "6851ede1e850206381a473441d86e7d5fffd197ac299c684face9be538e812bf"
+    },
+    {
+      "file": "nonproduction/approved-ride-ui/src/components/ride/NoteToDriverSheet.tsx",
+      "status": "PASS",
+      "errors": [],
+      "sha256": "bf5397cf8b87918c15654ea6f97a5f093a81d85a66ab52b3658e15723a01d4e0"
+    },
+    {
+      "file": "nonproduction/approved-ride-ui/src/components/ride/RideGlassPanel.tsx",
+      "status": "PASS",
+      "errors": [],
+      "sha256": "fb0f768c0b922727c29823faef57ac012b7a93eb7513073bf998dc133583ca81"
+    },
+    {
+      "file": "nonproduction/approved-ride-ui/src/components/luggage/LuggageSheet.tsx",
+      "status": "PASS",
+      "errors": [],
+      "sha256": "f3acfd63705368a1bebf7c65b1aedd804697a76f8aa89e3e4985861049b9c09d"
+    },
+    {
+      "file": "src/components/ride/TripPaymentSelector.tsx",
+      "status": "PASS",
+      "errors": [],
+      "sha256": "e03386220edcd142d194a4fecee67af899d9fe8187296a5c39afc119abebc901"
+    },
+    {
+      "file": "nonproduction/approved-ride-ui/src/components/ride/TripPaymentSelector.tsx",
+      "status": "PASS",
+      "errors": [],
+      "sha256": "e03386220edcd142d194a4fecee67af899d9fe8187296a5c39afc119abebc901"
+    }
+  ],
+  "checks": [
+    {
+      "file": "src/components/ride/RideView.tsx",
+      "status": "PASS",
+      "unchangedHandlers": [
+        "handleSendOffer",
+        "handleSendParcelOffer",
+        "handleAcceptOffer"
+      ]
+    },
+    {
+      "file": "src/components/luggage/LuggageSheet.tsx",
+      "status": "PASS",
+      "unchangedHandlers": [
+        "handleFiles",
+        "removePhoto",
+        "handleSave"
+      ]
+    },
+    {
+      "file": "nonproduction/approved-ride-ui/src/components/ride/RideView.tsx",
+      "status": "PASS",
+      "unchangedHandlers": [
+        "handleSendOffer",
+        "handleSendParcelOffer",
+        "handleAcceptOffer"
+      ]
+    },
+    {
+      "file": "nonproduction/approved-ride-ui/src/components/luggage/LuggageSheet.tsx",
+      "status": "PASS",
+      "unchangedHandlers": [
+        "handleFiles",
+        "removePhoto",
+        "handleSave"
+      ]
+    }
+  ]
+}

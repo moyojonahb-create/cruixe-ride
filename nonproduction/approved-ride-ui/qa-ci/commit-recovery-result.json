@@ -1,0 +1,55 @@
+{
+  "recordedAt": "2026-11-01T10:39:32.180964+00:00",
+  "status": "PASS",
+  "commit": "bb887feaa86589c47f2d728d3d57a087ef89ffe8",
+  "tree": "b68c218604ea659efe85de208eef57c8d4f24b8c",
+  "branch": "verify/cruixe-approved-ui-20261101-2a3ff775",
+  "base": "1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8",
+  "repository": "C:\\Users\\MUSAE\\AppData\\Local\\Temp\\cruixe-byte-exact-20261101-od_hee1c",
+  "index": "C:\\Users\\MUSAE\\AppData\\Local\\Temp\\cruixe-byte-exact-20261101-od_hee1c\\approved-verification.index",
+  "configuredRemote": "https://github.com/moyojonahb-create/PickMe-App.git",
+  "canonicalRemoteFromPriorRead": "moyojonahb-create/cruixe-ride",
+  "committedBlobs": [
+    {
+      "path": ".github/workflows/cruixe-approved-frontend-verify.yml",
+      "status": "PASS",
+      "approvedSHA256": "df87da029f44ed0cbb0a64b95e778d261bb2b45f8f3e44d19300c6090f4f3f2d",
+      "stagedSHA256": "df87da029f44ed0cbb0a64b95e778d261bb2b45f8f3e44d19300c6090f4f3f2d",
+      "gitBlobOID": "ca8944dcfee0499ff40b9973e58b3ba80a686765",
+      "bytes": 7229
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/review/approved-frontend-ci.tgz",
+      "status": "PASS",
+      "approvedSHA256": "2a3ff7756e8f1ab4cafa4aeceb44c73f05fc0268392aacf91af6a417878f4879",
+      "stagedSHA256": "2a3ff7756e8f1ab4cafa4aeceb44c73f05fc0268392aacf91af6a417878f4879",
+      "gitBlobOID": "73cb0189ea1e41ce75b2bf541a312b19fa54e5c3",
+      "bytes": 7912344
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-ci/review/review-manifest.json",
+      "status": "PASS",
+      "approvedSHA256": "a62194cc43b2756f8cac74f52e1d8c9b73df2cb3336b85ea1dcf75b1d315ee9c",
+      "stagedSHA256": "a62194cc43b2756f8cac74f52e1d8c9b73df2cb3336b85ea1dcf75b1d315ee9c",
+      "gitBlobOID": "fd785126cf97d86234896eae664b1c1b8d356bc2",
+      "bytes": 97750
+    }
+  ],
+  "exactThreeFileAllowlist": "PASS",
+  "unrelatedCommittedChanges": "NONE",
+  "authorIdentity": "PASS; reused original repository-local configuration exactly, for this process only",
+  "originalAndPreviousCloneIndexes": "PASS; byte-identical",
+  "previousCloneHEADAndWorktree": "PASS; unchanged",
+  "push": {
+    "status": "NOT RUN",
+    "reason": "User requires reporting the local commit before any remote publication"
+  },
+  "workflowRun": {
+    "status": "NOT RUN"
+  },
+  "runURL": null,
+  "frontendIntegration": "NO-GO; current remote gates have not run",
+  "productionRelease": "NO-GO; staging and authenticated verification unavailable",
+  "objectStoreDependency": "C:\\Users\\MUSAE\\AppData\\Local\\Temp\\cruixe-approved-ui-2a3ff775\\.git\\objects",
+  "note": "New bare repository uses read-only alternate objects from the prior clone. Preserve both temporary repositories for a later authorized publication."
+}

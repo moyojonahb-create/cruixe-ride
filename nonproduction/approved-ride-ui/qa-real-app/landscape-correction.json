@@ -1,0 +1,5 @@
+{
+  "reason": "Component sets inline height from visualViewport; max-height constrains it while preserving keyboard height tracking. A height rule alone cannot override the inline value.",
+  "path": "nonproduction/approved-ride-ui/src/components/ride/destinationScreen.css",
+  "afterSHA256": "3d13af94181d7eb77bfaee1254ff2f139a625fa9bcb2e4140d8144d45af153bd"
+}

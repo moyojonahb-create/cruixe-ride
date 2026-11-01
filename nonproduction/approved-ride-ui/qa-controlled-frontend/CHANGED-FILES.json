@@ -1,0 +1,182 @@
+{
+  "scope": "This continuation only. No existing application source rewritten. New commit records the prior index.html viewport edit.",
+  "sourceEditsThisContinuation": [],
+  "previousSourceInventory": [
+    {
+      "path": "index.html",
+      "beforeSHA256": "251f827c5c6b251f70df56e18a47843b38b214ef72e691070482a94edd1f08fe",
+      "afterSHA256": "a15ea933089f9d2b165b7ba78b7bfbaf6b292da8c8ef58ac0da3e27f013dfad9"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/index.html",
+      "beforeSHA256": "251f827c5c6b251f70df56e18a47843b38b214ef72e691070482a94edd1f08fe",
+      "afterSHA256": "a15ea933089f9d2b165b7ba78b7bfbaf6b292da8c8ef58ac0da3e27f013dfad9"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/approvedRide.css",
+      "beforeSHA256": "dfa71d3bb01c0d2adaecc90ca257adb3104a643c69263d03f4b4106621839576",
+      "afterSHA256": "8b000aad8e442c3b0f8bf01d5e26bc36221374509a7fcd16560d386e6a4b08fc"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/destinationScreen.css",
+      "beforeSHA256": "01eb1367bc44c622da253af0284014a03a22f0e3e0ae6f367f2eebf4df392cda",
+      "afterSHA256": "3d13af94181d7eb77bfaee1254ff2f139a625fa9bcb2e4140d8144d45af153bd"
+    }
+  ],
+  "committedFileAllowlist": [
+    "index.html"
+  ],
+  "newEvidenceFiles": [
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/CONTROLLED-FRONTEND-REPORT.md",
+      "bytes": 15209,
+      "sha256": "8b4602e8646111d7a640c884a515934df93c6a9a6e544f3cc4d93b0a4fa19cdd",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/create-commit.py",
+      "bytes": 2702,
+      "sha256": "c64fbc0784626b6e0fb2ece469d5ded040735390f854a8f546b72f07e8e65673",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/finalize-report.py",
+      "bytes": 4310,
+      "sha256": "c92fecf18b2d0622ac44caf957003d6fb5fd896befc10e53057f1ffee400cb1a",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/finding-drivers-iphone-x.png",
+      "bytes": 51557,
+      "sha256": "23dcf2cc2d10bf143de7e5c143d8429c4bf123f6a85b7639916452eee2a108f2",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/git-status-before.txt",
+      "bytes": 4111,
+      "sha256": "d3be9853bc3440fea1ae63a9f3aa42be85d663eeafdde86f616274099920ae77",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/larger-text-iphone-x-destination.png",
+      "bytes": 58889,
+      "sha256": "fb8ec9b2551550e20ddeddc4918d0cd2bbed4588e5b09e6d2eca254f25d1d968",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/larger-text-iphone-x-home.png",
+      "bytes": 43543,
+      "sha256": "f00b69ccf86ccfdb7bbce6956d60d1912ce0179a9a4614df19268f090ca11dcf",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/local-commit-result.json",
+      "bytes": 2019,
+      "sha256": "4d82492fc757c206385e3125748b5c7ed0b98209c7390ff3eb7eb66a39b04e97",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/MOTION-REVIEW.md",
+      "bytes": 2880,
+      "sha256": "8cf75729e65498e4a68d195bcf984cd5280ea873732c51526ddf8bcd5e40d8b5",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/note-long-text-iphone-x.png",
+      "bytes": 59627,
+      "sha256": "e6d9579161b514bbc224f3ad5aacaa7da6404b17e88b805a1becb1704dd9f4d3",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/payment-iphone-x-failure.png",
+      "bytes": 71554,
+      "sha256": "0940a18d51f1432c2738cf818d008aac9f2346e52dd978c6c2d4cf471ecf1feb",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/payment-iphone-x.png",
+      "bytes": 75150,
+      "sha256": "526af83e7136e14a11f3fe0a85f4285556e53a1253311345eb7e816a1b781d7e",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/precommit-review.json",
+      "bytes": 1275,
+      "sha256": "d2a8024510b5ebd1894c22cf1bc7ef4d79c852dc742229bb0198c8b717dcbc3d",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/prepare-commit.py",
+      "bytes": 3663,
+      "sha256": "f51b6843ae0626b11e5c51c97020b7ee8bdc41222c547eec5326b89309275ff1",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/preservation-after.json",
+      "bytes": 1196,
+      "sha256": "e424fd624e72f380a525d0bf1d6f06ae03340a7a6ad3d0a32f11528027fff090",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/preservation-before.json",
+      "bytes": 6829,
+      "sha256": "aa56ef26160669b8dfccfb13e079b46f6fb8d62807a6f9b60827ed28d21849ea",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/readiness.json",
+      "bytes": 2916,
+      "sha256": "7a9756589da62f566b68edaf9b59a2de710c3a2c72247e5bdf58d952ff16098b",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/resources.json",
+      "bytes": 83,
+      "sha256": "ff2f1f5b827f9e164a46de12dfdbc6fd9a6fe144e30b443567727c11b0283874",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/staged-review.diff",
+      "bytes": 651,
+      "sha256": "36f65e61bce6663bd54410ac92ea151e2e043836367d766d3e80305302c5b98b",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/supplemental-results.json",
+      "bytes": 3742,
+      "sha256": "ffc3479c56a940d55274221f0345a506d991627fb1a3623b7152d8f048df7ba2",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/supplemental-summary.txt",
+      "bytes": 738,
+      "sha256": "17b10c642df72f89ce99feff6e57588146bb87afea64ed129469b0a3f6b5a890",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/supplemental.mjs",
+      "bytes": 7210,
+      "sha256": "47b67f7b11ccc2ba0ef17a0d2012df890c69d7612d64dd2a84286f8e5a4c840c",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/verify-preservation.py",
+      "bytes": 2624,
+      "sha256": "a2b2f7f4c582b05c2293e79cd4eca0c60233c8229c1def3faa4fe80697d9c40e",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/worktrees-before.txt",
+      "bytes": 354,
+      "sha256": "4431ceb06b9253533f5efd43bd0eb9550671c499ff4301cbf651d07cf58a3a44",
+      "classification": "NEW LOCAL QA EVIDENCE; NOT COMMITTED"
+    }
+  ],
+  "thisManifest": {
+    "path": "nonproduction/approved-ride-ui/qa-controlled-frontend/CHANGED-FILES.json",
+    "sha256": null,
+    "reason": "Manifest self-hash intentionally omitted"
+  },
+  "excluded": "All existing unrelated changes, isolated application sources/fixtures, QA artifacts, dependencies/caches, env/credentials, backend/Android/docs and scripts/verify.mjs",
+  "preservation": "PASS; preservation-after.json"
+}

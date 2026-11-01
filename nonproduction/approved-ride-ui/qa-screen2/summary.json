@@ -1,0 +1,14 @@
+{
+  "responsive_pass": true,
+  "viewports": 8,
+  "large_text_pass": true,
+  "selection_journeys_pass": true,
+  "no_premature_booking": true,
+  "page_errors": [],
+  "axe_violations": 0,
+  "small_parcel_reachable": true,
+  "home_back_pass": true,
+  "reduced_motion_pass": true,
+  "protected_pages_require_auth": true,
+  "failure": null
+}

@@ -1,0 +1,140 @@
+{
+  "authority": "MOCKED/ISOLATED UI ONLY",
+  "cases": [
+    {
+      "width": 393,
+      "configuration": {
+        "overflow": false,
+        "tierCount": 1,
+        "route": "/ride?view=locations&tier=economy",
+        "buttons": [
+          {
+            "label": "More passengers",
+            "width": 44,
+            "height": 44,
+            "y": 596
+          },
+          {
+            "label": "Fewer passengers",
+            "width": 44,
+            "height": 44,
+            "y": 596
+          }
+        ],
+        "ribbon": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "confirmation": {
+          "arrowInside": true,
+          "labelNotClipped": true,
+          "labelFont": "13.362px"
+        },
+        "configText": "Gwanda25+ km areaPickupGwanda centreDestinationFixture destinationEconomyAffordable rides, everyday$6.004·9 minFast pickupPassengers1 passenger1Who is riding? · MyselfLuggageOptional photoCashPay the driverScheduleConfirm location & continue"
+      },
+      "axe": {
+        "name": "configuration-393",
+        "violations": []
+      }
+    },
+    {
+      "width": 360,
+      "configuration": {
+        "overflow": false,
+        "tierCount": 1,
+        "route": "/ride?view=locations&tier=economy",
+        "buttons": [
+          {
+            "label": "More passengers",
+            "width": 44,
+            "height": 44,
+            "y": 544
+          },
+          {
+            "label": "Fewer passengers",
+            "width": 44,
+            "height": 44,
+            "y": 544
+          }
+        ],
+        "ribbon": [
+          "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+          "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+        ],
+        "confirmation": {
+          "arrowInside": true,
+          "labelNotClipped": true,
+          "labelFont": "12.24px"
+        },
+        "configText": "Gwanda25+ km areaPickupGwanda centreDestinationFixture destinationEconomyAffordable rides, everyday$6.004·9 minFast pickupPassengers1 passenger1Who is riding? · MyselfLuggageOptional photoCashPay the driverScheduleConfirm location & continue"
+      },
+      "axe": {
+        "name": "configuration-360",
+        "violations": []
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "blockedRequests": [],
+  "forbiddenWrites": [],
+  "checks": [
+    {
+      "width": 393,
+      "layout": {
+        "route": "Fixture pickup → Fixture destination",
+        "routeFits": true,
+        "routeBelowTitle": true,
+        "priceClear": true,
+        "overflow": false
+      },
+      "reduced": {
+        "animations": 0,
+        "car": "none"
+      },
+      "ribbon": [
+        "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+        "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+      ],
+      "axe": {
+        "name": "finding-393",
+        "violations": []
+      }
+    },
+    {
+      "width": 360,
+      "layout": {
+        "route": "Fixture pickup → Fixture destination",
+        "routeFits": true,
+        "routeBelowTitle": true,
+        "priceClear": true,
+        "overflow": false
+      },
+      "reduced": {
+        "animations": 0,
+        "car": "none"
+      },
+      "ribbon": [
+        "M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z",
+        "M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z"
+      ],
+      "axe": {
+        "name": "finding-360",
+        "violations": []
+      }
+    }
+  ],
+  "animation": {
+    "before": "matrix(1, 0, 0, 1, 0.347576, 0)",
+    "after": "matrix(1, 0, 0, 1, 1.21734, 0)",
+    "keys": [
+      "transform",
+      "transform",
+      "transform",
+      "transform"
+    ]
+  },
+  "noteDraftRetained": true,
+  "pass": true
+}

@@ -1,0 +1,17 @@
+{
+  "status": "BLOCKED",
+  "url": "http://localhost:8081/ride",
+  "viewport": {
+    "width": 393,
+    "height": 852
+  },
+  "playwright": "1.64.1",
+  "browser": "Microsoft Edge",
+  "executablePath": "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+  "consoleErrors": [],
+  "pageErrors": [],
+  "blockedRequests": [],
+  "httpErrors": [],
+  "browserVersion": "156.0.4314.50",
+  "failure": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:8081/ride\nCall log:\n\u001b[2m  - navigating to \"http://localhost:8081/ride\", waiting until \"domcontentloaded\"\u001b[22m\n"
+}

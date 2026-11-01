@@ -1,0 +1,5 @@
+backend/go.mod
+backend/go.sum
+backend/internal/assignmenttest/assignment_postgres_test.go
+backend/internal/assignmenttest/postgres_fixture_test.go
+backend/internal/assignmenttest/schema.sql

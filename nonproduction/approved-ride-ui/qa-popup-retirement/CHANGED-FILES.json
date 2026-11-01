@@ -1,0 +1,401 @@
+{
+  "sourceFiles": [
+    {
+      "path": "src/components/ride/RideView.tsx",
+      "beforeSHA256": "38354aaaaf575fe05c137291adfa01c3e7099d1fb36a3acea90c6659bd8b689c",
+      "afterSHA256": "3a5b7d0ffeb1fa8126ec726bfbe86ce27ae6131cf8f3f1a19682dec6966bf4c0",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "src/components/ride/NoteToDriverSheet.tsx",
+      "beforeSHA256": "a5ab6574d7b0afe7adbe39552b84ed49cd2727fca52f913d87769a410495139a",
+      "afterSHA256": "3a5266c75a09af48f90752182e128b83d95583c56b4bccd2a06186a5b7235389",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "src/components/ride/RideGlassPanel.tsx",
+      "beforeSHA256": "49bc0161154560d4a63f37cccf77bb706eefcf88fe80a5bf582ec13039391ae9",
+      "afterSHA256": "f011cf8f2b38dcb4bfe89e087f45d7bc458b061701df00007d7a955ab584beab",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "src/components/luggage/LuggageSheet.tsx",
+      "beforeSHA256": "3a6b418107ea70bebf45d28a43062b42677bd2f97d251f5c7995a8ff44c2dc51",
+      "afterSHA256": "5b9a4e67353bcf11f7ebef15ef79b9cc24727334bc0bcba1db339d70291f9637",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/RideView.tsx",
+      "beforeSHA256": "833d75749e0848b0ddd937c7130b2add32eb3b8619dce645e7e04540e475c1d1",
+      "afterSHA256": "6851ede1e850206381a473441d86e7d5fffd197ac299c684face9be538e812bf",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/NoteToDriverSheet.tsx",
+      "beforeSHA256": "706208720b2dfc1c9e24ecdfe6bd90c99e446d6b3b9e536d1eb21c65b81ab4c6",
+      "afterSHA256": "bf5397cf8b87918c15654ea6f97a5f093a81d85a66ab52b3658e15723a01d4e0",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/RideGlassPanel.tsx",
+      "beforeSHA256": "7dafe11672b599b0e8f3d852a332f0f4304b82f520d69dac8b1e2736b9db931a",
+      "afterSHA256": "fb0f768c0b922727c29823faef57ac012b7a93eb7513073bf998dc133583ca81",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/luggage/LuggageSheet.tsx",
+      "beforeSHA256": "63d3e1b4c0fec66f940e53af49f0ea7bac998239fb6ec93384dc9a7df8aa9b57",
+      "afterSHA256": "f3acfd63705368a1bebf7c65b1aedd804697a76f8aa89e3e4985861049b9c09d",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/approvedRide.css",
+      "beforeSHA256": "8b000aad8e442c3b0f8bf01d5e26bc36221374509a7fcd16560d386e6a4b08fc",
+      "afterSHA256": "d5de6a426c00ce1eda62b17e5a8a4c13998a88a4ac3b80260347451a1e230816",
+      "status": "MODIFIED"
+    },
+    {
+      "path": "src/components/ride/TripPaymentSelector.tsx",
+      "afterSHA256": "e03386220edcd142d194a4fecee67af899d9fe8187296a5c39afc119abebc901",
+      "status": "ADDED"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/src/components/ride/TripPaymentSelector.tsx",
+      "afterSHA256": "e03386220edcd142d194a4fecee67af899d9fe8187296a5c39afc119abebc901",
+      "status": "ADDED"
+    }
+  ],
+  "newEvidenceFiles": [
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/0-before.txt",
+      "bytes": 93272,
+      "sha256": "38354aaaaf575fe05c137291adfa01c3e7099d1fb36a3acea90c6659bd8b689c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/1-before.txt",
+      "bytes": 11164,
+      "sha256": "a5ab6574d7b0afe7adbe39552b84ed49cd2727fca52f913d87769a410495139a"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/2-before.txt",
+      "bytes": 3401,
+      "sha256": "49bc0161154560d4a63f37cccf77bb706eefcf88fe80a5bf582ec13039391ae9"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/3-before.txt",
+      "bytes": 12582,
+      "sha256": "3a6b418107ea70bebf45d28a43062b42677bd2f97d251f5c7995a8ff44c2dc51"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/320-configuration.png",
+      "bytes": 52681,
+      "sha256": "2f1959fffe50bfeee540649dcecf76344cc9848d68f1c1466c839eea2e399796"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/320-failure.png",
+      "bytes": 5993,
+      "sha256": "86eb8b0f2827a7998d31f379dbd288a0cb866b8466aa2222160d0296f76c6091"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/320-luggage.png",
+      "bytes": 53511,
+      "sha256": "71fe45ffd8572416faed53ad9cb4ca66c1f7aa00338540289a4d7c870607ae31"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/320-note.png",
+      "bytes": 60740,
+      "sha256": "4bcd94f3c12da3eacf878d54b64c5b407418b5f5894f785d9e91396ce68d2735"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/320-payment.png",
+      "bytes": 40178,
+      "sha256": "c5efaa0584bb8f0797cdb94584c841154ee74f83c58e83de4ddb0427e3bd91ab"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/375-configuration.png",
+      "bytes": 71731,
+      "sha256": "5f6c0d29dd2d49ed855d8ff463e5b8a16939bfbea6f9f6159ef787e43a9a53ce"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/375-failure.png",
+      "bytes": 71782,
+      "sha256": "08caa87a128947c387a41b933312f960a4d245f6b780ba78ab290eb6a4a2c5de"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/375-luggage.png",
+      "bytes": 69311,
+      "sha256": "1a7ad793ef615299ba68569d0dc0616efa056f8251fb167cbf64aad63b0e4c4f"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/375-note.png",
+      "bytes": 63996,
+      "sha256": "d89f1435123e4fc5cce32eeb4dd6240558897a8eb90fd9a8a89bfe17610a4b36"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/375-payment.png",
+      "bytes": 60192,
+      "sha256": "0ca3aba94d3cdd51310afdecf48f1b3b544e86dc27c21fc51b5761a8e2adc070"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/393-configuration.png",
+      "bytes": 73133,
+      "sha256": "ab6caf15a3cf7c78b76d3c88b24174beff98a37c5d06e18d56d373a231004672"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/393-failure.png",
+      "bytes": 73113,
+      "sha256": "bf41fa4fab5599778e212d11355ea506c41a87c7c8b86b64930a5273ca235b81"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/393-luggage.png",
+      "bytes": 72887,
+      "sha256": "4185254961d050f6b23274d04624fceb65fb2fd732a6aad86daae52b812e5fc0"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/393-note.png",
+      "bytes": 64577,
+      "sha256": "0c0965a85ae429c19144c57aa89cf0203d0360da7e174310adc00867b5a31c0d"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/393-payment.png",
+      "bytes": 62875,
+      "sha256": "c07ee4f922f6660284b38fd85e9feb3614386896f5c2ecd3ae8d64bd2cd95584"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/4-before.txt",
+      "bytes": 100490,
+      "sha256": "833d75749e0848b0ddd937c7130b2add32eb3b8619dce645e7e04540e475c1d1"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/5-before.txt",
+      "bytes": 12060,
+      "sha256": "706208720b2dfc1c9e24ecdfe6bd90c99e446d6b3b9e536d1eb21c65b81ab4c6"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/6-before.txt",
+      "bytes": 4440,
+      "sha256": "7dafe11672b599b0e8f3d852a332f0f4304b82f520d69dac8b1e2736b9db931a"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/7-before.txt",
+      "bytes": 12831,
+      "sha256": "63d3e1b4c0fec66f940e53af49f0ea7bac998239fb6ec93384dc9a7df8aa9b57"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/8-before.txt",
+      "bytes": 13048,
+      "sha256": "8b000aad8e442c3b0f8bf01d5e26bc36221374509a7fcd16560d386e6a4b08fc"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/approved-ci-preservation.json",
+      "bytes": 371,
+      "sha256": "f6f308ef51d82a217c5c247b66229a7a98a00a653306c35f0b2fd4bccd27a3be"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/browser-check.mjs",
+      "bytes": 11606,
+      "sha256": "d45da773e74fe5608a7743687f154bf17499c92601635a222fae3ccff138727f"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/browser-results-initial.json",
+      "bytes": 26924,
+      "sha256": "cc60e0af0ae2a8b3c965e256914988c7b98c1d09efebeb068239ee0e2c761107"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/browser-results-second.json",
+      "bytes": 46505,
+      "sha256": "78f2122af1055640653dd83fb0fada16b17389e60f1e30d81e16e0a35722531b"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/browser-results.json",
+      "bytes": 37317,
+      "sha256": "038da08bbfc4139c081b3d2c9d46a4661574ff9b0999c26cbd3c48c6462da988"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/check-static.mjs",
+      "bytes": 2921,
+      "sha256": "f7d3550bd7efe7b8144eac47fde629d4c1c35baf15e8df7752ee4d1afb3c9b4f"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/edit-source.py",
+      "bytes": 6270,
+      "sha256": "5463f880da58aa15a1ec37f6fc1daa49c733f361c82b629b450648b9e686bdf9"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/initial-320-configuration.png",
+      "bytes": 56601,
+      "sha256": "e14529e9329c20b065d5f2788e1e1f3485d52e51691b905bd028c1e9bc3a419c"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/initial-320-failure.png",
+      "bytes": 56627,
+      "sha256": "0f5be114dcb4e98569f8e41fd37d074e90ddb082a6389e95cad5f8320c89475e"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/initial-320-luggage.png",
+      "bytes": 54006,
+      "sha256": "756ff1610ca4b7265a2497768b75760d83937e546e7f925cb25a12a4958b5116"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/initial-375-configuration.png",
+      "bytes": 71853,
+      "sha256": "4c9355e80863a801fb8749811216154bd96df5206e2f2c4cf816f1ec129e3d26"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/initial-375-failure.png",
+      "bytes": 71782,
+      "sha256": "08caa87a128947c387a41b933312f960a4d245f6b780ba78ab290eb6a4a2c5de"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/initial-375-luggage.png",
+      "bytes": 69556,
+      "sha256": "64e34b73bbab33e700cea466d6a723b9e7633ad25ed132bd3948a9b0f2cd3c53"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/initial-393-configuration.png",
+      "bytes": 73173,
+      "sha256": "ef0a69b2af39e6c420b2ad3f518ab4027c9e33f655e958756ed922a1f45a20e9"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/initial-393-failure.png",
+      "bytes": 73113,
+      "sha256": "bf41fa4fab5599778e212d11355ea506c41a87c7c8b86b64930a5273ca235b81"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/initial-393-luggage.png",
+      "bytes": 72941,
+      "sha256": "9ab98468dfc5b9e3f5647089e3f512e764023d342d0a250acee246c3abe5c6d1"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/POPUP-RETIREMENT-REPORT.md",
+      "bytes": 11627,
+      "sha256": "0ee2274ec01f7a01ce2c0a7b1b78fffcec508e261b4f470c7d140fe8d159ee68"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/preservation-after.json",
+      "bytes": 1371,
+      "sha256": "4ee4753dc5e164661986e0bc7e97d4bd39f3e93023afd6f55e28e46d08cd194b"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/preservation-before.json",
+      "bytes": 7345,
+      "sha256": "b5beced13df380dcefcde879017dc89c303ea7c0212fb65b8f35d1fba494959b"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/readiness.json",
+      "bytes": 804,
+      "sha256": "fd6a3316ca7cd5fb15c1372e82af4b8b0da23984ec4de3f64e9bbe248e8b2b62"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/resources.json",
+      "bytes": 83,
+      "sha256": "caeb2c29c46e4fa0b777d6ae5011595be3975a7ad7c82d491b7a0397d366349a"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-320-configuration.png",
+      "bytes": 52846,
+      "sha256": "7914b3224600d57f90de85926fcdb068d90efb71b5967bf7e7e3dd3094994949"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-320-failure.png",
+      "bytes": 5993,
+      "sha256": "86eb8b0f2827a7998d31f379dbd288a0cb866b8466aa2222160d0296f76c6091"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-320-luggage.png",
+      "bytes": 53423,
+      "sha256": "1f52d6e470f71b178926bfde01e98fbab2090c9c7916acca208b60641a503b22"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-320-note.png",
+      "bytes": 60740,
+      "sha256": "4bcd94f3c12da3eacf878d54b64c5b407418b5f5894f785d9e91396ce68d2735"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-320-payment.png",
+      "bytes": 40339,
+      "sha256": "13f4425e546c403fc78cd18b621ffa7b7b161cafa5d9684c74f0ef0c31fd9184"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-375-configuration.png",
+      "bytes": 71738,
+      "sha256": "9af582010d17f5d72ad8ab57cada5b482c1218fe680e4fc37d003b58c8d4959b"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-375-failure.png",
+      "bytes": 71782,
+      "sha256": "08caa87a128947c387a41b933312f960a4d245f6b780ba78ab290eb6a4a2c5de"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-375-luggage.png",
+      "bytes": 69311,
+      "sha256": "1a7ad793ef615299ba68569d0dc0616efa056f8251fb167cbf64aad63b0e4c4f"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-375-note.png",
+      "bytes": 63996,
+      "sha256": "d89f1435123e4fc5cce32eeb4dd6240558897a8eb90fd9a8a89bfe17610a4b36"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-375-payment.png",
+      "bytes": 60238,
+      "sha256": "7e17a6527eb6a38510fda27d70bde104b08b3d1c6ae997f1b4c272f118ca6866"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-393-configuration.png",
+      "bytes": 73020,
+      "sha256": "80544a2fb59721cec4da6e90f3d699b6ebc9a7601ced882218040a8b8fbeebfe"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-393-failure.png",
+      "bytes": 73113,
+      "sha256": "bf41fa4fab5599778e212d11355ea506c41a87c7c8b86b64930a5273ca235b81"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-393-luggage.png",
+      "bytes": 72886,
+      "sha256": "ed17c8dabb5c5f444c73ac215af10ce94963873076bc1784756d4bf59fb38077"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-393-note.png",
+      "bytes": 64577,
+      "sha256": "0c0965a85ae429c19144c57aa89cf0203d0360da7e174310adc00867b5a31c0d"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/second-393-payment.png",
+      "bytes": 62900,
+      "sha256": "d9a968874c43f9087122cd237304f0e24514f52183742ed3158564c64eca19e8"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/SOURCE-CHANGES.json",
+      "bytes": 3257,
+      "sha256": "21675df732d84e77088c78060d662b73a5175fb796696d43ea21f73eb0f2cc55"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/source-review.diff",
+      "bytes": 47685,
+      "sha256": "2bcc3c58704b645c09b1ade076f46878464dfb5927abde6ef9e67ccce4f593b2"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/static-results.json",
+      "bytes": 3194,
+      "sha256": "d8d5ec1b02e6297ed5713772063dc2c1a6aa1cc5c61a9d379ff164f5ec42a6b5"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/verify-preservation.py",
+      "bytes": 3210,
+      "sha256": "dc6691dcd65002e9c9f66a5ce0f9dfe24c260dff130239e82d8ee335951d6219"
+    },
+    {
+      "path": "nonproduction/approved-ride-ui/qa-popup-retirement/write-report.py",
+      "bytes": 13455,
+      "sha256": "1cc81a1753ad0f67436b71668fa0dabce6f1a621293131653e059c9bb9a2e4bb"
+    }
+  ],
+  "manifest": {
+    "path": "nonproduction/approved-ride-ui/qa-popup-retirement/CHANGED-FILES.json",
+    "selfHashOmitted": true
+  },
+  "commit": "NOT RUN",
+  "preservation": "PASS"
+}

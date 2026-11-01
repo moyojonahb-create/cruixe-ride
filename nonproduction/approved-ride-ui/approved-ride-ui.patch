@@ -1,0 +1,415 @@
+--- a/src/components/ride/RideView.tsx
++++ b/src/components/ride/RideView.tsx
+@@ -56,6 +56,7 @@
+ import { NotificationBell } from '@/components/NotificationCenter';
+ 
+ import RideHomeGreeting from './RideHomeGreeting';
++import './approvedRide.css';
+ import DropoffAutocomplete from './DropoffAutocomplete';
+ 
+ import QuickShortcutsRow from './QuickShortcutsRow';
+@@ -1294,23 +1295,23 @@
+   // MAIN RIDE BOOKING UI
+   // ═══════════════════════════════════════════
+   return (
+-    <div className="relative h-[100dvh] w-full overflow-hidden bg-background">
++    <div className="approved-ride relative h-[100dvh] w-full overflow-hidden bg-background">
+       {/* ── MAP ── */}
+       <div className="absolute inset-0">
+-        <MapboxMap pickup={pickupLocation} dropoff={dropoffLocation} routeGeometry={routeData?.geometry} onMapClick={handleMapClick} defaultCenter={mapCenter} preferredCenter={preferredCenter} defaultZoom={mapZoom} className="w-full h-full" height="100%" drivers={nearbyDrivers} stops={rideStops.filter(s => s.lat && s.lng)} riderGender={(riderPrefs?.gender as "male" | "female" | undefined) ?? null} bottomInset={sheetHeight + 24} />
++        <MapboxMap currentLocation={gpsState.status === 'success' ? gpsState.coords : null} pickup={pickupLocation} dropoff={dropoffLocation} routeGeometry={routeData?.geometry} onMapClick={handleMapClick} defaultCenter={mapCenter} preferredCenter={preferredCenter} defaultZoom={mapZoom} className="w-full h-full" height="100%" drivers={nearbyDrivers} stops={rideStops.filter(s => s.lat && s.lng)} riderGender={(riderPrefs?.gender as "male" | "female" | undefined) ?? null} bottomInset={sheetHeight + 24} />
+ 
+         {/* Map chrome — back button (top-left) + menu/notifications/locate/navigation
+             stack (top-right). Nothing else floats over the map, per the reference. */}
+         <button
+           onClick={() => showHomeContent ? setMenuOpen(true) : navigate(-1)}
+           aria-label={showHomeContent ? 'Menu' : 'Back'}
+-          className="absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform"
++          className="ride-map-control absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform"
+           style={{ top: 'calc(env(safe-area-inset-top) + 7px)', width: 52, height: 52, ...glassSurface }}
+         >
+           {showHomeContent ? <Menu className="w-5 h-5" style={{ color: RIDE_TEXT }} /> : <ArrowLeft className="w-5 h-5" style={{ color: RIDE_TEXT }} />}
+         </button>
+ 
+-        <div className="absolute right-3 z-40 flex flex-col gap-3" style={{ top: 'calc(env(safe-area-inset-top) + 7px)' }}>
++        <div className="ride-map-controls absolute right-3 z-40 flex flex-col gap-3" style={{ top: 'calc(env(safe-area-inset-top) + 7px)' }}>
+           {!showHomeContent && (
+             <button
+               onClick={() => setMenuOpen(true)}
+@@ -1356,7 +1357,6 @@
+         }
+ 
+         {/* Top gradient */}
+-        <div className="absolute top-0 left-0 right-0 h-28 z-10 pointer-events-none" style={{ background: 'linear-gradient(to bottom, hsl(217 85% 29% / 0.12), transparent)' }} />
+ 
+         {/* Route loading */}
+         {routeLoading && pickupLocation && dropoffLocation &&
+@@ -1430,25 +1430,25 @@
+       {/* ── BOTTOM SHEET ── */}
+       <RideGlassPanel
+         ref={sheetRef}
+-        className="absolute left-0 right-0 z-50"
++        className={cn("ride-booking-sheet absolute z-50", showHomeContent && !tierPickerOpen && "ride-booking-sheet--home")}
+         onRibbonClick={() => setSheetExpanded((e) => !e)}
+-        handleWidth={showHomeContent ? 140 : undefined}
++        handleWidth={showHomeContent ? 52 : undefined}
+         style={{
+           bottom: 0,
+           // Idle content is fixed and compact (three row-2 tiles + row-3 buttons) —
+           // size to it exactly instead of capping by viewport height, so nothing
+           // in row 2 or row 3 ever needs a scroll to come into view.
+-          maxHeight: showHomeContent ? 'none' : (sheetExpanded ? '60vh' : '38vh'),
++          maxHeight: showHomeContent ? 'calc(100dvh - env(safe-area-inset-top) - 150px)' : (sheetExpanded ? '70dvh' : '54dvh'),
+           transition: 'max-height 0.3s cubic-bezier(0.32,0.72,0,1)',
+-          paddingBottom: 'env(safe-area-inset-bottom)',
++
+         }}>
+ 
+         {/* Location pills row — pinned above the content, always visible, never scrolls.
+             Same treatment on every screen, including idle (row 1 of the 4e layout). */}
+-        <div className="shrink-0 flex items-center gap-2.5 px-4 pt-2 pb-1">
++        <div className="ride-location-row shrink-0 flex items-center justify-between gap-2.5 px-4 pt-2 pb-1">
+           <TownSelectorSheet currentTown={selectedTown} onSelect={handleTownSelect} />
+           <span
+-            className="ml-auto inline-flex items-center gap-1.5 shrink-0"
++            className="ride-area-pill ml-auto inline-flex items-center gap-1.5 shrink-0"
+             style={{ height: 36, padding: '0 12px', borderRadius: 999, ...glassSurface }}
+           >
+             <Sparkles className="w-[13px] h-[13px]" style={{ color: RIDE_TEXT }} />
+@@ -1458,7 +1458,7 @@
+ 
+         {/* Scrollable content */}
+         <div
+-          className="flex-1 px-4 pt-1 pb-1.5 space-y-2 min-h-0 overflow-y-auto overscroll-contain"
++          className="ride-sheet-scroll flex-1 px-4 pt-1 pb-1.5 space-y-2 min-h-0 overflow-y-auto overscroll-contain"
+           style={showHomeContent ? { paddingBottom: 4 } : undefined}
+         >
+           {/* ── HOME CONTENT (idle state, before booking starts) ──
+@@ -1480,7 +1480,7 @@
+               setSheetExpanded(true);
+             };
+             return (
+-              <div className="flex items-center gap-2" style={{ height: 62 }}>
++              <div className="ride-home-tiles flex items-stretch gap-2">
+                 <RideHomeGreeting
+                   name={firstName}
+                   onSearchClick={() => setTierPickerOpen(true)}
+@@ -1562,16 +1562,16 @@
+             CruiXe underneath it is redundant with the tier list's own selection
+             step and just clutters the screen. */}
+         {!tierPickerOpen && <div
+-          className="shrink-0 px-4 pb-2 pt-1.5"
++          className="ride-sheet-actions shrink-0 px-4 pb-2 pt-1.5"
+           style={showHomeContent ? { paddingTop: 4 } : undefined}
+         >
+           {showHomeContent ? (
+-            <div className="flex items-center gap-3">
++            <div className="ride-home-actions flex items-center gap-3">
+               <button
+                 type="button"
+                 onClick={() => setSchedulePickerOpen(true)}
+                 aria-label={scheduledAt ? 'Scheduled ride' : 'Schedule a ride'}
+-                className="flex-1 flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
++                className="ride-schedule flex-1 flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
+                 style={{ height: 44, borderRadius: 16, ...glassSurface }}>
+                 <Calendar className="w-[18px] h-[18px]" style={{ color: RIDE_RED }} />
+                 <span className="text-[14px] font-semibold" style={{ color: RIDE_TEXT }}>Schedule</span>
+@@ -1582,7 +1582,7 @@
+               <button
+                 type="button"
+                 onClick={() => setTierPickerOpen(true)}
+-                className="relative flex-1 flex items-center justify-center gap-2 overflow-hidden active:scale-[0.97] transition-transform"
++                className="ride-start relative flex-1 flex items-center justify-center gap-2 overflow-hidden active:scale-[0.97] transition-transform"
+                 style={{ height: 44, borderRadius: 16, ...redCta }}>
+                 <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,0))' }} />
+                 <span className="relative text-[16px] font-bold text-white whitespace-nowrap">Let's Crui<span className="italic">X</span>e</span>
+--- a/src/components/ride/RideGlassPanel.tsx
++++ b/src/components/ride/RideGlassPanel.tsx
+@@ -1,6 +1,7 @@
+ import { ReactNode, CSSProperties, forwardRef } from 'react';
+ import { cn } from '@/lib/utils';
+ import { glassPanel, RIDE_RED_GRADIENT, RIDE_FONT } from './rideGlass';
++import { useId } from 'react';
+ 
+ interface RideGlassPanelProps {
+   children: ReactNode;
+@@ -35,6 +36,8 @@
+   handleWidth = 44,
+   panelStyle,
+ }, ref) {
++  const curveId = useId().replace(/:/g, '');
++  const approved = className?.includes('ride-booking-sheet');
+   return (
+     <div
+       ref={ref}
+@@ -46,12 +49,18 @@
+         ...style,
+       }}
+     >
++      {approved && <svg className="ride-sheet-curve" viewBox="0 0 400 30" preserveAspectRatio="none" aria-hidden="true">
++        <defs><linearGradient id={curveId} x2="1" y2="1"><stop stopColor="#ff3434" /><stop offset="1" stopColor="#ed0000" /></linearGradient></defs>
++        <path fill={`url(#${curveId})`} d="M0 30V28C0 12 10 0 28 0H372C390 0 400 12 400 28V30H0Z" />
++        <path fill="#fff" d="M0 30C0 20 10 14 28 14H109C130 14 133 28 160 28H240C267 28 270 14 291 14H372C390 14 400 20 400 30Z" />
++      </svg>}
+       {/* Red glow — behind the glass panel, curves with the top corners and
+           fades toward the bottom so only a curved sliver shows above/around
+           the panel. */}
+       <div
+         className="absolute top-0 left-0 right-0 z-0 pointer-events-none"
+         style={{
++          display: approved ? 'none' : undefined,
+           height: 40,
+           background: RIDE_RED_GRADIENT,
+           borderTopLeftRadius: 26,
+@@ -67,7 +76,7 @@
+         onClick={onRibbonClick}
+         aria-label="Toggle sheet"
+         className="absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity"
+-        style={{ top: -4, width: 64, height: 24 }}
++        style={{ top: approved ? 0 : -4, width: Math.max(64, handleWidth), height: approved ? 30 : 24 }}
+       >
+         <span
+           className="block rounded-full"
+@@ -81,10 +90,11 @@
+         className="relative z-10 flex-1 min-h-0 flex flex-col overflow-hidden"
+         style={{
+           ...glassPanel,
++          ...(approved ? { background: '#fff', backdropFilter: 'none', WebkitBackdropFilter: 'none', boxShadow: 'none' } : {}),
+           ...panelStyle,
+-          marginTop: 16,
+-          borderTopLeftRadius: 22,
+-          borderTopRightRadius: 22,
++          marginTop: approved ? 29 : 16,
++          borderTopLeftRadius: approved ? 0 : 22,
++          borderTopRightRadius: approved ? 0 : 22,
+         }}
+       >
+         {children}
+--- a/src/components/ride/RideHomeGreeting.tsx
++++ b/src/components/ride/RideHomeGreeting.tsx
+@@ -1,6 +1,6 @@
+-import { motion } from 'framer-motion';
++import { motion, useReducedMotion } from 'framer-motion';
+ import { Search } from 'lucide-react';
+-import pickMeCarIcon from '@/assets/pickme-car-icon.png';
++import pickMeCarIcon from '@/assets/cars/car-search-side.png';
+ import { RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3, tintBlue } from './rideGlass';
+ 
+ interface RideHomeGreetingProps {
+@@ -18,12 +18,15 @@
+ /** The "Where to?" card — row 2's wide tile, alongside the Home/Work
+  * squares from QuickShortcutsRow. Fixed height so all three tiles align. */
+ export default function RideHomeGreeting({ name, onSearchClick }: RideHomeGreetingProps) {
++  const reduceMotion = useReducedMotion();
+   return (
+     <motion.button
+-      initial={{ opacity: 0, y: 8 }}
++      initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+       animate={{ opacity: 1, y: 0 }}
++      type="button"
++      aria-label="Where to? Search destination"
+       onClick={onSearchClick}
+-      className="flex-1 min-w-0 flex items-center gap-1 rounded-2xl active:scale-[0.98] transition-transform text-left"
++      className="ride-destination-card flex-1 min-w-0 flex items-center gap-1 rounded-2xl active:scale-[0.98] transition-transform text-left"
+       style={{
+         height: 62,
+         padding: '8px 12px 8px 6px',
+--- a/src/components/ride/QuickShortcutsRow.tsx
++++ b/src/components/ride/QuickShortcutsRow.tsx
+@@ -1,5 +1,5 @@
+ import { useEffect, useState, type CSSProperties } from 'react';
+-import { motion } from 'framer-motion';
++import { motion, useReducedMotion } from 'framer-motion';
+ import { supabase } from '@/lib/supabaseClient';
+ import { useAuth } from '@/hooks/useAuth';
+ import { Home, Briefcase } from 'lucide-react';
+@@ -37,6 +37,7 @@
+  * Home and Work always keep their own tint (pink / yellow) regardless of
+  * whether the rider has saved an address for them yet. */
+ export default function QuickShortcutsRow({ onSelect, onRequestSet }: QuickShortcutsRowProps) {
++  const reduceMotion = useReducedMotion();
+   const { user } = useAuth();
+   const [places, setPlaces] = useState<QuickPlace[]>([]);
+   const [loading, setLoading] = useState(true);
+@@ -72,15 +73,17 @@
+     <>
+       {tiles.map((tile, i) => (
+         <motion.button
++          type="button"
++          aria-label={tile.fav ? `Go to ${tile.label}` : `Set ${tile.label} address`}
+           key={tile.key}
+-          initial={{ opacity: 0, y: 8 }}
++          initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ delay: i * 0.04 }}
+           disabled={loading}
+           onClick={() => tile.fav
+             ? onSelect({ name: tile.fav.name, lat: tile.fav.latitude, lng: tile.fav.longitude })
+             : onRequestSet(tile.key)}
+-          className="shrink-0 flex flex-col items-center justify-center gap-1 rounded-2xl active:scale-95 transition-transform disabled:opacity-60"
++          className={`ride-shortcut ride-shortcut--${tile.key} shrink-0 flex flex-col items-center justify-center gap-1 rounded-2xl active:scale-95 transition-transform disabled:opacity-60`}
+           style={{ width: 58, height: 62, padding: 0, ...tile.glass }}
+         >
+           <tile.Icon className="w-5 h-5" style={{ color: RIDE_RED }} />
+--- a/src/components/ride/TownSelectorSheet.tsx
++++ b/src/components/ride/TownSelectorSheet.tsx
+@@ -33,7 +33,7 @@
+       left: rect.left,
+       top: rect.top,
+       width: rect.width,
+-      minWidth: Math.max(rect.width, 320),
++      minWidth: Math.min(Math.max(rect.width, 280), window.innerWidth - 24),
+     });
+   };
+ 
+@@ -60,8 +60,11 @@
+       {/* Trigger button — glass pill per the /ride redesign spec */}
+       <button
+         ref={triggerRef}
++        type="button"
++        aria-label={`Select town, currently ${currentTown.name}`}
++        aria-expanded={open}
+         onClick={handleOpen}
+-        className="inline-flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform"
++        className="ride-town-pill inline-flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform"
+         style={{
+           height: 36,
+           padding: '0 12px',
+@@ -102,7 +105,7 @@
+               <div className="shrink-0 pb-3 px-4 pt-4" style={{ background: 'var(--gradient-primary)' }}>
+                 <div className="flex items-center justify-between">
+                   <h2 className="text-base font-semibold font-display text-primary-foreground">Select Town</h2>
+-                  <button onClick={() => setOpen(false)} className="w-8 h-8 rounded-full flex items-center justify-center bg-primary-foreground/15 active:scale-90 transition-all">
++                  <button aria-label="Close town selector" onClick={() => setOpen(false)} className="w-8 h-8 rounded-full flex items-center justify-center bg-primary-foreground/15 active:scale-90 transition-all">
+                     <X className="w-4 h-4 text-primary-foreground" />
+                   </button>
+                 </div>
+@@ -114,6 +117,7 @@
+                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                   <input
+                     type="text"
++                    aria-label="Search towns"
+                     placeholder="Search towns…"
+                     value={search}
+                     onChange={e => setSearch(e.target.value)}
+--- a/src/components/MapboxMap.tsx
++++ b/src/components/MapboxMap.tsx
+@@ -26,6 +26,8 @@
+ }
+ 
+ interface MapboxMapProps {
++  /** Actual GPS fix only; never substitute the town center. */
++  currentLocation?: Coords | null;
+   pickup?: Coords | null;
+   dropoff?: Coords | null;
+   driverLocation?: Coords | null;
+@@ -171,7 +173,7 @@
+   const el = document.createElement("div");
+   el.className = "cruixe-mapbox-marker";
+   el.style.width = `${width}px`;
+-  el.style.filter = "drop-shadow(0 6px 10px rgba(15,23,42,0.35))";
++  el.style.filter = src === carTopWhite ? "drop-shadow(0 0 1px #ef0808) drop-shadow(0 1px 2px rgba(239,8,8,.5))" : "drop-shadow(0 3px 5px rgba(15,23,42,.25))";
+   el.style.opacity = String(opacity);
+   const img = document.createElement("img");
+   img.src = src;
+@@ -405,6 +407,7 @@
+ 
+ function InnerMapboxMap({
+   mapboxgl,
++  currentLocation,
+   pickup,
+   dropoff,
+   driverLocation,
+@@ -529,6 +532,12 @@
+       markersRef.current.push(new mapboxgl.Marker({ element: el, anchor }).setLngLat([coords.lng, coords.lat]).addTo(map));
+     };
+ 
++    if (currentLocation && !pickup && !isNullIslandCoord(currentLocation)) {
++      const dot = markerElement('', '#f10808', '#fff', 20);
++      dot.setAttribute('aria-label', 'Your location');
++      dot.style.boxShadow = '0 0 0 18px rgba(241,8,8,.12), 0 2px 5px rgba(0,0,0,.2)';
++      addMarker(currentLocation, dot);
++    }
+     if (pickup) addMarker(pickup, createPickupPinElement(riderGender), "bottom");
+     if (dropoff) addMarker(dropoff, markerElement("D", "#B81104"));
+     if (driverLocation) addMarker(driverLocation, carImageElement(carTopBlack, 38));
+@@ -582,6 +591,8 @@
+     map.resize();
+   }, [
+     loaded,
++    currentLocation?.lat,
++    currentLocation?.lng,
+     pickup?.lat,
+     pickup?.lng,
+     dropoff?.lat,
+--- /dev/null
++++ b/src/components/ride/approvedRide.css
+@@ -0,0 +1,68 @@
++.approved-ride { --ride-red: #f10808; --ride-shadow: 0 4px 14px rgb(20 20 30 / 9%); color: #111; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
++.approved-ride .ride-map-control, .approved-ride .ride-map-controls > button { width: 50px !important; height: 50px !important; background: #fff !important; box-shadow: 0 7px 18px rgb(30 20 20 / 16%) !important; }
++.approved-ride .ride-map-control { top: calc(env(safe-area-inset-top) + 18px) !important; left: 20px; }
++.approved-ride .ride-map-controls { top: calc(env(safe-area-inset-top) + 18px) !important; right: 20px; gap: 8px; }
++.approved-ride .ride-map-control svg, .approved-ride .ride-map-controls > button > svg { width: 23px; height: 23px; color: #111; }
++.approved-ride .ride-booking-sheet { left: 0; right: 0; border-radius: 28px 28px 0 0 !important; filter: drop-shadow(0 -3px 10px rgb(30 20 20 / 8%)); }
++.ride-sheet-curve { position: absolute; inset: 0 0 auto; width: 100%; height: 30px; }
++.ride-booking-sheet > div:last-child { padding-bottom: max(14px, env(safe-area-inset-bottom)); }
++.ride-booking-sheet .ride-location-row { padding: 0 14px 8px; min-height: 40px; }
++.approved-ride .ride-town-pill, .approved-ride .ride-area-pill { background: #fff !important; box-shadow: var(--ride-shadow) !important; height: 34px !important; padding: 0 14px !important; max-width: 58%; }
++.ride-town-pill span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
++.ride-booking-sheet .ride-town-pill svg { width: 16px; height: 16px; flex-shrink: 0; }
++.ride-booking-sheet .ride-town-pill svg:first-child { color: var(--ride-red) !important; }
++.ride-booking-sheet .ride-town-pill span, .ride-booking-sheet .ride-area-pill span { font-size: 13px !important; font-weight: 650 !important; }
++.ride-booking-sheet--home .ride-sheet-scroll { flex: none; padding: 0 14px 8px !important; }
++.ride-home-tiles { height: 64px; gap: 7px; }
++.approved-ride .ride-destination-card { height: 100% !important; padding: 5px 7px 5px 4px !important; border-radius: 18px; background: #fff !important; box-shadow: var(--ride-shadow) !important; gap: 4px; }
++.ride-destination-card img { width: clamp(45px, 17vw, 70px) !important; height: 54px !important; }
++.ride-destination-card p:first-child { font-size: 11px !important; line-height: 1.2; color: #777 !important; }
++.ride-destination-card p:last-child { font-size: clamp(16px, 4.7vw, 21px) !important; white-space: nowrap; letter-spacing: -.7px !important; }
++.ride-destination-card > span { width: 35px !important; height: 35px !important; background: #f2f2f2 !important; border: 1px solid #e7e7e7; }
++.ride-destination-card > span svg { color: #111 !important; width: 19px; height: 19px; }
++.approved-ride .ride-shortcut { width: 60px !important; height: 100% !important; border-radius: 17px; box-shadow: var(--ride-shadow) !important; gap: 4px; }
++.approved-ride .ride-shortcut--home { background: #fff3f3 !important; border: 1px solid #ffe4e4; }
++.approved-ride .ride-shortcut--work { background: #fff9d9 !important; border: 1px solid #f5e8ac; }
++.ride-shortcut svg { width: 23px; height: 23px; color: var(--ride-red) !important; }
++.ride-shortcut--work svg { color: #b85800 !important; }
++.ride-shortcut span { font-size: 12px !important; }
++.ride-booking-sheet--home .ride-sheet-actions { padding: 0 14px 4px !important; }
++.ride-home-actions { gap: 8px; }
++.approved-ride .ride-schedule, .approved-ride .ride-start { height: 58px !important; border-radius: 18px !important; box-shadow: var(--ride-shadow) !important; }
++.ride-schedule { background: #fff !important; flex: .85; }
++.ride-schedule svg { width: 22px !important; height: 22px !important; color: var(--ride-red) !important; }
++.ride-schedule span { font-size: 16px !important; letter-spacing: -.5px; }
++.ride-start { background: linear-gradient(135deg, #ff563b 0%, #ff1010 50%, #e90000 100%) !important; }
++.ride-start > span:nth-child(2) { font-size: 19px !important; font-weight: 700; letter-spacing: -.5px; }
++.ride-start > span:last-child { width: 38px !important; height: 38px !important; background: rgb(170 0 0 / 32%) !important; box-shadow: inset 0 0 0 1px rgb(140 0 0 / 20%) !important; }
++.ride-start > span:last-child svg { width: 23px !important; height: 23px !important; }
++.approved-ride button:focus-visible { outline: 3px solid #222; outline-offset: 3px; }
++@media (max-width: 359px) {
++ .ride-home-tiles { gap: 5px; }
++ .approved-ride .ride-shortcut { width: 48px !important; }
++ .ride-destination-card img { width: 40px !important; }
++ .ride-destination-card > span { width: 28px !important; height: 28px !important; }
++ .ride-booking-sheet .ride-area-pill { padding: 0 9px !important; }
++ .ride-start > span:nth-child(2) { font-size: 17px !important; }
++}
++@media (min-width: 600px) {
++ .approved-ride .ride-booking-sheet { left: 50%; right: auto; width: 520px; transform: translateX(-50%); }
++ .ride-home-tiles { height: 80px; }
++ .approved-ride .ride-shortcut { width: 75px !important; }
++ .ride-destination-card img { width: 85px !important; height: 68px !important; }
++ .ride-destination-card p:first-child { font-size: 13px !important; }
++ .ride-destination-card p:last-child { font-size: 25px !important; }
++ .ride-shortcut svg { width: 28px; height: 28px; }
++ .ride-shortcut span { font-size: 14px !important; }
++ .ride-home-actions button { height: 68px !important; }
++}
++@media (max-height: 500px) {
++ .approved-ride .ride-booking-sheet--home { max-height: calc(100dvh - 90px) !important; }
++ .ride-booking-sheet--home .ride-sheet-scroll { flex-shrink: 1; }
++}
++@media (prefers-reduced-motion: reduce) {
++ .approved-ride *, .approved-ride *::before, .approved-ride *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
++}
++/* Keep town and ribbon controls at least 44px for touch access. */
++.approved-ride .ride-town-pill { min-height: 44px; }
++.ride-booking-sheet > button { min-height: 44px; top: -7px !important; }

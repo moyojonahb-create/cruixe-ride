@@ -1,0 +1,6 @@
+{
+  "path": "nonproduction/approved-ride-ui/src/components/ride/approvedRide.css",
+  "beforeSHA256": "2e6ce54b58952f7491da0b725568ee6ed26533c4c0ab6a0e33a3092a8214ab43",
+  "afterSHA256": "8b000aad8e442c3b0f8bf01d5e26bc36221374509a7fcd16560d386e6a4b08fc",
+  "reason": "At 812x375 confirmation row was y432..480, outside viewport. A single scroll surface with sticky final action row keeps controls reachable without hiding essential content. Portrait styles unchanged."
+}

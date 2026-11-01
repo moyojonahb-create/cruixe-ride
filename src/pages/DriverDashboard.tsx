@@ -24,15 +24,12 @@ import { normalizeRideRow } from "@/lib/rideContract";
 import { preloadAllTownPricing } from "@/hooks/useTownPricing";
 import { RIDE_RED, RIDE_TEXT } from "@/components/ride/rideGlass";
 
-import { canCurrentDriverOperate } from "@/lib/businessApi";
-
 import DriverSettingsSheet from "@/components/driver/DriverSettingsSheet";
 import type { Coordinates } from "@/lib/osrm";
 import { useAgoraCall } from "@/hooks/useAgoraCall";
 import IncomingCallModal from "@/components/ride/IncomingCallModal";
 import ActiveCallOverlay from "@/components/ride/ActiveCallOverlay";
 import DriverEarningsDashboard from "@/components/driver/DriverEarningsDashboard";
-import DriverSelfieCheck from "@/components/driver/DriverSelfieCheck";
 import FullScreenNavigation, { type RiderInfo } from "@/components/driver/FullScreenNavigation";
 import TripCollectSheet from "@/components/driver/TripCollectSheet";
 
@@ -41,7 +38,8 @@ import { useFatigueMonitor } from "@/hooks/useFatigueMonitor";
 import FatigueAlert from "@/components/driver/FatigueAlert";
 
 import { subscribeRiderComing } from "@/lib/rideSignals";
-import { setDriverOnline, sendPresenceHeartbeat } from "@/lib/driverPresence";
+import { sendPresenceHeartbeat } from "@/lib/driverPresence";
+import { updateDriverAvailability } from "@/lib/driverAvailability";
 import { useDriverRideAlerts, type DriverServiceArea } from "@/hooks/useDriverRideAlerts";
 import { useAppBootstrap } from "@/hooks/useAppBootstrap";
 
@@ -78,8 +76,6 @@ export default function DriverDashboard() {
   const [earningsOpen, setEarningsOpen] = useState(Boolean((location.state as { openEarnings?: boolean } | null)?.openEarnings));
   const [driverCoords, setDriverCoords] = useState<Coordinates | null>(null);
   const [riderPhone, setRiderPhone] = useState<string | null>(null);
-  const [selfieCheckOpen, setSelfieCheckOpen] = useState(false);
-  const [pendingOnlineAfterSelfie, setPendingOnlineAfterSelfie] = useState(false);
   // Availability is three-valued, not two: offline (isOnline=false),
   // online-but-not-accepting (isOnline=true, acceptingRides=false — right
   // after a drop-off, before the driver taps "Take rides"), and
@@ -341,41 +337,15 @@ export default function DriverDashboard() {
     }
   }, [isOnline, profile?.status]);
 
-  // Toggle online status with can_driver_operate check
+  // The shared coordinator serializes status changes by authenticated user;
+  // the Go endpoint remains the authoritative verification boundary.
   const toggleOnline = async (online: boolean) => {
-    if (!profile || togglingOnline) return;
-
-    // Local dev only: skip the selfie check and operability gate so going
-    // online doesn't require a camera/trial-status round trip while testing
-    // UI. import.meta.env.DEV is false in any real production build, so
-    // this never applies to real drivers.
-    const skipVerification = import.meta.env.DEV;
-
-    // If going online, require selfie check first (once per session)
-    if (online && !pendingOnlineAfterSelfie && !skipVerification) {
-      const lastSelfie = sessionStorage.getItem('pickme-selfie-verified');
-      if (!lastSelfie) {
-        setSelfieCheckOpen(true);
-        return;
-      }
-    }
-    setPendingOnlineAfterSelfie(false);
+    if (!profile || !user || togglingOnline) return;
 
     setTogglingOnline(true);
     try {
-      if (online && !skipVerification) {
-        const canOperate = await canCurrentDriverOperate();
-        if (!canOperate) {
-          toast.error("Cannot go online", {
-            description: "Your trial has ended or your wallet balance is too low. Please deposit to continue.",
-            duration: 8000,
-          });
-          setTogglingOnline(false);
-          return;
-        }
-      }
-
-      await setDriverOnline(online, driverCoords);
+      const result = await updateDriverAvailability(user.id, online, driverCoords);
+      if (!result.applied) return;
 
       setIsOnline(online);
       setProfile({ ...profile, is_online: online });
@@ -723,26 +693,11 @@ export default function DriverDashboard() {
   // screen. /driver/requests (4B) now owns that role — online status,
   // wallet balance, and the request list all live there in the current
   // design. This screen stays mounted only to run the overlays that must
-  // survive regardless of which driver screen is showing (selfie gate,
-  // fatigue alert, in-app calls, uncollected-cash recovery) and to host the
+  // survive regardless of which driver screen is showing (fatigue alert,
+  // in-app calls, uncollected-cash recovery) and to host the
   // Earnings tab's nav-state deep link; otherwise it hands off immediately.
   return (
     <>
-      <DriverSelfieCheck
-        open={selfieCheckOpen}
-        onVerified={() => {
-          setSelfieCheckOpen(false);
-          sessionStorage.setItem('pickme-selfie-verified', Date.now().toString());
-          if (pendingOnlineAfterSelfie) { setPendingOnlineAfterSelfie(false); toggleOnline(true); }
-        }}
-        onSkip={() => {
-          setSelfieCheckOpen(false);
-          sessionStorage.setItem('pickme-selfie-verified', Date.now().toString());
-          setPendingOnlineAfterSelfie(true);
-          toggleOnline(true);
-        }}
-      />
-
       {fatigueState.isFatigued && (
         <FatigueAlert breakTimeRemaining={fatigueState.breakTimeRemaining} totalHours={fatigueState.totalOnlineHours} />
       )}

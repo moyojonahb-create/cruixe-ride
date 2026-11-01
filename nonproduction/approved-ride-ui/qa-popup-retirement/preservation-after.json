@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "originalIndex": "byte-identical",
+  "originalHEAD": "31c9ae007b8c5e6f4741139a4b2ed98e693e2184",
+  "originalBranch": "fix/ecc-sprint-1-accessibility-wallet",
+  "worktrees": "unchanged",
+  "unrelatedDirtyTrackedFiles": "byte-identical",
+  "approvedCICommit": "bb887feaa86589c47f2d728d3d57a087ef89ffe8",
+  "previousViewportCommit": "a7650a61854f7cc907baaa9631cc55469e222640",
+  "approvedCISnapshot": "all three original approved hashes unchanged",
+  "referenceScreenshots": "both preserved byte-identically",
+  "commit": "NOT RUN",
+  "push": "NOT RUN",
+  "merge": "NOT RUN",
+  "deploy": "NOT RUN",
+  "sourceAllowlist": [
+    "src/components/ride/RideView.tsx",
+    "src/components/ride/NoteToDriverSheet.tsx",
+    "src/components/ride/RideGlassPanel.tsx",
+    "src/components/luggage/LuggageSheet.tsx",
+    "nonproduction/approved-ride-ui/src/components/ride/RideView.tsx",
+    "nonproduction/approved-ride-ui/src/components/ride/NoteToDriverSheet.tsx",
+    "nonproduction/approved-ride-ui/src/components/ride/RideGlassPanel.tsx",
+    "nonproduction/approved-ride-ui/src/components/luggage/LuggageSheet.tsx",
+    "nonproduction/approved-ride-ui/src/components/ride/approvedRide.css",
+    "src/components/ride/TripPaymentSelector.tsx",
+    "nonproduction/approved-ride-ui/src/components/ride/TripPaymentSelector.tsx"
+  ]
+}

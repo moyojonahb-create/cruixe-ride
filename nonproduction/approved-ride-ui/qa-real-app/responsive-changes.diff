@@ -1,0 +1,65 @@
+--- before/index.html
++++ after/index.html
+@@ -2,7 +2,7 @@
+ <html lang="en">
+   <head>
+     <meta charset="UTF-8" />
+-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
++    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+     <title>CruiXe - Your ride, your way.</title>
+     <meta name="description" content="CruiXe is Zimbabwe&#39;s premier ride-hailing service. Request a ride anywhere in Zimbabwe.">
+     <meta name="author" content="CruiXe Technologies" />
+--- before/nonproduction/approved-ride-ui/index.html
++++ after/nonproduction/approved-ride-ui/index.html
+@@ -2,7 +2,7 @@
+ <html lang="en">
+   <head>
+     <meta charset="UTF-8" />
+-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
++    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+     <title>CruiXe - Your ride, your way.</title>
+     <meta name="description" content="CruiXe is Zimbabwe&#39;s premier ride-hailing service. Request a ride anywhere in Zimbabwe.">
+     <meta name="author" content="CruiXe Technologies" />
+--- before/nonproduction/approved-ride-ui/src/components/ride/approvedRide.css
++++ after/nonproduction/approved-ride-ui/src/components/ride/approvedRide.css
+@@ -16,7 +16,7 @@
+ .ride-home-tiles { height: 64px; gap: 7px; }
+ .approved-ride .ride-destination-card { height: 100% !important; padding: 5px 7px 5px 4px !important; border-radius: 18px; background: #fff !important; box-shadow: var(--ride-shadow) !important; gap: 4px; }
+ .ride-destination-card img { width: clamp(45px, 17vw, 70px) !important; height: 54px !important; }
+-.ride-destination-card p:first-child { font-size: 11px !important; line-height: 1.2; color: #777 !important; }
++.ride-destination-card p:first-child { font-size: 11px !important; line-height: 1.2; color: #626b76 !important; }
+ .ride-destination-card p:last-child { font-size: clamp(16px, 4.7vw, 21px) !important; white-space: nowrap; letter-spacing: -.7px !important; }
+ .ride-destination-card > span { width: 35px !important; height: 35px !important; background: #f2f2f2 !important; border: 1px solid #e7e7e7; }
+ .ride-destination-card > span svg { color: #111 !important; width: 19px; height: 19px; }
+@@ -68,7 +68,7 @@
+ .ride-booking-sheet > button { min-height: 44px; top: -7px !important; }
+ .ride-booking-sheet--configuration { max-height: min(72dvh, 690px) !important; }
+ .ride-config-route { position: relative; padding: 7px 10px; background: #fff; box-shadow: var(--ride-shadow); }
+-.ride-config-route__row { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; width: 100%; min-height: 42px; text-align: left; }
++.ride-config-route__row { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; width: 100%; min-height: 44px; text-align: left; }
+ .ride-config-route__row > span { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+ .ride-config-route__row small { color: #727984; font-size: 11px; font-weight: 650; }
+ .ride-config-route__row strong { overflow: hidden; color: #111; font-size: 13px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+@@ -135,3 +135,11 @@
+ @media (prefers-reduced-motion: reduce) {
+  .ride-finding-decoration__trail, .ride-finding-decoration__car { animation: none !important; }
+ }
++
++/* Short configuration sheets scroll as one surface; keep the primary row reachable. */
++@media (max-height: 500px) {
++ .ride-booking-sheet--configuration > div:last-child { display: block; overflow-y: auto; overscroll-behavior: contain; }
++ .ride-booking-sheet--configuration .ride-sheet-scroll { overflow: visible; }
++ .ride-booking-sheet--configuration .ride-sheet-actions { display: contents; }
++ .ride-booking-sheet--configuration .ride-sheet-actions > div:last-child { position: sticky; bottom: 0; z-index: 1; padding: 8px 14px max(14px, env(safe-area-inset-bottom, 0px)); background: #fff; }
++}
+--- before/nonproduction/approved-ride-ui/src/components/ride/destinationScreen.css
++++ after/nonproduction/approved-ride-ui/src/components/ride/destinationScreen.css
+@@ -53,3 +53,8 @@
+ .destination-field--editing-pickup { flex-wrap: wrap; }
+ .destination-field--editing-pickup .destination-input { flex-basis: calc(100% - 36px); }
+ .destination-field--editing-pickup .destination-gps { margin-left: 29px; width: auto; }
++
++/* Keep landscape search results reachable above the floating rider navigation. */
++@media (max-height: 500px) {
++ .destination-screen { max-height: calc(100dvh - 116px - env(safe-area-inset-bottom, 0px)); }
++}

@@ -1,0 +1,107 @@
+{
+  "frontendIntegration": "NO-GO",
+  "productionRelease": "NO-GO",
+  "gates": {
+    "approvedInventory": {
+      "status": "PASS",
+      "applicationFiles": 8,
+      "sourceSnapshotFiles": 550
+    },
+    "workflowPreparation": {
+      "status": "PASS",
+      "scope": "Static validation only"
+    },
+    "branchPublication": {
+      "status": "BLOCKED",
+      "reason": "Stopped on failed staged integrity check per user instruction; no commit or push"
+    },
+    "remoteNetworkCanary": {
+      "status": "NOT RUN",
+      "reason": "No push or workflow run; publication blocked by staged-byte checksum mismatch"
+    },
+    "remoteTypeScript": {
+      "status": "NOT RUN",
+      "reason": "No push or workflow run; publication blocked by staged-byte checksum mismatch"
+    },
+    "remoteFocusedVitest": {
+      "status": "NOT RUN",
+      "reason": "No push or workflow run; publication blocked by staged-byte checksum mismatch"
+    },
+    "remoteScopedESLint": {
+      "status": "NOT RUN",
+      "reason": "No push or workflow run; publication blocked by staged-byte checksum mismatch"
+    },
+    "remoteProductionBuild": {
+      "status": "NOT RUN",
+      "reason": "No push or workflow run; publication blocked by staged-byte checksum mismatch"
+    },
+    "remoteArtifactCollection": {
+      "status": "NOT RUN",
+      "reason": "No push or workflow run; publication blocked by staged-byte checksum mismatch"
+    },
+    "authenticatedE2E": {
+      "status": "BLOCKED",
+      "reason": "No approved staging or test identities"
+    },
+    "localHeavyGateRetry": {
+      "status": "NOT RUN",
+      "reason": "Workstation resource blockers preserved"
+    },
+    "localPlaywrightCLI": {
+      "status": "PASS",
+      "version": "0.1.23",
+      "browser": "Microsoft Edge"
+    },
+    "localPlaywrightAutomation": {
+      "status": "PASS",
+      "version": "1.64.1",
+      "edgeVersion": "156.0.4314.50"
+    },
+    "localhost8081Rendering": {
+      "status": "BLOCKED",
+      "reason": "Connection refused"
+    },
+    "localhost8081Ribbon": {
+      "status": "NOT RUN",
+      "reason": "Page did not render"
+    },
+    "localhost8081ApplicationConsole": {
+      "status": "NOT RUN",
+      "reason": "No application loaded"
+    },
+    "localDiagnosticScreenshot": {
+      "status": "PASS",
+      "scope": "Navigation failure only; not CruiXe rendering",
+      "path": "qa-ci/local-smoke/unavailable-8081-edge-393.png"
+    },
+    "authorization": {
+      "status": "PASS",
+      "scope": "Explicit approval received for exact branch and three files"
+    },
+    "approvedPayloadChecksums": {
+      "status": "PASS",
+      "scope": "All three original files and all 550 archived files match recorded hashes"
+    },
+    "archiveSensitiveContentReview": {
+      "status": "PASS",
+      "scope": "Public client configuration identified and contextually reviewed; no private credentials detected in performed checks"
+    },
+    "workflowIsolationReview": {
+      "status": "PASS",
+      "scope": "Static review only; offline application execution, no credentials or deployment"
+    },
+    "stagedPayloadIntegrity": {
+      "status": "FAIL",
+      "reason": "Git CRLF-to-LF normalization changes staged workflow and manifest hashes"
+    },
+    "commitAttempt": {
+      "status": "FAIL",
+      "reason": "Clone lacked author identity; no commit created. Existing original identity is available for a later retry."
+    },
+    "workingTreePreservation": {
+      "status": "PASS",
+      "evidence": "authorization-preservation-after.json"
+    }
+  },
+  "runURL": null
+}

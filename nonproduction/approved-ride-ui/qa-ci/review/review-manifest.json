@@ -1,0 +1,2808 @@
+{
+  "archiveSHA256": "2a3ff7756e8f1ab4cafa4aeceb44c73f05fc0268392aacf91af6a417878f4879",
+  "nodeImage": "node:22.23.4-bookworm-slim@sha256:4b150b48b4116e2a22f2c39cc27025fbf4f153e2078fd3b14d159fdb5c7279da",
+  "packageLockSHA256": "0ff08efabea93cfeab75b8af73fec44569fd3bf93a339a4e27aab9ff8424b782",
+  "sourceWorkspaceHEAD": "31c9ae007b8c5e6f4741139a4b2ed98e693e2184",
+  "proposedBase": "1e6df6b60ce90c0b8c7779c392ad8ab4cc5d01a8",
+  "proposedBranch": "verify/cruixe-approved-ui-20261101-2a3ff775",
+  "approvedChanges": [
+    {
+      "path": "src/components/ride/RideTierSelector.tsx",
+      "beforeSHA256": "61565de45736b281ce978eb60861241b85faf8c94a9a947928df1df8b7a218b0",
+      "afterSHA256": "08ef8428d338c3f1c8ec022b663a567f58603902a2d7d642a75c6b3c024ec05c"
+    },
+    {
+      "path": "src/components/ride/approvedRide.css",
+      "beforeSHA256": "35b35dfd5c84dea88db4a33fb6b3eeaa66eaa2de2c229fbce96c002ec1aca0d9",
+      "afterSHA256": "dfa71d3bb01c0d2adaecc90ca257adb3104a643c69263d03f4b4106621839576"
+    },
+    {
+      "path": "src/components/ride/NoteToDriverSheet.tsx",
+      "beforeSHA256": "a5ab6574d7b0afe7adbe39552b84ed49cd2727fca52f913d87769a410495139a",
+      "afterSHA256": "706208720b2dfc1c9e24ecdfe6bd90c99e446d6b3b9e536d1eb21c65b81ab4c6"
+    },
+    {
+      "path": "src/pages/RideMatching.tsx",
+      "beforeSHA256": "acb7a46491515a2d5fc9d3ce8d0310458271656e0b5638f2f5da85115a5e14ba",
+      "afterSHA256": "c04d678d225a2904a86ceb0d9ffde3a24b3f2ea08703407b77142ed57a998837"
+    },
+    {
+      "path": "src/components/ride/ScheduleRide.tsx",
+      "beforeSHA256": "3383949482ed76e0bd4c17f65b21b9fab2aef2392153dffe9461d273bf5193d1",
+      "afterSHA256": "47f876b3a8e4adbf5761122ac21e09369e4a8f1b2436a9a38152469538bbe998",
+      "onlyRibbonClassChanged": true
+    },
+    {
+      "path": "src/components/ride/BookingForSomeoneElse.tsx",
+      "beforeSHA256": "62472eff71917ff104fc80a8419428a79e22bd34c910cc57553d4f1aeb1806e3",
+      "afterSHA256": "55eca7b27bce68b5941aa0e9b226bd759ecbc94f67b81dc8628b756fa6087105",
+      "onlyRibbonClassChanged": true
+    },
+    {
+      "path": "src/components/ride/ParcelBookingSheet.tsx",
+      "beforeSHA256": "cdc97a1f68bf0deb55b469cd1c6150092719803520109d59b0e5b8359a632938",
+      "afterSHA256": "73fadab9910d103bd1965ae4c003ecca1b169ee0a553aeb4bca82519796b3dff",
+      "onlyRibbonClassChanged": true
+    },
+    {
+      "path": "src/components/ride/ShareRideSheet.tsx",
+      "beforeSHA256": "ab8e9443a606e76af8e6228fd7572294684ea16ee8871261c8fee7466890f9b8",
+      "afterSHA256": "96c12ea8b7a8cb038490808ba4108cad04992edf7de4301070d51671207479e6",
+      "onlyRibbonClassChanged": true
+    }
+  ],
+  "expectedTests": 61,
+  "historicalScreenshotsOnly": true,
+  "files": [
+    {
+      "path": "eslint.config.js",
+      "sha256": "deaa646e03341a4dd11f7a3a8951d2af2153aa04280dc3c29e2b112bef26d3a5",
+      "bytes": 1772
+    },
+    {
+      "path": "index.html",
+      "sha256": "251f827c5c6b251f70df56e18a47843b38b214ef72e691070482a94edd1f08fe",
+      "bytes": 9670
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "0ff08efabea93cfeab75b8af73fec44569fd3bf93a339a4e27aab9ff8424b782",
+      "bytes": 397705
+    },
+    {
+      "path": "package.json",
+      "sha256": "23a0e2154ba65a413029ebe30359d7f05c4fa9b14fcff27f9bc2f6f4fae4f55b",
+      "bytes": 4680
+    },
+    {
+      "path": "packages/core/.eslintrc.cjs",
+      "sha256": "a81364d0fd0ed7aa00352cc77913122e2133928f0c9ff5ab45f6ac4037b99a45",
+      "bytes": 1603
+    },
+    {
+      "path": "packages/core/DIVERGENCE.md",
+      "sha256": "e4fe2808cdfa76a2954739747d9efc38499767fa442e1ed7e34bc1306b93a6e9",
+      "bytes": 6422
+    },
+    {
+      "path": "packages/core/package.json",
+      "sha256": "6cd9a74ab27a4348b41e9fbf77531882b46c40894d50e0b6f1e4e712cc2c6cd4",
+      "bytes": 557
+    },
+    {
+      "path": "packages/core/src/auth.ts",
+      "sha256": "0eafce8a66e1a744797fb05a0e33d91d788a276f23786e8d60671838193ab9f1",
+      "bytes": 2998
+    },
+    {
+      "path": "packages/core/src/config.ts",
+      "sha256": "9c13ee4f89e76a2ecf39128276308352f5770e63eea9953faa70aa9f15d1b94d",
+      "bytes": 2859
+    },
+    {
+      "path": "packages/core/src/index.ts",
+      "sha256": "4be1744a32f0f5e1327c5a96e1111bcd373ba50c96a75ccc0c857a1ffe0f76d3",
+      "bytes": 1383
+    },
+    {
+      "path": "packages/core/src/net/backendSocketClient.test.ts",
+      "sha256": "0c5fe97afe1d5053c5078897608594445907eb197086a25aa759f4fd725f4506",
+      "bytes": 20451
+    },
+    {
+      "path": "packages/core/src/net/backendSocketClient.ts",
+      "sha256": "8662f9888f57d52d19d88e8a20252ae83d14850f608c8af7de97cde29b5c17f4",
+      "bytes": 16589
+    },
+    {
+      "path": "packages/core/src/net/goBackendClient.test.ts",
+      "sha256": "306d5bb5a2a8f69d572588764206ca8b2c6be246526a0dc9352b13c835fe54b5",
+      "bytes": 15751
+    },
+    {
+      "path": "packages/core/src/net/goBackendClient.ts",
+      "sha256": "80ce988183372fda78e41ea7de68858b6b8484751b48ba99fda39e68ffd3a1b5",
+      "bytes": 10287
+    },
+    {
+      "path": "packages/core/src/net/socketEvents.ts",
+      "sha256": "dd731785d210f9972f921d59f65793196cbd6ce758e66aa7ee675004e4a64bd9",
+      "bytes": 3253
+    },
+    {
+      "path": "packages/core/src/supabase/createSupabaseClient.ts",
+      "sha256": "a163a15f38848df894af4b161d8a753b8d1c49adf3ea70327d58e8791d93a5b9",
+      "bytes": 3026
+    },
+    {
+      "path": "packages/core/src/tokens/index.ts",
+      "sha256": "862ac6f118b955d72e6157e7faa73701bc9f5d7cab3d1341c2539094a86f7ae6",
+      "bytes": 237
+    },
+    {
+      "path": "packages/core/src/tokens/themes.ts",
+      "sha256": "4a3477cc4fd4cec4059a36e51c54b060796cdcbc6707b1af880e48e57e0b4a0b",
+      "bytes": 8455
+    },
+    {
+      "path": "packages/core/tsconfig.json",
+      "sha256": "d9bb433a5ee5c5667782ff547a64f46f80aeabc7086ec319b444adf52ecd9e8e",
+      "bytes": 910
+    },
+    {
+      "path": "packages/core/vitest.config.ts",
+      "sha256": "017e2a0ee1c1b239548e3023bd5dcdd26eeeaa32c2ab9c6ed84cb7b99e357b87",
+      "bytes": 731
+    },
+    {
+      "path": "postcss.config.js",
+      "sha256": "98e8d8a143f16216f4b50a2520024f6254987049b2e199026742a96e16ba411e",
+      "bytes": 87
+    },
+    {
+      "path": "public/brand/cruixe-car-search.png",
+      "sha256": "4c81c5e67b1ba3032c1d290787ff724fa808e594f333f37d78210780d72c0159",
+      "bytes": 107344
+    },
+    {
+      "path": "public/brand/cruixe-logo-on-red.png",
+      "sha256": "8f5c331400243798efd7cfc3c03d61df1e40648b40d6bd04535a40383cd20fb9",
+      "bytes": 223121
+    },
+    {
+      "path": "public/brand/cruixe-logo-red-transparent.png",
+      "sha256": "04c496d6304ec70f1992b77bac2898040639cdae3363c0c70734b8f46113b435",
+      "bytes": 288029
+    },
+    {
+      "path": "public/brand/cruixe-logo-white-transparent.png",
+      "sha256": "0e9a21eae4a73d36f8a5ae68b7adf0276b00cba458b7fa06c3f643056555283f",
+      "bytes": 284847
+    },
+    {
+      "path": "public/brand/cruixe-og-image.png",
+      "sha256": "9466669d93b933e067dfa92f10188686126837c67c59eb51e6d23d0a94df8dbc",
+      "bytes": 94628
+    },
+    {
+      "path": "public/brand/cruixe-splash-tagline.png",
+      "sha256": "fdc2c08bfa92516b25cce7623dc57bf67325153949192df2b87008594b22a77d",
+      "bytes": 307776
+    },
+    {
+      "path": "public/brand/cruize-economy-car.webp",
+      "sha256": "873fbd6eb8f6317cf31e1dfa3dae747ca0c769fc8ddc8d9784fb9f97a4dcc5e8",
+      "bytes": 51484
+    },
+    {
+      "path": "public/brand/cruize-parcel-van.webp",
+      "sha256": "098dfed08c85a72f8fe517857bd530a1d8cb300c75a17645933f62616e9c7c3d",
+      "bytes": 51934
+    },
+    {
+      "path": "public/brand/cruize-search-car.webp",
+      "sha256": "d6b2fbc902f3b4d4efdcf9b53ea263c8bd31a68aae38c193804b30a109cc714c",
+      "bytes": 46820
+    },
+    {
+      "path": "public/brand/cruize-shared-car.webp",
+      "sha256": "b7394bda195cedbe2071908cc8bd29d9f3f8e69e7ff0ece12ee05d55494162b9",
+      "bytes": 55260
+    },
+    {
+      "path": "public/favicon.ico",
+      "sha256": "c3c3e52ee81b66c8b1811cea5d336c50f25d849c617757b049cf9f90d35abef8",
+      "bytes": 4787
+    },
+    {
+      "path": "public/favicon.png",
+      "sha256": "9fe7df1df138aa854f6012cb29f50be5b791eeb34bae7e7f389c18687509f9ee",
+      "bytes": 3061
+    },
+    {
+      "path": "public/icons/cruixe-icon-1024.png",
+      "sha256": "463dfbd762874326083830698155a56ad94daec278ceb5b57ea38a335a6e7558",
+      "bytes": 138998
+    },
+    {
+      "path": "public/icons/cruixe-icon-192.png",
+      "sha256": "51f990b3404e868ba8bfdd966e815d497bcffe6597cedb51a5aebfa84761e669",
+      "bytes": 8580
+    },
+    {
+      "path": "public/icons/cruixe-icon-512-maskable.png",
+      "sha256": "391f2ac7960d8550102ed1d17b91f0980b3e0fd103c39c1d204836a0e5187b75",
+      "bytes": 28807
+    },
+    {
+      "path": "public/icons/cruixe-icon-512.png",
+      "sha256": "0810c1e21aae17f711a8b7bc8c804e615d480d21bdfe02619655f8535cf7537a",
+      "bytes": 41534
+    },
+    {
+      "path": "public/icons/cruixe-icon-64.png",
+      "sha256": "2765d0e86cb38966de2175331a0c61d7943f0e31191ad9e07510e80470338180",
+      "bytes": 1931
+    },
+    {
+      "path": "public/icons/cruixe-splash.png",
+      "sha256": "f20d2c4d1f86e4e2606a7d7689ca00967c9bd071bd82d11f812f44624cfdf485",
+      "bytes": 331175
+    },
+    {
+      "path": "public/manifest.json",
+      "sha256": "3c3d829966bbe977ec44ed8327c0a62ae68aa163780bf39094c74331d89078ee",
+      "bytes": 1248
+    },
+    {
+      "path": "public/placeholder.svg",
+      "sha256": "64badf7aabda0b9630b87020ffb6095cb858ccbcf66b355c2aa08b1063954d3b",
+      "bytes": 3253
+    },
+    {
+      "path": "public/robots.txt",
+      "sha256": "37ac4b6ad588eb8d8cdf3ecd1d390ee291090b6029086842662329ff4c9ad320",
+      "bytes": 344
+    },
+    {
+      "path": "public/sw-tiles.js",
+      "sha256": "a2585ea0fb9d92102dee7e8c085bd55e3ae2af94e34ee8acb1ed41a1eca2b550",
+      "bytes": 3506
+    },
+    {
+      "path": "public/sw.js",
+      "sha256": "35711b15c199f0354d810697c770c691fc556c590fab4d1ec1aef3b8be7de657",
+      "bytes": 5915
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/FRONTEND-RESUME-REPORT.md",
+      "sha256": "252706094aea68bccfe92921ec8f85d91bdae9234abf48ac5fc71b3cc5e62720",
+      "bytes": 14852
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/note-contrast-final.json",
+      "sha256": "a021b29e4c7a4243af743d55cf55fd9d359b146b927fc9531d34a8e2ba191f5a",
+      "bytes": 540
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/note-denied-final-360.png",
+      "sha256": "828564e2a7c96d1e09ae08b4b9b8e21cf0cdb39c47c9903062a3d3720b679945",
+      "bytes": 57075
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/note-denied-final-393.png",
+      "sha256": "1e0be54ec34bf61aba425a22808dd61377dda39a9492b7c7ca8116a487d71d5a",
+      "bytes": 58187
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/note-final-360.png",
+      "sha256": "337e2955bae35fd9104ee403f87321eb6600dd30adc0b18d368231745b5b476d",
+      "bytes": 55354
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/note-final-393.png",
+      "sha256": "07396a26c4438244fd898945e033e9fbc559857040dec36c9a2e26679188d626",
+      "bytes": 56271
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/overlays-edge-results.json",
+      "sha256": "b4ca2270d3a46631b02b864ff7aebfe56bfedd3099a6f4385669ac1dc2dfb33e",
+      "bytes": 8781
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/parcel-final-360.png",
+      "sha256": "525c3c28bc7e392513c35bc0fffdbb9ddb98cbee761a6dedc2343d93daeffbd2",
+      "bytes": 85991
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/parcel-final-393.png",
+      "sha256": "161ee37bb4a4492f03df9b70a5271b9436cc0724680e3b4779d61dc98f8250c3",
+      "bytes": 90237
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/schedule-final-360.png",
+      "sha256": "95e90cbc79805cd10239780ceb0043be121989f1b82eab0f8845c046877b301c",
+      "bytes": 68481
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/schedule-final-393.png",
+      "sha256": "e756dfb3d0c468152ffcc784d152863391ab5c190b42ba2f2d9f962943664849",
+      "bytes": 71728
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/share-final-360.png",
+      "sha256": "33ef06eda8df74c0ad5aef9ec7aab92ebbdf8350c201a950e2a0697597474bfa",
+      "bytes": 67136
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/share-final-393.png",
+      "sha256": "cff73e9c17f642e9c655d2c5f29d6d29335cb735cf0761407c8ef38132badcf2",
+      "bytes": 68973
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/someone-final-360.png",
+      "sha256": "fc56eb34dfae733ea9d30a4e6f6af3b3700485fa5e705c1c7d04d94655eb2f8e",
+      "bytes": 83610
+    },
+    {
+      "path": "qa-ci/historical-edge-baseline/someone-final-393.png",
+      "sha256": "f6eed7fa923d954f1cc950925664a44facf194d565f818b6adbc8e2bb4b65251",
+      "bytes": 88185
+    },
+    {
+      "path": "qa-ci/run-remote.mjs",
+      "sha256": "25dabf2e6ca0aa020e9ae0d80f9bee46a5f2f61817e79e3dbeb5888fdb903c17",
+      "bytes": 6749
+    },
+    {
+      "path": "qa-ci/vite.ci-build.config.ts",
+      "sha256": "2a282167cf1a6176339e27c24c341d1316d6055f7e68e2fc93cbe1a2c4a95968",
+      "bytes": 1002
+    },
+    {
+      "path": "qa-stabilization/fixture-map.tsx",
+      "sha256": "fd17a56143f956461301abee7b8c7e4544eaaeef0b26ed03039f35f8356ac27d",
+      "bytes": 285
+    },
+    {
+      "path": "qa-stabilization/fixture-pricing.ts",
+      "sha256": "d5b80dcdce9b6c23ca8e875141324b330d3ee7e3ccd9e6a9cf09131cc8fd8c21",
+      "bytes": 152
+    },
+    {
+      "path": "qa-stabilization/fixture-services.ts",
+      "sha256": "7c1f224f2c2e9b228fadb2383731270cc785909ac2fe1f23deba03d3c21b03c6",
+      "bytes": 7287
+    },
+    {
+      "path": "qa-stabilization/network-guard.ts",
+      "sha256": "c0fc1006948104b30bf330084f8009e786ea5d6fa2278bb7b26815a24dffead9",
+      "bytes": 436
+    },
+    {
+      "path": "src/App.tsx",
+      "sha256": "e36a61bc8653b3c52a60e77fc969d31f6a19c7f6920553646471cffd3eaf3efc",
+      "bytes": 16293
+    },
+    {
+      "path": "src/assets/cars/car-front-economy.png",
+      "sha256": "71fa7b8d416d67e5a299eab8893971c735167329134b5dca41964e7ca6288011",
+      "bytes": 166096
+    },
+    {
+      "path": "src/assets/cars/car-parcel.png",
+      "sha256": "387f0624c305f821b6cad634e67fb1793463be9f625ca29ee0eded474712b66f",
+      "bytes": 160820
+    },
+    {
+      "path": "src/assets/cars/car-search-side.png",
+      "sha256": "4c81c5e67b1ba3032c1d290787ff724fa808e594f333f37d78210780d72c0159",
+      "bytes": 107344
+    },
+    {
+      "path": "src/assets/cars/car-slant-share.png",
+      "sha256": "94da11cb68129e4e33f5b99a7c76995946516b1eee678748b602b507801f0e06",
+      "bytes": 42361
+    },
+    {
+      "path": "src/assets/cars/car-top-black.png",
+      "sha256": "46d5a7277e4471719975ed7826a175e0b019329de11b02b1d6c5d76463cbd1c9",
+      "bytes": 57040
+    },
+    {
+      "path": "src/assets/cars/car-top-white.png",
+      "sha256": "87c1afe03c125ab9dbe69b166a9ef3b933e8c686646063d0793e145cb78eab50",
+      "bytes": 55451
+    },
+    {
+      "path": "src/assets/driver-avatar-jonah.png",
+      "sha256": "41adcab54f42bc485fc7d257b8e733cce939f4a37534971f41f6ff8563a073b4",
+      "bytes": 122894
+    },
+    {
+      "path": "src/assets/hero-city.webp",
+      "sha256": "a882e88e9225ae05915435043780d319a3b7949b6df0eddc7d1178166f44c5e5",
+      "bytes": 145202
+    },
+    {
+      "path": "src/assets/hero-illustration.jpg",
+      "sha256": "c2a07ee799c2b173a1c6baabde116017bc7a1d40d5f0b9c252bab163cd566122",
+      "bytes": 214645
+    },
+    {
+      "path": "src/assets/payment-card.png",
+      "sha256": "5b83feb4d3e71932a2caebf58e1f6e140f71294dde8820ff06254c07feb14bea",
+      "bytes": 166932
+    },
+    {
+      "path": "src/assets/payment-ecocash.png",
+      "sha256": "e93b72bc2d24447dd275d909d325d7d509cb21bbc851d719e21b1b8a27d0a542",
+      "bytes": 82020
+    },
+    {
+      "path": "src/assets/payment-innbucks.png",
+      "sha256": "bbd6a4651fd3c15de45f4a52ca4b8d9b1f4d3113dc83f6aab8c4855cabb054ba",
+      "bytes": 142612
+    },
+    {
+      "path": "src/assets/pickme-car-front.png",
+      "sha256": "1e268e4592e1b2f8bb6c0005b66ed17052a654d995d4d3429359a3ec2fe0408e",
+      "bytes": 361812
+    },
+    {
+      "path": "src/assets/pickme-car-icon.png",
+      "sha256": "baa2c0e7c9610f08a9f619b849da91ccc08b41c0f0e3aa9503af55f81fad5bc2",
+      "bytes": 991448
+    },
+    {
+      "path": "src/assets/search-car.png",
+      "sha256": "130712b51732da032335d7b2fa35465126d4bbf0b2278b0339ee4cfe7143106a",
+      "bytes": 1411486
+    },
+    {
+      "path": "src/assets/voyex-logo.png",
+      "sha256": "6004399fa8884b4b80bbe7d214f0a010278850698832ba46fdde8ef2979ae5e1",
+      "bytes": 254672
+    },
+    {
+      "path": "src/components/AppHeader.tsx",
+      "sha256": "ac86d08439562567d73ee20f83f0d57c4049ca859af36e1cdbab8a284226e933",
+      "bytes": 918
+    },
+    {
+      "path": "src/components/ArrivalIndicator.tsx",
+      "sha256": "9f394ae86e94942a99573e92a5bff39fd60457fffaa570474dfc2fd74ad59d19",
+      "bytes": 3574
+    },
+    {
+      "path": "src/components/AuthGuard.tsx",
+      "sha256": "c6fd2f416e2880fa5ff962ab6cf934af9f5d894015d6655e68a58b2c0e48253c",
+      "bytes": 1090
+    },
+    {
+      "path": "src/components/BottomNavBar.tsx",
+      "sha256": "7c6db68008885a193ad9c2ec29fa38ad243a8f837ccb7261e8e78bc4b7edd311",
+      "bytes": 7942
+    },
+    {
+      "path": "src/components/BusinessSection.tsx",
+      "sha256": "c65db1582185a121bb80b44afae33f0866201636947deb488211bc9c5a283ec0",
+      "bytes": 5367
+    },
+    {
+      "path": "src/components/CarLoadingSpinner.tsx",
+      "sha256": "1a96427145736ea7754fee52139ba66a4c5b2b37c07f3a3f37335c7abfd014dc",
+      "bytes": 3507
+    },
+    {
+      "path": "src/components/CruiXeLogo.tsx",
+      "sha256": "3834e7fc6c7cc97dd8bc2c4170c1c934b32b0b16839b6be1811f42fd1789977e",
+      "bytes": 1563
+    },
+    {
+      "path": "src/components/DriveSection.tsx",
+      "sha256": "ab61934422105afa4e8419e8d5b94a7ccfc554cf9a676148284958a9915a9f54",
+      "bytes": 5373
+    },
+    {
+      "path": "src/components/ErrorBoundary.tsx",
+      "sha256": "5970af3dede1ee20d642a221070588beca8456431c14a825cf4dd24aec0808a0",
+      "bytes": 2255
+    },
+    {
+      "path": "src/components/FavoritesSheet.tsx",
+      "sha256": "bd0a86b1c89aaa9bdae7fbdb6d1c4098754f964338d89550011500b529f42cbb",
+      "bytes": 9473
+    },
+    {
+      "path": "src/components/Footer.tsx",
+      "sha256": "b51dd706016eb4f85294fd91f09d5f976597f2cbbbc0676a30b4bb32cc2bc4a0",
+      "bytes": 5596
+    },
+    {
+      "path": "src/components/GlobalRideNotifier.tsx",
+      "sha256": "f395aa159fe63c147007fa09fba3a35f881b76fcaa21643a8866135ded5beba7",
+      "bytes": 2901
+    },
+    {
+      "path": "src/components/Header.tsx",
+      "sha256": "e05b1b9946e50a95cf26620c8ac177ba13ad4ab371f804e7e6cf8f53bfbdca48",
+      "bytes": 5802
+    },
+    {
+      "path": "src/components/HeroSection.tsx",
+      "sha256": "ca7923d7a8535bb459e7edda4d6a50f612826dddf9ff43b75be01f43b5f5ac5c",
+      "bytes": 16553
+    },
+    {
+      "path": "src/components/InstallPromptBanner.tsx",
+      "sha256": "9bceac602b078be4bf955941da2ab42ca17021dce0c210dde25a4834752a6556",
+      "bytes": 6058
+    },
+    {
+      "path": "src/components/LandingHero.tsx",
+      "sha256": "b134d2b396576dcfec2784e6899dbea27cf97b1ef0f6fd3514140f33314fc3be",
+      "bytes": 6670
+    },
+    {
+      "path": "src/components/LandmarkChips.tsx",
+      "sha256": "33ce08a0766a687f81e6ff3c675d296640dff6d7831b0f3c9451fe618e5fb5cd",
+      "bytes": 2445
+    },
+    {
+      "path": "src/components/LanguageSwitcher.tsx",
+      "sha256": "72a3ff4984b8f3af54f64d7e0c636542063308af4219f151c3b9cf2445608bdb",
+      "bytes": 1201
+    },
+    {
+      "path": "src/components/LocationInput.tsx",
+      "sha256": "f54556eb2014ec8c810303ebd82a6ee0c04f30dc4893a1c730702c76d749d728",
+      "bytes": 16578
+    },
+    {
+      "path": "src/components/LocationPanel.tsx",
+      "sha256": "0f96d180b2fc363ca4dbf647cac8bf76afbf6cd733f6a71db1bcae9bedec49b6",
+      "bytes": 16403
+    },
+    {
+      "path": "src/components/MapboxMap.tsx",
+      "sha256": "6541a305213b7b0d8a5d8f1cd5438d4fd82adc0bf9ce4764b72da7a9e874dda7",
+      "bytes": 28378
+    },
+    {
+      "path": "src/components/NavLink.tsx",
+      "sha256": "ae74980e699af0c3cd0ad42663626cf49c543ced33c81423bd345ac307b3c13a",
+      "bytes": 779
+    },
+    {
+      "path": "src/components/NotificationCenter.tsx",
+      "sha256": "31d4b968148216b4697da34bfa08f470bab1a15c341528aa3c0b47bcc2e4c636",
+      "bytes": 12683
+    },
+    {
+      "path": "src/components/OSMMap.tsx",
+      "sha256": "406a493db830805692cd457cf7fc6dd599dc182cf46ae2a9ce638993439c56cd",
+      "bytes": 15723
+    },
+    {
+      "path": "src/components/OffersModal.tsx",
+      "sha256": "057808060d81e423e5160104456afdf562275a291f823f4e60831b906e3be2be",
+      "bytes": 13634
+    },
+    {
+      "path": "src/components/PageSkeleton.tsx",
+      "sha256": "a8615220590a2f34b170ef5455d0acff014f0f2294e89f27040b65398abf3e20",
+      "bytes": 6562
+    },
+    {
+      "path": "src/components/PageTransition.tsx",
+      "sha256": "90c8fccba5c808ab84dcc9276da2c6ea380b84aa8508c78f85b5f885402b8597",
+      "bytes": 584
+    },
+    {
+      "path": "src/components/PhoneMockup.tsx",
+      "sha256": "c20f38ced444b82365c61539034d19138b1ebd4a07f3ab6da26ccf6faf468624",
+      "bytes": 7831
+    },
+    {
+      "path": "src/components/RideHistorySheet.tsx",
+      "sha256": "408a1dc3d4093204ff4ae515dd29244e0f7920768c1cc3e269a7526a69139bc5",
+      "bytes": 9546
+    },
+    {
+      "path": "src/components/RiderNavigationProvider.tsx",
+      "sha256": "f5c48f71b4e83b8b5052d07f617d820f0b20b78b80896e95a48594717007377a",
+      "bytes": 1675
+    },
+    {
+      "path": "src/components/RouteErrorBoundary.tsx",
+      "sha256": "af3164ae6d1e9e24eacb5a67943a3caaad91fa5fc5ddd0e5c779bf96d842201f",
+      "bytes": 2807
+    },
+    {
+      "path": "src/components/SafetySection.tsx",
+      "sha256": "cc86f346f2bddf40b56fe259b9c3b0b9297475b356c24a0fafc27ea84c175919",
+      "bytes": 3530
+    },
+    {
+      "path": "src/components/SuggestionsSection.tsx",
+      "sha256": "4b6391f7f17925ded226eeee4727c620ab5ee034e113f57f3b2040bda57557fa",
+      "bytes": 2661
+    },
+    {
+      "path": "src/components/SwipeBack.tsx",
+      "sha256": "5d2bbf1fdc71b745cd2c4706e83ca564d60ca779df6edfa38d4c06c983d657d7",
+      "bytes": 1280
+    },
+    {
+      "path": "src/components/TripMapboxMap.tsx",
+      "sha256": "a52cda66f98a974ebb2a7edf4f99e8e715ecc7a75bfb6aed7bc32d11e900aa2d",
+      "bytes": 1535
+    },
+    {
+      "path": "src/components/UserMenu.tsx",
+      "sha256": "20b662c9f407c8c693de4437b3ec98e7f9adc92eaa0c9e1009294e1777a45d97",
+      "bytes": 4662
+    },
+    {
+      "path": "src/components/VehicleTypeSelector.tsx",
+      "sha256": "8c67b15b4133428125afc09286276e73c6347e8c53b06d2269fc9847b23913c6",
+      "bytes": 3768
+    },
+    {
+      "path": "src/components/ZWPlacesAutocomplete.tsx",
+      "sha256": "5652fa5ec78282b979cdc865daa4cdc2f166848f43ccab9755e457ba0ee08629",
+      "bytes": 2763
+    },
+    {
+      "path": "src/components/admin/AdminEmergencyAlerts.tsx",
+      "sha256": "f077ac2942ed0864bc167bee828d9005360397eee8dc67b95d11339cda0e2619",
+      "bytes": 2980
+    },
+    {
+      "path": "src/components/admin/AdminGuard.tsx",
+      "sha256": "8e1e963f3dae5ea58502157de97155b21b6e52511a5a0574b3e8c6b00bb044de",
+      "bytes": 1702
+    },
+    {
+      "path": "src/components/admin/AdminLayout.tsx",
+      "sha256": "ac6db4a579884c41c2038468b4b3da9ec314933393c41d8eb589499da82ddeda",
+      "bytes": 5543
+    },
+    {
+      "path": "src/components/admin/AdminMap.tsx",
+      "sha256": "f0c06053ddef8172858f07a069affb6f25afa8997f4917e0a318af82bdc47d80",
+      "bytes": 13186
+    },
+    {
+      "path": "src/components/admin/LoadPulsePanel.tsx",
+      "sha256": "77dfe18f906693966921f205c5aaa1182715fdddeb374bf3c871d2c5cfa9894f",
+      "bytes": 10314
+    },
+    {
+      "path": "src/components/admin/MapsDebugPanel.tsx",
+      "sha256": "32039e500f7b8755fc8ab3452dd9a657e01dc666ff0b5faa6cf94cc46b3f12b4",
+      "bytes": 3941
+    },
+    {
+      "path": "src/components/admin/MetricCard.tsx",
+      "sha256": "2d977a1faca5f467e691013b771681233d0c6ef64ce906e01929c61f5133334b",
+      "bytes": 2019
+    },
+    {
+      "path": "src/components/admin/RamzCodeScanPanel.tsx",
+      "sha256": "017ca7493bfa8bfa128fc4cb076ef181c077c0394775eee1cc403259991c71d2",
+      "bytes": 47104
+    },
+    {
+      "path": "src/components/admin/SystemSignals.tsx",
+      "sha256": "0b9087317685d57a6ada03dc9ef62426c5362b72653f610b0e31b7bc22cb7812",
+      "bytes": 7422
+    },
+    {
+      "path": "src/components/admin/UserIncidentsPanel.tsx",
+      "sha256": "dbc213f85d62d8b3bea71b9c4ae1aed03e80af146b4d04bb2b18ee990cfae906",
+      "bytes": 10292
+    },
+    {
+      "path": "src/components/auth/AuthForm.tsx",
+      "sha256": "21c13e427949c32b2e97d4bb42ae65c1fe6616faeaf3b974e15d20d773c9a267",
+      "bytes": 20719
+    },
+    {
+      "path": "src/components/auth/AuthModalWrapper.tsx",
+      "sha256": "dfbec1beb629698800d844d9921729b757c18527a42e17e6d400d791b3bcf922",
+      "bytes": 1996
+    },
+    {
+      "path": "src/components/auth/EmailVerificationBanner.tsx",
+      "sha256": "0c8ed4aedace5a6868d0b334b8bd556f614a84a5c3d89d93e5950f380294ca60",
+      "bytes": 2064
+    },
+    {
+      "path": "src/components/auth/PhoneOtpVerification.tsx",
+      "sha256": "1e84b80689b71f2fc7201b01b0388434bb3bf7d875c896399968b4a9d77ce224",
+      "bytes": 6121
+    },
+    {
+      "path": "src/components/driver/ApplicationStatus.tsx",
+      "sha256": "f9286b403aa18d64d83a936d686435e05fc34d14d528ea5068b64e72d6425be6",
+      "bytes": 5467
+    },
+    {
+      "path": "src/components/driver/DemandHeatmap.tsx",
+      "sha256": "9f6354961dcd70580c10d6af2e9324320377e35be7f602b89f6984e57020be6a",
+      "bytes": 6394
+    },
+    {
+      "path": "src/components/driver/DocumentUpload.tsx",
+      "sha256": "9917301ffeaa23ae8304d61722f708fb121bdb9b71d3b54cccc3f16e5dd868cc",
+      "bytes": 7189
+    },
+    {
+      "path": "src/components/driver/DriverApplicationForm.tsx",
+      "sha256": "8e6f20a5b16044c2a19d96841454925e750a772c42101372941ded2cacbbcfec",
+      "bytes": 8175
+    },
+    {
+      "path": "src/components/driver/DriverAvailabilityControl.tsx",
+      "sha256": "057bb1a3b37d38024d84399798ca8389b8dca6f70b59ee396f543ede0345fd1a",
+      "bytes": 2364
+    },
+    {
+      "path": "src/components/driver/DriverAvatarUpload.tsx",
+      "sha256": "9a01dbe3a744784a3f07e62706dd829beabb40c23aef76c7556978b255623875",
+      "bytes": 4681
+    },
+    {
+      "path": "src/components/driver/DriverBottomNav.tsx",
+      "sha256": "a44b5f5d87f1397ff6ea32399c3894e377206440e21de3ed133959a9762a6e14",
+      "bytes": 3990
+    },
+    {
+      "path": "src/components/driver/DriverDocumentsForm.tsx",
+      "sha256": "d12feef2eec97c95479c1d55534455a02e07ca7e673b471ff00c59533436e26a",
+      "bytes": 4181
+    },
+    {
+      "path": "src/components/driver/DriverEarningsDashboard.tsx",
+      "sha256": "257707b2cec29680d1d1ab5ae46563bad6734bd3c3c4df99ada25213d09d61af",
+      "bytes": 10393
+    },
+    {
+      "path": "src/components/driver/DriverFeedback.tsx",
+      "sha256": "fab292d1eaf0cda31d97322ff04a86d6f921b39c8e021e990ce9c900f670c330",
+      "bytes": 4737
+    },
+    {
+      "path": "src/components/driver/DriverLiveNav.tsx",
+      "sha256": "87f8a6ba7953ab866029d0be83a3e84adbdaf96fc06a1c00340ca6c0c7c1a273",
+      "bytes": 11815
+    },
+    {
+      "path": "src/components/driver/DriverMessageSheet.tsx",
+      "sha256": "eb811d5b654d23a674cccb25cb4827e9ea41c54a28a04a61070a69d527e1cbc3",
+      "bytes": 21237
+    },
+    {
+      "path": "src/components/driver/DriverNavigationView.tsx",
+      "sha256": "0a06a85b9951f16ed61f15b664f5f8083cab64154ffe6ff6993fc571a291f099",
+      "bytes": 11018
+    },
+    {
+      "path": "src/components/driver/DriverOfferCard.tsx",
+      "sha256": "205cb6c48592fdc93b8624f3d779d536d2ae2c169f3e58b5aa677768e201fb48",
+      "bytes": 5738
+    },
+    {
+      "path": "src/components/driver/DriverOfferModal.tsx",
+      "sha256": "648e575f1c6d26daf2aa557e5947c80a293a95bbfe0d89409f4fb7b69056c862",
+      "bytes": 8645
+    },
+    {
+      "path": "src/components/driver/DriverPersonalForm.tsx",
+      "sha256": "aa70373ce9bda0afa654147bd83d3790c89cda0d7ea53aab28edf989211c6997",
+      "bytes": 5604
+    },
+    {
+      "path": "src/components/driver/DriverRegistrationIntro.tsx",
+      "sha256": "90040db42186f2e58580a2460d9b20c5237064c9f5f61914be198972d66174bf",
+      "bytes": 2913
+    },
+    {
+      "path": "src/components/driver/DriverRegistrationWizard.tsx",
+      "sha256": "7f8a920c39fb7b51b70b1e6673dcc4967c29e361a0764a1a33c71b829044a796",
+      "bytes": 20162
+    },
+    {
+      "path": "src/components/driver/DriverSelfieCheck.tsx",
+      "sha256": "2bf47c8a674d7e9fd376ce07b12e818ed90a4f6e381d59ff4be3d847adf3ca0f",
+      "bytes": 12482
+    },
+    {
+      "path": "src/components/driver/DriverSettingsSheet.tsx",
+      "sha256": "d476f8cf4fe5a37e37399a0ad5139352f6a2c9b10396988fdf1b55c0fa42185e",
+      "bytes": 5685
+    },
+    {
+      "path": "src/components/driver/DriverSuccessScreen.tsx",
+      "sha256": "d93189b3313c83e1fdd6aca5d443147d0a698140c54c03c3f0f3dab1960bb021",
+      "bytes": 1866
+    },
+    {
+      "path": "src/components/driver/DriverVehicleForm.tsx",
+      "sha256": "4e3f0b80200886e9a3f9088144e28b6db090c8f2c0e99c03cee15769a5d40a35",
+      "bytes": 4985
+    },
+    {
+      "path": "src/components/driver/DriverVerificationBadge.tsx",
+      "sha256": "9bb174fd71956a36dc0d5d00d67daade9357656729e4aca8b8ea1c05a186c11f",
+      "bytes": 2568
+    },
+    {
+      "path": "src/components/driver/FatigueAlert.tsx",
+      "sha256": "9add58bd6b6004ab7d2bf84d80cef5084a6b4b838c79fcd67adfa4085b48945b",
+      "bytes": 2249
+    },
+    {
+      "path": "src/components/driver/FullScreenNavigation.tsx",
+      "sha256": "5364c45282d7a320654a87fee73a83395a132274f592e89135378fcc02bdaff0",
+      "bytes": 47739
+    },
+    {
+      "path": "src/components/driver/GenderChip.tsx",
+      "sha256": "cbee7365385ee93c298dd1b5159a66841dc97dd89fa7507c45e67dec601e7009",
+      "bytes": 926
+    },
+    {
+      "path": "src/components/driver/LanguageRow.tsx",
+      "sha256": "c1a64d82ca448540ff784ee06db842299c0d647da352241089eeaade77873b5e",
+      "bytes": 2322
+    },
+    {
+      "path": "src/components/driver/NavigationCard.tsx",
+      "sha256": "2e0354cf79bad04e261c6f5587522786a2200fc695570ce5c6234d451979bdb7",
+      "bytes": 5292
+    },
+    {
+      "path": "src/components/driver/PassengerInfoCard.tsx",
+      "sha256": "0cb4689ceb9921261860da762bdb7b6e1b324761b2e7dcd2d001ef3a17a5c8f2",
+      "bytes": 2782
+    },
+    {
+      "path": "src/components/driver/PhotoCropModal.tsx",
+      "sha256": "20e2fc914d965cf4a1a4002c1a249044c8b900d03322679ceff200aefb743809",
+      "bytes": 6525
+    },
+    {
+      "path": "src/components/driver/SwipeDismissCard.tsx",
+      "sha256": "afc4e93f2012bc9048ed7a9720eacd66a1748a8c6cfc56a775b7d2002d7b7fab",
+      "bytes": 1816
+    },
+    {
+      "path": "src/components/driver/TripCollectSheet.tsx",
+      "sha256": "f290f3381b5fa7768e4196e3b562d179204149c1fdccf0b1918d008ea67b973e",
+      "bytes": 9905
+    },
+    {
+      "path": "src/components/luggage/FareAdjustmentModal.tsx",
+      "sha256": "5fa575501c364ed2107cfa220c4a20b8a5d60e13510abff4c9f3ee4934353a69",
+      "bytes": 4692
+    },
+    {
+      "path": "src/components/luggage/LuggageButton.tsx",
+      "sha256": "862dfbd3129e22b3c9ea5760dd3471b04fc0830fdbb823fce67e58211105488f",
+      "bytes": 717
+    },
+    {
+      "path": "src/components/luggage/LuggagePreviewSheet.tsx",
+      "sha256": "50f85f4b5b5e8d7252ec9faec1e5e8a4eab6790edf994a6a0a004fb499359941",
+      "bytes": 10278
+    },
+    {
+      "path": "src/components/luggage/LuggageSheet.tsx",
+      "sha256": "63d3e1b4c0fec66f940e53af49f0ea7bac998239fb6ec93384dc9a7df8aa9b57",
+      "bytes": 12831
+    },
+    {
+      "path": "src/components/map/DirectionArrow3D.tsx",
+      "sha256": "e4e6c55d98bf5ec6d14e92e0929e8ec4a96196689d15cb30274d05ed8126b333",
+      "bytes": 1536
+    },
+    {
+      "path": "src/components/map/DistanceGradientLine.tsx",
+      "sha256": "750e8b5ad94099b337e1fc67f3c056056e81c4a578dff9f4d19b30377ee945d5",
+      "bytes": 258
+    },
+    {
+      "path": "src/components/map/LazyMapboxMap.tsx",
+      "sha256": "8aa5ca9a8740fa378843404e8b5c2441610ed5b88974218d79789f385fd0519e",
+      "bytes": 1663
+    },
+    {
+      "path": "src/components/map/LiveNavMap.tsx",
+      "sha256": "d83f00e369833e77d40330b55eed4897c70c3496ea1d0a218982997a1677e16e",
+      "bytes": 13810
+    },
+    {
+      "path": "src/components/map/PremiumTrackingMap.tsx",
+      "sha256": "85243ff38eb841032366035d27b177c124a1d9491e50024ec6f806b8a8e727ce",
+      "bytes": 338
+    },
+    {
+      "path": "src/components/map/SpeedBadge.tsx",
+      "sha256": "6884e2ae33cf00e48f546515ea4a3e16faba54a19cf19d0cf3bd5e5f55c51785",
+      "bytes": 1285
+    },
+    {
+      "path": "src/components/map/StaticMapFallback.tsx",
+      "sha256": "faa0cc0f90efd85af3e1cd5c228eee9e1c44e7625cc14da696e76e7f64f0e8e2",
+      "bytes": 3991
+    },
+    {
+      "path": "src/components/map/TurnByTurnStrip.tsx",
+      "sha256": "9b4356c0ec983cd11a6d845270814ccf129a56ed6baca144ea0a1f5ffb637504",
+      "bytes": 3846
+    },
+    {
+      "path": "src/components/notifications/RidePaymentNotifier.tsx",
+      "sha256": "be0baef4a3d8b9393ca919d5ec5e04044c974b9f75d1a1ce6bb42b8d036b5aff",
+      "bytes": 3596
+    },
+    {
+      "path": "src/components/ride/AccessibilityFilters.tsx",
+      "sha256": "81886fa1d6c6d81cd353622500f28f81ebbe78ff0d3d7ec112885550cdbd91a4",
+      "bytes": 2179
+    },
+    {
+      "path": "src/components/ride/ActiveCallOverlay.tsx",
+      "sha256": "4f1628cac1f12a531f9696dd217a2c90e6e7e456f751c198e094d5ba75ec28c6",
+      "bytes": 2735
+    },
+    {
+      "path": "src/components/ride/BookingForSomeoneElse.tsx",
+      "sha256": "55eca7b27bce68b5941aa0e9b226bd759ecbc94f67b81dc8628b756fa6087105",
+      "bytes": 17440
+    },
+    {
+      "path": "src/components/ride/CancelReasonSheet.tsx",
+      "sha256": "e523157326d9f35b25b96a26bf8ebd0bbcd132878e7170d4f3263fa62416e3e9",
+      "bytes": 2760
+    },
+    {
+      "path": "src/components/ride/CancellationPolicy.tsx",
+      "sha256": "4c92e5184c9477e53b6981c70fd3314130a76dfe26c548830d06728d3b266177",
+      "bytes": 5530
+    },
+    {
+      "path": "src/components/ride/DestinationSearchScreen.tsx",
+      "sha256": "e65c5ee285cfba3c45dab6c3acb3f54e902f3e6f7db8faf12aaef84f644872d3",
+      "bytes": 14402
+    },
+    {
+      "path": "src/components/ride/DisputeForm.tsx",
+      "sha256": "d2c85a69cad7496b888f4697b4ed38d9509d2308d50dae66c05a4ca100e36d69",
+      "bytes": 4854
+    },
+    {
+      "path": "src/components/ride/DriverBidAcceptedModal.tsx",
+      "sha256": "3e0e1102522358566ce9d1a69eb09414941e8dc3f9b983b3b413a2fe40d502bf",
+      "bytes": 7088
+    },
+    {
+      "path": "src/components/ride/DriverETABanner.tsx",
+      "sha256": "3aa51f730f52c1d7079ac86b08480f876162982835e771db92b46fff913f7c37",
+      "bytes": 8016
+    },
+    {
+      "path": "src/components/ride/DriverNoShowAlert.tsx",
+      "sha256": "7685f283426e91de202c499506fef5b40a1a5ec49e256ad32c6bfe224b25f6ea",
+      "bytes": 1796
+    },
+    {
+      "path": "src/components/ride/DriverRatingModal.tsx",
+      "sha256": "60c819de6ba4c44404ba086e3defe1c6114b7a3d3fb1845989b82fb949b0eddb",
+      "bytes": 4672
+    },
+    {
+      "path": "src/components/ride/DropoffAutocomplete.tsx",
+      "sha256": "3e73021dd4221ab1b98eceb371d68ab4ed70ada270d472d3bb945f556d4059db",
+      "bytes": 8650
+    },
+    {
+      "path": "src/components/ride/EmergencyButton.tsx",
+      "sha256": "74efab999ef93831df3359e9aa282db2b5e8347a628a6a802fb5db4d67720121",
+      "bytes": 12811
+    },
+    {
+      "path": "src/components/ride/FareEstimate.tsx",
+      "sha256": "a057d69d0bf570f96ff1c051b6fcebb23eaa3061bcd0d418e6b56b7b934bc43d",
+      "bytes": 2804
+    },
+    {
+      "path": "src/components/ride/GenderPreferenceToggle.tsx",
+      "sha256": "e1a454eee46af736e3a228346fb6cdf4671cf3f22538f0cbc9b7ed684403244e",
+      "bytes": 2210
+    },
+    {
+      "path": "src/components/ride/GpsPermissionBanner.tsx",
+      "sha256": "7cc13230f1cba0b7f62b1f62312fb823355f64586c89300435e2adffc10ae412",
+      "bytes": 2615
+    },
+    {
+      "path": "src/components/ride/IncomingCallModal.tsx",
+      "sha256": "41d98f7bc7529bfd731a75d879d964d5fb228a052260b582c9b9accf52336eb6",
+      "bytes": 2255
+    },
+    {
+      "path": "src/components/ride/IntercitySelector.tsx",
+      "sha256": "4e1fd0f4a6cc571c9ef801d50e414888e5bd4d2ba2ccbcf951f64f4d3db5bfb4",
+      "bytes": 5817
+    },
+    {
+      "path": "src/components/ride/LocationPermissionPrompt.tsx",
+      "sha256": "22abdac3de343f8bcd83ad8780098a98812e34949861cc72b210a6c005117e18",
+      "bytes": 1634
+    },
+    {
+      "path": "src/components/ride/LocationSummaryPill.tsx",
+      "sha256": "41151e34d67e0dbeebc8765c6ca35f0e68ea4944a6549b8ff845806861a87cae",
+      "bytes": 1869
+    },
+    {
+      "path": "src/components/ride/MultiStopInput.tsx",
+      "sha256": "ddd1ea5bae90ff8171517a17ffb4bb350bde9745cf8a86cdef95fa5a5cc3f296",
+      "bytes": 3550
+    },
+    {
+      "path": "src/components/ride/NearbyDriversSummary.tsx",
+      "sha256": "512d1116c5e88b040763e18e51e0a9244fbfb626a1c334018f5d40500ac026cb",
+      "bytes": 1913
+    },
+    {
+      "path": "src/components/ride/NegotiationCard.tsx",
+      "sha256": "53d9c6efeeeb2e06c54aabd54303d2aa7862847be423aa847a0ad3a25c124186",
+      "bytes": 6906
+    },
+    {
+      "path": "src/components/ride/NoteToDriverSheet.tsx",
+      "sha256": "706208720b2dfc1c9e24ecdfe6bd90c99e446d6b3b9e536d1eb21c65b81ab4c6",
+      "bytes": 12060
+    },
+    {
+      "path": "src/components/ride/ParcelBookingSheet.tsx",
+      "sha256": "73fadab9910d103bd1965ae4c003ecca1b169ee0a553aeb4bca82519796b3dff",
+      "bytes": 23719
+    },
+    {
+      "path": "src/components/ride/PassengerRow.tsx",
+      "sha256": "dc7f65e04fa19bbc76b71b1296b59623f756791a894876e882b9edfb05d1cae8",
+      "bytes": 2769
+    },
+    {
+      "path": "src/components/ride/PayRideButton.tsx",
+      "sha256": "c21e85d42975d653b4f6d9dd03208486ef3b5edd2eacd995d69206185694494d",
+      "bytes": 2250
+    },
+    {
+      "path": "src/components/ride/PaymentMethodSelector.tsx",
+      "sha256": "4805e6e05ba85772051b6a0eed67de81d34cfdee9b8723995e09c80c2d1fb6b3",
+      "bytes": 9992
+    },
+    {
+      "path": "src/components/ride/PaymentSheet.tsx",
+      "sha256": "017b601af69fd6f6fefe507f83e7f39d0ea46151d575d6b39967d11e2b9911b2",
+      "bytes": 9430
+    },
+    {
+      "path": "src/components/ride/PaymentStatusBadge.tsx",
+      "sha256": "d078a20ac0efb9c7cb0e0517e5fad5506a9396380715e87f18b7c114f93f92fc",
+      "bytes": 2454
+    },
+    {
+      "path": "src/components/ride/PremiumOfferCard.tsx",
+      "sha256": "4339bdcf5aea54e309a78599a95bc1d1c017c29c505da4a51eb363403508aebf",
+      "bytes": 10759
+    },
+    {
+      "path": "src/components/ride/PremiumOffersSheet.tsx",
+      "sha256": "bf49b73a201e5bb032647c3bde9b299a9c41315e98ed9d1af2e6cd7ca2ba8612",
+      "bytes": 5156
+    },
+    {
+      "path": "src/components/ride/PromoCodeInput.tsx",
+      "sha256": "4722a0949d7c2e8d42f708e2709f9d4e7bf95fe42c35bf1f3f77e2b4d0cf290c",
+      "bytes": 4235
+    },
+    {
+      "path": "src/components/ride/ProximityFilter.tsx",
+      "sha256": "88fb0c7172b5ef9744e0569c0622e866485d4f77175769e0a204ba0ecf470479",
+      "bytes": 1351
+    },
+    {
+      "path": "src/components/ride/QuickPickChips.tsx",
+      "sha256": "4c3a25ee0353477b1148313b732277585893b0d5d482f66d5ca2fb3662da666b",
+      "bytes": 1730
+    },
+    {
+      "path": "src/components/ride/QuickShortcutsRow.tsx",
+      "sha256": "a724e7e4018e1356f4f7bdcbc31efcca91e56d3c59027fe4e32eec7916124d26",
+      "bytes": 3846
+    },
+    {
+      "path": "src/components/ride/RecentDestinations.tsx",
+      "sha256": "863cf833a85ec4af9325af18cb2e4e6f0f095c051f42b5149c443b3bdb7a654f",
+      "bytes": 3329
+    },
+    {
+      "path": "src/components/ride/ReferralShare.tsx",
+      "sha256": "8c26fa2f7d7590f1f923fdc0d7231c4045bfbe1f1c488ae95de3c4e35ce5e84e",
+      "bytes": 3057
+    },
+    {
+      "path": "src/components/ride/RideBottomSheet.tsx",
+      "sha256": "8302070d4fb495d6cb43f74a3305e4d6b22d613f41b76a033d8aff21d11ddb2f",
+      "bytes": 5754
+    },
+    {
+      "path": "src/components/ride/RideCommunication.tsx",
+      "sha256": "07ed6787301799cf6282951c063405e7fa0313b3d90b204459038086d6e30ff8",
+      "bytes": 11865
+    },
+    {
+      "path": "src/components/ride/RideCompleteSummary.tsx",
+      "sha256": "af3022af46dd179e808a5f0ce28dc50ed7bf49c27717dcf5a4f0e0855fe44df2",
+      "bytes": 6345
+    },
+    {
+      "path": "src/components/ride/RideGlassPanel.tsx",
+      "sha256": "7dafe11672b599b0e8f3d852a332f0f4304b82f520d69dac8b1e2736b9db931a",
+      "bytes": 4440
+    },
+    {
+      "path": "src/components/ride/RideHomeGreeting.tsx",
+      "sha256": "ec2f538da0ad0fe30260a1b19c96de8c1c5f7c48833e1cf66b903ef91cd30138",
+      "bytes": 2542
+    },
+    {
+      "path": "src/components/ride/RidePreferenceTags.tsx",
+      "sha256": "e194bee5144a7afd02ab497ef17e16f31bfc8a95550248c0e56509bd91962712",
+      "bytes": 2865
+    },
+    {
+      "path": "src/components/ride/RidePreferences.tsx",
+      "sha256": "a7744a89fb489ca8bc0968408f0962bdacee34611c395eeffd4bb2f5b408ecbd",
+      "bytes": 2136
+    },
+    {
+      "path": "src/components/ride/RideSelectionCards.tsx",
+      "sha256": "f89e2820c9940c8f3b0008c420db2c8a94c51b51f7797c3ed808746861fbf7d8",
+      "bytes": 2114
+    },
+    {
+      "path": "src/components/ride/RideStatusBanner.tsx",
+      "sha256": "484df0a65642e8f33eb43b3ff19558b9bf55a3cf4edb96eebfa231b4ebd41f1f",
+      "bytes": 3879
+    },
+    {
+      "path": "src/components/ride/RideTierSelector.tsx",
+      "sha256": "08ef8428d338c3f1c8ec022b663a567f58603902a2d7d642a75c6b3c024ec05c",
+      "bytes": 11798
+    },
+    {
+      "path": "src/components/ride/RideUI.tsx",
+      "sha256": "b65de6dc0d51ff73012c05489ff7f0e8bbef324d5cb9cf61cdcd48a522b1ab3e",
+      "bytes": 4357
+    },
+    {
+      "path": "src/components/ride/RideView.tsx",
+      "sha256": "833d75749e0848b0ddd937c7130b2add32eb3b8619dce645e7e04540e475c1d1",
+      "bytes": 100490
+    },
+    {
+      "path": "src/components/ride/RiderSpendingAnalytics.tsx",
+      "sha256": "52879a9f6045695ce6953937b006648153ec2e2c71c22d73e3a2f99fb58753fd",
+      "bytes": 4713
+    },
+    {
+      "path": "src/components/ride/SafetySheet.tsx",
+      "sha256": "27d04085aeb7c82250e7cd99653af12ae4750ef4b365633a9d38eadd496c1283",
+      "bytes": 23105
+    },
+    {
+      "path": "src/components/ride/ScheduleRide.tsx",
+      "sha256": "47f876b3a8e4adbf5761122ac21e09369e4a8f1b2436a9a38152469538bbe998",
+      "bytes": 17728
+    },
+    {
+      "path": "src/components/ride/SearchingOverlay.tsx",
+      "sha256": "6895297b6cdf27eb7fcf679425a6a5308891c31c778d6c71f168b98b0e1f5efb",
+      "bytes": 5441
+    },
+    {
+      "path": "src/components/ride/ShareRideSheet.tsx",
+      "sha256": "96c12ea8b7a8cb038490808ba4108cad04992edf7de4301070d51671207479e6",
+      "bytes": 9420
+    },
+    {
+      "path": "src/components/ride/ShareTripButton.tsx",
+      "sha256": "5f20ecc12276b6b46e98f7b5f4e91ffedea1a19550cc43156aea3a41a473e632",
+      "bytes": 5068
+    },
+    {
+      "path": "src/components/ride/SurgePricingBadge.tsx",
+      "sha256": "feb9cfb21727a679a0f4624eb29ba271369c64696c856d6598a30e8124fea5fa",
+      "bytes": 2013
+    },
+    {
+      "path": "src/components/ride/TippingModal.tsx",
+      "sha256": "074e39a27637c190363c2ce491c69d7c921f24b63c5a7b1d80aaf6c0c1050130",
+      "bytes": 7057
+    },
+    {
+      "path": "src/components/ride/TownSelectorSheet.tsx",
+      "sha256": "47f7dfff917c942d05e7fa2625d3354bb646d4f33d7aac2c223b7b48aa6f66ee",
+      "bytes": 7464
+    },
+    {
+      "path": "src/components/ride/TripReceiptButton.tsx",
+      "sha256": "c4af65acd4f573a43308ace6d0542a1450ea7fd6d40a01e0d06cc790196493a4",
+      "bytes": 6032
+    },
+    {
+      "path": "src/components/ride/VoiceCallButton.tsx",
+      "sha256": "a3e9fbd68b0a11c81868c4be5d945cfd7595947bf510c2ebb895792cf38e8f82",
+      "bytes": 611
+    },
+    {
+      "path": "src/components/ride/approvedRide.css",
+      "sha256": "dfa71d3bb01c0d2adaecc90ca257adb3104a643c69263d03f4b4106621839576",
+      "bytes": 12448
+    },
+    {
+      "path": "src/components/ride/destinationScreen.css",
+      "sha256": "01eb1367bc44c622da253af0284014a03a22f0e3e0ae6f367f2eebf4df392cda",
+      "bytes": 5282
+    },
+    {
+      "path": "src/components/ride/rideGlass.ts",
+      "sha256": "e86602b7822d99f1912bfaa262d708b63e91c2fb5b9bd12bde4b2cc5f47723c8",
+      "bytes": 2705
+    },
+    {
+      "path": "src/components/ride/rideSelection.css",
+      "sha256": "1818f931916bc990abf8085c862984ed874b95f09ec65515c9c23fa6eda1c4f2",
+      "bytes": 3192
+    },
+    {
+      "path": "src/components/rider/EcoBadge.tsx",
+      "sha256": "c3a4635a056aed8f25715d4d6a2685b62ca3b0c586b7528fb5442769ae30ba2f",
+      "bytes": 2084
+    },
+    {
+      "path": "src/components/riderNavigation.css",
+      "sha256": "7aff2df00eb6eb12391a4caea0e00ce0c68078516aa9a771f730d57f861094ed",
+      "bytes": 2605
+    },
+    {
+      "path": "src/components/settings/DriverSettingsPanel.tsx",
+      "sha256": "0af24a98aecaf06f6a0eb3e90d9fc137af2bcb97ece49854c30c42495a78c683",
+      "bytes": 3966
+    },
+    {
+      "path": "src/components/settings/RiderPreferencesSettings.tsx",
+      "sha256": "9ef7197be9961c2096cdd200ca58059dc97acb0749e0876781b304be866a282a",
+      "bytes": 7509
+    },
+    {
+      "path": "src/components/settings/RiderSettingsPanel.tsx",
+      "sha256": "a500c80a28e2c8b2bac52e3e375cdd92dae9edee53bac505454681aed309ac5d",
+      "bytes": 3093
+    },
+    {
+      "path": "src/components/trip/TripTimeline.tsx",
+      "sha256": "af82f1f1725b53494bc1ef940bfa44f47fb1c66eb4b37934e196138ce0deb483",
+      "bytes": 4093
+    },
+    {
+      "path": "src/components/ui/ModalBottomSheet.tsx",
+      "sha256": "523a401e95e1a4b776d36729a6e174114d6dfb215f0f745d8fa82b464efbc9d5",
+      "bytes": 4012
+    },
+    {
+      "path": "src/components/ui/accordion.tsx",
+      "sha256": "dedb1e79e973f5be7bbe9149c56e6de293e3c831269192084a664cb40eb9ea49",
+      "bytes": 2028
+    },
+    {
+      "path": "src/components/ui/alert-dialog.tsx",
+      "sha256": "26892ecf3644081f8af613b482871f3d1971ff37c0853cdc02a6258ca93a1ea2",
+      "bytes": 4417
+    },
+    {
+      "path": "src/components/ui/alert.tsx",
+      "sha256": "f6e25204c7dbe2d52bca2d8fa6ba2b770cd92fc6b6182b24b8504cd2cfa14235",
+      "bytes": 1589
+    },
+    {
+      "path": "src/components/ui/aspect-ratio.tsx",
+      "sha256": "67c60b91df6dc9fc729390742b04c02d40c19f51f7a2d4f79110911a061266bb",
+      "bytes": 148
+    },
+    {
+      "path": "src/components/ui/avatar.tsx",
+      "sha256": "fb40d976244fd1053055b2c01bf8789aabca8299d2b6383c5d23c15ed06dd961",
+      "bytes": 1403
+    },
+    {
+      "path": "src/components/ui/badge.tsx",
+      "sha256": "5dcc4c07cc5b444e840caacb098f92710ad8b58954cb963f257431341dbc1e76",
+      "bytes": 1270
+    },
+    {
+      "path": "src/components/ui/breadcrumb.tsx",
+      "sha256": "cdb4909b5375a2b2e3b6613a217b1b357e6fe1bac86a98e0ba9a55ed8a96101d",
+      "bytes": 2777
+    },
+    {
+      "path": "src/components/ui/button.tsx",
+      "sha256": "7ba65de077dc518761151154f6c8cf03d9fa40d6ca6fa570e8833d4f2b247372",
+      "bytes": 2648
+    },
+    {
+      "path": "src/components/ui/calendar.tsx",
+      "sha256": "a52d8aeed9df4b5eefc45e489b488923f036ca7ea08bc73530256fe317a93b99",
+      "bytes": 2617
+    },
+    {
+      "path": "src/components/ui/card.tsx",
+      "sha256": "f5ede3d3328a2de5936320023bd26fcbdf8dd5d830ac9c3f01e5e2513be0bdbc",
+      "bytes": 2004
+    },
+    {
+      "path": "src/components/ui/carousel.tsx",
+      "sha256": "b6cc2145ceae0ad822d8c51f25e4df947338249112ea2552acb08c9af69aeff9",
+      "bytes": 6473
+    },
+    {
+      "path": "src/components/ui/chart.tsx",
+      "sha256": "3677c8421dcdb8bc3cc5a1ce3109959c7be3599da78c8e6ae246f2116afab9b0",
+      "bytes": 10901
+    },
+    {
+      "path": "src/components/ui/checkbox.tsx",
+      "sha256": "dbe4c3e16b760ccadcc654e7f69d5ed95621cb88909e83dc7d50015f694f8b8d",
+      "bytes": 1079
+    },
+    {
+      "path": "src/components/ui/collapsible.tsx",
+      "sha256": "f375e9bb056882208fc140c8f65d8878398c891351d369950bf4cd431e4a98e6",
+      "bytes": 329
+    },
+    {
+      "path": "src/components/ui/command.tsx",
+      "sha256": "5a3e5983d1d336786e969edcb73c86cd7b63f8034c0fe162a6bab3896e32df9b",
+      "bytes": 4891
+    },
+    {
+      "path": "src/components/ui/context-menu.tsx",
+      "sha256": "44641f2907e8b225c250bf2f5df28461400b3a1ce30bcdee113a8e3b662f2c92",
+      "bytes": 7369
+    },
+    {
+      "path": "src/components/ui/dialog.tsx",
+      "sha256": "757cae8c7213088f9337c81ae8491c7403b42c041b872fac8aa47e3d5fb245f2",
+      "bytes": 3974
+    },
+    {
+      "path": "src/components/ui/drawer.tsx",
+      "sha256": "173e0d771230a244c5899ec6ac8e162e38ac551e00cd43ea50af2dfdf96538e9",
+      "bytes": 3028
+    },
+    {
+      "path": "src/components/ui/dropdown-menu.tsx",
+      "sha256": "3c031a123dbb144a925d2720ec43b5fab495ee0f52ce62dbe7fbfdd17194b729",
+      "bytes": 7439
+    },
+    {
+      "path": "src/components/ui/empty-state.tsx",
+      "sha256": "8e5fe41232f943de7440b92c0b630a8d636099cdf2e591b1d0816b42867182ab",
+      "bytes": 672
+    },
+    {
+      "path": "src/components/ui/form.tsx",
+      "sha256": "e7ff61da7586180d1e1bc65763a24c0ed0881f26a3cde4102a9642ab2b6c4ca4",
+      "bytes": 4202
+    },
+    {
+      "path": "src/components/ui/glass-card.tsx",
+      "sha256": "a785fa9ff8e0d060e62247ef75eae661b604d73bb304842e5998e3400ce6329e",
+      "bytes": 452
+    },
+    {
+      "path": "src/components/ui/glass-sheet.tsx",
+      "sha256": "fc75646f7a371d761e178eb0e706dac137c143eedfc869cf231352c7a6bb829e",
+      "bytes": 419
+    },
+    {
+      "path": "src/components/ui/hover-card.tsx",
+      "sha256": "643dc4bb95e37a4c8244c9b00f6042ad52ad8deeb44eb212c7e6aadce0662350",
+      "bytes": 1220
+    },
+    {
+      "path": "src/components/ui/icon-pill-button.tsx",
+      "sha256": "9c1614858e4ceae0c72c2bb71b3334d049ef015e34b11228a7c87ffb81b2e099",
+      "bytes": 669
+    },
+    {
+      "path": "src/components/ui/input-field.tsx",
+      "sha256": "b99e1763430fde7a986be3a523fa41e5bb03ff7475d595a903b5ad2e4d8ee360",
+      "bytes": 633
+    },
+    {
+      "path": "src/components/ui/input-otp.tsx",
+      "sha256": "832723e92321ae391222df9c83d60c405f15ec54ad61b8c954b14b4b74243d5a",
+      "bytes": 2227
+    },
+    {
+      "path": "src/components/ui/input.tsx",
+      "sha256": "a236b8347acc7a38a1c9cb734d8f30c8b6db5ab409bb34ebd7aa1cdf8939e50a",
+      "bytes": 973
+    },
+    {
+      "path": "src/components/ui/label.tsx",
+      "sha256": "9365711e408fc8add0e7a7fe4ddf513ee346b98a54aa1de131f34a9afedc753d",
+      "bytes": 713
+    },
+    {
+      "path": "src/components/ui/menubar.tsx",
+      "sha256": "1e9b2239e995d7a1fe6dfea7cf4ef571658eb99c8b744f540853350d1cbb1b7f",
+      "bytes": 8070
+    },
+    {
+      "path": "src/components/ui/navigation-menu.tsx",
+      "sha256": "05152cd000285d4339c3e9be92606f8027ff90d7bb57d10aad48517bc4e210a1",
+      "bytes": 5209
+    },
+    {
+      "path": "src/components/ui/pagination.tsx",
+      "sha256": "8fa329509f89ebfce9cb4fdb5fd57e7bc595724831485d9c24dfa6a755e17a66",
+      "bytes": 2764
+    },
+    {
+      "path": "src/components/ui/popover.tsx",
+      "sha256": "3c3c138c4ca584e2449599fa87467cf96085fe6518d03645b3adfc83f118202b",
+      "bytes": 1268
+    },
+    {
+      "path": "src/components/ui/primary-button.tsx",
+      "sha256": "f199d2e3334aa4db52d6aae2978ba11bda56ce57856cccd1a5cc9ee109d31963",
+      "bytes": 791
+    },
+    {
+      "path": "src/components/ui/progress.tsx",
+      "sha256": "aa219168fea49b768544e7da6d6b6776d97df6f499fefd69e9cca69e80e38d61",
+      "bytes": 788
+    },
+    {
+      "path": "src/components/ui/radio-group.tsx",
+      "sha256": "e7bcb8238a536581930a50e37912b11003a4e5f9b2e0a5e17aeffc024edd1394",
+      "bytes": 1483
+    },
+    {
+      "path": "src/components/ui/resizable.tsx",
+      "sha256": "649c0537bd8f0784f11a5e7666284ad42a0665a0525b93e69f0287c7bf1f000d",
+      "bytes": 1733
+    },
+    {
+      "path": "src/components/ui/scroll-area.tsx",
+      "sha256": "3d5021162483838dab258477d4752e6194428424fc74d75a30efa30d83200b59",
+      "bytes": 1646
+    },
+    {
+      "path": "src/components/ui/secondary-button.tsx",
+      "sha256": "a06993b89adacf6494669711d4a5465054c2d6ad44c8c743e8008a3f803136a7",
+      "bytes": 650
+    },
+    {
+      "path": "src/components/ui/section-header.tsx",
+      "sha256": "56d62e709d20ea020926fdb2dad06f61935adb798c2a577d25db3f94a9ac2615",
+      "bytes": 608
+    },
+    {
+      "path": "src/components/ui/select.tsx",
+      "sha256": "37eaf6e792144f80187df0e3a6314246b2bd3c61fa401a78bf6c3fdd49d7a210",
+      "bytes": 5718
+    },
+    {
+      "path": "src/components/ui/separator.tsx",
+      "sha256": "8ec59e1c43ca286a97e5ced3a3473352dbdaf4f0b1cade910c95dfdf251ae209",
+      "bytes": 718
+    },
+    {
+      "path": "src/components/ui/sheet.tsx",
+      "sha256": "1f802a0210a3d21e7d9bff8dd0c0bbe2bdcd4987980e48826ace585a839ca43d",
+      "bytes": 4487
+    },
+    {
+      "path": "src/components/ui/sidebar.tsx",
+      "sha256": "ebdbc402c7f287884d2a4aee32e3c0944fbf54ad8fbbe2aed80131fa9cb205e4",
+      "bytes": 23533
+    },
+    {
+      "path": "src/components/ui/skeleton.tsx",
+      "sha256": "0594fd4b3764d9214a2783402e5fa82e47ad69e445d427f3c9ab3894aaefa3f3",
+      "bytes": 1776
+    },
+    {
+      "path": "src/components/ui/slider.tsx",
+      "sha256": "527bb9cfea006f3b70eecbdd40c1ac2ff1b7e687014b4112863bccabde3be735",
+      "bytes": 1088
+    },
+    {
+      "path": "src/components/ui/sonner.tsx",
+      "sha256": "c1def188a9fed329366ecc494383f35c70b3927f619a3440fa8757b640e11299",
+      "bytes": 992
+    },
+    {
+      "path": "src/components/ui/status-chip.tsx",
+      "sha256": "fd130897c42a14f1bf603951bd75c5967160a1c363c2cf8a419576219eb63dd6",
+      "bytes": 829
+    },
+    {
+      "path": "src/components/ui/switch.tsx",
+      "sha256": "82d20b0bbe0880e62ab6471e3ba5f1f5a5f8337e1a5420420380314a653cfea7",
+      "bytes": 1174
+    },
+    {
+      "path": "src/components/ui/table.tsx",
+      "sha256": "5cee937c372bce9af767f5d87e57c3220694d0c29b682bb6f1c834c4fff888ec",
+      "bytes": 2766
+    },
+    {
+      "path": "src/components/ui/tabs.tsx",
+      "sha256": "ea49795ab5cc253c7d2ab1138f27cb7807b19e254c5e661141cde7aa8c4187d4",
+      "bytes": 1950
+    },
+    {
+      "path": "src/components/ui/textarea.tsx",
+      "sha256": "2543b96f0ffe45f6ccb404cf073c1416096ee98e7a12cfebfd9cdf28d549ac37",
+      "bytes": 713
+    },
+    {
+      "path": "src/components/ui/toast.tsx",
+      "sha256": "87ab93db171be019c37982e95b47732c0fe58592aa26998ef62b9ca8362ff8ca",
+      "bytes": 4909
+    },
+    {
+      "path": "src/components/ui/toaster.tsx",
+      "sha256": "6cce09ccc4cecbd88e2b249c7d60ff87d7d7ca6271906c80f281050668aa93c0",
+      "bytes": 754
+    },
+    {
+      "path": "src/components/ui/toggle-group.tsx",
+      "sha256": "80ca2245a6104b972681ff574543fbbd076142361db9370e8b70ab349aa1c537",
+      "bytes": 1763
+    },
+    {
+      "path": "src/components/ui/toggle.tsx",
+      "sha256": "d782a35ea11eef76d2de2397d946290c4a96446adb8f11a3abab2ca61298dea0",
+      "bytes": 1512
+    },
+    {
+      "path": "src/components/ui/tooltip.tsx",
+      "sha256": "0d43ec6da30ba92a66c6b098a5123563ebd4153c8d53983f105109b8da7031c4",
+      "bytes": 1183
+    },
+    {
+      "path": "src/components/ui/top-flash-banner.tsx",
+      "sha256": "4fd561ff77663a0d7501bf7159057a674b7d558d1983fe0f69cb76ff29c74562",
+      "bytes": 4835
+    },
+    {
+      "path": "src/components/ui/use-toast.ts",
+      "sha256": "3fbe3b856affdf39f3eb2a82c898b96d44560d93d05674ab2fd6105825ca78d1",
+      "bytes": 85
+    },
+    {
+      "path": "src/components/wallet/AdminEarningsSheet.tsx",
+      "sha256": "f5b1968ad4c98e07beed9206c6a34f2ffff5803b84a433be23b53b6e9d1b7eae",
+      "bytes": 6027
+    },
+    {
+      "path": "src/components/wallet/DepositModal.tsx",
+      "sha256": "b212e90caf9a73699071608a7cd0efc094c14aa468d67c572bc6d7c4410b2a1e",
+      "bytes": 14670
+    },
+    {
+      "path": "src/components/wallet/EcoCashPaymentModal.tsx",
+      "sha256": "5a01d7cd5fd779d522a18fd87c508d76698a8ff6ef896b1c0b5ed193c074549e",
+      "bytes": 8762
+    },
+    {
+      "path": "src/components/wallet/MoneyAmount.tsx",
+      "sha256": "6dbdcab30c330b3e946affdb5e65360ab174b6182bc0a341d2b6dd9126632b27",
+      "bytes": 926
+    },
+    {
+      "path": "src/components/wallet/TransactionsSheet.tsx",
+      "sha256": "859df933847b8c2c5b7737ab3216e465b36656d71f1a4162fd8ff5fc28e0b785",
+      "bytes": 3383
+    },
+    {
+      "path": "src/components/wallet/TransferMoneyModal.tsx",
+      "sha256": "de50f73553c2f6bd5f937fd1b2e4ab3425e41c1883285a58e4c11073dcbb47ca",
+      "bytes": 7966
+    },
+    {
+      "path": "src/components/wallet/WalletBalance.tsx",
+      "sha256": "2ca3cb7254fc0cbca250e9a5846d2dc4c66019a21ce86fe683a65fc815c8fed5",
+      "bytes": 1063
+    },
+    {
+      "path": "src/components/wallet/WalletCard.tsx",
+      "sha256": "8bb0fc62b0341d8eba158fd48e74471c29a9aeceebbe49ad078345530c6f3840",
+      "bytes": 3741
+    },
+    {
+      "path": "src/components/wallet/WalletPinModal.tsx",
+      "sha256": "7196d20903bbf07e671f389ec52f5cdcc22a9d160618983930dcb83af0c61263",
+      "bytes": 5388
+    },
+    {
+      "path": "src/components/wallet/WalletSettings.tsx",
+      "sha256": "7d9fa1328dd0ba1c9d426ff79ace170445672d06e7ced26ca7046079496bc849",
+      "bytes": 2241
+    },
+    {
+      "path": "src/components/wallet/WithdrawalModal.tsx",
+      "sha256": "09b05918a2dad740fa712a07d648a47f4192ebf80cb449a69ea221a5d3d41405",
+      "bytes": 5980
+    },
+    {
+      "path": "src/data/gwanda-osm-places.json",
+      "sha256": "f300d4f46d4a91e06942dc0543d685f3ef324bb2648817fd4c74fea22c6bbffb",
+      "bytes": 94107
+    },
+    {
+      "path": "src/hooks/use-mobile.tsx",
+      "sha256": "f6f7a7643d4607721c57e2b8c4081a8f84aefbb0a240f4b9dd1fc20d8d7a61e6",
+      "bytes": 595
+    },
+    {
+      "path": "src/hooks/use-toast.ts",
+      "sha256": "6bf9e146f489a0c63de9c7e52c2c4d94d2c4618214b106cf3b871f02ca9b5925",
+      "bytes": 4121
+    },
+    {
+      "path": "src/hooks/useAdminAuth.tsx",
+      "sha256": "7f3a2e1f0c10c9fc657d3895fb4d3b30378c31860eba3f4c5a325d14462d00b9",
+      "bytes": 3523
+    },
+    {
+      "path": "src/hooks/useAgoraCall.ts",
+      "sha256": "c3680526f587800286d475c8180733900d8f0aafe6eed0f9eea28145041dba7a",
+      "bytes": 18255
+    },
+    {
+      "path": "src/hooks/useAppBootstrap.tsx",
+      "sha256": "c42f74256e21ba852f6534a3307898c3da476bf9549c8e17f71fac0bf061771c",
+      "bytes": 8062
+    },
+    {
+      "path": "src/hooks/useArrivalDetection.ts",
+      "sha256": "888cc002a8e665799eef64236aeedf972545876ff6b8314fc4ff9c512f85f75a",
+      "bytes": 5558
+    },
+    {
+      "path": "src/hooks/useAuth.tsx",
+      "sha256": "fa76fcf30c11aa5206817696f7b29ae5b09a2030551dc0cde51c11ee299c523f",
+      "bytes": 4357
+    },
+    {
+      "path": "src/hooks/useDataMode.ts",
+      "sha256": "21cc5f79032e53663e496a0033cd094b439f230f3ab3dc5ed23dd330a5197dff",
+      "bytes": 1649
+    },
+    {
+      "path": "src/hooks/useDriverApplication.ts",
+      "sha256": "4f99c471f395cd164d8e875d440313b5e63c085241f28e8376bfbca8e583dccf",
+      "bytes": 1649
+    },
+    {
+      "path": "src/hooks/useDriverNoShow.ts",
+      "sha256": "73b2f9fb5aa282d5d2138552e70489a204a3010ae3c730ed4e883fc21a6f592e",
+      "bytes": 3233
+    },
+    {
+      "path": "src/hooks/useDriverRideAlerts.ts",
+      "sha256": "d24d2d1c4155a37eb848e5fd6b5e17ae02624d1eeb86a87fa0831415872318d1",
+      "bytes": 2875
+    },
+    {
+      "path": "src/hooks/useDriverSimulation.ts",
+      "sha256": "896b68b98bbbf8d46100a3edf564b83b328d8aa5fc3a5915eadb7f0f700d4a34",
+      "bytes": 6572
+    },
+    {
+      "path": "src/hooks/useDriverStatus.ts",
+      "sha256": "dfd99493bd1bdee13659973d3cb4d2cd340d44bc3a8c12e119a8eb5f29422b3e",
+      "bytes": 2449
+    },
+    {
+      "path": "src/hooks/useDriverTracking.ts",
+      "sha256": "0880f8c2217540f0705b46a19f4472306cdcee754d50f60faec99e5cadee5ec9",
+      "bytes": 1006
+    },
+    {
+      "path": "src/hooks/useEscapeKey.ts",
+      "sha256": "988a48f93b9e45cc89872d74294d50b37dd9b2cf46167290bfbae2e21f07cd4a",
+      "bytes": 588
+    },
+    {
+      "path": "src/hooks/useFatigueMonitor.ts",
+      "sha256": "e43067701b6f0ba982612e35589d9f1e1d8b52fefd296c42beeb920e01b5daf5",
+      "bytes": 5240
+    },
+    {
+      "path": "src/hooks/useFemaleTheme.tsx",
+      "sha256": "a0841df1c8b422681b605b12edf72521995ba61afbaa7f6743e75b5a8550a5c7",
+      "bytes": 1608
+    },
+    {
+      "path": "src/hooks/useGooglePlacesAutocomplete.ts",
+      "sha256": "81d3f9e8e1d5ab33cb2c86cb62bb95337cd4dfac9d2b2fdeccc67220ed7fdcbc",
+      "bytes": 4680
+    },
+    {
+      "path": "src/hooks/useGwandaLandmarks.ts",
+      "sha256": "1aa71ce383d9184eb25987eca13950752d01ec664b0eb37e296c3d70f42dccf1",
+      "bytes": 2263
+    },
+    {
+      "path": "src/hooks/useLandmarks.ts",
+      "sha256": "1c05756eaac2344d0c34e386bcf042cc7203de465156883dea0b0227fd910609",
+      "bytes": 11927
+    },
+    {
+      "path": "src/hooks/useMinutesSince.ts",
+      "sha256": "7b513e26566b52dc7c23c0fde4878d6deefb9d118551c06b73e223fe081655c1",
+      "bytes": 1244
+    },
+    {
+      "path": "src/hooks/useNearbyDrivers.ts",
+      "sha256": "70f76978abcf91dfab94b3b610b222503d1af69b81b85913e82ddcac80593206",
+      "bytes": 4686
+    },
+    {
+      "path": "src/hooks/useOSRMRoute.ts",
+      "sha256": "aedb25da2f6451bda50322888cf628a01480396ec108081ec2dfab46a5147735",
+      "bytes": 1557
+    },
+    {
+      "path": "src/hooks/useOnlineStatus.ts",
+      "sha256": "207c8e4c377332adbce895995e8ddb12f1d32e6355d264b053f2f532f848bb22",
+      "bytes": 545
+    },
+    {
+      "path": "src/hooks/usePickmeAccount.ts",
+      "sha256": "ef2f549d1ab4cae40fb7581d198ac276c84f2bf56ef458e02e5dc1405854ac6e",
+      "bytes": 1185
+    },
+    {
+      "path": "src/hooks/usePricingSettings.ts",
+      "sha256": "44b86b7ad37513492680281d4a313cc0d906c7bd8c80d27f54ff0c69a813994c",
+      "bytes": 2512
+    },
+    {
+      "path": "src/hooks/useProfileStats.ts",
+      "sha256": "571aceef64604f706c0ccc91eeb8e8de3fc2090cb796a81dd01cb88abdef5ddc",
+      "bytes": 2782
+    },
+    {
+      "path": "src/hooks/useRideRealtime.ts",
+      "sha256": "48711bc1864ea938a489864f36d62a65a24a25df72fa28d00cf0f2bc814b3c5d",
+      "bytes": 6967
+    },
+    {
+      "path": "src/hooks/useRouteEstimate.ts",
+      "sha256": "5ca64ad99c053bf8674600319fd580046fff2a6797971c940d8fa6a12fa19451",
+      "bytes": 1727
+    },
+    {
+      "path": "src/hooks/useSendNotification.ts",
+      "sha256": "11c28db9b7282bfd5054b45c2d36393dd7d34852ec60c15e63cb8d32fcf370e1",
+      "bytes": 1445
+    },
+    {
+      "path": "src/hooks/useStreets.ts",
+      "sha256": "309bee8ce9049e9858819ee01f3ac84a78297decdfc9c46b2f0c0be1e09011e5",
+      "bytes": 4566
+    },
+    {
+      "path": "src/hooks/useStudentProfile.ts",
+      "sha256": "303afbbb07c254c88b0dff65ae3790896d111f8b65ce671710ba38a3d7c228d5",
+      "bytes": 4230
+    },
+    {
+      "path": "src/hooks/useTownPricing.ts",
+      "sha256": "1f8a6d7421cc5bfb49830a32efa6cb11c11a8f34fda049763786359c08deea05",
+      "bytes": 4080
+    },
+    {
+      "path": "src/hooks/useUnreadRideMessages.ts",
+      "sha256": "77b602466b30669bc926af6b44c36993f19ec32c6febf28b46cb38311c898631",
+      "bytes": 2054
+    },
+    {
+      "path": "src/hooks/useUserRole.ts",
+      "sha256": "00619773722dc2040166fe1438413d84689fd82e59d33d94fb51503812ad9a6c",
+      "bytes": 1435
+    },
+    {
+      "path": "src/hooks/useVoiceNavigation.ts",
+      "sha256": "1f389e25263267a0148fbb461cfe095a169774781538589f046a973ed73d96d8",
+      "bytes": 4819
+    },
+    {
+      "path": "src/hooks/useWallet.ts",
+      "sha256": "063b0507d409f1a4e550c23320761a6f1dcb24a4800ebaecf7f9e8542773bcd8",
+      "bytes": 3494
+    },
+    {
+      "path": "src/hooks/useWalletPin.ts",
+      "sha256": "88741f4cf9f3f1483d9e712acd48fbbef2ab57be0a48a14e1d915418bf9ef108",
+      "bytes": 2134
+    },
+    {
+      "path": "src/hooks/useWebRTCCall.ts",
+      "sha256": "03fa413243d0986e4a6224c15977fabf63705e50dbab66ca9b5732ecb8b69271",
+      "bytes": 16277
+    },
+    {
+      "path": "src/index.css",
+      "sha256": "28b134878940552612de163e855ef2b49160914167ac3283b944b605695e852e",
+      "bytes": 20198
+    },
+    {
+      "path": "src/integrations/datadog/README.md",
+      "sha256": "503a4d1bf91e7d9ef1128246d3794b0e59a6ac3d70ef734b726973dfd8e28e67",
+      "bytes": 513
+    },
+    {
+      "path": "src/integrations/datadog/rum.ts",
+      "sha256": "d0d237590915b5019db86f8574684db978a8b6a176fad9f2b4eedd165ad73e3b",
+      "bytes": 2724
+    },
+    {
+      "path": "src/integrations/lovable/index.ts",
+      "sha256": "08ac4df4f06372b1d4cb0a563f8eba96b4de1ce93388444e503dd5c5966df4fc",
+      "bytes": 976
+    },
+    {
+      "path": "src/integrations/supabase/client.ts",
+      "sha256": "eeb66b4b0723f831541e7470745e2f21130ffd4c06a8a2caea86a8379ab3c627",
+      "bytes": 1837
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "sha256": "9ff6a3e9b0edddd1c8265ff68758d479fb59e5114b49b0812f6f8904b2f43bc0",
+      "bytes": 4424
+    },
+    {
+      "path": "src/integrations/supabase/types.ts",
+      "sha256": "09afeffb68fa39f9ec1bb52c91ff9c931ea455bc1004fb46aaeeac281a3aabeb",
+      "bytes": 89571
+    },
+    {
+      "path": "src/lib/alerts.ts",
+      "sha256": "9bac7f4ba7b524837bebe0335ddabd04f2e2e71a6ea72e00129c5a028784795f",
+      "bytes": 1930
+    },
+    {
+      "path": "src/lib/arrivedSoundPrefs.ts",
+      "sha256": "181907824f09c414656392fa508a352d4b97cc523ebf6fabddc08c124472bf95",
+      "bytes": 3520
+    },
+    {
+      "path": "src/lib/authReady.ts",
+      "sha256": "979ab622ba3491b9ec6b3e4af380ddd6aba5c5fcf044ddb8c1fe7d3cd49d67c3",
+      "bytes": 881
+    },
+    {
+      "path": "src/lib/avatarUrl.ts",
+      "sha256": "4c60a401f7d0f8fee79085c7b27ebb6401b9be70602ca52dab628f91b6fa2df2",
+      "bytes": 699
+    },
+    {
+      "path": "src/lib/backendClient.ts",
+      "sha256": "bbc8356f56819ab51c6be526fd0e6903ee6b1d70c456433de7cb1724c977f1a0",
+      "bytes": 7151
+    },
+    {
+      "path": "src/lib/backendSocketClient.ts",
+      "sha256": "8a1f4ad973d5bfd726cd3a14ceb39b844bc22d29bbfceddfd062157a42d57526",
+      "bytes": 18950
+    },
+    {
+      "path": "src/lib/backgroundLocation.ts",
+      "sha256": "81384a82ccdd6132d6c9a9c4730e51dd2827412638f0a3109b43d91e59f97149",
+      "bytes": 12368
+    },
+    {
+      "path": "src/lib/businessApi.ts",
+      "sha256": "2d5ec813cf912ea90aca24b57ee9f3d5c7b156634414d2e7d77c94dec3f5c857",
+      "bytes": 8805
+    },
+    {
+      "path": "src/lib/completeTrip.ts",
+      "sha256": "d69bb4de6971748f6a4ff1932b38c44c3ab0cf97faf755490e9c662998d4aca7",
+      "bytes": 809
+    },
+    {
+      "path": "src/lib/constants.ts",
+      "sha256": "605fa82e0bc7a88e7d92e6ee89dd349bac34bcbd0b88ba2545c3d2f42ad43ca4",
+      "bytes": 3431
+    },
+    {
+      "path": "src/lib/driverAvailability.ts",
+      "sha256": "395f5f812a1eb7b1b82318dbc196a778cba4d48b8a57d4719a384d8e8d0de5e6",
+      "bytes": 2762
+    },
+    {
+      "path": "src/lib/driverDismissedRides.ts",
+      "sha256": "69e3bc68745f19646c3b9cd7d6e5a2dbb30c57034d7bb81321bd4cbc439a423b",
+      "bytes": 1258
+    },
+    {
+      "path": "src/lib/driverLocation.ts",
+      "sha256": "ee8d1207178a77ac4284b945f2020dd15a1e4fddff7eab9004aa6616789eb35c",
+      "bytes": 3002
+    },
+    {
+      "path": "src/lib/driverLocationState.ts",
+      "sha256": "a4b98749359b23b437c6cae508081fd3b02d3a154e824b92eb41900cb141eab4",
+      "bytes": 2155
+    },
+    {
+      "path": "src/lib/driverPresence.ts",
+      "sha256": "95eb17c7eac4feda03ea35faa015cda59e2c8149fa644fe43b138c93f232ed09",
+      "bytes": 3925
+    },
+    {
+      "path": "src/lib/driverRideRequests.ts",
+      "sha256": "b0d743f8c5e2c45727fc3df467e5bf6a0f8d2d884693fb19caea7f3502a33190",
+      "bytes": 7169
+    },
+    {
+      "path": "src/lib/driverStats.ts",
+      "sha256": "a292290abb64032bd7581b87f8c08ea7cc4cd696c9506b02927db34db2e5bc1d",
+      "bytes": 5700
+    },
+    {
+      "path": "src/lib/envPolyfill.ts",
+      "sha256": "b336d311d0596b0ebd6af89e8275c5e36ba1c270f5e50890a479223e5c7e78b9",
+      "bytes": 294
+    },
+    {
+      "path": "src/lib/fraudDetection.ts",
+      "sha256": "2239dfae4913f3cb741fffb6c37e01d70bafdd0ab01164cc590d9c6d762dc2bd",
+      "bytes": 4917
+    },
+    {
+      "path": "src/lib/fuzzyMatch.ts",
+      "sha256": "eef87f2111aab5376870aa54004db6a4176bfd1a83d38ca5179173f0ce93c83f",
+      "bytes": 1010
+    },
+    {
+      "path": "src/lib/geo.ts",
+      "sha256": "ed6432b4600381453305c75cb66866c065484c632dcfff10a9c72e79a0f7c71a",
+      "bytes": 2124
+    },
+    {
+      "path": "src/lib/geo_osm.ts",
+      "sha256": "20fe47d90f317d20fa1e8f3c3312674dd1926cc6500e87f8ee2d27d8b2e93f99",
+      "bytes": 4938
+    },
+    {
+      "path": "src/lib/goBackendClient.ts",
+      "sha256": "6c0f983e28564826a1eb121481315e327cfa953adf52940e8c481312d1f17f85",
+      "bytes": 10342
+    },
+    {
+      "path": "src/lib/haptics.ts",
+      "sha256": "b01882b4e9c8ff2e34e9f65646daeff00137894d697e8cb582dc403d6275fe4e",
+      "bytes": 2211
+    },
+    {
+      "path": "src/lib/i18n.tsx",
+      "sha256": "8cc18abaa2aa3762445ec6440d7157da1f5f35679ef21300461579549d863eba",
+      "bytes": 7389
+    },
+    {
+      "path": "src/lib/imageCompression.ts",
+      "sha256": "7ed6cffac8a7cc4a6fe903733dba3dcfc919a45fbe43fd8f8002c97ef555dc32",
+      "bytes": 1758
+    },
+    {
+      "path": "src/lib/intercityRoutes.ts",
+      "sha256": "239b425802386fdb1a2a2caaa707d9caffe9a4e111527f2cc569db298d5f830a",
+      "bytes": 2836
+    },
+    {
+      "path": "src/lib/landmarkValidation.ts",
+      "sha256": "e53cdf8a36f2ed3826ee1f818d84741adfbce27b1e234d368e9a164898b2cbf7",
+      "bytes": 2668
+    },
+    {
+      "path": "src/lib/luggageStorage.ts",
+      "sha256": "2d2ec015323973b109b25c1889f7d271530bbdb58f219dcfdfdfd0d26021403f",
+      "bytes": 1008
+    },
+    {
+      "path": "src/lib/mapboxLoader.ts",
+      "sha256": "e9c4f35d7bce3081080ad54996063eda8baf2aa035030a0aedc884e52e3d23ff",
+      "bytes": 3699
+    },
+    {
+      "path": "src/lib/mapsKillSwitch.ts",
+      "sha256": "f1458e831f778b6838b6957cac89348a7a320528c82c0ff40980709c1f38322c",
+      "bytes": 1077
+    },
+    {
+      "path": "src/lib/money.ts",
+      "sha256": "85c40a56966834a9021ae48525895b552f8487d8885ef10d7263cc4f2fa47cd6",
+      "bytes": 694
+    },
+    {
+      "path": "src/lib/nativeBridge.ts",
+      "sha256": "9c8d653519e4513ccf74a3540515965c7f5243da3f5cf125580cecb108394342",
+      "bytes": 3514
+    },
+    {
+      "path": "src/lib/nativeContactPicker.ts",
+      "sha256": "623673cbb714efbbaa07e38bae4fdf689694142a6f26723ec14fa7e4887621f1",
+      "bytes": 2252
+    },
+    {
+      "path": "src/lib/navigation.ts",
+      "sha256": "ab9364cbda2f64fbab3dab33a04b608c819001dd6afd4357c8614e961e0d5af8",
+      "bytes": 2679
+    },
+    {
+      "path": "src/lib/notificationSounds.ts",
+      "sha256": "47260e6ca71c3b1ae953c983e2fe4a00c1c6312224280978d492e77c86d3669a",
+      "bytes": 5914
+    },
+    {
+      "path": "src/lib/notifications.ts",
+      "sha256": "0054aff34ab58e364313e0f7af781bffedbc106ff91c8a71914636bf644671e3",
+      "bytes": 8645
+    },
+    {
+      "path": "src/lib/notifyThrottle.ts",
+      "sha256": "2c1767b3e4e1bdabbda52a67edf0d9aee58a2e3a696a90671c2e4fc24c4e78ce",
+      "bytes": 1613
+    },
+    {
+      "path": "src/lib/offerHelpers.ts",
+      "sha256": "c5c3843d349a8fa6b5de32aa6f5a562a924f96b6877d816777cdf917a442cbed",
+      "bytes": 11809
+    },
+    {
+      "path": "src/lib/offlineQueue.ts",
+      "sha256": "ad54e1dbbe0266cde20de1a3472d0dc0b163b776e97fe25c315fd1c34d255309",
+      "bytes": 2178
+    },
+    {
+      "path": "src/lib/osrm.ts",
+      "sha256": "a0375b5036ca65504ddb5d090eb90ff9610ef434c1c95a0fb539e87b02fa86d1",
+      "bytes": 5038
+    },
+    {
+      "path": "src/lib/osrmSteps.ts",
+      "sha256": "f83682b7c1a26a50f21153e82df33a2f33340c8ebe42674db8ae9c52825238f0",
+      "bytes": 7692
+    },
+    {
+      "path": "src/lib/parcelStorage.ts",
+      "sha256": "b0b4d1106e5d7fe106fc9ac625ceb931dca43927d4e028e2ddb016f2b1e20a62",
+      "bytes": 934
+    },
+    {
+      "path": "src/lib/parseOsmPlaces.ts",
+      "sha256": "f541f7d6528bf3e1f6a6aec4c83692f6a8f0c8b0acdcd4a1e6c774912b90276b",
+      "bytes": 5182
+    },
+    {
+      "path": "src/lib/persistentPrefetch.ts",
+      "sha256": "a4b2bf2b9cfb22a429b2c80bed6cfbb556e08003d7b55bf7d986d8539d85a27d",
+      "bytes": 3235
+    },
+    {
+      "path": "src/lib/photoQuality.ts",
+      "sha256": "5096da464df8cbaa5115c368b1a11a434497aa9abefc7469243e1b103b3a14de",
+      "bytes": 3573
+    },
+    {
+      "path": "src/lib/pickupPin.ts",
+      "sha256": "b920c7a1f2614f3b6c6c7ddfe4e6be1b113996e0a062ea1386f99d8e95925729",
+      "bytes": 2360
+    },
+    {
+      "path": "src/lib/placeCache.ts",
+      "sha256": "47c893f7c24153a79a24ce744b5495bf8493184208d4f734067641b92e63800a",
+      "bytes": 4120
+    },
+    {
+      "path": "src/lib/prefetchPages.ts",
+      "sha256": "0071c1a609489e623a35f55e6951d290110acc2e3d6c64e5aaf5525469baa230",
+      "bytes": 4922
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "sha256": "488e3fa994cabd0aa35ac7d2bd0e9830549763ce0e00af4f40876f23efd65426",
+      "bytes": 12425
+    },
+    {
+      "path": "src/lib/push.ts",
+      "sha256": "5d529ec875f6f25f0fd159b5b920b47e62fdd27f08e4fd8fcdb4e0a8b6846a9c",
+      "bytes": 4938
+    },
+    {
+      "path": "src/lib/queryCache.ts",
+      "sha256": "64524dd9711219d2f3298f0ee517b1fadf518ab6da5abe6b991466f1765a49cb",
+      "bytes": 707
+    },
+    {
+      "path": "src/lib/ramzActions.ts",
+      "sha256": "889895f84ee36aea1c5d168d8d60066cb5deddb94bf457485f6ab11377ab2bcb",
+      "bytes": 6901
+    },
+    {
+      "path": "src/lib/ramzAudit.ts",
+      "sha256": "f2871bf36d62cbb0d2426dd8347500350ae97a5eb6e6e54c2dc163678ef61157",
+      "bytes": 6502
+    },
+    {
+      "path": "src/lib/ramzCodeScan.ts",
+      "sha256": "00d8a47037206a70643dfae3eed29f4d92a9a46791da8691f6cbc30a3e532ba5",
+      "bytes": 9633
+    },
+    {
+      "path": "src/lib/ramzHeuristicScan.ts",
+      "sha256": "5073d7dc745dc0846152327fe0a498959de317b1c188ade8f6ce3dee8d9afa8c",
+      "bytes": 34661
+    },
+    {
+      "path": "src/lib/ramzPatch.ts",
+      "sha256": "27bfb8b2a0e23eaab0db997e23545aec6b9b4e0be3f40b899484af02fb3050dc",
+      "bytes": 5828
+    },
+    {
+      "path": "src/lib/ramzPrompt.ts",
+      "sha256": "f9d2669b12dd6cf2e4361a3d6774d8a0c5c71413d523d9a06c16dc62bec8373f",
+      "bytes": 7004
+    },
+    {
+      "path": "src/lib/rateLimit.ts",
+      "sha256": "337f0e7be7414260b5f598f0c8bda95d8d532ebf509fb2498e354c3cad90503b",
+      "bytes": 1075
+    },
+    {
+      "path": "src/lib/region.ts",
+      "sha256": "a7f31e05a1bd123843b120dcf178a9816dc6564dc4d1a665b8af4ab0d12c87b8",
+      "bytes": 1075
+    },
+    {
+      "path": "src/lib/requestRide.ts",
+      "sha256": "4f1985192e765c2c1ae5342e0cf061607569333071263356fdde389c5290100f",
+      "bytes": 9787
+    },
+    {
+      "path": "src/lib/rideContract.ts",
+      "sha256": "7088827c3b1b73959113f9cadfb92ccc97511a21f440888dede098aae931de2f",
+      "bytes": 1203
+    },
+    {
+      "path": "src/lib/rideExpiry.ts",
+      "sha256": "4a499ae2df3aa2e57db38fd7b4bd5ec80d08d4d264cb63d143fc8f48c3f095c6",
+      "bytes": 1376
+    },
+    {
+      "path": "src/lib/rideLocationSubscription.ts",
+      "sha256": "9c359e7a3e92b3185b59ffb3553b95dd17e635c9255c2746fe42603627219043",
+      "bytes": 2303
+    },
+    {
+      "path": "src/lib/rideMatching.ts",
+      "sha256": "3cc7f1c7ec976636f371a8d19056488bb72ed057bc435ac76f2ea3caf83d215e",
+      "bytes": 7011
+    },
+    {
+      "path": "src/lib/rideSignals.ts",
+      "sha256": "20be38627f2dd2b9750991980e47e916a29278a67026aa743c516625d6b573fe",
+      "bytes": 2567
+    },
+    {
+      "path": "src/lib/rideViewerPresence.ts",
+      "sha256": "1c0f7c84e1a551923f4d4cac21f73a071a122a63d6b37f29a055d9794207cacc",
+      "bytes": 1633
+    },
+    {
+      "path": "src/lib/riderNavigation.ts",
+      "sha256": "16b2b5f0b00c4f1492d07107cfa7a3300ee29f1cd6c536494877e744d27ee5c8",
+      "bytes": 1238
+    },
+    {
+      "path": "src/lib/routeProgress.ts",
+      "sha256": "1c1b6da3e643796f713710de10f886e15dd9ffad2bda7f58d34f17bf7da0fa15",
+      "bytes": 6419
+    },
+    {
+      "path": "src/lib/runtimeBreadcrumbs.ts",
+      "sha256": "4119f8c053c5e861c11bb0b51cccf47f5bcaddad5717ee7332e7b971759ffb41",
+      "bytes": 5150
+    },
+    {
+      "path": "src/lib/safeStorage.ts",
+      "sha256": "f7e0fe3f6c3180dc7dfdb662ed0461fd18335ee1b925e9acfa0d4eb88ec18533",
+      "bytes": 2402
+    },
+    {
+      "path": "src/lib/socket.ts",
+      "sha256": "f6d44c6492be11a09eec0f41adb63dbf1819d0bf4b4c0712bf10cdc873047aaf",
+      "bytes": 80
+    },
+    {
+      "path": "src/lib/streetSearchRank.ts",
+      "sha256": "8f7535ccbf9bb492b0f7c19ae8d40f4562cfb0262ee148cb1b09889625a2c221",
+      "bytes": 2123
+    },
+    {
+      "path": "src/lib/supabaseClient.ts",
+      "sha256": "0a1e4010495d45aaff08d998bab62b59ef8ba5831b8b202123cc6d29098d24f2",
+      "bytes": 1118
+    },
+    {
+      "path": "src/lib/systemSignals.ts",
+      "sha256": "38e828e298010aadba07c7a1a5a0c1fa45942f86be04af39bbd10e48f9ac95c7",
+      "bytes": 10628
+    },
+    {
+      "path": "src/lib/telemetryBuffer.ts",
+      "sha256": "aa02135e848f2336c931c7a1301a27d331441b563395d561e18c956e5458e3b8",
+      "bytes": 1150
+    },
+    {
+      "path": "src/lib/towns.ts",
+      "sha256": "f7e7ec8ce6c1458494f1caf0c0dec2d8f319b75cc9f6ae9d311886e27dd98225",
+      "bytes": 19590
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "sha256": "c0adf27efbfa148d5abcf99e860f8e3e6c8fc77a1f99e023c08ef4f12e6ece29",
+      "bytes": 175
+    },
+    {
+      "path": "src/lib/uuid.ts",
+      "sha256": "b3c2eb4a288a59825b7a85ca40198f8e94665207d5c98c4635a7a64633e14fe5",
+      "bytes": 1542
+    },
+    {
+      "path": "src/lib/walletApi.ts",
+      "sha256": "7e1b412f671bed3ce3182f9c5fb2bf0cd243de56bb068d8a0f7a651705eb2637",
+      "bytes": 17964
+    },
+    {
+      "path": "src/lib/walletPayments.ts",
+      "sha256": "e7cbcca2a20fe411347e66d234a8db13378e3b7b88f32738073ce0101eb40fff",
+      "bytes": 2012
+    },
+    {
+      "path": "src/lib/ws.ts",
+      "sha256": "b4d761f6d7754d9dbc4d0cd8a2ec5cfa4ca6f8d76928f7c13742cfc56804f4cd",
+      "bytes": 145
+    },
+    {
+      "path": "src/main.tsx",
+      "sha256": "61f2bdb1a5b08c5b1b80f69d15aa69a2c1c23fbafbaf1021f0072c8eaf90bb95",
+      "bytes": 8861
+    },
+    {
+      "path": "src/pages/AppDashboard.tsx",
+      "sha256": "176948fb973f516943c5eb943cb8e059360db92f84b62f7037333e6d37e454e6",
+      "bytes": 498
+    },
+    {
+      "path": "src/pages/Auth.tsx",
+      "sha256": "1530704fc46a561a8309810c6a9947c341afaea09b87c14ed3ddc50921c09a42",
+      "bytes": 20389
+    },
+    {
+      "path": "src/pages/DeleteAccount.tsx",
+      "sha256": "444818ad658496008424f0ff25e6a5a58555675e73b427c2688a37c67966fefe",
+      "bytes": 4024
+    },
+    {
+      "path": "src/pages/DriverApplication.tsx",
+      "sha256": "3c45d92a9202c0ea84731064059d54092fc28c477867b3951baf1232f98e753e",
+      "bytes": 4417
+    },
+    {
+      "path": "src/pages/DriverDashboard.tsx",
+      "sha256": "fc31a0ec12f74538943e2ae3f54f5e18303c1d65cd8cec7dd063d6d0907687d8",
+      "bytes": 34031
+    },
+    {
+      "path": "src/pages/DriverDepositPage.tsx",
+      "sha256": "693d296c39a77e640dbb164293978bcf0ec203af44fc337937d6b2bc23ef2986",
+      "bytes": 4982
+    },
+    {
+      "path": "src/pages/DriverLeaderboard.tsx",
+      "sha256": "0b49384690e9e7502f193e4ea56e85317e4f74dc553f96241989795f6175f7ad",
+      "bytes": 5291
+    },
+    {
+      "path": "src/pages/DriverModeLanding.tsx",
+      "sha256": "57cad4b5249e08274a5ad5d2e93379dea13db043fd3bcb74d0fd5d6fda040368",
+      "bytes": 5303
+    },
+    {
+      "path": "src/pages/DriverRegistrationIntro.tsx",
+      "sha256": "bf46bf165fc392bcdfda5b07a30b43daacf0d62a9900970b43c60730e3d9fc05",
+      "bytes": 2909
+    },
+    {
+      "path": "src/pages/DriverRegistrationPage.tsx",
+      "sha256": "52a155097ff6d82ba05615ea76d75f19c396e2ead3e537bbdba6aeca0b92b0fc",
+      "bytes": 374
+    },
+    {
+      "path": "src/pages/DriverWalletPage.tsx",
+      "sha256": "6d138d341965e1d2abbd21bbeafbb35cf6825af147a2fc670559bda92756036d",
+      "bytes": 18173
+    },
+    {
+      "path": "src/pages/EditProfile.tsx",
+      "sha256": "34bd5ff9a77d7dad876c1c59646481fdfb0502b58d92b6e62d11d6cf141e4b99",
+      "bytes": 7823
+    },
+    {
+      "path": "src/pages/Index.tsx",
+      "sha256": "2c6a2c2777436c3f4f3c4deb44bb85c76e84e21a4df3c5272905822dcc80cd90",
+      "bytes": 3509
+    },
+    {
+      "path": "src/pages/Install.tsx",
+      "sha256": "c57cd21b7de9e9f7b24593360d9c3f3a649d2f1928ba96307917fefc8bf45223",
+      "bytes": 6642
+    },
+    {
+      "path": "src/pages/LiveTrackingPage.tsx",
+      "sha256": "c4378eb70bdd7d8ce0ad3a0d98bb3f599981823241ceb06f0ded53af086312a3",
+      "bytes": 16776
+    },
+    {
+      "path": "src/pages/NotFound.tsx",
+      "sha256": "2881988c57fb19591a837fc53cba6843b142b285f03f2cf8b92d3c9c1c27775b",
+      "bytes": 751
+    },
+    {
+      "path": "src/pages/Offline.tsx",
+      "sha256": "41438fe2b68af7b133816d92bb42464eb49c3944b450456805aa7cd6e0556b00",
+      "bytes": 1185
+    },
+    {
+      "path": "src/pages/PrivacyPolicy.tsx",
+      "sha256": "7e72e916a5ad70762c4126fbb881383141cc733e2f5d9fdf3c368040b32733d8",
+      "bytes": 3266
+    },
+    {
+      "path": "src/pages/ResetPassword.tsx",
+      "sha256": "f9e8f1c70fc30db457281ace1e648cdf32e13b9b0e63e82fd6e206569f29f6ee",
+      "bytes": 7403
+    },
+    {
+      "path": "src/pages/Ride.tsx",
+      "sha256": "0c8f31ca0f93f92d411d324b738782e35f2903c8714f211e14917f8486da5eae",
+      "bytes": 115
+    },
+    {
+      "path": "src/pages/RideHistory.tsx",
+      "sha256": "8773cf56b7b66d24f0fd62ef9be0850a9409d76c69c2aaf8f400462e324ee9ea",
+      "bytes": 12383
+    },
+    {
+      "path": "src/pages/RideMatching.tsx",
+      "sha256": "c04d678d225a2904a86ceb0d9ffde3a24b3f2ea08703407b77142ed57a998837",
+      "bytes": 97480
+    },
+    {
+      "path": "src/pages/RiderProfile.tsx",
+      "sha256": "010735caa20bdb03d2720e8073547f3dc77b6dab68d553dbf3099009378247fd",
+      "bytes": 19404
+    },
+    {
+      "path": "src/pages/RiderWalletPage.tsx",
+      "sha256": "e0a77a2e26af391bf68eb67c52e3cba3d0c091fbbbe5c16a23a0a52efe45ad8e",
+      "bytes": 22625
+    },
+    {
+      "path": "src/pages/SafetyPage.tsx",
+      "sha256": "30b39caa060a4dbcc1c05e0e31d23ba8fd28d5a17239127663c7fd2f6644d5ca",
+      "bytes": 9074
+    },
+    {
+      "path": "src/pages/Signup.tsx",
+      "sha256": "e6fc6a4e4a7cfb986de7f4578c61ba2486a84ddbc03993f97d6421c39bb4af05",
+      "bytes": 19345
+    },
+    {
+      "path": "src/pages/StudentVerificationPage.tsx",
+      "sha256": "14959fcc3c37dba4ce56ce33fc972d6654f62fbfdc8b316ba53778c1038585fd",
+      "bytes": 33010
+    },
+    {
+      "path": "src/pages/TermsOfService.tsx",
+      "sha256": "91b81a1da4d584e0483b8d40e5ab34c4f5b4b15f877fe78a9b06ad67ba5245d9",
+      "bytes": 4032
+    },
+    {
+      "path": "src/pages/admin/AdminDashboard.tsx",
+      "sha256": "0ee850dde6748c188491a81da0892ff88b9323bae785a0f944e65b18a75bddda",
+      "bytes": 25837
+    },
+    {
+      "path": "src/pages/admin/AdminDepositsPage.tsx",
+      "sha256": "1153f252f23b8e4fdfceeb8d841819ca1433bf1d6fb8bdc3cf935036d7710b52",
+      "bytes": 4453
+    },
+    {
+      "path": "src/pages/admin/AdminDisputes.tsx",
+      "sha256": "514b5caf90a249ac7b79a507b35dba081d2d0eb7ec1bb83822280c27af07d3fe",
+      "bytes": 8115
+    },
+    {
+      "path": "src/pages/admin/AdminDriverDetail.tsx",
+      "sha256": "c12e22990bb77c84da9f69107ced721ebe86913326cbb1aa3bf09aae8be74996",
+      "bytes": 19252
+    },
+    {
+      "path": "src/pages/admin/AdminDrivers.tsx",
+      "sha256": "45e9a6760ca4c4ea5dc6215c775490c6e7c36398d64b7d7b8b181c2c51d68a89",
+      "bytes": 13737
+    },
+    {
+      "path": "src/pages/admin/AdminDriversMap.tsx",
+      "sha256": "2919d8ea2928984640cd50c49ca168a3dde293a6540eaaef4ce62f9889e5be10",
+      "bytes": 11769
+    },
+    {
+      "path": "src/pages/admin/AdminLandmarks.tsx",
+      "sha256": "3a2898b8de028c79da97f63bf9f159046d3d003060b8480bf2e7393c16304f75",
+      "bytes": 17325
+    },
+    {
+      "path": "src/pages/admin/AdminLedger.tsx",
+      "sha256": "bf0724eabdf7d858bfd2d259a49e26be847d26f592a3b2e750c62162a3ea8417",
+      "bytes": 5456
+    },
+    {
+      "path": "src/pages/admin/AdminMapsQA.tsx",
+      "sha256": "bef2565e3d4358c4c314ff753001d06864abc36b369d008725cdaced7cf96fac",
+      "bytes": 8199
+    },
+    {
+      "path": "src/pages/admin/AdminPromos.tsx",
+      "sha256": "08aa68322b8ed5d982b47c4fe2dde383c3f7e846d7ac0b461ff4f7e3e4fe0bde",
+      "bytes": 11855
+    },
+    {
+      "path": "src/pages/admin/AdminRatePage.tsx",
+      "sha256": "785f2b422fa3553fde8a6998fe8aca34c1f00258676c71c3a05556147bc057ea",
+      "bytes": 2095
+    },
+    {
+      "path": "src/pages/admin/AdminReports.tsx",
+      "sha256": "840e62b11d02773b2a2b2987455cfd8e457841dee9ee41f430e23190511980af",
+      "bytes": 14749
+    },
+    {
+      "path": "src/pages/admin/AdminRiderDepositsPage.tsx",
+      "sha256": "1a6dcdf5e8d3d458167ac2de8566ca48251f3650ebbe7a0f510503f61e7779ae",
+      "bytes": 5474
+    },
+    {
+      "path": "src/pages/admin/AdminRlsViewer.tsx",
+      "sha256": "6522d1cd033395ee324d81910a5e4d663e29ab8a9d0cb9a968452ad76e33ab52",
+      "bytes": 11569
+    },
+    {
+      "path": "src/pages/admin/AdminSettings.tsx",
+      "sha256": "f60ea45f086ce9894279034aaff2787842782cac760a9a3fd1dc4215b0e703a8",
+      "bytes": 10303
+    },
+    {
+      "path": "src/pages/admin/AdminStudents.tsx",
+      "sha256": "1dba61d2e84280f4ddd098aa65fc94433abfc4dc590dcc15f28da6be26026d6d",
+      "bytes": 16410
+    },
+    {
+      "path": "src/pages/admin/AdminSystemHealth.tsx",
+      "sha256": "739b4d5fe11485e9ccc2903f598b550f7c4d0ce40f51f87128a80bddf11cbd65",
+      "bytes": 57209
+    },
+    {
+      "path": "src/pages/admin/AdminTownPricing.tsx",
+      "sha256": "463a21bcf8b6b6f57b57379d33307a4ad01c1513424c5ed8e485b93fe9be848a",
+      "bytes": 8319
+    },
+    {
+      "path": "src/pages/admin/AdminTrips.tsx",
+      "sha256": "c6dee5fa1f3bebb70e48237ba91f5864bbb9d3baffd51c296c324b0644002498",
+      "bytes": 12609
+    },
+    {
+      "path": "src/pages/admin/AdminWalletDashboard.tsx",
+      "sha256": "562f65d39305fdd51847970443e3a5ddacac3ac13f2ccf8af6beb55f567a5964",
+      "bytes": 24649
+    },
+    {
+      "path": "src/pages/admin/AdminWithdrawalsPage.tsx",
+      "sha256": "b94407d90983956ac38e0025071a1dbe7750d186574d6181ca8947a77d5ffa26",
+      "bytes": 5685
+    },
+    {
+      "path": "src/pages/admin/ImportOsmPlaces.tsx",
+      "sha256": "aff26a8d97f22c5387420a4ce6d7adae3a92bd7b2be698da82ae4001249644a9",
+      "bytes": 5278
+    },
+    {
+      "path": "src/pages/driver/DriverProfile.tsx",
+      "sha256": "7cca79e02b3097de1443999c7fd38f8e5b0191a6b974c6fb017096fe5bc2c547",
+      "bytes": 35493
+    },
+    {
+      "path": "src/pages/driver/DriverRideDetails.tsx",
+      "sha256": "e240afc93a1bafca836ff0ec8cb989218312909fb47c09d2839256c36717973a",
+      "bytes": 23936
+    },
+    {
+      "path": "src/pages/driver/DriverRideRequests.tsx",
+      "sha256": "7e8e7fe911e75f5347bfbe15add9cc020d3276d1633428856aa16d3d47e0cc01",
+      "bytes": 18981
+    },
+    {
+      "path": "src/pages/driver/DriverTrips.tsx",
+      "sha256": "80c879d04cf7a8817b5fb386f36c3b804e18a4f5b63c966cf47d6286c1597b8c",
+      "bytes": 3657
+    },
+    {
+      "path": "src/rum.ts",
+      "sha256": "81ff08d8f2b4ad886ec98b77197f3105482c6ec028a43eebccc96a6a153e64c8",
+      "bytes": 375
+    },
+    {
+      "path": "src/safe-area.css",
+      "sha256": "ed8f643b01a90716d8153b607980a12a4b271171033d76d13be79a33ee816551",
+      "bytes": 707
+    },
+    {
+      "path": "src/test/BookingConfiguration.isolated.test.tsx",
+      "sha256": "fd836ad6572cb1ff850685d334f1817d2cecad79433237bda6eefba47bd136a0",
+      "bytes": 9014
+    },
+    {
+      "path": "src/test/DestinationSearchPipeline.test.tsx",
+      "sha256": "f7865d3ad4ecc226151145cff4a57c05966418a702319864fd710ded8ef6eb0b",
+      "bytes": 4050
+    },
+    {
+      "path": "src/test/DestinationSearchScreen.test.tsx",
+      "sha256": "fff8db5f04d52dd0ab65beaaa7c2148cab68182cf3ecf7e951bb756776dcd825",
+      "bytes": 9598
+    },
+    {
+      "path": "src/test/DriverSelfieCheck.test.tsx",
+      "sha256": "0af80dcb47444186ea24d545d1d5f730fb925645cd848ec06222343a651eed1e",
+      "bytes": 5851
+    },
+    {
+      "path": "src/test/ModalBottomSheet.test.tsx",
+      "sha256": "481032abd940eb51526811547795b11aa2f015f3ddd957992655be067807486f",
+      "bytes": 1766
+    },
+    {
+      "path": "src/test/NoteToDriverSheet.test.tsx",
+      "sha256": "431a61988a54e98be06e52de6891b2c38a2dab834fe0ab2b96a42f697d5902fd",
+      "bytes": 2413
+    },
+    {
+      "path": "src/test/PaymentMethodSelector.test.tsx",
+      "sha256": "e500b7344eb21c582008fff00b3a9038edb81d0fe9aeb2d09c142efee453cdee",
+      "bytes": 3907
+    },
+    {
+      "path": "src/test/RideSelectionCards.test.tsx",
+      "sha256": "a59cc2f5855a3dc9b1dc9e8f8080ed9d67987ba6027b1cb166ef61c7ffd7e005",
+      "bytes": 2665
+    },
+    {
+      "path": "src/test/RideSelectionDraft.test.tsx",
+      "sha256": "a50d0f40c28b28fc5f2205b06ed404543cbc8615d85a8ce9b5387a918f1dad67",
+      "bytes": 3160
+    },
+    {
+      "path": "src/test/RiderNavigation.test.tsx",
+      "sha256": "ec19d4443726f4b3243a387ebc2bbbc7d1cdcc59691372461b83844e47f5fbfe",
+      "bytes": 3801
+    },
+    {
+      "path": "src/test/SafetySheet.test.tsx",
+      "sha256": "d255bead0e18973dc698117d140ea0171ee4764250b26843a9473396700e0ca0",
+      "bytes": 9192
+    },
+    {
+      "path": "src/test/apiCalls.test.ts",
+      "sha256": "74e4642a8ba2878fe521b1ceb3df2265d97c2633c3d2c70ee4e84c2e90766819",
+      "bytes": 3523
+    },
+    {
+      "path": "src/test/backendSocketSecurity.test.ts",
+      "sha256": "8a33675b99a9b19be94d6b75be8051f1c3bd3500d55739204042c924e463fcde",
+      "bytes": 5202
+    },
+    {
+      "path": "src/test/driverAvailability.test.ts",
+      "sha256": "15a9b9c00aea9571b6e390699b712533d1124a754f99d039c713cc33dd7dca36",
+      "bytes": 4168
+    },
+    {
+      "path": "src/test/driverLocationState.test.ts",
+      "sha256": "998d7088076e1872ef2ba8b2d4554d3cf194eb68ff34f04e6f04cd85c3941a20",
+      "bytes": 1544
+    },
+    {
+      "path": "src/test/driverPresence.test.ts",
+      "sha256": "cbeefb657005a5380c3d5917a56063842a9bb172da5929c616db4064d90c6a90",
+      "bytes": 1448
+    },
+    {
+      "path": "src/test/example.test.ts",
+      "sha256": "59e65dfa496976f02d41b5b54cd30cc8bb0a5edd46879a1a419a87051821d0a2",
+      "bytes": 150
+    },
+    {
+      "path": "src/test/landingPrefetchPerf.test.ts",
+      "sha256": "d740a20f1c3a080d172c76abb74dc4910333e4dec6065683fb5b8f5a4945f16c",
+      "bytes": 3046
+    },
+    {
+      "path": "src/test/marketingShellResponsive.test.tsx",
+      "sha256": "626dc608e02a1bf06eaf77e311263d4e8b447d9c108143a742dbe36c008d1fa1",
+      "bytes": 3022
+    },
+    {
+      "path": "src/test/persistentPrefetchAndErrorBoundary.test.tsx",
+      "sha256": "87ba168cc59bfd70e704b48ced416db6fb6347d8510211db5934af919fe6216d",
+      "bytes": 3191
+    },
+    {
+      "path": "src/test/pricing.test.ts",
+      "sha256": "f4c1d5bc229d9dd74ad276995468e58b4fcfcbf92da14470c2e5499054b93db7",
+      "bytes": 3155
+    },
+    {
+      "path": "src/test/renderPerformance.test.tsx",
+      "sha256": "9e653ee18cd5319735da46a6b0d141d91e1c170debbae1c79f70f2138430b08a",
+      "bytes": 2527
+    },
+    {
+      "path": "src/test/requestRide.test.ts",
+      "sha256": "159090051ef425c8029f32302fd9282a81fe1c1fe16cb22d2805ec307d68adf9",
+      "bytes": 4830
+    },
+    {
+      "path": "src/test/rideLocationSubscription.test.ts",
+      "sha256": "168b3d2f5212b49aadf3061c8a91d433066bbdede1cae28cd141e6684dfe2838",
+      "bytes": 2075
+    },
+    {
+      "path": "src/test/securityDefinerAllowlist.test.ts",
+      "sha256": "b9c15f83b715c398f14f7c3b6adc6d2a8c0dab7d2798a09852ff3b820750f910",
+      "bytes": 4773
+    },
+    {
+      "path": "src/test/setup.ts",
+      "sha256": "04f2798b91d274d3a353c678412ff265cd9c45345090808925f13c8d55408049",
+      "bytes": 368
+    },
+    {
+      "path": "src/test/smokeFlows.test.tsx",
+      "sha256": "176e7ebf257882a06cbd10010c1d317cc18c3665a602cb73b43f9b88de386914",
+      "bytes": 2636
+    },
+    {
+      "path": "src/test/townPricing.test.ts",
+      "sha256": "9b1efb483c922710f25fe5f3edffca3c98f5f93aa7aedb3e9ead6f3ac4404733",
+      "bytes": 2265
+    },
+    {
+      "path": "src/test/trustedRouteProgress.test.ts",
+      "sha256": "c7349027fd8b4fb6ef03fb845cbebee4c11402cb954e306e2660c87bdb4c8f75",
+      "bytes": 2010
+    },
+    {
+      "path": "src/test/useNearbyDrivers.test.ts",
+      "sha256": "f6f990a4dda121a1d7ce77313e4da63a7d65fbac18b85f770903642880805aa2",
+      "bytes": 2189
+    },
+    {
+      "path": "src/test/walletPinShape.test.ts",
+      "sha256": "135f6ebaf4e9568cf3927f4965565020d92cb99a8815d4602e7cde9d8c3b1157",
+      "bytes": 3857
+    },
+    {
+      "path": "src/test/walletRlsLive.test.ts",
+      "sha256": "79d8e721095b2370ca4aaf6743e604f9fd1784e15f732871925cce468a012f6b",
+      "bytes": 7212
+    },
+    {
+      "path": "src/test/walletSecurity.test.ts",
+      "sha256": "a507869f2fba23dbaa293aaf9c43a7bb7530d5a3adc2b8a797292cb2e5e614cf",
+      "bytes": 8362
+    },
+    {
+      "path": "src/test/walletTransactionDisplay.test.tsx",
+      "sha256": "4db1bc967155b70397184e1fb7527710dffcc91d23dcac9741706398d10b5fed",
+      "bytes": 3905
+    },
+    {
+      "path": "src/vite-env.d.ts",
+      "sha256": "7fc5682c24df23b8a3edab9e026437df347410a6be3425a2a9f1b8bbcb64d2cd",
+      "bytes": 797
+    },
+    {
+      "path": "tailwind.config.ts",
+      "sha256": "6de6ffe5eb0d77faee7b69980759c2d964e59db3ab250820136d8545611fef3f",
+      "bytes": 5412
+    },
+    {
+      "path": "tsconfig.app.json",
+      "sha256": "51df310233b0775f468284c4b0bcaf9fb48355ffc31fd261343bf7830066f773",
+      "bytes": 714
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "e1206dbf9927505806bc412730c1627f0688a10cb39b0dd642a0be6213b193f6",
+      "bytes": 419
+    },
+    {
+      "path": "tsconfig.node.json",
+      "sha256": "8dc2fd2a2ff7497afa9e29037a36bcddbfa7c89ea8ff3b7c62b2814b55995449",
+      "bytes": 503
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "926ec228c4480c7206d0f79014aa3358333c75f39942bd88e76af0d29a4bb704",
+      "bytes": 5359
+    },
+    {
+      "path": "vite.stabilization-build.config.ts",
+      "sha256": "5925d4af7fc500f3c2788fa10c75bb2e5e8f3f239fd6c76f244f440fabd70702",
+      "bytes": 1205
+    },
+    {
+      "path": "vitest.config.ts",
+      "sha256": "1b7b7feb0587b3e6a2ee171138e17d042777d848b6c53498457e98c1882ff394",
+      "bytes": 411
+    },
+    {
+      "path": "vitest.stabilization.config.ts",
+      "sha256": "175e9a3302720cd076e5919be6671cba62e044c767b72cf75bfb78fcf5109795",
+      "bytes": 529
+    }
+  ]
+}
