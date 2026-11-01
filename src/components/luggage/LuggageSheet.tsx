@@ -1,5 +1,5 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Camera, ImageIcon, Trash2, Briefcase, Loader2 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
