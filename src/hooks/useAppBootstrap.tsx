@@ -124,56 +124,61 @@ export function AppBootstrapProvider({ children }: { children: ReactNode }) {
     const dismiss = () => {
       if (dismissed) return;
       dismissed = true;
+
       setReady(true);
       (window as unknown as { __dismissSplash?: () => void }).__dismissSplash?.();
     };
+
     const timeoutId = window.setTimeout(dismiss, BOOTSTRAP_TIMEOUT_MS);
 
     (async () => {
-      bumpProgress(15);
+      try {
+        bumpProgress(15);
 
-      if (!user) {
-        setRole('guest');
+        if (!user) {
+          setRole('guest');
+          bumpProgress(100);
+          return;
+        }
+
+        const isAdmin = user.email?.toLowerCase() === ADMIN_EMAIL;
+
+        const [profileResult, driverResult] = await Promise.allSettled([
+          supabase.from('profiles').select('full_name, avatar_url, gender, phone').eq('user_id', user.id).maybeSingle(),
+          isAdmin ? Promise.resolve({ data: null }) : supabase.from('drivers').select('*').eq('user_id', user.id).maybeSingle(),
+        ]);
+        bumpProgress(45);
+
+        if (profileResult.status === 'fulfilled') {
+          setProfile((profileResult.value.data as CachedProfile) ?? null);
+        }
+        let isDriver = false;
+        if (driverResult.status === 'fulfilled' && driverResult.value.data) {
+          setDriverProfile(driverResult.value.data as CachedDriverProfile);
+          isDriver = true;
+        }
+        setRole(isAdmin ? 'admin' : isDriver ? 'driver' : 'rider');
+        bumpProgress(60);
+
+        await Promise.allSettled([
+          fetchFavorites(user.id).then(() => bumpProgress(75)),
+          fetchRecentRides(user.id).then(() => bumpProgress(85)),
+          preloadAllTownPricing().then(() => bumpProgress(93)).catch(() => {}),
+          loadMapbox().then(() => bumpProgress(98)).catch(() => {}),
+        ]);
+
         bumpProgress(100);
-        window.clearTimeout(timeoutId);
+      } catch (error) {
+        console.error('[AppBootstrap] bootstrap failed:', error);
+        bumpProgress(100);
+      } finally {
         dismiss();
-        return;
       }
-
-      const isAdmin = user.email?.toLowerCase() === ADMIN_EMAIL;
-
-      const [profileResult, driverResult] = await Promise.allSettled([
-        supabase.from('profiles').select('full_name, avatar_url, gender, phone').eq('user_id', user.id).maybeSingle(),
-        isAdmin ? Promise.resolve({ data: null }) : supabase.from('drivers').select('*').eq('user_id', user.id).maybeSingle(),
-      ]);
-      bumpProgress(45);
-
-      if (profileResult.status === 'fulfilled') {
-        setProfile((profileResult.value.data as CachedProfile) ?? null);
-      }
-      let isDriver = false;
-      if (driverResult.status === 'fulfilled' && driverResult.value.data) {
-        setDriverProfile(driverResult.value.data as CachedDriverProfile);
-        isDriver = true;
-      }
-      setRole(isAdmin ? 'admin' : isDriver ? 'driver' : 'rider');
-      bumpProgress(60);
-
-      // Non-blocking-priority data — still awaited so the splash timeout is
-      // the only thing that can cut it short, not an arbitrary race.
-      await Promise.allSettled([
-        fetchFavorites(user.id).then(() => bumpProgress(75)),
-        fetchRecentRides(user.id).then(() => bumpProgress(85)),
-        preloadAllTownPricing().then(() => bumpProgress(93)).catch(() => {}),
-        loadMapbox().then(() => bumpProgress(98)).catch(() => {}),
-      ]);
-
-      bumpProgress(100);
-      window.clearTimeout(timeoutId);
-      dismiss();
     })();
 
-    return () => window.clearTimeout(timeoutId);
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, [authLoading, user, bumpProgress, fetchFavorites, fetchRecentRides]);
 
   const refreshFavorites = useCallback(async () => {
