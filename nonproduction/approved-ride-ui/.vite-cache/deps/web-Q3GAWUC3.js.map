@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../node_modules/@capacitor/splash-screen/src/web.ts"],
+  "sourcesContent": ["import { WebPlugin } from '@capacitor/core';\n\nimport type { HideOptions, ShowOptions, SplashScreenPlugin } from './definitions';\n\nexport class SplashScreenWeb extends WebPlugin implements SplashScreenPlugin {\n  async show(_options?: ShowOptions): Promise<void> {\n    return undefined;\n  }\n\n  async hide(_options?: HideOptions): Promise<void> {\n    return undefined;\n  }\n}\n"],
+  "mappings": ";;;;;;AAIM,IAAO,kBAAP,cAA+B,UAAS;EAC5C,MAAM,KAAK,UAAsB;AAC/B,WAAO;EACT;EAEA,MAAM,KAAK,UAAsB;AAC/B,WAAO;EACT;;",
+  "names": []
+}

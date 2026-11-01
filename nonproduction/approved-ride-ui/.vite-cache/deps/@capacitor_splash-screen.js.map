@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../node_modules/@capacitor/splash-screen/src/index.ts"],
+  "sourcesContent": ["import { registerPlugin } from '@capacitor/core';\n\nimport type { SplashScreenPlugin } from './definitions';\n\nconst SplashScreen = registerPlugin<SplashScreenPlugin>('SplashScreen', {\n  web: () => import('./web').then((m) => new m.SplashScreenWeb()),\n});\n\nexport * from './definitions';\nexport { SplashScreen };\n"],
+  "mappings": ";;;;;;AAIA,IAAM,eAAe,eAAmC,gBAAgB;EACtE,KAAK,MAAM,OAAO,mBAAO,EAAE,KAAK,CAAC,MAAM,IAAI,EAAE,gBAAe,CAAE;CAC/D;",
+  "names": []
+}
