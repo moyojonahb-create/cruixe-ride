@@ -79,6 +79,7 @@ const AdminStudents = lazy(() => import("./pages/admin/AdminStudents"));
 const AdminWithdrawalsPage = lazy(() => import("./pages/admin/AdminWithdrawalsPage"));
 const AdminWalletDashboard = lazy(() => import("./pages/admin/AdminWalletDashboard"));
 const AdminRlsViewer = lazy(() => import("./pages/admin/AdminRlsViewer"));
+const AdminMigrationExport = lazy(() => import("./pages/admin/AdminMigrationExport"));
 const StudentVerificationPage = lazy(() => import("./pages/StudentVerificationPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const LiveTrackingPage = lazy(() => import("./pages/LiveTrackingPage"));
@@ -218,6 +219,7 @@ export default function App() {
           <Route path="/admin/withdrawals" element={<SuspenseWrap variant="admin"><AdminGuard><AdminWithdrawalsPage /></AdminGuard></SuspenseWrap>} />
           <Route path="/admin/wallet" element={<SuspenseWrap variant="admin"><AdminGuard><AdminWalletDashboard /></AdminGuard></SuspenseWrap>} />
           <Route path="/admin/rls" element={<SuspenseWrap variant="admin"><AdminGuard><AdminRlsViewer /></AdminGuard></SuspenseWrap>} />
+          <Route path="/admin/migration-export" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMigrationExport /></AdminGuard></SuspenseWrap>} />
           <Route path="/admin/maps-qa" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMapsQA /></AdminGuard></SuspenseWrap>} />
           <Route path="/student-verification" element={<SuspenseWrap><AuthGuard><StudentVerificationPage /></AuthGuard></SuspenseWrap>} />
 
