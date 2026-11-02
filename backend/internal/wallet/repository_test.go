@@ -56,22 +56,15 @@ func TestRepositoryCreateAccount(t *testing.T) {
 	}
 }
 
-func TestRepositoryPostLedgerEntriesValidatesAndPersists(t *testing.T) {
-	db := &fakeDB{}
+func TestRepositoryPostLedgerEntriesRequiresTransaction(t *testing.T) {
+	db := &fakeDB{} // Intentionally does not support Begin.
 	repo := NewPostgresRepository(db)
 	err := repo.PostLedgerEntries(context.Background(), testTransaction(), testEntries())
-	if err != nil {
-		t.Fatal(err)
+	if err == nil || !strings.Contains(err.Error(), "transactional database") {
+		t.Fatalf("expected atomic transaction requirement, got %v", err)
 	}
-	if len(db.execs) != 3 {
-		t.Fatalf("expected transaction insert plus two ledger entries, got %d", len(db.execs))
-	}
-	if !strings.Contains(db.execs[0], "INSERT INTO public.wallet_transactions") {
-		t.Fatalf("expected transaction insert first, got %s", db.execs[0])
-	}
-	if !strings.Contains(db.execs[1], "INSERT INTO public.wallet_ledger_entries") ||
-		!strings.Contains(db.execs[2], "INSERT INTO public.wallet_ledger_entries") {
-		t.Fatalf("expected ledger entry inserts, got %#v", db.execs)
+	if len(db.execs) != 0 {
+		t.Fatalf("ledger must fail without any writes, got %#v", db.execs)
 	}
 }
 

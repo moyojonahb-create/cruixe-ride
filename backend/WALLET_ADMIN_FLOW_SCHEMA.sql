@@ -20,7 +20,7 @@ ALTER TABLE public.payment_intents
   ADD COLUMN IF NOT EXISTS rejected_by uuid,
   ADD COLUMN IF NOT EXISTS rejected_at timestamptz,
   ADD COLUMN IF NOT EXISTS rejection_reason text,
-  ADD COLUMN IF NOT EXISTS wallet_transaction_id uuid REFERENCES public.wallet_transactions(id);
+  ADD COLUMN IF NOT EXISTS wallet_transaction_id uuid REFERENCES public.wallet_v2_transactions(id);
 
 ALTER TABLE public.withdrawal_requests
   DROP CONSTRAINT IF EXISTS withdrawal_requests_provider_check,

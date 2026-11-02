@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"database/sql"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -84,9 +85,9 @@ func (r *PostgresRepository) CreateAccount(ctx context.Context, account Account)
 			account_type,
 			currency,
 			status,
-			cached_available_balance,
-			cached_pending_balance,
-			cached_liability_balance,
+			cached_available_balance_minor,
+			cached_pending_balance_minor,
+			cached_liability_balance_minor,
 			created_at,
 			updated_at
 		)
@@ -120,9 +121,9 @@ func (r *PostgresRepository) GetAccount(ctx context.Context, accountID string) (
 			account_type,
 			currency,
 			status,
-			cached_available_balance,
-			cached_pending_balance,
-			cached_liability_balance,
+			cached_available_balance_minor,
+			cached_pending_balance_minor,
+			cached_liability_balance_minor,
 			created_at,
 			updated_at
 		FROM public.wallet_accounts
@@ -148,13 +149,14 @@ func (r *PostgresRepository) CreateTransaction(ctx context.Context, transaction 
 		return err
 	}
 	_, err := r.db.Exec(ctx, `
-		INSERT INTO public.wallet_transactions (
+		INSERT INTO public.wallet_v2_transactions (
 			id,
 			transaction_type,
 			status,
 			idempotency_key,
 			currency,
 			total_amount,
+			amount_minor,
 			source_type,
 			source_id,
 			owner_user_id,
@@ -167,7 +169,7 @@ func (r *PostgresRepository) CreateTransaction(ctx context.Context, transaction 
 			created_at,
 			updated_at
 		)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW(),NOW())
+		VALUES ($1,$2,$3,$4,$5,($6::numeric / 100),$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW(),NOW())
 	`, nullString(transaction.ID), transaction.TransactionType, defaultString(transaction.Status, TransactionStatusPending), transaction.IdempotencyKey, transaction.Currency, transaction.TotalAmountMinor, nullString(transaction.SourceType), nullString(transaction.SourceID), nullString(transaction.OwnerUserID), nullString(transaction.RideID), nullString(transaction.PaymentProvider), nullString(transaction.PaymentIntentID), nullString(transaction.CreatedBy), nullString(transaction.ApprovedBy), transaction.ApprovedAt)
 	return err
 }
@@ -181,7 +183,7 @@ func (r *PostgresRepository) GetTransactionByIdempotencyKey(ctx context.Context,
 			status,
 			idempotency_key,
 			currency,
-			total_amount,
+			amount_minor,
 			COALESCE(source_type, ''),
 			COALESCE(source_id, ''),
 			COALESCE(owner_user_id::text, ''),
@@ -193,7 +195,7 @@ func (r *PostgresRepository) GetTransactionByIdempotencyKey(ctx context.Context,
 			approved_at,
 			created_at,
 			updated_at
-		FROM public.wallet_transactions
+		FROM public.wallet_v2_transactions
 		WHERE idempotency_key = $1
 	`, key).Scan(
 		&transaction.ID,
@@ -221,47 +223,26 @@ func (r *PostgresRepository) PostLedgerEntries(ctx context.Context, transaction 
 	if err := ValidateBalancedTransaction(transaction, entries); err != nil {
 		return err
 	}
-	if db, ok := r.db.(transactionalDB); ok {
-		tx, err := db.Begin(ctx)
-		if err != nil {
-			return err
-		}
-		defer func() { _ = tx.Rollback(ctx) }()
-		if err := insertTransactionInTx(ctx, tx, transaction); err != nil {
-			return err
-		}
-		for _, entry := range entries {
-			if err := insertLedgerEntryInTx(ctx, tx, entry); err != nil {
-				return err
-			}
-		}
-		return tx.Commit(ctx)
+	// Ledger posting must be all-or-nothing. Never fall back to separate
+	// Exec calls: a failed credit could leave a posted debit.
+	db, ok := r.db.(transactionalDB)
+	if !ok {
+		return errors.New("wallet ledger requires a transactional database")
 	}
-	if err := r.CreateTransaction(ctx, transaction); err != nil {
+	tx, err := db.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	if err := insertTransactionInTx(ctx, tx, transaction); err != nil {
 		return err
 	}
 	for _, entry := range entries {
-		_, err := r.db.Exec(ctx, `
-			INSERT INTO public.wallet_ledger_entries (
-				id,
-				transaction_id,
-				account_id,
-				entry_type,
-				amount,
-				currency,
-				ride_id,
-				source_type,
-				source_id,
-				payment_provider,
-				created_at
-			)
-			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,NOW())
-		`, nullString(entry.ID), transaction.ID, entry.AccountID, entry.EntryType, entry.AmountMinor, entry.Currency, nullString(entry.RideID), nullString(entry.SourceType), nullString(entry.SourceID), nullString(entry.PaymentProvider))
-		if err != nil {
+		if err := insertLedgerEntryInTx(ctx, tx, entry); err != nil {
 			return err
 		}
 	}
-	return nil
+	return tx.Commit(ctx)
 }
 
 func (r *PostgresRepository) CreateReconciliationRun(ctx context.Context, run ReconciliationRun) error {
@@ -4878,13 +4859,14 @@ func insertTransactionInTx(ctx context.Context, tx pgx.Tx, transaction Transacti
 		return err
 	}
 	_, err := tx.Exec(ctx, `
-		INSERT INTO public.wallet_transactions (
+		INSERT INTO public.wallet_v2_transactions (
 			id,
 			transaction_type,
 			status,
 			idempotency_key,
 			currency,
 			total_amount,
+			amount_minor,
 			source_type,
 			source_id,
 			owner_user_id,
@@ -4897,7 +4879,7 @@ func insertTransactionInTx(ctx context.Context, tx pgx.Tx, transaction Transacti
 			created_at,
 			updated_at
 		)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW(),NOW())
+		VALUES ($1,$2,$3,$4,$5,($6::numeric / 100),$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW(),NOW())
 	`, nullString(transaction.ID), transaction.TransactionType, defaultString(transaction.Status, TransactionStatusPending), transaction.IdempotencyKey, transaction.Currency, transaction.TotalAmountMinor, nullString(transaction.SourceType), nullString(transaction.SourceID), nullString(transaction.OwnerUserID), nullString(transaction.RideID), nullString(transaction.PaymentProvider), nullString(transaction.PaymentIntentID), nullString(transaction.CreatedBy), nullString(transaction.ApprovedBy), transaction.ApprovedAt)
 	return err
 }
@@ -4912,6 +4894,7 @@ func insertLedgerEntryInTx(ctx context.Context, tx pgx.Tx, entry LedgerEntry) er
 			transaction_id,
 			account_id,
 			entry_type,
+			amount,
 			amount_minor,
 			currency,
 			ride_id,
@@ -4920,7 +4903,7 @@ func insertLedgerEntryInTx(ctx context.Context, tx pgx.Tx, entry LedgerEntry) er
 			payment_provider,
 			created_at
 		)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,NOW())
+		VALUES ($1,$2,$3,$4,($5::numeric / 100),$5,$6,$7,$8,$9,$10,NOW())
 	`, nullString(entry.ID), entry.TransactionID, entry.AccountID, entry.EntryType, entry.AmountMinor, entry.Currency, nullString(entry.RideID), nullString(entry.SourceType), nullString(entry.SourceID), nullString(entry.PaymentProvider))
 	return err
 }

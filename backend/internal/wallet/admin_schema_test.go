@@ -26,7 +26,7 @@ func TestAdminFlowSchemaAddsAuditAndManualStatuses(t *testing.T) {
 		"manual_cash",
 		"manual_card",
 		"manual_paypal",
-		"wallet_transaction_id uuid REFERENCES public.wallet_transactions(id)",
+		"wallet_transaction_id uuid REFERENCES public.wallet_v2_transactions(id)",
 		"wallet_admin_actions_admin_select",
 	}
 	for _, pattern := range required {

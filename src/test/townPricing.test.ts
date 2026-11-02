@@ -2,6 +2,9 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { calculateRecommendedFare, formatFare, getFareStep } from '@/hooks/useTownPricing';
 import type { TownPricingConfig } from '@/hooks/useTownPricing';
 
+// These pure pricing calculations should not need live Supabase credentials.
+vi.mock('@/lib/supabaseClient', () => ({ supabase: { from: vi.fn() } }));
+
 const usdTown: TownPricingConfig = {
   id: '1',
   town_id: 'harare',

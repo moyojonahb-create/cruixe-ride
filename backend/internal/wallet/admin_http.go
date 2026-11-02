@@ -739,7 +739,7 @@ func adminWalletDashboardHandler(reports OperationsReportReader) fiber.Handler {
 					'total_amount', total_amount,
 					'created_at', created_at
 				)
-				FROM public.wallet_transactions
+				FROM public.wallet_v2_transactions
 				ORDER BY created_at DESC
 				LIMIT $1
 			`, limit))

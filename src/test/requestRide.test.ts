@@ -142,3 +142,28 @@ describe("requestRide", () => {
     if (result.ok) expect(result.ride.id).toBe("ride-wallet");
   });
 });
+
+describe("Go-only booking security", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockOnline(true);
+    supabaseMock.auth.getUser.mockResolvedValue({
+      data: { user: { id: "user-1" } },
+      error: null,
+    });
+  });
+
+  it("does not silently write a ride through Supabase when Go fails", async () => {
+    goBackendMock.post.mockRejectedValue(new Error("Go unavailable"));
+    const result = await requestRide(validInput);
+    expect(result.ok).toBe(false);
+    expect(goBackendMock.post).toHaveBeenCalledTimes(1);
+  });
+
+  it("reports offline mode rather than silently creating an unverified ride", async () => {
+    mockOnline(false);
+    const result = await requestRide(validInput);
+    expect(result.ok).toBe(false);
+    expect(goBackendMock.post).not.toHaveBeenCalled();
+  });
+});

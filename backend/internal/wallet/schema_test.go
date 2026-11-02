@@ -19,7 +19,7 @@ func TestSchemaDefinesRequiredTables(t *testing.T) {
 	source := walletSchema(t)
 	required := []string{
 		"CREATE TABLE IF NOT EXISTS public.wallet_accounts",
-		"CREATE TABLE IF NOT EXISTS public.wallet_transactions",
+		"CREATE TABLE IF NOT EXISTS public.wallet_v2_transactions",
 		"CREATE TABLE IF NOT EXISTS public.wallet_ledger_entries",
 		"CREATE TABLE IF NOT EXISTS public.payment_intents",
 		"CREATE TABLE IF NOT EXISTS public.provider_events",
@@ -313,7 +313,7 @@ func TestSchemaRLSPolicies(t *testing.T) {
 	source := walletSchema(t)
 	required := []string{
 		"ALTER TABLE public.wallet_accounts ENABLE ROW LEVEL SECURITY",
-		"ALTER TABLE public.wallet_transactions ENABLE ROW LEVEL SECURITY",
+		"ALTER TABLE public.wallet_v2_transactions ENABLE ROW LEVEL SECURITY",
 		"ALTER TABLE public.wallet_ledger_entries ENABLE ROW LEVEL SECURITY",
 		"ALTER TABLE public.financial_jobs ENABLE ROW LEVEL SECURITY",
 		"ALTER TABLE public.financial_metrics ENABLE ROW LEVEL SECURITY",
