@@ -1412,16 +1412,19 @@ export default function RideMatching() {
               </motion.div>
             ) : timedOut ? (
               /* ───────── No drivers found ───────── */
-              <motion.div key="timeout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 space-y-3">
-                <h2 className="text-lg font-extrabold text-foreground">No drivers available right now</h2>
-                <p className="text-sm text-muted-foreground">
-                  We couldn't match you in the last minute. A higher fare reaches more drivers — or you can keep waiting at the same price, or cancel.
-                </p>
-                <TripSummary ride={ride} />
+              <motion.div key="timeout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} data-figma-node="631:99" className="space-y-4 px-4 pb-5 pt-4 text-[#1f2129]">
+                <div role="status" className="rounded-[18px] border border-[#ffe2e6] bg-[#fff7f8] px-4 py-4">
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-[#ff000d]">Driver search update</p>
+                  <h2 className="mt-1 text-[19px] font-bold text-[#1f2129]">No drivers found nearby</h2>
+                  <p className="mt-2 text-[12px] leading-5 text-[#667080]">
+                    Keep searching for available drivers, adjust your fare, or cancel the request.
+                  </p>
+                </div>
+                <div className="rounded-[17px] bg-[#f6f6f8] px-2 py-2"><TripSummary ride={ride} /></div>
 
                 {/* Raise fare — same stepper/bounds as the searching screen,
                     not a second fare model. */}
-                <div className="flex items-center justify-center gap-3.5 py-1">
+                <div className="flex items-center justify-center gap-3.5 rounded-[17px] border border-[#e2e6ed] bg-white px-3 py-3">
                   <button
                     type="button"
                     onClick={() => handleFareChange(-FARE_STEP)}
@@ -1452,13 +1455,13 @@ export default function RideMatching() {
                   </button>
                 </div>
 
-                <button onClick={handleKeepWaiting} className="w-full py-3 rounded-2xl bg-primary text-primary-foreground font-bold">
+                <button onClick={handleKeepWaiting} type="button" className="min-h-[54px] w-full rounded-[17px] bg-[#ff000d] px-4 text-[14px] font-semibold text-white">
                   Keep searching
                 </button>
                 <button
                   onClick={() => setCancelSheetOpen(true)}
                   disabled={cancelling}
-                  className="w-full py-2.5 rounded-2xl border border-border text-sm font-semibold text-foreground disabled:opacity-50"
+                  className="min-h-[52px] w-full rounded-[17px] border border-[#ff000d] bg-white px-4 text-[14px] font-semibold text-[#ff000d] disabled:opacity-50"
                 >
                   Cancel request
                 </button>
