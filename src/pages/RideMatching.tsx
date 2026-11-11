@@ -1251,6 +1251,7 @@ export default function RideMatching() {
               /* ───────── 4c: Driver found — matched, en route to pickup ───────── */
               <motion.div
                 key="matched"
+                data-figma-node={tierKey === 'share' ? (ride?.status === 'arrived' ? '526:648' : '526:562') : '345:600'}
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.28, ease: 'easeOut' }}
@@ -1475,7 +1476,7 @@ export default function RideMatching() {
               </motion.div>
             ) : (
               /* ───────── Searching ───────── */
-              <motion.div key="searching" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 space-y-3.5">
+              <motion.div key="searching" data-figma-node={tierKey === 'share' ? '526:410' : '631:97'} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 space-y-3.5">
                 {/* Status row: radar badge + title + elapsed M:SS countdown */}
                 <div className="flex items-center gap-3">
                   <span className="relative shrink-0 flex items-center justify-center rounded-full" style={{ width: 42, height: 42, ...glassSurface }}>
@@ -1483,7 +1484,7 @@ export default function RideMatching() {
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="text-[14px] font-bold" style={{ color: RIDE_TEXT }}>Finding drivers near you</p>
+                      <p className="text-[14px] font-bold" style={{ color: RIDE_TEXT }}>{tierKey === 'share' ? 'Finding shared ride' : 'Finding drivers near you'}</p>
                       <span className="ml-auto text-[12.5px] font-bold tabular-nums shrink-0" style={{ color: RIDE_RED }}>{countdownText}</span>
                     </div>
                     {viewerCount > 0 ? (
