@@ -36,6 +36,7 @@ import { getDetailedRoute, findCurrentStep, getManeuverInstruction, getVoiceInst
 import MapboxMap from "@/components/map/LazyMapboxMap";
 import type { MapEtaCard } from "@/components/MapboxMap";
 import RideGlassPanel from "@/components/ride/RideGlassPanel";
+import { getDriverTripPresentation } from "@/lib/driverTripPresentation";
 import { glassSurface, redCta, tintBlue, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2 } from "@/components/ride/rideGlass";
 
 export interface RiderInfo {
@@ -570,6 +571,7 @@ export default function FullScreenNavigation({
 
   const passengerName = activeTrip.passenger_name || riderInfo?.full_name || 'Passenger';
   const dialNumber = activeTrip.passenger_phone || riderPhone;
+  const tripPresentation = getDriverTripPresentation(activeTrip.status, passengerName, activeTrip.dropoff_address);
   const metaBits = [
     activeTrip.passenger_count && activeTrip.passenger_count > 1 ? `${activeTrip.passenger_count} passengers` : null,
   ].filter(Boolean) as string[];
@@ -612,16 +614,16 @@ export default function FullScreenNavigation({
         </button>
       </div>
 
-      {/* 4q — "Trip in progress" chip beneath the banner */}
-      {isInTrip && (
-        <div
-          className="absolute z-20 inline-flex items-center"
-          style={{ top: 130, left: 16, height: 34, padding: '0 12px', borderRadius: 999, gap: 7, ...glassSurface }}
-        >
-          <span className="rounded-full shrink-0" style={{ width: 7, height: 7, background: '#22A447' }} />
-          <span style={{ fontSize: 12.5, fontWeight: 700, color: RIDE_TEXT }}>Trip in progress</span>
-        </div>
-      )}
+      {/* Figma lifecycle labels, sourced from actual trip status. */}
+      <div
+        data-figma-node={tripPresentation.figmaNode}
+        aria-live="polite"
+        className="absolute left-4 z-20 max-w-[calc(100%-6rem)] rounded-[16px] border border-white/80 bg-white/95 px-3.5 py-2.5 shadow-md backdrop-blur-xl"
+        style={{ top: 'calc(env(safe-area-inset-top) + 86px)' }}
+      >
+        <p className="text-[10px] font-bold tracking-[0.08em] text-[#ff000d]">{tripPresentation.eyebrow}</p>
+        <p className="mt-1 truncate text-[13px] font-semibold text-[#1f2129]">{tripPresentation.title}</p>
+      </div>
 
       {/* Voice + minimize controls, right side */}
       <div className="absolute right-4 z-20 flex flex-col gap-3" style={{ top: 'calc(env(safe-area-inset-top) + 76px)' }}>
@@ -662,6 +664,9 @@ export default function FullScreenNavigation({
         >
           <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
             <div className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+              <div className="rounded-xl bg-[#f7f8fa] px-3 py-2.5">
+                <p className="text-[11px] leading-[1.5] text-[#667080]">{tripPresentation.description}</p>
+              </div>
               {isInTrip ? (
                 <>
                   {/* 4q — passenger collapses to one strip */}
@@ -743,7 +748,7 @@ export default function FullScreenNavigation({
                     >
                       <Flag style={{ width: 17, height: 17 }} className="text-white" strokeWidth={2.4} />
                       <span style={{ fontSize: 15.5, fontWeight: 700 }} className="text-white">
-                        {completing ? 'Completing…' : confirmingEndTrip ? 'Confirm complete trip' : 'Complete trip'}
+                        {completing ? 'Completing…' : confirmingEndTrip ? 'Confirm complete trip' : tripPresentation.nextAction}
                       </span>
                     </button>
                   </div>
@@ -884,7 +889,7 @@ export default function FullScreenNavigation({
                         style={{ height: 48, borderRadius: 15, gap: 9, ...redCta }}
                       >
                         <CheckCircle2 style={{ width: 18, height: 18 }} className="text-white" strokeWidth={2.6} />
-                        <span style={{ fontSize: 15.5, fontWeight: 700 }} className="text-white">Start trip</span>
+                        <span style={{ fontSize: 15.5, fontWeight: 700 }} className="text-white">{tripPresentation.nextAction}</span>
                       </button>
                     ) : (
                       <button
@@ -894,7 +899,7 @@ export default function FullScreenNavigation({
                         style={{ height: 48, borderRadius: 15, gap: 9, ...redCta }}
                       >
                         <CheckCircle2 style={{ width: 18, height: 18 }} className="text-white" strokeWidth={2.6} />
-                        <span style={{ fontSize: 15.5, fontWeight: 700 }} className="text-white">I've arrived</span>
+                        <span style={{ fontSize: 15.5, fontWeight: 700 }} className="text-white">{tripPresentation.nextAction}</span>
                       </button>
                     )}
                   </div>
