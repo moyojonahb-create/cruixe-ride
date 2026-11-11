@@ -1,19 +1,41 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useState } from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
 import { ArrowDown, Star } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { getDriverWalletSummary } from '@/lib/walletApi';
 import { confirmCashCollection } from '@/lib/confirmCashCollection';
 import { toast } from 'sonner';
 import { haptic } from '@/lib/haptics';
-import RideGlassPanel from '@/components/ride/RideGlassPanel';
-import { RIDE_RED, RIDE_TEXT, RIDE_TEXT_2 } from '@/components/ride/rideGlass';
+import LazyMapboxMap from '@/components/map/LazyMapboxMap';
+import { RIDE_FONT } from '@/components/ride/rideGlass';
+import { isPlausibleRideCoord, type Coordinates } from '@/lib/osrm';
+
+export interface CollectableRide {
+  id: string;
+  fare: number;
+  payment_method: string;
+  pickup_address?: string;
+  dropoff_address: string;
+  user_id: string;
+  pickup_lat?: number | null;
+  pickup_lon?: number | null;
+  dropoff_lat?: number | null;
+  dropoff_lon?: number | null;
+}
 
 interface TripCollectSheetProps {
-  ride: { id: string; fare: number; payment_method: string; pickup_address?: string; dropoff_address: string; user_id: string };
+  ride: CollectableRide;
   onDone: () => void;
 }
 
 const fmtUSD = (value: number) => `$${value.toFixed(2)}`;
+const actionClass = 'min-h-12 min-w-0 flex-1 rounded-[14px] px-2.5 py-2 text-[15px] font-semibold leading-tight disabled:opacity-70';
+
+function tripPoint(lat: number | null | undefined, lng: number | null | undefined): Coordinates | null {
+  if (lat == null || lng == null) return null;
+  const point = { lat, lng };
+  return isPlausibleRideCoord(point) ? point : null;
+}
 
 export default function TripCollectSheet({ ride, onDone }: TripCollectSheetProps) {
   const [passengerName, setPassengerName] = useState('the passenger');
@@ -79,48 +101,94 @@ export default function TripCollectSheet({ ride, onDone }: TripCollectSheetProps
     else setRatingSaved(true);
   };
 
-  const actionStyle: CSSProperties = { minHeight: 48, minWidth: 0, borderRadius: 15, fontSize: 15, fontWeight: 700, flex: 1, whiteSpace: 'normal', lineHeight: 1.25, padding: '8px 10px' };
+  const pickup = tripPoint(ride.pickup_lat, ride.pickup_lon);
+  const dropoff = tripPoint(ride.dropoff_lat, ride.dropoff_lon);
+  const screenLabel = collected ? 'Cash collected receipt' : 'Payment due';
+
   return (
-    <>
-      <div className="fixed inset-0 z-[110]" style={{ background: 'rgba(17,17,17,.18)' }} />
-      <div className="fixed left-0 right-0 bottom-0 z-[120]" style={{ maxWidth: 480, margin: '0 auto', width: '100%' }}>
-        <RideGlassPanel panelStyle={{ background: '#fff' }} style={{ maxHeight: '90dvh', paddingBottom: 'env(safe-area-inset-bottom)' }}>
-          <section aria-label={collected ? 'Cash collected receipt' : 'Payment due'} className="overflow-y-auto p-5" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <span style={{ alignSelf: 'flex-start', minWidth: 168, padding: '6px 12px', textAlign: 'center', borderRadius: 999, background: '#fff0f2', fontSize: 10, fontWeight: 700, color: RIDE_TEXT }}>
+    <Dialog.Root open>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-[110] bg-black/20" />
+        <Dialog.Content
+          aria-label={screenLabel}
+          className="fixed inset-y-0 left-1/2 z-[120] flex w-full max-w-[480px] -translate-x-1/2 flex-col overflow-y-auto overscroll-contain bg-white text-[#1f2129]"
+          style={{ fontFamily: RIDE_FONT }}
+          onEscapeKeyDown={(event) => event.preventDefault()}
+          onPointerDownOutside={(event) => event.preventDefault()}
+        >
+          <div className="relative h-[clamp(144px,37dvh,342px)] shrink-0 bg-[#f1f3f6]">
+            {pickup || dropoff ? (
+              <LazyMapboxMap pickup={pickup} dropoff={dropoff} height="100%" bottomInset={32} />
+            ) : (
+              <p className="grid h-full place-items-center text-sm text-[#667085]">Trip map unavailable</p>
+            )}
+          </div>
+          <div className="relative -mt-2 flex min-h-fit flex-1 flex-col pt-[55px]">
+            <img src="/brand/ride/red-ribbon.svg" alt="" width={400} height={65} className="pointer-events-none absolute inset-x-0 top-0 h-auto w-full" />
+            <img src="/brand/ride/white-ribbon.svg" alt="" width={400} height={330} className="pointer-events-none absolute inset-x-0 top-[21px] h-auto w-full" />
+            <span aria-hidden="true" className="pointer-events-none absolute left-1/2 top-[16px] h-[5px] w-14 -translate-x-1/2 rounded-full bg-white" />
+            <div className="relative flex flex-1 flex-col gap-3 bg-white px-5 pb-[max(28px,env(safe-area-inset-bottom))]">
+              <span className="min-w-[168px] self-start rounded-full bg-[#ffeff1] px-3 py-1.5 text-center text-[10px] font-bold leading-tight text-[#111]">
               {collected ? 'TRIP COMPLETED' : 'PAYMENT DUE'}
             </span>
-            <div>
-              <h2 style={{ fontSize: 22, fontWeight: 700, color: RIDE_TEXT }}>{collected ? 'Trip completed' : isCash ? 'Collect cash payment' : 'Confirm payment'}</h2>
-              <p style={{ marginTop: 10, fontSize: 12, color: RIDE_TEXT_2 }}>{collected ? 'Thanks for completing this CruiXe ride.' : isCash ? 'Confirm payment only after receiving the cash.' : 'Confirm that this payment has been received.'}</p>
-            </div>
+              <Dialog.Title className="text-[21px] font-bold leading-tight">
+                {collected ? 'Trip completed' : isCash ? 'Collect cash payment' : 'Confirm payment'}
+              </Dialog.Title>
+              <Dialog.Description className="text-[12px] text-[#667085]">
+                {collected ? 'Thanks for completing this CruiXe ride.' : isCash ? 'Confirm payment only after receiving the cash.' : 'Confirm that this payment has been received.'}
+              </Dialog.Description>
             {collected ? (
               <>
-                <div style={{ border: '1px solid #e5e7eb', borderRadius: 17, padding: 15 }}>
-                  <p style={{ fontSize: 10, fontWeight: 700, color: RIDE_TEXT_2 }}>TRIP SUMMARY</p>
-                  <div className="flex items-center justify-between mt-3"><strong>{ride.pickup_address || 'Pickup'}</strong><ArrowDown aria-hidden="true" size={18} /></div>
-                  <strong className="block mt-3">{ride.dropoff_address}</strong>
-                  <p style={{ fontSize: 11, color: RIDE_TEXT_2 }}>{passengerName} · {isCash ? 'Cash collected' : 'Payment confirmed'}</p>
+                <div className="rounded-[17px] border border-[#e7eaf0] px-3.5 py-3">
+                  <p className="text-[10px] font-bold text-[#667085]">TRIP SUMMARY</p>
+                  <div className="mt-2.5 flex items-center justify-between gap-3 text-sm">
+                    <strong className="min-w-0 break-words">{ride.pickup_address || 'Pickup'}</strong>
+                    <ArrowDown aria-hidden="true" className="shrink-0" size={15} />
+                  </div>
+                  <strong className="mt-2 block break-words text-sm">{ride.dropoff_address}</strong>
+                  <p className="text-[11px] text-[#667085]">{passengerName} · {isCash ? 'Cash collected' : 'Payment confirmed'}</p>
                 </div>
-                <div className="flex items-center justify-between" style={{ borderRadius: 15, background: '#202129', color: '#fff', padding: 15 }}>
-                  <span style={{ fontSize: 10, fontWeight: 700 }}>TOTAL FARE</span><strong style={{ fontSize: 26 }}>{fmtUSD(ride.fare)}</strong>
+                <div className="flex min-h-[57px] items-center justify-between gap-3 rounded-[15px] bg-[#1f2129] px-3.5 py-2.5 text-white">
+                  <span className="text-[10px] font-bold">TOTAL FARE</span>
+                  <strong className="text-[24px] leading-tight">{fmtUSD(ride.fare)}</strong>
                 </div>
                 {settled ? (
-                  <details style={{ fontSize: 12, color: RIDE_TEXT_2 }}><summary>Driver earnings</summary><div className="flex justify-between mt-2"><span>Platform fee</span><span>{fmtUSD(settled.commission)}</span></div><div className="flex justify-between mt-2"><span>Net earnings</span><span>{fmtUSD(settled.keep)}</span></div></details>
-                ) : <p style={{ fontSize: 11, color: RIDE_TEXT_2 }}>Platform fees and driver net earnings require ledger data.</p>}
+                  <details className="text-xs text-[#667085]">
+                    <summary>Driver earnings</summary>
+                    <div className="mt-2 flex justify-between"><span>Platform fee</span><span>{fmtUSD(settled.commission)}</span></div>
+                    <div className="mt-2 flex justify-between"><span>Net earnings</span><span>{fmtUSD(settled.keep)}</span></div>
+                  </details>
+                ) : <p className="text-[11px] text-[#667085]">Platform fees and driver net earnings require ledger data.</p>}
                 {showRating && <div className="flex justify-center gap-3" aria-label="Rate rider">{[1, 2, 3, 4, 5].map((value) => <button type="button" key={value} disabled={ratingSaved} style={{ minWidth: 44, minHeight: 44 }} aria-label={`Rate ${value} star${value > 1 ? 's' : ''}`} onClick={() => void saveRating(value)}><Star fill={value <= rating ? '#ffdd00' : 'none'} color="#68717f" /></button>)}</div>}
-                <div className="flex gap-3"><button type="button" style={{ ...actionStyle, border: `1px solid ${RIDE_RED}`, color: RIDE_TEXT }} onClick={() => setShowRating((value) => !value)}>Rate rider</button><button type="button" style={{ ...actionStyle, background: RIDE_RED, color: '#fff' }} onClick={onDone}>Return to Waiting Room</button></div>
+                <div className="flex gap-3">
+                  <button type="button" className={`${actionClass} border border-primary text-[#111]`} aria-expanded={showRating} onClick={() => setShowRating((value) => !value)}>Rate rider</button>
+                  <button type="button" className={`${actionClass} bg-primary text-primary-foreground`} onClick={onDone}>Return to Waiting Room</button>
+                </div>
               </>
             ) : (
               <>
-                <div style={{ border: '1px solid #e5e7eb', borderRadius: 17, padding: 15 }}><p style={{ fontSize: 10, fontWeight: 700, color: RIDE_TEXT_2 }}>AMOUNT TO COLLECT</p><strong style={{ display: 'block', marginTop: 10, fontSize: 36, color: RIDE_TEXT }}>{fmtUSD(ride.fare)}</strong></div>
-                <div style={{ borderRadius: 15, background: '#202129', color: '#fff', padding: 15, fontSize: 14, fontWeight: 600 }}>Payment method: {isCash ? 'Cash' : ride.payment_method}</div>
-                <p style={{ fontSize: 11, color: RIDE_TEXT_2 }}>{notReceived ? 'Payment is still due. Keep this screen open until you receive the cash.' : 'Never mark the fare paid before collecting it.'}</p>
-                <div className="flex gap-3"><button type="button" disabled={confirming} style={{ ...actionStyle, border: `1px solid ${RIDE_RED}`, color: RIDE_TEXT }} onClick={() => setNotReceived(true)}>Not received</button><button type="button" disabled={confirming} style={{ ...actionStyle, background: RIDE_RED, color: '#fff', opacity: confirming ? .7 : 1 }} onClick={() => void handleConfirm()}>{confirming ? 'Confirming…' : isCash ? 'Cash received' : 'Payment received'}</button></div>
+                <div className="min-h-[101px] rounded-[17px] border border-[#e7eaf0] p-4">
+                  <p className="text-[10px] font-bold text-[#667085]">AMOUNT TO COLLECT</p>
+                  <strong className="mt-2 block text-[36px] leading-tight">{fmtUSD(ride.fare)}</strong>
+                </div>
+                <div className="flex min-h-12 items-center rounded-[15px] bg-[#1f2129] px-3.5 py-2.5 text-[13px] font-semibold text-white">
+                  Payment method: {isCash ? 'Cash' : ride.payment_method}
+                </div>
+                <p className="text-[11px] text-[#667085]" aria-live="polite">
+                  {notReceived ? 'Payment is still due. Keep this screen open until you receive the cash.' : 'Never mark the fare paid before collecting it.'}
+                </p>
+                <div className="flex gap-3">
+                  <button type="button" disabled={confirming} className={`${actionClass} border border-primary text-[#111]`} onClick={() => setNotReceived(true)}>Not received</button>
+                  <button type="button" disabled={confirming} className={`${actionClass} bg-primary text-primary-foreground`} onClick={() => void handleConfirm()}>
+                    {confirming ? 'Confirming…' : isCash ? 'Cash received' : 'Payment received'}
+                  </button>
+                </div>
               </>
             )}
-          </section>
-        </RideGlassPanel>
-      </div>
-    </>
+            </div>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

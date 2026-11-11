@@ -1,6 +1,6 @@
 import { ReactNode, CSSProperties, forwardRef } from 'react';
 import { cn } from '@/lib/utils';
-import { glassPanel, RIDE_RED_GRADIENT, RIDE_FONT } from './rideGlass';
+import { glassPanel, RIDE_RED, RIDE_FONT } from './rideGlass';
 
 interface RideGlassPanelProps {
   children: ReactNode;
@@ -53,7 +53,7 @@ const RideGlassPanel = forwardRef<HTMLDivElement, RideGlassPanelProps>(function 
         className="absolute top-0 left-0 right-0 z-0 pointer-events-none"
         style={{
           height: 40,
-          background: RIDE_RED_GRADIENT,
+          background: RIDE_RED,
           borderTopLeftRadius: 26,
           borderTopRightRadius: 26,
           WebkitMaskImage: 'linear-gradient(180deg, #000 40%, rgba(0,0,0,0) 100%)',

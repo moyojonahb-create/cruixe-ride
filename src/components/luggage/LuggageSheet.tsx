@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { uploadLuggagePhoto, deleteLuggagePhoto, getLuggageSignedUrls } from '@/lib/luggageStorage';
-import { glassPanel, glassSurface, redCta, RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2, RIDE_FONT } from '@/components/ride/rideGlass';
+import { glassPanel, glassSurface, redCta, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, RIDE_FONT } from '@/components/ride/rideGlass';
 
 export interface LuggageDraft {
   description: string;
@@ -139,7 +139,7 @@ export default function LuggageSheet({ open, onClose, initial, onSave }: Luggage
             </div>
             <div className="flex items-center justify-between px-5 pb-3 shrink-0" style={{ boxShadow: 'inset 0 -1px 0 rgba(17,17,17,.08)' }}>
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: RIDE_RED_GRADIENT, boxShadow: '0 6px 14px rgba(184,17,4,.35)' }}>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: RIDE_RED, boxShadow: '0 6px 14px rgba(184,17,4,.35)' }}>
                   <Briefcase className="w-[18px] h-[18px] text-white" />
                 </div>
                 <DialogPrimitive.Title asChild><h2 className="text-lg font-bold" style={{ color: RIDE_TEXT }}>Add Luggage</h2></DialogPrimitive.Title>

@@ -6,7 +6,7 @@ vi.mock('@/lib/rideMatching', () => ({ fetchRideById: vi.fn() }));
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 const receipt = { rideId: 'ride-1', pickupAddress: '<img src=x onerror=alert(1)>', dropoffAddress: 'A & B', fare: 6, distanceKm: 2, durationMinutes: 5, paymentMethod: 'Cash', tripDate: '2026-01-02T12:00:00Z' };
 afterEach(async () => {
-  for (const close of screen.queryAllByRole('button', { name: 'Close' })) {
+  for (const close of screen.queryAllByRole('button', { name: 'Close receipt' })) {
     await act(async () => { fireEvent.click(close); });
   }
   vi.restoreAllMocks();
@@ -16,10 +16,10 @@ describe('receipt payment evidence', () => {
   it('opens an in-app receipt without a popup and treats addresses as text', async () => {
     const open = vi.spyOn(window, 'open');
     await act(async () => { await openTripReceipt(receipt); });
-    const dialog = screen.getByRole('dialog', { name: 'Trip receipt' });
+    const dialog = screen.getByRole('dialog', { name: 'Ride receipt' });
     expect(dialog.textContent).toContain(receipt.pickupAddress);
     expect(dialog.textContent).toContain('A & B');
-    expect(dialog.querySelector('img')).toBeNull();
+    expect(dialog.querySelector('img[src="x"], [onerror]')).toBeNull();
     expect(within(dialog).getByRole('status')).toHaveTextContent('Payment pending confirmation');
     expect(within(dialog).getByRole('button', { name: 'Download receipt' })).toBeVisible();
     expect(open).not.toHaveBeenCalled();

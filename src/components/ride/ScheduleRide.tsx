@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Bell, Calendar, Info, X } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
 import RideGlassPanel from './RideGlassPanel';
-import { redCta, tintBlue, RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3 } from './rideGlass';
+import { redCta, tintBlue, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3 } from './rideGlass';
 
 // Matches public.dispatch_scheduled_rides() (supabase/migrations/20260311202356…):
 // `scheduled_at <= now() + interval '5 minutes'` is the real window the
@@ -55,7 +55,7 @@ const timeChipSelected: CSSProperties = {
   boxShadow: 'inset 0 .5px 0 rgba(255,255,255,.9), inset 0 0 0 1px rgba(255,221,0,.55)',
 };
 const daySelected: CSSProperties = {
-  background: RIDE_RED_GRADIENT,
+  background: RIDE_RED,
   boxShadow: '0 8px 18px rgba(184,17,4,.3)',
 };
 const iconTileGlass: CSSProperties = {

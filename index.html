@@ -8,14 +8,14 @@
     <meta name="author" content="CruiXe Technologies" />
 
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#B81104" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#7F0B02" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#FF000D" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#FF000D" media="(prefers-color-scheme: dark)" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="CruiXe" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="application-name" content="CruiXe" />
-    <meta name="msapplication-TileColor" content="#B81104" />
+    <meta name="msapplication-TileColor" content="#FF000D" />
     <meta name="msapplication-tap-highlight" content="no" />
     <meta name="format-detection" content="telephone=no" />
 
@@ -52,8 +52,8 @@
          @import inside index.css, which serialized three round trips). -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" /></noscript>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300&family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300&family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" /></noscript>
 
     <!-- DNS prefetch for external services -->
     <link rel="dns-prefetch" href="https://maps.googleapis.com" />
@@ -77,44 +77,69 @@
 
   <body>
     <style>
-      html, body { background:#B81104; }
-      @keyframes cruixe-spin {
-        from { transform: translate(-50%, -50%) rotate(0deg); }
-        to { transform: translate(-50%, -50%) rotate(360deg); }
+      html, body { background: #ff000d; }
+      .cruixe-launch {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        transition: opacity 400ms ease;
+      }
+      #instant-splash-bg { position: fixed; inset: 0; z-index: 99997; background: #ff000d; }
+      #instant-splash { z-index: 99999; background: #ff000d; }
+      #instant-splash-2 { z-index: 99998; background: #f5ece7; opacity: 0; pointer-events: none; }
+      .cruixe-launch-wordmark { width: min(51.04vw, 204.174px); height: auto; }
+      .cruixe-launch-lettering {
+        position: relative;
+        width: min(87.5vw, 350px, 81dvh);
+        aspect-ratio: 350 / 390;
+      }
+      .cruixe-launch-lettering img { position: absolute; display: block; }
+      .cruixe-launch-lets { top: -0.11%; left: -1.68%; width: 99.88%; }
+      .cruixe-launch-name { top: 31.49%; left: -0.56%; width: 100.2%; }
+      .cruixe-launch-nicely { top: 61.66%; left: 0.7%; width: 99.75%; }
+      .cruixe-launch-footer {
+        position: absolute;
+        bottom: max(5.8%, calc(env(safe-area-inset-bottom) + 8px));
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        white-space: nowrap;
+        color: #111;
+        font: 300 15px/20px Inter, system-ui, sans-serif;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cruixe-launch { transition: none; }
       }
     </style>
-    <!-- Always-opaque red backdrop, sits directly under both splash layers
-         and outlives their crossfade. Without it, two independently fading
-         overlays both sitting below 100% opacity at the same instant expose
-         whatever the app has already painted underneath (a map tile, a
-         white unstyled frame) for a frame or two — this backdrop is what
-         actually gets revealed in that gap instead, so it never happens. -->
-    <div id="instant-splash-bg" style="position:fixed;inset:0;z-index:99997;background:#B81104;"></div>
-    <div id="instant-splash" style="position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:#B81104;transition:opacity 0.4s ease;opacity:1;">
-      <img src="/icons/cruixe-icon-1024.png" alt="CruiXe" style="width:130px;height:130px;object-fit:contain;" fetchpriority="high" />
+    <div id="instant-splash-bg" aria-hidden="true"></div>
+    <div id="instant-splash" class="cruixe-launch">
+      <img class="cruixe-launch-wordmark" src="/brand/launch/split-ribbon-wordmark.svg" alt="CruiXe" fetchpriority="high" />
+      <div class="cruixe-launch-footer">
+        <img src="/brand/launch/split-ribbon-white.svg" width="19" height="20" alt="" />
+        <span>Proudly Zim</span>
+      </div>
     </div>
-    <div id="instant-splash-2" style="position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:#B81104;opacity:0;pointer-events:none;transition:opacity 0.4s ease;">
-      <div style="position:relative;width:62%;max-width:300px;aspect-ratio:853/1844;">
-        <img src="/brand/cruixe-splash-tagline.png" alt="Let's CruiXe nicely." style="width:100%;height:100%;object-fit:contain;" />
-        <div style="position:absolute;left:50%;top:94.5%;width:20px;height:20px;border-radius:50%;border:2.5px solid rgba(255,255,255,.3);border-top-color:#FFDD00;animation:cruixe-spin 0.8s linear infinite;"></div>
+    <div id="instant-splash-2" class="cruixe-launch" aria-hidden="true">
+      <div class="cruixe-launch-lettering" role="img" aria-label="Let’s CruiXe Nicely">
+        <img class="cruixe-launch-lets" src="/brand/launch/lets.svg" alt="" />
+        <img class="cruixe-launch-name" src="/brand/launch/cruixe.svg" alt="" />
+        <img class="cruixe-launch-nicely" src="/brand/launch/nicely.svg" alt="" />
+      </div>
+      <div class="cruixe-launch-footer">
+        <img src="/brand/launch/split-ribbon-red.svg" width="19" height="20" alt="" />
+        <span>Proudly Zim</span>
       </div>
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // inDrive-style splash: stays visible until the app's data bootstrap
-      // signals ready (see src/hooks/useAppBootstrap.tsx), with a short floor
-      // so it never flashes on a fast load. A second, brand-tagline splash
-      // then holds for a short beat before revealing the app underneath.
+      // Wait for app bootstrap before moving from the wordmark to the tagline.
       (function () {
         window.__splashReady = false;
         window.__splashMinDone = false;
-
-        // Start fetching/decoding the tagline image the instant the page
-        // loads, well ahead of the first splash — so it's already ready
-        // to paint rather than popping in blank when the crossfade starts.
-        var preloadTagline = new Image();
-        preloadTagline.src = '/brand/cruixe-splash-tagline.png';
 
         var SECOND_SPLASH_DURATION = 1200;
         var secondSplashStarted = false;
@@ -125,18 +150,20 @@
           var first = document.getElementById('instant-splash');
           var second = document.getElementById('instant-splash-2');
           if (!second) return;
+          var transitionDuration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 400;
+          second.removeAttribute('aria-hidden');
           second.style.opacity = '1';
           if (first) {
+            first.setAttribute('aria-hidden', 'true');
             first.style.opacity = '0';
-            setTimeout(function () { first.remove(); }, 400);
+            setTimeout(function () { first.remove(); }, transitionDuration);
           }
           setTimeout(function () {
+            var bg = document.getElementById('instant-splash-bg');
+            if (bg) bg.remove();
+            second.setAttribute('aria-hidden', 'true');
             second.style.opacity = '0';
-            setTimeout(function () {
-              second.remove();
-              var bg = document.getElementById('instant-splash-bg');
-              if (bg) bg.remove();
-            }, 400);
+            setTimeout(function () { second.remove(); }, transitionDuration);
           }, SECOND_SPLASH_DURATION);
         }
 

@@ -20,7 +20,7 @@ import DriverFeedback from '@/components/driver/DriverFeedback';
 import DriverSettingsPanel from '@/components/settings/DriverSettingsPanel';
 import DriverBottomNav from '@/components/driver/DriverBottomNav';
 import defaultDriverAvatar from '@/assets/driver-avatar-jonah.png';
-import { RIDE_RED, RIDE_RED_GRADIENT, RIDE_YELLOW, RIDE_TEXT, RIDE_TEXT_2 } from '@/components/ride/rideGlass';
+import { RIDE_RED, RIDE_YELLOW, RIDE_TEXT, RIDE_TEXT_2 } from '@/components/ride/rideGlass';
 import type { DriverProfile as DriverProfileData } from '@/lib/offerHelpers';
 import DriverAvailabilityControl from '@/components/driver/DriverAvailabilityControl';
 
@@ -248,7 +248,7 @@ export default function DriverProfilePage() {
   return (
     <div className="min-h-[100dvh] pb-24" style={{ background: '#F2F4F7', fontFamily: "-apple-system, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif" }}>
       {/* Header */}
-      <div style={{ background: RIDE_RED_GRADIENT, padding: 'calc(env(safe-area-inset-top) + 12px) 16px 12px' }}>
+      <div style={{ background: RIDE_RED, padding: 'calc(env(safe-area-inset-top) + 12px) 16px 12px' }}>
         <div className="max-w-lg mx-auto">
           <div className="flex items-center" style={{ gap: 11 }}>
             <label className="relative shrink-0 cursor-pointer">
@@ -317,7 +317,7 @@ export default function DriverProfilePage() {
           className="flex items-center"
           style={{
             padding: '12px 14px', borderRadius: 16, gap: 12,
-            background: RIDE_RED_GRADIENT,
+            background: RIDE_RED,
             boxShadow: '0 12px 26px rgba(184,17,4,.3), inset 0 1px 0 rgba(255,255,255,.28)',
           }}
         >
@@ -518,7 +518,7 @@ export default function DriverProfilePage() {
               <input value={emergencyPhone} onChange={(e) => setEmergencyPhone(e.target.value)} type="tel" placeholder="e.g. 077 419 6620" className="w-full h-12 rounded-xl bg-muted/50 border-0 px-3.5 text-sm outline-none" />
             </div>
           </div>
-          <button onClick={saveEmergencyContact} disabled={savingEmergency} className="w-full h-12 rounded-xl font-bold text-sm text-white disabled:opacity-60" style={{ background: RIDE_RED_GRADIENT }}>
+          <button onClick={saveEmergencyContact} disabled={savingEmergency} className="w-full h-12 rounded-xl font-bold text-sm text-white disabled:opacity-60" style={{ background: RIDE_RED }}>
             {savingEmergency ? 'Saving…' : 'Save'}
           </button>
         </SheetContent>
@@ -597,7 +597,7 @@ function DriverWalletCard({
       <div className="relative" style={{ padding: '15px 15px 0' }}>
         <div className="flex items-center justify-between">
           <span style={{ fontSize: 15, fontWeight: 700, color: RIDE_TEXT, letterSpacing: '-.01em' }}>CruiXe</span>
-          <button type="button" onClick={onTopUp} className="flex items-center active:scale-95 transition-transform" style={{ height: 28, padding: '0 12px', borderRadius: 999, gap: 4, background: RIDE_RED_GRADIENT }}>
+          <button type="button" onClick={onTopUp} className="flex items-center active:scale-95 transition-transform" style={{ height: 28, padding: '0 12px', borderRadius: 999, gap: 4, background: RIDE_RED }}>
             <span style={{ fontSize: 11.5, fontWeight: 700, color: '#fff' }}>+ Top up</span>
           </button>
         </div>
@@ -623,7 +623,7 @@ function DriverWalletCard({
         </div>
       </div>
 
-      <div className="grid grid-cols-2" style={{ background: RIDE_RED_GRADIENT, padding: '11px 15px', rowGap: 10 }}>
+      <div className="grid grid-cols-2" style={{ background: RIDE_RED, padding: '11px 15px', rowGap: 10 }}>
         <WalletFooterStat icon={Clock} label="Driver since" value={driverSince} />
         <WalletFooterStat icon={BadgeCheck} label="Status" value="Verified" />
         <WalletFooterStat icon={CreditCard} label="Wallet ID" value={walletId} />

@@ -2,7 +2,7 @@ import { type CSSProperties } from 'react';
 import { Info, User, UserPlus, Users } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
 import RideGlassPanel from './RideGlassPanel';
-import { redCta, RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3 } from './rideGlass';
+import { redCta, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3 } from './rideGlass';
 
 // No real multi-passenger pooling/dispatch exists yet (see the report at the
 // end of this session) — this is a stated policy ceiling a future matching
@@ -101,7 +101,7 @@ export default function ShareRideSheet({
               <div className="flex flex-col" style={{ gap: 7 }}>
                 <span style={{ fontSize: 11, fontWeight: 700, color: RIDE_TEXT_2, textTransform: 'uppercase', letterSpacing: '.12em' }}>Aboard</span>
                 <div className="flex items-center" style={{ ...chipGlass, borderRadius: 16, padding: '10px 12px', gap: 11 }}>
-                  <span className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 34, height: 34, background: RIDE_RED_GRADIENT }}>
+                  <span className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 34, height: 34, background: RIDE_RED }}>
                     <User style={{ width: 17, height: 17, color: '#fff' }} strokeWidth={2.2} />
                   </span>
                   <div className="min-w-0" style={{ flex: 1 }}>

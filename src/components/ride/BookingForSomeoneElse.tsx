@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Banknote, BellRing, ChevronRight, Phone, User, UserPlus, Users, X } from 'lucide-react';
 import { normalizePhoneZW } from '@/lib/region';
 import RideGlassPanel from './RideGlassPanel';
-import { redCta, tintBlue, tintYellow, RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3 } from './rideGlass';
+import { redCta, tintBlue, tintYellow, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3 } from './rideGlass';
 
 interface BookingForSomeoneElseProps {
   open: boolean;
@@ -40,7 +40,7 @@ const chipGlass: CSSProperties = {
   boxShadow: 'inset 0 .75px 0 rgba(255,255,255,.98), inset 0 0 0 .5px rgba(17,17,17,.09)',
 };
 const segmentSelected: CSSProperties = {
-  background: RIDE_RED_GRADIENT,
+  background: RIDE_RED,
   boxShadow: '0 8px 18px rgba(184,17,4,.3)',
 };
 const iconTileGlass: CSSProperties = {

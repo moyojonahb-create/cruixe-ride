@@ -31,7 +31,7 @@ import IncomingCallModal from "@/components/ride/IncomingCallModal";
 import ActiveCallOverlay from "@/components/ride/ActiveCallOverlay";
 import DriverEarningsDashboard from "@/components/driver/DriverEarningsDashboard";
 import FullScreenNavigation, { type RiderInfo } from "@/components/driver/FullScreenNavigation";
-import TripCollectSheet from "@/components/driver/TripCollectSheet";
+import TripCollectSheet, { type CollectableRide } from "@/components/driver/TripCollectSheet";
 
 import { runLocationFraudChecks } from "@/lib/fraudDetection";
 import { useFatigueMonitor } from "@/hooks/useFatigueMonitor";
@@ -84,7 +84,7 @@ export default function DriverDashboard() {
   const [acceptingRides, setAcceptingRides] = useState(true);
   // Set from refresh()'s driver_collected_at check, so it also fires on a
   // fresh page load, not just right after this session's own completeTrip().
-  const [uncollectedRide, setUncollectedRide] = useState<{ id: string; fare: number; payment_method: string; pickup_address: string; dropoff_address: string; user_id: string } | null>(null);
+  const [uncollectedRide, setUncollectedRide] = useState<CollectableRide | null>(null);
 
   // Retained for the presence heartbeat only — position tracking moved to the
   // native foreground service via backgroundLocation.ts.
@@ -513,7 +513,7 @@ export default function DriverDashboard() {
       // completion happening while this query was in flight.
       const { data: uncollectedRow } = await supabase
         .from('rides')
-        .select('id, fare, payment_method, pickup_address, dropoff_address, user_id')
+        .select('id, fare, payment_method, pickup_address, dropoff_address, user_id, pickup_lat, pickup_lon, dropoff_lat, dropoff_lon')
         .or(`driver_id.eq.${p.id},driver_id.eq.${user?.id}`)
         .eq('status', 'completed')
         .is('driver_collected_at', null)
@@ -632,6 +632,7 @@ export default function DriverDashboard() {
             again immediately on completion) — collection still wins. */}
         {uncollectedRide && (
           <TripCollectSheet
+            key={uncollectedRide.id}
             ride={uncollectedRide}
             onDone={() => { setUncollectedRide(null); refresh(); }}
           />
@@ -728,6 +729,7 @@ export default function DriverDashboard() {
           — takes priority over handing off to the request list. */}
       {uncollectedRide && (
         <TripCollectSheet
+          key={uncollectedRide.id}
           ride={uncollectedRide}
           onDone={() => { setUncollectedRide(null); refresh(); }}
         />

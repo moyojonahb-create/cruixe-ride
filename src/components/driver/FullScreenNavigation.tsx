@@ -36,7 +36,7 @@ import { getDetailedRoute, findCurrentStep, getManeuverInstruction, getVoiceInst
 import MapboxMap from "@/components/map/LazyMapboxMap";
 import type { MapEtaCard } from "@/components/MapboxMap";
 import RideGlassPanel from "@/components/ride/RideGlassPanel";
-import { glassSurface, redCta, tintBlue, RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2 } from "@/components/ride/rideGlass";
+import { glassSurface, redCta, tintBlue, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2 } from "@/components/ride/rideGlass";
 
 export interface RiderInfo {
   full_name: string | null;
@@ -592,7 +592,7 @@ export default function FullScreenNavigation({
           type="button"
           onClick={() => setRecenterSignal((s) => s + 1)}
           className="flex items-center w-full text-left active:scale-[0.98] transition-transform"
-          style={{ padding: '12px 14px', borderRadius: 18, gap: 12, background: RIDE_RED_GRADIENT, boxShadow: '0 12px 28px rgba(184,17,4,.32), inset 0 1px 0 rgba(255,255,255,.28)' }}
+          style={{ padding: '12px 14px', borderRadius: 18, gap: 12, background: RIDE_RED, boxShadow: '0 12px 28px rgba(184,17,4,.32), inset 0 1px 0 rgba(255,255,255,.28)' }}
         >
           <ManeuverIcon step={currentStep} />
           <div className="min-w-0" style={{ flex: 1 }}>
@@ -813,7 +813,7 @@ export default function FullScreenNavigation({
                         disabled={callStatus !== 'idle'}
                         aria-label="Call passenger"
                         className="flex items-center justify-center rounded-full active:scale-90 transition-transform disabled:opacity-50"
-                        style={{ width: 40, height: 40, background: RIDE_RED_GRADIENT, boxShadow: '0 6px 14px rgba(184,17,4,.3)' }}
+                        style={{ width: 40, height: 40, background: RIDE_RED, boxShadow: '0 6px 14px rgba(184,17,4,.3)' }}
                       >
                         <Phone style={{ width: 18, height: 18 }} className="text-white" />
                       </button>

@@ -33,7 +33,7 @@ import RideGlassPanel from '@/components/ride/RideGlassPanel';
 import NoteToDriverSheet from '@/components/ride/NoteToDriverSheet';
 import SafetySheet from '@/components/ride/SafetySheet';
 import ShareTripButton from '@/components/ride/ShareTripButton';
-import { openTripReceipt } from '@/components/ride/TripReceiptButton';
+import { openTripReceipt, refreshTripReceiptPayment } from '@/components/ride/TripReceiptButton';
 import DriverMessageSheet from '@/components/driver/DriverMessageSheet';
 import EcoCashPaymentModal from '@/components/wallet/EcoCashPaymentModal';
 import IncomingCallModal from '@/components/ride/IncomingCallModal';
@@ -1061,16 +1061,11 @@ export default function RideMatching() {
                       distanceKm: ride.distance_km,
                       durationMinutes: ride.duration_minutes,
                       driverName: driver?.full_name ?? undefined,
-                      vehicleInfo: driver ? `${driver.vehicle_make || ''} ${driver.vehicle_model || ''}`.trim() || undefined : undefined,
+                      vehicleInfo: driver ? [driver.vehicle_make, driver.vehicle_model, driver.vehicle_color].filter(Boolean).join(' ') || undefined : undefined,
                       plateNumber: driver?.plate_number || undefined,
                       paymentMethod: ride.payment_method,
                       paymentConfirmed: !ride.payment_failed && (isCashPayment ? !!ride.driver_collected_at : ride.wallet_paid === true),
-                    }, async () => {
-                      const latest = await fetchRideById(ride.id);
-                      if (!latest) throw new Error('Could not refresh payment confirmation');
-                      setRide(latest);
-                      return { fare: latest.fare, tripDate: latest.created_at, paymentConfirmed: !latest.payment_failed && (latest.payment_method === 'cash' ? !!latest.driver_collected_at : latest.wallet_paid === true) };
-                    })}
+                    }, () => refreshTripReceiptPayment(ride.id, setRide))}
                     className="shrink-0 flex items-center justify-center active:scale-[0.97] transition-transform"
                     style={{ width: 110, height: 48, borderRadius: 15, ...receiptGlass }}
                   >
