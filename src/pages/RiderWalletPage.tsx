@@ -165,8 +165,6 @@ export default function RiderWalletPage() {
     );
   }
 
-  const displayName = (full_name || 'User').split(' ').slice(0, 2).join(' ');
-
   return (
     <div className="min-h-[100dvh] bg-white">
       {/* Figma Wallet / Dashboard 285:27 — header visual migration.
