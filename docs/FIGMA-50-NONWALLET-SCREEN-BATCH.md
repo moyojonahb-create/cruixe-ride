@@ -54,7 +54,7 @@ Source: [CruiXe Ride Main](https://www.figma.com/design/YLDdDmUNi4qbEb3mFfwpkB/C
 | 34 | `631:96` | Ride confirmation | Pending detailed parity |
 | 35 | `631:97` | Economy searching | Pending detailed parity |
 | 36 | `631:100` | Driver offers | Pending detailed parity |
-| 37 | `631:99` | No drivers found | Pending detailed parity |
+| 37 | `631:99` | No drivers found | No-drivers Figma styling integrated with live fare/search/cancel; visual and final QA pending |
 | 38 | `631:103` | Rate driver | Pending detailed parity |
 | 39 | `631:104` | Trip complete | Pending detailed parity |
 | 40 | `345:600` | Driver accepted | Pending detailed parity |
@@ -92,3 +92,8 @@ Source: [CruiXe Ride Main](https://www.figma.com/design/YLDdDmUNi4qbEb3mFfwpkB/C
 
 - `DriverDestinationReached` displays actual destination, rider, passenger count, payment method and fare. `FullScreenNavigation` opens it as a confirmation when the driver selects Complete trip. Existing `completeTrip` API and far-from-destination double-confirm remain authoritative.
 - Tests added: `src/test/DriverDestinationReached.test.tsx`. This counts as **one partially migrated state**, not full final acceptance; payment due and end-to-end receipt flow require separate review.
+
+## Rider No Drivers (Figma `631:99`)
+
+- Migrated the no-drivers visual state in `RideMatching.tsx` using the existing live `timedOut` condition and actual trip fare/route. Keep-searching, constrained fare adjustment and cancellation retain their original handlers. No fabricated driver availability.
+- Visual and final end-to-end QA remain pending. No Wallet screens changed.
