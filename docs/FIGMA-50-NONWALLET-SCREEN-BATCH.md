@@ -33,7 +33,7 @@ Source: [CruiXe Ride Main](https://www.figma.com/design/YLDdDmUNi4qbEb3mFfwpkB/C
 | 18 | `1153:225` | Driver arrived | Live arrival state label and onboard CTA updated; full visual parity pending |
 | 19 | `1182:198` | Passenger onboard / start trip | Pending visual migration |
 | 20 | `1182:281` | En route to destination | Live route state label and trip description updated; full visual parity pending |
-| 21 | `1185:115` | Destination reached | Pending visual migration |
+| 21 | `1185:115` | Destination reached | Interactive Figma-inspired confirmation connected to real completion guard; visual/device QA pending |
 | 22 | `1185:198` | Confirm cash payment | Foundation in PR #6; verify parity |
 | 23 | `1185:281` | Trip receipt and earnings | Foundation in PR #6; verify parity |
 | 24 | `1264:118` | Booked for someone else request | Pending visual migration |
@@ -87,3 +87,8 @@ Source: [CruiXe Ride Main](https://www.figma.com/design/YLDdDmUNi4qbEb3mFfwpkB/C
 - Real-time navigation now derives Figma lifecycle labels from the server-provided ride status, without replacing `FullScreenNavigation`, `goBackend`, GPS routing or payment completion.
 - Tests added under `src/test/driverTripPresentation.test.ts`. Four distinct frames have **partial live visual implementations**, NOT four accepted finished screens.
 - Still outstanding: asset-level pixel parity, Rider/Driver two-device states, onboard-to-start confirmation, explicit destination-reached state, live cash and receipt QA, and screen-width verification.
+
+## Destination Reached integration
+
+- `DriverDestinationReached` displays actual destination, rider, passenger count, payment method and fare. `FullScreenNavigation` opens it as a confirmation when the driver selects Complete trip. Existing `completeTrip` API and far-from-destination double-confirm remain authoritative.
+- Tests added: `src/test/DriverDestinationReached.test.tsx`. This counts as **one partially migrated state**, not full final acceptance; payment due and end-to-end receipt flow require separate review.
