@@ -7,6 +7,7 @@ interface DriverDestinationReachedProps {
   fare: number;
   paymentMethod: string;
   confirming: boolean;
+  farFromDropoff: boolean;
   onBack: () => void;
   onConfirm: () => void;
 }
@@ -17,7 +18,7 @@ interface DriverDestinationReachedProps {
  * The real map remains visible behind this mobile overlay.
  */
 export default function DriverDestinationReached({
-  passengerName, passengerCount, destination, fare, paymentMethod, confirming, onBack, onConfirm,
+  passengerName, passengerCount, destination, fare, paymentMethod, confirming, farFromDropoff, onBack, onConfirm,
 }: DriverDestinationReachedProps) {
   return (
     <section data-figma-node="1185:115" role="dialog" aria-modal="true" aria-labelledby="driver-destination-title"
@@ -55,6 +56,7 @@ export default function DriverDestinationReached({
             <CheckCircle2 className="h-5 w-5 shrink-0 text-[#ae7208]" />
             <p className="text-[12px] leading-5 text-[#1f2129]">Check that everyone has exited and collected their belongings. Ending the trip may start the payment confirmation process.</p>
           </div>
+          {farFromDropoff && <p role="alert" className="mt-3 text-[12px] font-semibold text-[#c32e1d]">You appear far from the drop-off. Select End trip again only if all passengers have safely exited.</p>}
           <div className="mt-6 flex gap-3">
             <button type="button" disabled={confirming} onClick={onBack}
               className="min-h-[55px] flex-1 rounded-[18px] border border-[#ff000d] bg-white px-3 text-[14px] font-semibold text-[#ff000d] disabled:opacity-50">
