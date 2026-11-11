@@ -1,4 +1,4 @@
-CREATE TABLE public.ride_passenger_ratings (
+CREATE TABLE IF NOT EXISTS public.ride_passenger_ratings (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   ride_id uuid NOT NULL REFERENCES public.rides(id) ON DELETE CASCADE,
   driver_id uuid NOT NULL,
@@ -8,22 +8,20 @@ CREATE TABLE public.ride_passenger_ratings (
   UNIQUE (ride_id, driver_id)
 );
 
+ALTER TABLE public.ride_passenger_ratings
+  ADD COLUMN IF NOT EXISTS id uuid DEFAULT gen_random_uuid(),
+  ADD COLUMN IF NOT EXISTS comment text;
+
 GRANT SELECT, INSERT ON public.ride_passenger_ratings TO authenticated;
 GRANT ALL ON public.ride_passenger_ratings TO service_role;
 
 ALTER TABLE public.ride_passenger_ratings ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Drivers insert ratings for their rides"
-ON public.ride_passenger_ratings FOR INSERT TO authenticated
-WITH CHECK (
-  auth.uid() = driver_id
-  AND EXISTS (
-    SELECT 1 FROM public.rides r
-    WHERE r.id = ride_id
-      AND public.is_ride_driver(auth.uid(), r.driver_id)
-  )
-);
+-- The earlier policy requires a completed ride; do not add a permissive OR
+-- policy that would authorize rating before completion.
+DROP POLICY IF EXISTS "Drivers insert ratings for their rides" ON public.ride_passenger_ratings;
 
+DROP POLICY IF EXISTS "Participants and admins read passenger ratings" ON public.ride_passenger_ratings;
 CREATE POLICY "Participants and admins read passenger ratings"
 ON public.ride_passenger_ratings FOR SELECT TO authenticated
 USING (
@@ -32,9 +30,9 @@ USING (
   OR public.has_role(auth.uid(), 'admin')
 );
 
-CREATE INDEX idx_ride_passenger_ratings_ride ON public.ride_passenger_ratings(ride_id);
+CREATE INDEX IF NOT EXISTS idx_ride_passenger_ratings_ride ON public.ride_passenger_ratings(ride_id);
 
-CREATE TABLE public.driver_offline_actions (
+CREATE TABLE IF NOT EXISTS public.driver_offline_actions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   driver_id uuid NOT NULL REFERENCES public.drivers(id) ON DELETE CASCADE,
   admin_id uuid,
@@ -47,11 +45,12 @@ GRANT ALL ON public.driver_offline_actions TO service_role;
 
 ALTER TABLE public.driver_offline_actions ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Admins read driver offline actions" ON public.driver_offline_actions;
 CREATE POLICY "Admins read driver offline actions"
 ON public.driver_offline_actions FOR SELECT TO authenticated
 USING (public.has_role(auth.uid(), 'admin'));
 
-CREATE INDEX idx_driver_offline_actions_driver ON public.driver_offline_actions(driver_id);
+CREATE INDEX IF NOT EXISTS idx_driver_offline_actions_driver ON public.driver_offline_actions(driver_id);
 
 CREATE OR REPLACE FUNCTION public.admin_force_driver_offline(_driver_id uuid, _reason text DEFAULT NULL)
 RETURNS jsonb

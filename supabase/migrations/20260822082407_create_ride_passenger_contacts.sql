@@ -15,11 +15,18 @@ CREATE TABLE IF NOT EXISTS public.ride_passenger_contacts (
   updated_at timestamptz NOT NULL DEFAULT now()
 );
 
+-- A clean replay already has the earlier table; IF NOT EXISTS above does not
+-- add columns to it.
+ALTER TABLE public.ride_passenger_contacts
+  ADD COLUMN IF NOT EXISTS payer text NOT NULL DEFAULT 'booker' CHECK (payer IN ('booker', 'passenger')),
+  ADD COLUMN IF NOT EXISTS notify_booker boolean NOT NULL DEFAULT true;
+
 GRANT SELECT, INSERT, UPDATE ON public.ride_passenger_contacts TO authenticated;
 GRANT ALL ON public.ride_passenger_contacts TO service_role;
 
 ALTER TABLE public.ride_passenger_contacts ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Ride participants can view passenger contact" ON public.ride_passenger_contacts;
 CREATE POLICY "Ride participants can view passenger contact"
 ON public.ride_passenger_contacts FOR SELECT TO authenticated
 USING (
@@ -34,25 +41,34 @@ USING (
   OR public.has_role(auth.uid(), 'admin'::public.app_role)
 );
 
+DROP POLICY IF EXISTS "Riders can add passenger contact for own ride" ON public.ride_passenger_contacts;
 CREATE POLICY "Riders can add passenger contact for own ride"
 ON public.ride_passenger_contacts FOR INSERT TO authenticated
 WITH CHECK (
   EXISTS (SELECT 1 FROM public.rides r WHERE r.id = ride_id AND r.user_id = auth.uid())
 );
 
+DROP POLICY IF EXISTS "Riders can update passenger contact for own ride" ON public.ride_passenger_contacts;
 CREATE POLICY "Riders can update passenger contact for own ride"
 ON public.ride_passenger_contacts FOR UPDATE TO authenticated
 USING (EXISTS (SELECT 1 FROM public.rides r WHERE r.id = ride_id AND r.user_id = auth.uid()))
 WITH CHECK (EXISTS (SELECT 1 FROM public.rides r WHERE r.id = ride_id AND r.user_id = auth.uid()));
 
+DROP TRIGGER IF EXISTS trg_ride_passenger_contacts_updated_at ON public.ride_passenger_contacts;
 CREATE TRIGGER trg_ride_passenger_contacts_updated_at
 BEFORE UPDATE ON public.ride_passenger_contacts
 FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 -- Backfill any existing third-party bookings that only ever made it onto
 -- the open rides.passenger_name/phone columns, so in-flight rides benefit too.
-INSERT INTO public.ride_passenger_contacts (ride_id, passenger_name, passenger_phone)
-SELECT id, passenger_name, passenger_phone
-FROM public.rides
-WHERE passenger_name IS NOT NULL OR passenger_phone IS NOT NULL
-ON CONFLICT (ride_id) DO NOTHING;
+DO $$
+BEGIN
+  -- The earlier PII migration drops both source columns after backfilling.
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'rides' AND column_name = 'passenger_name')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'rides' AND column_name = 'passenger_phone') THEN
+    EXECUTE 'INSERT INTO public.ride_passenger_contacts (ride_id, passenger_name, passenger_phone)
+      SELECT id, passenger_name, passenger_phone FROM public.rides
+      WHERE passenger_name IS NOT NULL OR passenger_phone IS NOT NULL
+      ON CONFLICT (ride_id) DO NOTHING';
+  END IF;
+END $$;
