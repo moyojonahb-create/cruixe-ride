@@ -1,4 +1,4 @@
-import { ArrowLeft, CheckCircle2, Clock3, MapPin, Package, ShieldCheck, Truck, UserRound, AlertCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Clock3, MapPin, Package, ShieldCheck, Truck, AlertCircle } from 'lucide-react';
 import type { ParcelScreenDefinition } from '@/lib/parcelBatch20Screens';
 
 export interface ParcelScreenData {
