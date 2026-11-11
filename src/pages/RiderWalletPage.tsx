@@ -168,28 +168,33 @@ export default function RiderWalletPage() {
   const displayName = (full_name || 'User').split(' ').slice(0, 2).join(' ');
 
   return (
-    <div className="min-h-[100dvh] bg-slate-50">
-      {/* Header */}
-      <div className="sticky top-0 z-20 bg-white/85 backdrop-blur-lg border-b border-slate-200/70">
+    <div className="min-h-[100dvh] bg-white">
+      {/* Figma Wallet / Dashboard 285:27 — header visual migration.
+          Preserve the real wallet hooks, PIN gate, transaction and payment actions. */}
+      <header className="sticky top-0 z-20 border-b border-[#f6f6f8] bg-white/95 backdrop-blur-md">
         <div
-          className="flex items-center gap-2 px-4 py-3"
-          style={{ paddingTop: 'calc(env(safe-area-inset-top) + 10px)' }}
+          className="mx-auto flex w-full max-w-lg items-start gap-3 px-4 pb-4 pt-7"
+          style={{ paddingTop: 'calc(env(safe-area-inset-top) + 28px)' }}
         >
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="rounded-full">
+          <Button variant="ghost" size="icon" aria-label="Back" onClick={() => navigate(-1)} className="mt-1 shrink-0 rounded-2xl">
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <div className="flex-1">
-            <h1 className="text-[17px] font-bold tracking-tight text-foreground">My Wallet</h1>
-            <p className="text-[11px] text-muted-foreground -mt-0.5">Manage your CruiXe balance</p>
+          <div className="min-w-0 flex-1">
+            <h1 className="font-['Poppins'] text-[26px] font-semibold leading-[39px] tracking-[-0.02em] text-[#1f2126]">
+              CruiXe Wallet
+            </h1>
+            <p className="font-['Poppins'] text-[13px] leading-5 text-[#61666e]">
+              Your money, your rides.
+            </p>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => setShowSettings((v) => !v)} className="rounded-full">
-            <Settings className="h-4 w-4 text-foreground" />
+          <Button variant="ghost" size="icon" aria-label="Wallet security settings" onClick={() => setShowSettings((v) => !v)} className="mt-1 h-11 w-11 shrink-0 rounded-2xl bg-[#f6f6f8]">
+            <Settings className="h-5 w-5 text-[#1f2126]" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={handleRefresh} disabled={walletLoading} className="rounded-full">
-            <RefreshCw className={`h-4 w-4 text-foreground ${walletLoading ? 'animate-spin' : ''}`} />
+          <Button variant="ghost" size="icon" aria-label="Refresh wallet" onClick={handleRefresh} disabled={walletLoading} className="mt-1 h-11 w-11 shrink-0 rounded-2xl bg-[#f6f6f8]">
+            <RefreshCw className={`h-5 w-5 text-[#1f2126] ${walletLoading ? 'animate-spin' : ''}`} />
           </Button>
         </div>
-      </div>
+      </header>
 
       <div className="px-4 pt-4 space-y-5 max-w-lg mx-auto pb-28">
         {/* ===== Glass Balance Card ===== */}
