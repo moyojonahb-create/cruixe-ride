@@ -244,6 +244,13 @@ export default function RideMatching() {
     return () => { supabase.removeChannel(channel); };
   }, [rideId, loadRide]);
 
+  // Cash collection can arrive after lifecycle tracking stops at completion.
+  useEffect(() => {
+    if (!isComplete || ride?.payment_method !== 'cash' || ride.driver_collected_at) return;
+    const timer = setInterval(() => void loadRide(), 5000);
+    return () => clearInterval(timer);
+  }, [isComplete, ride?.payment_method, ride?.driver_collected_at, loadRide]);
+
   /* ── Safety-net poll (weak networks / realtime drop-outs) ──── */
   useEffect(() => {
     if (isMatched || isComplete || !rideId) return;
@@ -1057,6 +1064,12 @@ export default function RideMatching() {
                       vehicleInfo: driver ? `${driver.vehicle_make || ''} ${driver.vehicle_model || ''}`.trim() || undefined : undefined,
                       plateNumber: driver?.plate_number || undefined,
                       paymentMethod: ride.payment_method,
+                      paymentConfirmed: !ride.payment_failed && (isCashPayment ? !!ride.driver_collected_at : ride.wallet_paid === true),
+                    }, async () => {
+                      const latest = await fetchRideById(ride.id);
+                      if (!latest) throw new Error('Could not refresh payment confirmation');
+                      setRide(latest);
+                      return { paymentConfirmed: !latest.payment_failed && (latest.payment_method === 'cash' ? !!latest.driver_collected_at : latest.wallet_paid === true) };
                     })}
                     className="shrink-0 flex items-center justify-center active:scale-[0.97] transition-transform"
                     style={{ width: 110, height: 48, borderRadius: 15, ...receiptGlass }}

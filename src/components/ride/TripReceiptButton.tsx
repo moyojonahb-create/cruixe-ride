@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Loader2, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { fetchRideById } from '@/lib/rideMatching';
 
 export interface TripReceiptData {
   rideId: string;
@@ -15,11 +16,24 @@ export interface TripReceiptData {
   plateNumber?: string;
   paymentMethod?: string;
   completedAt?: string;
+  tripDate?: string;
   riderName?: string;
+  paymentConfirmed?: boolean;
 }
 
-export async function openTripReceipt(data: TripReceiptData): Promise<void> {
+export function escapeReceiptText(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!);
+}
+
+export async function openTripReceipt(data: TripReceiptData, refresh?: () => Promise<Partial<TripReceiptData>>): Promise<void> {
+  // Reserve the popup during the tap, before awaiting the payment refresh (Safari).
+  const printWindow = window.open('', '_blank');
   try {
+    if (printWindow) printWindow.document.body.textContent = 'Loading receipt…';
+    const refreshed = refresh ? await refresh() : {};
+    data = { ...data, ...refreshed };
+    data = { ...data, ...Object.fromEntries(Object.entries(data).map(([key, value]) => [key, typeof value === 'string' ? escapeReceiptText(value) : value])) };
+
     const receiptHtml = `
 <!DOCTYPE html>
 <html>
@@ -52,7 +66,7 @@ export async function openTripReceipt(data: TripReceiptData): Promise<void> {
     
     <div class="section-title">Trip Details</div>
     <div class="row"><span class="label">Receipt #</span><span class="value">${data.rideId.substring(0, 8).toUpperCase()}</span></div>
-    <div class="row"><span class="label">Date</span><span class="value">${data.completedAt ? new Date(data.completedAt).toLocaleDateString('en-ZW', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : new Date().toLocaleDateString()}</span></div>
+    <div class="row"><span class="label">Date</span><span class="value">${(data.completedAt || data.tripDate) ? new Date(data.completedAt || data.tripDate!).toLocaleDateString('en-ZW', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : new Date().toLocaleDateString()}</span></div>
     
     <hr class="divider">
     
@@ -73,7 +87,7 @@ export async function openTripReceipt(data: TripReceiptData): Promise<void> {
     ` : ''}
     
     <div class="section-title">Payment</div>
-    <div class="row"><span class="label">Method</span><span class="value">${data.paymentMethod || 'Cash'} <span class="badge">Paid</span></span></div>
+    <div class="row"><span class="label">Method</span><span class="value">${data.paymentMethod || 'Cash'} <span class="badge">${data.paymentConfirmed ? 'Paid' : 'Payment pending confirmation'}</span></span></div>
     
     <hr class="divider">
     
@@ -91,7 +105,6 @@ export async function openTripReceipt(data: TripReceiptData): Promise<void> {
 </html>`;
 
     // Open in new window for print/save
-    const printWindow = window.open('', '_blank');
     if (printWindow) {
       printWindow.document.write(receiptHtml);
       printWindow.document.close();
@@ -112,18 +125,29 @@ export async function openTripReceipt(data: TripReceiptData): Promise<void> {
       toast.success('Receipt downloaded');
     }
   } catch (err) {
+    printWindow?.close();
     console.error('Receipt generation failed:', err);
     toast.error('Failed to generate receipt');
   }
 }
 
-export default function TripReceiptButton({ data }: { data: TripReceiptData }) {
+export async function refreshTripReceiptPayment(rideId: string): Promise<Partial<TripReceiptData>> {
+  const latest = await fetchRideById(rideId);
+  if (!latest) throw new Error('Could not refresh receipt');
+  return {
+    fare: latest.fare,
+    paymentMethod: latest.payment_method,
+    paymentConfirmed: !latest.payment_failed && (latest.payment_method === 'cash' ? !!latest.driver_collected_at : latest.wallet_paid === true),
+  };
+}
+
+export default function TripReceiptButton({ data, refresh }: { data: TripReceiptData; refresh?: () => Promise<Partial<TripReceiptData>> }) {
   const [generating, setGenerating] = useState(false);
 
   const generateReceipt = async () => {
     setGenerating(true);
     try {
-      await openTripReceipt(data);
+      await openTripReceipt(data, refresh);
     } finally {
       setGenerating(false);
     }

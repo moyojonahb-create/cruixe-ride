@@ -2,6 +2,8 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { CheckCircle2, Star } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { getDriverWalletSummary } from '@/lib/walletApi';
+import { confirmCashCollection } from '@/lib/confirmCashCollection';
+import { toast } from 'sonner';
 import { haptic } from '@/lib/haptics';
 import RideGlassPanel from '@/components/ride/RideGlassPanel';
 import { redCta, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2 } from '@/components/ride/rideGlass';
@@ -84,12 +86,20 @@ export default function TripCollectSheet({ ride, onDone }: TripCollectSheetProps
     setConfirming(true);
     haptic('medium');
     try {
+      await confirmCashCollection(ride.id, isCash);
+      // Rating is optional and must not undo a saved collection confirmation.
       if (rating > 0) {
-        await supabase.from('ride_passenger_ratings').insert([{ ride_id: ride.id, driver_id: ride.user_id, rating }]).select().maybeSingle();
+        try {
+          await supabase.from('ride_passenger_ratings').insert([{ ride_id: ride.id, driver_id: ride.user_id, rating }]).select().maybeSingle();
+        } catch (error) {
+          console.warn('Passenger rating could not be saved:', error);
+        }
       }
-      await supabase.from('rides').update({ driver_collected_at: new Date().toISOString() } as never).eq('id', ride.id);
-    } finally {
       onDone();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Could not confirm payment. Please try again.');
+    } finally {
+      setConfirming(false);
     }
   };
 

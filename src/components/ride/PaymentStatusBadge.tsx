@@ -4,6 +4,7 @@ interface PaymentStatusBadgeProps {
   status: string; // ride status (e.g. completed, cancelled)
   paymentMethod?: string | null;
   walletPaid?: boolean | null;
+  driverCollectedAt?: string | null;
   paymentFailed?: boolean | null;
   paymentFailureReason?: string | null;
   size?: 'sm' | 'md';
@@ -20,6 +21,7 @@ export default function PaymentStatusBadge({
   status,
   paymentMethod,
   walletPaid,
+  driverCollectedAt,
   paymentFailed,
   paymentFailureReason,
   size = 'sm',
@@ -29,10 +31,10 @@ export default function PaymentStatusBadge({
 
   const isFailed = !!paymentFailed;
   const isWallet = paymentMethod === 'wallet';
-  // For wallet rides, success requires wallet_paid. For cash/other, completion implies paid.
-  const isSuccess = !isFailed && (isWallet ? walletPaid === true : status === 'completed');
+  // Trip completion alone does not confirm that cash changed hands.
+  const isSuccess = !isFailed && (isWallet ? walletPaid === true : !!driverCollectedAt);
 
-  if (!isFailed && !isSuccess) return null;
+  if (!isFailed && !isSuccess) return <span className="text-xs text-muted-foreground">Payment pending confirmation</span>;
 
   const padding = size === 'sm' ? 'px-2 py-0.5 text-[10px]' : 'px-2.5 py-1 text-xs';
   const iconSize = size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5';

@@ -1927,6 +1927,7 @@ export type Database = {
           cancellation_fee: number | null
           created_at: string
           distance_km: number
+          driver_collected_at: string | null
           driver_id: string | null
           dropoff_address: string
           dropoff_lat: number
@@ -1958,6 +1959,7 @@ export type Database = {
           cancellation_fee?: number | null
           created_at?: string
           distance_km: number
+          driver_collected_at?: string | null
           driver_id?: string | null
           dropoff_address: string
           dropoff_lat: number
@@ -1989,6 +1991,7 @@ export type Database = {
           cancellation_fee?: number | null
           created_at?: string
           distance_km?: number
+          driver_collected_at?: string | null
           driver_id?: string | null
           dropoff_address?: string
           dropoff_lat?: number
