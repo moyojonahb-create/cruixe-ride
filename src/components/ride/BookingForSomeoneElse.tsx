@@ -105,16 +105,16 @@ export default function BookingForSomeoneElse({
             >
               <RideGlassPanel panelStyle={panelStyle} style={{ maxHeight: '90vh', paddingBottom: 'env(safe-area-inset-bottom)' }} onRibbonClick={onClose}>
                 <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
-                  <div className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+                  <div data-figma-node={enabled ? "504:410" : undefined} className="p-4 font-['Poppins',system-ui,sans-serif]" style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
                     {/* Section 1 — header */}
                     <div className="flex items-center" style={{ gap: 11 }}>
                       <span className="shrink-0 flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 14, ...iconTileGlass }}>
                         <UserPlus style={{ width: 19, height: 19, color: RIDE_RED }} />
                       </span>
                       <div className="min-w-0" style={{ flex: 1 }}>
-                        <p style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>Who is riding?</p>
+                        <p style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>{enabled ? 'Book for someone else' : 'Who is riding?'}</p>
                         <p className="truncate" style={{ marginTop: 3, fontSize: 12.5, fontWeight: 500, lineHeight: 1.2, color: RIDE_TEXT_2 }}>
-                          {tierLabel} · {pickupName} → {dropoffName}
+                          {enabled ? 'Enter the passenger details for this trip.' : `${tierLabel} · ${pickupName} → ${dropoffName}`}
                         </p>
                       </div>
                       <button
