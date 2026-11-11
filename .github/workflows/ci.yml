@@ -35,6 +35,13 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Economy cash and receipt regressions
+        env:
+          VITE_SUPABASE_URL: http://127.0.0.1:59999
+          VITE_SUPABASE_PUBLISHABLE_KEY: ci-dummy-publishable
+          VITE_GO_BACKEND_URL: http://127.0.0.1:59998
+          VITE_WS_URL: ws://127.0.0.1:59998/ws
+        run: npm test -- src/test/confirmCashCollection.test.ts src/test/PaymentStatusBadge.test.tsx src/test/TripReceiptButton.test.ts src/test/TripCollectSheet.test.tsx
       - run: npx tsc --noEmit -p tsconfig.app.json
       - run: npm run lint
       - run: npm run build

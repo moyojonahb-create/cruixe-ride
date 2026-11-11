@@ -1069,7 +1069,7 @@ export default function RideMatching() {
                       const latest = await fetchRideById(ride.id);
                       if (!latest) throw new Error('Could not refresh payment confirmation');
                       setRide(latest);
-                      return { paymentConfirmed: !latest.payment_failed && (latest.payment_method === 'cash' ? !!latest.driver_collected_at : latest.wallet_paid === true) };
+                      return { fare: latest.fare, tripDate: latest.created_at, paymentConfirmed: !latest.payment_failed && (latest.payment_method === 'cash' ? !!latest.driver_collected_at : latest.wallet_paid === true) };
                     })}
                     className="shrink-0 flex items-center justify-center active:scale-[0.97] transition-transform"
                     style={{ width: 110, height: 48, borderRadius: 15, ...receiptGlass }}
