@@ -28,11 +28,11 @@ Source: [CruiXe Ride Main](https://www.figma.com/design/YLDdDmUNi4qbEb3mFfwpkB/C
 
 | # | Figma node | Screen | Actual work state |
 |---:|---|---|---|
-| 16 | `1153:105` | Rider accepted driver offer | Pending visual migration |
-| 17 | `1153:165` | Driver en route to pickup | Pending visual migration |
-| 18 | `1153:225` | Driver arrived | Pending visual migration |
+| 16 | `1153:105` | Rider accepted driver offer | Live trip presentation updated; full visual parity pending |
+| 17 | `1153:165` | Driver en route to pickup | Live navigation state label and description updated; full visual parity pending |
+| 18 | `1153:225` | Driver arrived | Live arrival state label and onboard CTA updated; full visual parity pending |
 | 19 | `1182:198` | Passenger onboard / start trip | Pending visual migration |
-| 20 | `1182:281` | En route to destination | Pending visual migration |
+| 20 | `1182:281` | En route to destination | Live route state label and trip description updated; full visual parity pending |
 | 21 | `1185:115` | Destination reached | Pending visual migration |
 | 22 | `1185:198` | Confirm cash payment | Foundation in PR #6; verify parity |
 | 23 | `1185:281` | Trip receipt and earnings | Foundation in PR #6; verify parity |
@@ -81,3 +81,9 @@ Source: [CruiXe Ride Main](https://www.figma.com/design/YLDdDmUNi4qbEb3mFfwpkB/C
 - Validate keyboard accessibility, back/cancel/refresh, loading/errors, auth, uploads, dispatch handoff and no expired asset URLs.
 - Run Node 22 TypeScript, lint, unit and staging build; confirm Vercel Ready on exact SHA, then two-device Rider + Driver test. Protected preview is not production.
 - For pending states, never display Figma example data as real operational records or approval.
+
+## Driver navigation update (2026-11-11)
+
+- Real-time navigation now derives Figma lifecycle labels from the server-provided ride status, without replacing `FullScreenNavigation`, `goBackend`, GPS routing or payment completion.
+- Tests added under `src/test/driverTripPresentation.test.ts`. Four distinct frames have **partial live visual implementations**, NOT four accepted finished screens.
+- Still outstanding: asset-level pixel parity, Rider/Driver two-device states, onboard-to-start confirmation, explicit destination-reached state, live cash and receipt QA, and screen-width verification.
