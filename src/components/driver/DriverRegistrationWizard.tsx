@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import CarLoadingSpinner from '@/components/CarLoadingSpinner';
 import { createDriverDocument, createDriverApplication } from '@/lib/businessApi';
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 7;
 
 const personalSchema = z.object({
   firstName: z.string().min(2, 'First name is required'),
@@ -137,12 +137,13 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
       if (step === 1) {
         const valid = await personalForm.trigger();
         if (!valid) return;
-      } else if (step === 2) {
+      } else if (step === 3) {
         const valid = await licenseForm.trigger();
         if (!valid) return;
       } else if (step === 4) {
         const valid = await vehicleForm.trigger();
         if (!valid) return;
+      } else if (step === TOTAL_STEPS) {
         await handleSubmit();
         return;
       }
@@ -242,12 +243,18 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
   }
 
   const stepDescriptions = [
-    "Tell us about yourself and add a clear profile photo.",
-    "We need a valid driving licence before you can drive.",
-    "Upload a clear identity document and matching selfie.",
-    "Tell us which vehicle you will use for trips.",
+    "Your personal details and profile photo help riders recognise you.",
+    "Upload your identity document and an ID-matching selfie.",
+    "We need a valid licence before you can drive.",
+    "Tell us which car you will use for trips.",
+    "Upload your current vehicle insurance documentation.",
+    "Photograph the actual vehicle you drive.",
+    "Check your information before you submit it for review.",
   ];
-  const stepTitles = ["Your profile", "Driver\u2019s licence", "Verify your identity", "About your vehicle"];
+  const stepTitles = [
+    "Your profile photo", "Verify your identity", "Driver’s licence",
+    "About your vehicle", "Vehicle documents", "Photograph your car", "Review your details",
+  ];
 
   return (
     <div className="min-h-[100dvh] bg-[#fdfdfd] font-['Poppins',system-ui,sans-serif] text-[#1f2129]">
@@ -282,7 +289,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
           <p className="mt-1 text-[12px] leading-[18px] text-[#667080]">{stepDescriptions[step - 1]}</p>
           <div className="mt-5 flex items-center gap-2">
             <span className="h-1 w-[34px] rounded-full bg-gradient-to-r from-[#ff000d] to-[#ffd11c]" />
-            <span className="text-[10px] font-semibold uppercase tracking-wide">Driver verification · {step} of {TOTAL_STEPS}</span>
+            <span className="text-[10px] font-semibold uppercase tracking-wide">{step === TOTAL_STEPS ? 'FINAL REVIEW' : `DRIVER VERIFICATION · ${step} OF ${TOTAL_STEPS - 1}`}</span>
           </div>
         </div>
 
@@ -342,8 +349,18 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
           </Form>
         )}
 
-        {/* Step 2: Driver License */}
+        {/* Step 2: Identity document */}
         {step === 2 && (
+          <div className="space-y-4">
+            <div className="flex gap-4">
+              <FileUploadBox label="Official ID document" file={idCard} onSelect={setIdCard} />
+              <FileUploadBox label="Selfie with ID" file={selfieWithId} onSelect={setSelfieWithId} />
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Driver License */}
+        {step === 3 && (
           <Form {...licenseForm}>
             <form className="space-y-4">
               <div className="flex gap-4">
@@ -372,25 +389,10 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
           </Form>
         )}
 
-        {/* Step 3: ID Card */}
-        {step === 3 && (
-          <div className="space-y-4">
-            <div className="flex gap-4">
-              <FileUploadBox label="ID card" file={idCard} onSelect={setIdCard} />
-              <FileUploadBox label="Selfie with ID" file={selfieWithId} onSelect={setSelfieWithId} />
-            </div>
-          </div>
-        )}
-
         {/* Step 4: Vehicle Information */}
         {step === 4 && (
           <Form {...vehicleForm}>
             <form className="space-y-4">
-              <div className="flex gap-4">
-                <FileUploadBox label="Vehicle picture" file={vehiclePhoto} onSelect={setVehiclePhoto} />
-                <FileUploadBox label="Vehicle insurance disc" file={insuranceDoc} onSelect={setInsuranceDoc} />
-              </div>
-
               <FormField control={vehicleForm.control} name="vehicleMake" render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -458,6 +460,51 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
             </form>
           </Form>
         )}
+
+        {/* Step 5: Existing insurance upload — preserve the approved document API contract. */}
+        {step === 5 && (
+          <div className="space-y-4">
+            <FileUploadBox label="Vehicle insurance" file={insuranceDoc} onSelect={setInsuranceDoc} />
+            <p className="rounded-2xl border border-[#e2e6ed] bg-[#f7f8fa] px-4 py-3 text-[12px] leading-5 text-[#667080]">
+              Upload a current insurance disc or cover note. Other vehicle document categories
+              will be added once their backend verification requirements are confirmed.
+            </p>
+          </div>
+        )}
+
+        {/* Step 6: Actual vehicle photo, not a sample image. */}
+        {step === 6 && (
+          <div className="space-y-4">
+            <FileUploadBox label="Vehicle photo" file={vehiclePhoto} onSelect={setVehiclePhoto} />
+            <p className="rounded-2xl border border-[#e2e6ed] bg-[#f7f8fa] px-4 py-3 text-[12px] leading-5 text-[#667080]">
+              Make the number plate and vehicle body clearly visible. Additional front,
+              rear and interior photo fields need a matching verified backend contract.
+            </p>
+          </div>
+        )}
+
+        {/* Step 7: Review actual entered data; never imply pending means approved. */}
+        {step === 7 && (
+          <div className="space-y-3">
+            {[
+              { label: 'Personal identity', value: [personalForm.getValues('firstName'), personalForm.getValues('surname')].filter(Boolean).join(' ') || 'Not provided' },
+              { label: 'Profile and ID photos', value: [personalPhoto && 'Profile', idCard && 'ID', selfieWithId && 'Selfie with ID'].filter(Boolean).join(' · ') || 'No photos selected' },
+              { label: 'Driver licence', value: licenseForm.getValues('licenseNumber') || 'Not provided' },
+              { label: 'Licence expiry', value: licenseForm.getValues('licenseExpiry') || 'Not provided' },
+              { label: 'Vehicle details', value: [vehicleForm.getValues('vehicleMake'), vehicleForm.getValues('vehicleModel'), vehicleForm.getValues('vehicleYear')].filter(Boolean).join(' ') },
+              { label: 'Registration plate', value: vehicleForm.getValues('plateNumber') || 'Not provided' },
+              { label: 'Vehicle documents', value: [insuranceDoc && 'Insurance', vehiclePhoto && 'Vehicle photo'].filter(Boolean).join(' · ') || 'No vehicle attachments selected' },
+            ].map(({ label, value }) => (
+              <div key={label} className="rounded-[15px] border border-[#e2e6ed] bg-white px-4 py-3">
+                <p className="text-[11px] font-semibold text-[#667080]">{label}</p>
+                <p className="mt-1 break-words text-[13px] font-semibold text-[#1f2129]">{value}</p>
+              </div>
+            ))}
+            <p className="rounded-[15px] bg-[#f7f8fa] px-4 py-3 text-[11px] leading-5 text-[#667080]">
+              Submitting does not approve your account. Our verification team must review the application.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Footer with step indicator and nav */}
@@ -475,7 +522,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-muted-foreground">{step} of {TOTAL_STEPS}</span>
+          <span className="text-sm font-medium text-[#667080]">{step} of {TOTAL_STEPS}</span>
 
           <div className="flex items-center gap-3">
             <Button
