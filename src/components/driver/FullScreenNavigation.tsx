@@ -25,6 +25,7 @@ import { useRideRealtime } from "@/hooks/useRideRealtime";
 import { useUnreadRideMessages } from "@/hooks/useUnreadRideMessages";
 import { useVoiceNavigation } from "@/hooks/useVoiceNavigation";
 import DriverMessageSheet from "@/components/driver/DriverMessageSheet";
+import DriverDestinationReached from "@/components/driver/DriverDestinationReached";
 import SafetySheet from "@/components/ride/SafetySheet";
 import { goBackend, GoBackendError } from "@/lib/goBackendClient";
 import { createNotification } from "@/lib/businessApi";
@@ -270,6 +271,7 @@ export default function FullScreenNavigation({
   const [safetyOpen, setSafetyOpen] = useState(false);
   const [completing, setCompleting] = useState(false);
   const [confirmingEndTrip, setConfirmingEndTrip] = useState(false);
+  const [destinationConfirmOpen, setDestinationConfirmOpen] = useState(false);
   const [recenterSignal, setRecenterSignal] = useState(0);
   const [riderNote, setRiderNote] = useState<string | null>(null);
   const lastFetchPhase = useRef("");
@@ -486,6 +488,7 @@ export default function FullScreenNavigation({
       if (!r?.ok) throw new Error((r?.reason as string) || "Failed to complete trip");
       toast.success("Trip completed!", { description: `Earned ${fmtUSD(Number(r.driver_earnings_usd ?? 0))}` });
       if (voiceEnabled) speak("Trip completed. Great job!", true);
+      setDestinationConfirmOpen(false);
       onTripComplete();
     } catch (e: unknown) {
       toast.error("Failed to complete trip", { description: (e as Error).message });
@@ -741,7 +744,7 @@ export default function FullScreenNavigation({
                     </button>
                     <button
                       type="button"
-                      onClick={handleEndTripTap}
+                      onClick={() => setDestinationConfirmOpen(true)}
                       disabled={completing}
                       className="relative flex-1 flex items-center justify-center active:scale-[0.97] transition-transform disabled:opacity-70"
                       style={{ height: 48, borderRadius: 15, gap: 9, ...redCta }}
@@ -914,6 +917,24 @@ export default function FullScreenNavigation({
           </div>
         </RideGlassPanel>
       </div>
+
+      {destinationConfirmOpen && isInTrip && (
+        <DriverDestinationReached
+          passengerName={passengerName}
+          passengerCount={activeTrip.passenger_count ?? null}
+          destination={activeTrip.dropoff_address}
+          fare={activeTrip.fare}
+          paymentMethod={activeTrip.payment_method}
+          confirming={completing}
+          farFromDropoff={confirmingEndTrip}
+          onBack={() => {
+            if (completing) return;
+            setDestinationConfirmOpen(false);
+            setConfirmingEndTrip(false);
+          }}
+          onConfirm={handleEndTripTap}
+        />
+      )}
 
       {/* Cancel reason — asked after a completed hold, before the cancel actually submits */}
       <AnimatePresence>
