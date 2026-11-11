@@ -1,6 +1,6 @@
 # Isolated staging setup for the Economy cash milestone
 
-Status: **BLOCKED — no isolated staging verified**. Inspection on 11 November 2026 was read-only. No resources, accounts, credentials, deployments, or database rows were created or changed by this inspection.
+Status: **BLOCKED — no isolated staging verified**. Inspection on 11 November 2026 was read-only. Initial inspection created no resources or accounts; subsequent authorized provisioning progress is recorded below.
 
 ## What was verified
 
@@ -29,6 +29,29 @@ Status: **BLOCKED — no isolated staging verified**. Inspection on 11 November 
 
 7. **Publish the exact test entrypoint only after verification.** Record the verified staging HTTPS URL. For TestFlight, the operator must identify the root Capacitor app, configure its separate staging service values, build/sign/upload it using the authorized Apple account, and record the actual invitation URL, bundle ID, version/build number, commit, and backend/database mapping. Do not invent an invitation or treat an Expo development build as the completed root app.
 
+## Provisioning progress
+
+After the user selected Tautona Tek, the authorized provisioning flow quoted $0 monthly and created `cruixe-staging` (`sgqqhrrdfyrebqreodfl`), region `us-east-1`, status `ACTIVE_HEALTHY`. API: `https://sgqqhrrdfyrebqreodfl.supabase.co`; database: `db.sgqqhrrdfyrebqreodfl.supabase.co`, PostgreSQL `17.11.0.018`. Backend inspection returned no public tables. No migrations or accounts have been created, and no secrets were retrieved or printed. This establishes a separate resource, not a usable staging ride environment.
+
+Root also created a separate protected Vercel staging project (`prj_F6em9zDGv7TUF0LmbWObgYoyZfkW`), with Node 22, `npm run build:staging`, and SSO protection for all deployments. Preview-only configuration contains the staging marker and new Supabase identity/publishable configuration; API and WSS values are intentionally unset until an isolated backend exists. Production-target environment changes were rejected by automatic approval review; preview-only configuration succeeded. No production environment configuration was changed, and no staging entrypoint is claimed ready.
+
+## Owner-action matrix
+
+No accounts are created until the frontend, backend, Auth and database isolation evidence is verified together. Owner roles below are handover responsibilities, not claims that access has been granted.
+
+| Owner | Required input/access | Action and completion evidence | Current state |
+| --- | --- | --- | --- |
+| Supabase owner | Chosen organization, provisioning access and any required cost approval | Separate project/branch; record project ref, API and database identities; reconcile clean schema/migrations and verify effective RLS/grants | PARTIAL: isolated `cruixe-staging` project created; schema/policy verification pending |
+| Backend hosting owner | Separate hosting service/environment and secret settings | Deploy reviewed Go commit with staging DB/Auth/Redis mapping; retain HTTPS/WSS identity and dependency configuration | BLOCKED: no Railway/other backend hosting access identified |
+| Frontend hosting owner | Vercel project scope and staging configuration | Build exact reviewed commit with strict staging guard; provide protected HTTPS entrypoint and environment mapping | PARTIAL: protected project created; API/WSS intentionally unset, so staging build remains blocked |
+| Auth operator | Staging Auth settings | Configure exact website/native callbacks; verify sign-in and authenticated WebSocket against staging issuer | NOT RUN |
+| QA/release owner | Built artifact and read-only service identities | Inspect bundles and runtime API/WSS/Auth/Storage/Realtime destinations; retain proof that none resolve to production | NOT RUN; prerequisite to accounts |
+| Staging administrator | Verified isolated services and secure test credential channel | Create distinct synthetic Rider/Driver; approve Economy vehicle/documents; verify Driver operability and online flow | NOT RUN; no accounts created |
+| iOS signing owner | Root Capacitor app, authorized Apple signing/upload access | If TestFlight is chosen, record bundle ID, version/build, exact commit, staging mapping and invitation | NOT RUN; Safari staging remains a separate release surface |
+| Physical-device tester | Verified entrypoint, secure account access, XR and second device | Execute full ride evidence matrix in `CRUIXE-ECONOMY-CASH-MILESTONE.md` | NOT RUN |
+
+Backend inspection found 135 repository migrations plus five backend schema files requiring an isolated clean replay/reconciliation. A successful staging readiness response alone is insufficient: `READINESS_PROFILE=staging` can permit disabled Redis/jobs and no-op notifications. Record actual dependency configuration and test the required ride/realtime flow. Staging Auth can use ES256/JWKS validation; do not copy a production JWT secret.
+
 ## Credentials and access handover
 
 Enter infrastructure secrets only in the hosting provider's secret settings or the organization's approved secrets manager. Supply Rider/Driver passwords through an approved password-manager item or secure credential channel; OTPs go only to the controlled test mailbox/phone and sign-in flow. Never put passwords, tokens, database connection strings, service-role keys, Apple credentials, or authentication state in this document, chat, commits, screenshots, or public artifacts. Public frontend bundles contain only their intended publishable configuration.
@@ -49,3 +72,9 @@ The non-secret handover must include: staging frontend URL or verified TestFligh
 - `capacitor.config.ts`, `apps/mobile/app.json`, `apps/mobile/eas.json`, `apps/mobile/README.md`: distinct app identities and Expo spike limitations.
 
 This document is a provisioning handover, not a staging pass or permission to modify production.
+
+## Staging build guard verification
+
+The follow-up adds fail-closed staging configuration in `scripts/stagingEnvironment.ts`, invoked by Vite for `--mode staging` or `VITE_APP_ENV=staging`. Explicit API/WSS/Supabase URL and publishable configuration must match separately configured staging host/project allowlists; known production values, invalid protocols, paths, credentials, query/fragment, custom ports, and invalid public-key claims are rejected. This validates declared identities; it cannot establish the actual backend database mapping or authenticate opaque publishable-key project ownership. Those require runtime verification before account creation.
+
+Local verification: 25 validator tests and four real Vite configuration invocation tests passed. The latter verify both staging mode and staging-tagged production mode reject missing or production mapping before module transformation. CI now includes a separate `Staging isolation guard regressions` step. TypeScript passed; lint passed with 0 errors / 280 warnings. A local staging build using fictional API/Auth identities and a dummy publishable key passed; its generated JavaScript contained those fixture identities and neither known production API nor known production Supabase URL. This fixture build proves configuration substitution only, not live staging isolation or working services. Updated exact-commit CI remains pending publication/observation.

@@ -35,6 +35,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Staging isolation guard regressions
+        run: npm test -- src/test/stagingEnvironment.test.ts src/test/stagingBuildGuard.test.ts
       - name: Economy cash and receipt regressions
         env:
           VITE_SUPABASE_URL: http://127.0.0.1:59999
