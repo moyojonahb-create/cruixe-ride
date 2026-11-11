@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Loader2, ChevronLeft, ChevronRight, Plus, Camera, FileText, Car, User, CreditCard } from 'lucide-react';
+import { Loader2, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -54,23 +54,23 @@ interface FileUploadBoxProps {
 function FileUploadBox({ label, file, onSelect }: FileUploadBoxProps) {
   const ref = useRef<HTMLInputElement>(null);
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex min-w-0 flex-1 flex-col items-center gap-2">
       <button
         type="button"
         onClick={() => ref.current?.click()}
-        className="w-28 h-28 rounded-2xl bg-muted/60 border-2 border-dashed border-border hover:border-accent flex items-center justify-center transition-colors"
+        className="flex h-[86px] w-full min-w-0 items-center justify-center overflow-hidden rounded-[15px] border border-[#e2e6ed] bg-[#f7f8fa] transition-colors hover:border-[#ff000d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#ff000d]"
       >
         {file ? (
           <img
             src={URL.createObjectURL(file)}
             alt={label}
-            className="w-full h-full object-cover rounded-2xl"
+            className="h-full w-full object-cover"
           />
         ) : (
-          <Plus className="w-8 h-8 text-muted-foreground" />
+          <Plus className="h-7 w-7 text-[#ff000d]" />
         )}
       </button>
-      <span className="text-xs text-muted-foreground text-center max-w-[7rem]">{label}</span>
+      <span className="max-w-full text-center text-[11px] font-medium leading-4 text-[#667080]">{label}</span>
       <input
         ref={ref}
         type="file"
@@ -241,42 +241,64 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
     return <CarLoadingSpinner message="Checking all the details — you're almost on your way!" onClose={onClose} />;
   }
 
-  const stepIcons = [
-    { icon: User, label: 'Personal' },
-    { icon: CreditCard, label: 'License' },
-    { icon: FileText, label: 'ID card' },
-    { icon: Car, label: 'Vehicle' },
+  const stepDescriptions = [
+    "Tell us about yourself and add a clear profile photo.",
+    "We need a valid driving licence before you can drive.",
+    "Upload a clear identity document and matching selfie.",
+    "Tell us which vehicle you will use for trips.",
   ];
+  const stepTitles = ["Your profile", "Driver\u2019s licence", "Verify your identity", "About your vehicle"];
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-        <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
-          ✕
-        </button>
-        <span className="text-xs text-accent font-medium">Help</span>
-      </div>
+    <div className="min-h-[100dvh] bg-[#fdfdfd] font-['Poppins',system-ui,sans-serif] text-[#1f2129]">
+      <div className="mx-auto flex min-h-[100dvh] w-full max-w-[440px] flex-col bg-white">
+        {/* Figma Driver onboarding frame family 1101:105–1101:315.
+            Preserve existing form schema, progression, uploads and submission calls. */}
+        <header className="relative h-[246px] shrink-0 bg-[#1f2129] px-6 pt-[max(2rem,env(safe-area-inset-top))] text-white">
+          <div className="flex items-start justify-between gap-3">
+            <button type="button" aria-label={step === 1 ? 'Close registration' : 'Previous registration step'}
+              onClick={step === 1 ? onClose : handleBack}
+              className="grid h-11 w-11 place-items-center rounded-full bg-white text-[#1f2129] shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#ffd11c]">
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <div className="rounded-full bg-white px-4 py-3 text-[10px] font-bold tracking-[0.08em] text-[#1f2129]">
+              DRIVER CHECK
+            </div>
+          </div>
+          <div className="mt-9">
+            <p className="text-[30px] font-bold tracking-tight">CruiXe <span className="text-white">DRIVER</span></p>
+            <div className="mt-1 h-1 w-[52px] rounded-full bg-gradient-to-r from-[#ff000d] to-[#ffd11c]" />
+          </div>
+        </header>
 
-      {/* Content */}
-      <div className="flex-1 px-5 py-6 overflow-y-auto">
-        <h2 className="text-2xl font-bold text-foreground mb-6">
-          {stepIcons[step - 1].label === 'Personal' && 'Personal information'}
-          {stepIcons[step - 1].label === 'License' && 'Driver license'}
-          {stepIcons[step - 1].label === 'ID card' && 'ID card'}
-          {stepIcons[step - 1].label === 'Vehicle' && 'Vehicle information'}
-        </h2>
+        <div className="relative z-10 -mt-[29px] h-[55px] shrink-0 overflow-hidden" aria-hidden="true">
+          <div className="absolute inset-x-0 top-0 h-[46px] rounded-t-[52%] bg-[#ff000d]" />
+          <div className="absolute inset-x-0 top-[19px] h-[50px] rounded-t-[52%] bg-white" />
+          <div className="absolute left-1/2 top-[13px] h-[5px] w-[54px] -translate-x-1/2 rounded-full bg-white" />
+        </div>
+
+        <div className="px-[22px] pb-3">
+          <h1 className="text-[24px] font-bold leading-[1.35]">{stepTitles[step - 1]}</h1>
+          <p className="mt-1 text-[12px] leading-[18px] text-[#667080]">{stepDescriptions[step - 1]}</p>
+          <div className="mt-5 flex items-center gap-2">
+            <span className="h-1 w-[34px] rounded-full bg-gradient-to-r from-[#ff000d] to-[#ffd11c]" />
+            <span className="text-[10px] font-semibold uppercase tracking-wide">Driver verification · {step} of {TOTAL_STEPS}</span>
+          </div>
+        </div>
+
+      {/* Scrollable content, safe at iPhone XR and 16 Pro widths */}
+      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-[20px] py-5">
 
         {/* Step 1: Personal Information */}
         {step === 1 && (
           <Form {...personalForm}>
             <form className="space-y-4">
-              <FileUploadBox label="Personal picture" file={personalPhoto} onSelect={setPersonalPhoto} />
+              <FileUploadBox label="Front-facing selfie" file={personalPhoto} onSelect={setPersonalPhoto} />
 
               <FormField control={personalForm.control} name="firstName" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="First name" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="First name" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -285,7 +307,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={personalForm.control} name="surname" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Surname" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="Surname" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -294,7 +316,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={personalForm.control} name="dateOfBirth" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="date" placeholder="Date of birth" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input type="date" placeholder="Date of birth" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -304,7 +326,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
                 <FormItem>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="h-14 rounded-2xl bg-muted/40 border-border">
+                      <SelectTrigger className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]">
                         <SelectValue placeholder="Gender" />
                       </SelectTrigger>
                     </FormControl>
@@ -332,7 +354,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={licenseForm.control} name="licenseNumber" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="License number" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="License number" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -341,7 +363,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={licenseForm.control} name="licenseExpiry" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="date" placeholder="Expiration date" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input type="date" placeholder="Expiration date" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -372,7 +394,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={vehicleForm.control} name="vehicleMake" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Vehicle brand" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="Vehicle brand" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -381,7 +403,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={vehicleForm.control} name="vehicleModel" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Vehicle model" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="Vehicle model" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -390,7 +412,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={vehicleForm.control} name="vehicleColor" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Vehicle color" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="Vehicle color" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -399,7 +421,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={vehicleForm.control} name="plateNumber" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Plate number" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="Plate number" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -408,7 +430,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={vehicleForm.control} name="vehicleYear" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="number" placeholder="Production year" className="h-14 rounded-2xl bg-muted/40 border-border"
+                    <Input type="number" placeholder="Production year" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]"
                       {...field} onChange={e => field.onChange(parseInt(e.target.value) || 0)} />
                   </FormControl>
                   <FormMessage />
@@ -419,7 +441,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
                 <FormItem>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="h-14 rounded-2xl bg-muted/40 border-border">
+                      <SelectTrigger className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]">
                         <SelectValue placeholder="Vehicle type" />
                       </SelectTrigger>
                     </FormControl>
@@ -439,14 +461,14 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
       </div>
 
       {/* Footer with step indicator and nav */}
-      <div className="px-5 pb-6 pt-3 border-t border-border bg-background">
+      <footer className="sticky bottom-0 border-t border-[#e2e6ed] bg-white px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">
         {/* Progress bar */}
         <div className="flex items-center gap-1 mb-4">
           {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
             <div
               key={i}
               className={`h-1 flex-1 rounded-full transition-colors ${
-                i < step ? 'bg-accent' : i === step ? 'bg-accent/40' : 'bg-muted'
+                i < step ? 'bg-[#ff000d]' : i === step ? 'bg-[#ffd11c]' : 'bg-[#e2e6ed]'
               }`}
             />
           ))}
@@ -461,7 +483,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               size="icon"
               onClick={handleBack}
               disabled={step === 1 || isSubmitting || isNavigating}
-              className="rounded-full w-12 h-12"
+              className="h-[54px] w-[54px] rounded-[18px] border-[#ff000d] bg-white text-[#ff000d]"
             >
               <ChevronLeft className="w-5 h-5" />
             </Button>
@@ -469,7 +491,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
             <Button
               onClick={handleNext}
               disabled={isSubmitting || isNavigating}
-              className="rounded-full h-12 px-6 bg-primary text-primary-foreground hover:brightness-110 font-semibold"
+              className="h-[55px] min-w-[170px] rounded-[18px] bg-[#ff000d] px-6 text-[15px] font-semibold text-white hover:bg-[#eb0010]"
             >
               {isSubmitting ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -482,6 +504,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
             </Button>
           </div>
         </div>
+      </footer>
       </div>
     </div>
   );
