@@ -118,6 +118,7 @@ export default function ScheduleRide({
   const [dayIndex, setDayIndex] = useState(0);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [remindMe, setRemindMe] = useState(true);
+  const [reviewing, setReviewing] = useState(false);
   const timeRowRef = useRef<HTMLDivElement>(null);
 
   // Frozen at the moment the sheet opens, not recomputed every render —
@@ -134,6 +135,7 @@ export default function ScheduleRide({
     setNow(new Date());
     setDayIndex(0);
     setRemindMe(true);
+    setReviewing(false);
   }, [open]);
 
   useEffect(() => {
@@ -146,6 +148,11 @@ export default function ScheduleRide({
   const handleConfirm = () => {
     if (!selectedTime) return;
     haptic('medium');
+    if (!reviewing) {
+      setReviewing(true);
+      return;
+    }
+    // Only the parent performs the real booking; this confirmation never stores a fake ride.
     onConfirm(selectedTime, remindMe);
   };
 
@@ -171,7 +178,7 @@ export default function ScheduleRide({
             style={{ maxWidth: 480, margin: '0 auto', width: '100%' }}
           >
             <RideGlassPanel panelStyle={panelStyle} style={{ maxHeight: '86vh', paddingBottom: 'env(safe-area-inset-bottom)' }} onRibbonClick={onClose}>
-          <div className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div data-figma-node={scheduledAt ? "482:813" : reviewing ? "482:772" : "482:718"} className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {scheduledAt ? (
               /* Already scheduled — summary + cancel, not the mockup's fresh-pick flow */
               <>
@@ -215,7 +222,7 @@ export default function ScheduleRide({
                     <Calendar style={{ width: 19, height: 19, color: RIDE_RED }} />
                   </span>
                   <div className="min-w-0" style={{ flex: 1 }}>
-                    <p style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>Schedule your ride</p>
+                    <p style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>{reviewing ? 'Review scheduled ride' : 'Schedule a ride'}</p>
                     <p className="truncate" style={{ marginTop: 3, fontSize: 12.5, fontWeight: 500, lineHeight: 1.2, color: RIDE_TEXT_2 }}>
                       {destinationName} · {tierLabel} · {fareLabel}
                     </p>
@@ -231,6 +238,8 @@ export default function ScheduleRide({
                   </button>
                 </div>
 
+                {!reviewing && (
+                <>
                 {/* Section 2 — day chips */}
                 <div className="flex items-stretch" style={{ gap: 8 }}>
                   {days.map((day, i) => {
@@ -288,6 +297,23 @@ export default function ScheduleRide({
                   </div>
                 </div>
 
+                </>
+                )}
+                {reviewing && selectedTime && (
+                  <section className="space-y-3 rounded-[18px] border border-[#e2e6ed] bg-white px-4 py-4" aria-label="Review scheduled ride">
+                    <p className="text-[11px] font-bold uppercase tracking-[.08em] text-[#667080]">Scheduled pickup</p>
+                    <p className="text-[17px] font-semibold text-[#1f2129]">{selectedTime.toLocaleDateString('en-ZW', { weekday: 'long', day: 'numeric', month: 'long' })} · {formatTime24(selectedTime)}</p>
+                    <div className="h-px bg-[#e2e6ed]"/>
+                    <p className="text-[11px] font-semibold text-[#667080]">Destination</p>
+                    <p className="break-words text-[14px] font-semibold text-[#1f2129]">{destinationName}</p>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[12px] text-[#667080]">{tierLabel}</span>
+                      <span className="text-[15px] font-bold text-[#1f2129]">{fareLabel}</span>
+                    </div>
+                    <p className="text-[11px] leading-5 text-[#667080]">Fare is indicative; driver dispatch and final fare confirmation occur later.</p>
+                  </section>
+                )}
+
                 {/* Section 4 — dispatch info note: the load-bearing copy on this screen */}
                 <div className="flex items-start" style={{ ...tintBlue, borderRadius: 16, padding: '11px 13px', gap: 10 }}>
                   <Info style={{ width: 16, height: 16, color: '#1A73E8', marginTop: 1 }} className="shrink-0" strokeWidth={2} />
@@ -325,11 +351,11 @@ export default function ScheduleRide({
                 <div className="flex items-center" style={{ gap: 12 }}>
                   <button
                     type="button"
-                    onClick={onClose}
+                    onClick={() => reviewing ? setReviewing(false) : onClose()}
                     className="shrink-0 flex items-center justify-center active:scale-[0.97] transition-transform"
                     style={{ width: 104, height: 48, borderRadius: 15, ...chipGlass }}
                   >
-                    <span style={{ fontSize: 14.5, fontWeight: 700, color: RIDE_TEXT_2 }}>Cancel</span>
+                    <span style={{ fontSize: 14.5, fontWeight: 700, color: RIDE_TEXT_2 }}>{reviewing ? 'Edit time' : 'Cancel'}</span>
                   </button>
                   <button
                     type="button"
@@ -340,7 +366,7 @@ export default function ScheduleRide({
                   >
                     <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,0))' }} />
                     <span className="relative" style={{ fontSize: 15.5, fontWeight: 700 }}>
-                      {selectedTime ? `Schedule for ${formatTime24(selectedTime)}` : 'Pick a time'}
+                      {selectedTime ? (reviewing ? 'Confirm scheduled ride' : `Review ${formatTime24(selectedTime)}`) : 'Pick a time'}
                     </span>
                   </button>
                 </div>
