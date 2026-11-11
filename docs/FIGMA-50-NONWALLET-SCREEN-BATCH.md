@@ -97,3 +97,8 @@ Source: [CruiXe Ride Main](https://www.figma.com/design/YLDdDmUNi4qbEb3mFfwpkB/C
 
 - Migrated the no-drivers visual state in `RideMatching.tsx` using the existing live `timedOut` condition and actual trip fare/route. Keep-searching, constrained fare adjustment and cancellation retain their original handlers. No fabricated driver availability.
 - Visual and final end-to-end QA remain pending. No Wallet screens changed.
+
+### Shared Ride no-driver variant (Figma `629:90`)
+
+- When an actual `share` ride times out, the existing Rider matching recovery surface uses the same Figma treatment and actions. `tierKey` is sourced from the actual ride, not mock data.
+- This Figma variant is **outside** the exact 50-frame selection and must not inflate the 50-screen completion count. Shared matching and boarding remain pending.
