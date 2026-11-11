@@ -1420,7 +1420,7 @@ export default function RideMatching() {
               </motion.div>
             ) : timedOut ? (
               /* ───────── No drivers found ───────── */
-              <motion.div key="timeout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} data-figma-node={tierKey === "share" ? "629:90" : "631:99"} className="space-y-4 px-4 pb-5 pt-4 text-[#1f2129]">
+              <motion.div key="timeout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} data-figma-node={tierKey === 'parcel' ? '631:102' : tierKey === 'share' ? '629:90' : '631:99'} className="space-y-4 px-4 pb-5 pt-4 text-[#1f2129]">
                 <div role="status" className="rounded-[18px] border border-[#ffe2e6] bg-[#fff7f8] px-4 py-4">
                   <p className="text-[10px] font-bold uppercase tracking-wide text-[#ff000d]">Driver search update</p>
                   <h2 className="mt-1 text-[19px] font-bold text-[#1f2129]">No drivers found nearby</h2>
@@ -1476,7 +1476,7 @@ export default function RideMatching() {
               </motion.div>
             ) : (
               /* ───────── Searching ───────── */
-              <motion.div key="searching" data-figma-node={tierKey === 'share' ? '526:410' : '631:97'} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 space-y-3.5">
+              <motion.div key="searching" data-figma-node={tierKey === 'parcel' ? '631:101' : tierKey === 'share' ? '526:410' : '631:97'} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 space-y-3.5">
                 {/* Status row: radar badge + title + elapsed M:SS countdown */}
                 <div className="flex items-center gap-3">
                   <span className="relative shrink-0 flex items-center justify-center rounded-full" style={{ width: 42, height: 42, ...glassSurface }}>
@@ -1484,7 +1484,7 @@ export default function RideMatching() {
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="text-[14px] font-bold" style={{ color: RIDE_TEXT }}>{tierKey === 'share' ? 'Finding shared ride' : 'Finding drivers near you'}</p>
+                      <p className="text-[14px] font-bold" style={{ color: RIDE_TEXT }}>{tierKey === 'parcel' ? 'Finding a parcel courier' : tierKey === 'share' ? 'Finding shared ride' : 'Finding drivers near you'}</p>
                       <span className="ml-auto text-[12.5px] font-bold tabular-nums shrink-0" style={{ color: RIDE_RED }}>{countdownText}</span>
                     </div>
                     {viewerCount > 0 ? (
