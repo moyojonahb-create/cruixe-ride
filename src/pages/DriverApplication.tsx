@@ -58,33 +58,32 @@ const DriverApplication = () => {
     );
   }
 
-  // Already applied — show status + documents
+  // Existing application: Figma status variants follow actual backend state.
   if (hasApplied && driverProfile) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header onLoginClick={() => {}} onSignupClick={() => {}} onFavoritesClick={() => {}} onHistoryClick={() => {}} />
-        <main className="container mx-auto px-4 py-8">
-          <div className="max-w-2xl mx-auto">
-            <Link to="/" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Home
-            </Link>
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold">Driver Application</h1>
-              <p className="text-muted-foreground mt-2">Track your application status and manage documents</p>
-            </div>
-            <div className="space-y-6">
-              <ApplicationStatus
-                status={driverProfile.status}
-                vehicleInfo={{ make: driverProfile.vehicle_make, model: driverProfile.vehicle_model, year: driverProfile.vehicle_year, plateNumber: driverProfile.plate_number, type: driverProfile.vehicle_type }}
-                documentsStatus={documentsStatus}
-              />
-              <DocumentUpload driverId={driverProfile.id} />
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <main className="min-h-[100dvh] bg-[#fdfdfd] px-3 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))]">
+        <div className="mx-auto w-full max-w-[440px]">
+          <Link to="/driver" className="mb-3 inline-flex min-h-11 items-center gap-2 rounded-2xl px-2 text-[12px] font-semibold text-[#1f2129]">
+            <ArrowLeft className="h-5 w-5" />
+            Back to Driver
+          </Link>
+          <ApplicationStatus
+            status={driverProfile.status}
+            vehicleInfo={{
+              make: driverProfile.vehicle_make,
+              model: driverProfile.vehicle_model,
+              year: driverProfile.vehicle_year,
+              plateNumber: driverProfile.plate_number,
+              type: driverProfile.vehicle_type,
+            }}
+            documentsStatus={documentsStatus}
+          />
+          <section className="mt-5 rounded-[20px] bg-white px-4 py-5 shadow-sm">
+            <h2 className="mb-3 text-[15px] font-semibold text-[#1f2129]">Your documents</h2>
+            <DocumentUpload driverId={driverProfile.id} />
+          </section>
+        </div>
+      </main>
     );
   }
 
