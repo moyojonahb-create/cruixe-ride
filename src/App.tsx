@@ -139,7 +139,7 @@ export default function App() {
           <Route path="/" element={<Navigate to="/ride" replace />} />
           <Route path="/home" element={<SuspenseWrap><Index /></SuspenseWrap>} />
           <Route path="/auth" element={<SuspenseWrap><Auth /></SuspenseWrap>} />
-          <Route path="/reset-password" element={<MarketingShell><ResetPassword /></MarketingShell>} />
+          <Route path="/reset-password" element={<SuspenseWrap><ResetPassword /></SuspenseWrap>} />
           <Route path="/login" element={<Navigate to="/auth" replace />} />
           <Route path="/signup" element={<SuspenseWrap><Signup /></SuspenseWrap>} />
 
