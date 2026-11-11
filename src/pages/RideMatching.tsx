@@ -1412,7 +1412,7 @@ export default function RideMatching() {
               </motion.div>
             ) : timedOut ? (
               /* ───────── No drivers found ───────── */
-              <motion.div key="timeout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} data-figma-node="631:99" className="space-y-4 px-4 pb-5 pt-4 text-[#1f2129]">
+              <motion.div key="timeout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} data-figma-node={tierKey === "share" ? "629:90" : "631:99"} className="space-y-4 px-4 pb-5 pt-4 text-[#1f2129]">
                 <div role="status" className="rounded-[18px] border border-[#ffe2e6] bg-[#fff7f8] px-4 py-4">
                   <p className="text-[10px] font-bold uppercase tracking-wide text-[#ff000d]">Driver search update</p>
                   <h2 className="mt-1 text-[19px] font-bold text-[#1f2129]">No drivers found nearby</h2>
