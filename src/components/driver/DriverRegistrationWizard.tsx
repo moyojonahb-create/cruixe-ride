@@ -11,6 +11,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import CarLoadingSpinner from '@/components/CarLoadingSpinner';
+import DriverCaptureGuide, { type DriverCaptureKind } from '@/components/driver/DriverCaptureGuide';
 import { createDriverDocument, createDriverApplication } from '@/lib/businessApi';
 
 const TOTAL_STEPS = 7;
@@ -92,6 +93,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const [showProcessing, setShowProcessing] = useState(false);
+  const [captureGuide, setCaptureGuide] = useState<DriverCaptureKind | null>(null);
 
   // File state
   const [personalPhoto, setPersonalPhoto] = useState<File | null>(null);
@@ -238,6 +240,10 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
     }
   };
 
+  if (captureGuide) {
+    return <DriverCaptureGuide kind={captureGuide} onBack={() => setCaptureGuide(null)} />;
+  }
+
   if (showProcessing) {
     return <CarLoadingSpinner message="Checking all the details — you're almost on your way!" onClose={onClose} />;
   }
@@ -301,6 +307,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
           <Form {...personalForm}>
             <form className="space-y-4">
               <FileUploadBox label="Front-facing selfie" file={personalPhoto} onSelect={setPersonalPhoto} />
+              <button type="button" onClick={() => setCaptureGuide('profile')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Profile</button>
 
               <FormField control={personalForm.control} name="firstName" render={({ field }) => (
                 <FormItem>
@@ -356,6 +363,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FileUploadBox label="Official ID document" file={idCard} onSelect={setIdCard} />
               <FileUploadBox label="Selfie with ID" file={selfieWithId} onSelect={setSelfieWithId} />
             </div>
+            <button type="button" onClick={() => setCaptureGuide('identity')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Identity document</button>
           </div>
         )}
 
@@ -367,6 +375,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
                 <FileUploadBox label="Driver license" file={licenseFront} onSelect={setLicenseFront} />
                 <FileUploadBox label="Back side of license" file={licenseBack} onSelect={setLicenseBack} />
               </div>
+              <button type="button" onClick={() => setCaptureGuide('licence')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Licence</button>
 
               <FormField control={licenseForm.control} name="licenseNumber" render={({ field }) => (
                 <FormItem>
@@ -465,6 +474,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
         {step === 5 && (
           <div className="space-y-4">
             <FileUploadBox label="Vehicle insurance" file={insuranceDoc} onSelect={setInsuranceDoc} />
+            <button type="button" onClick={() => setCaptureGuide('documents')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Vehicle documents</button>
             <p className="rounded-2xl border border-[#e2e6ed] bg-[#f7f8fa] px-4 py-3 text-[12px] leading-5 text-[#667080]">
               Upload a current insurance disc or cover note. Other vehicle document categories
               will be added once their backend verification requirements are confirmed.
@@ -476,6 +486,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
         {step === 6 && (
           <div className="space-y-4">
             <FileUploadBox label="Vehicle photo" file={vehiclePhoto} onSelect={setVehiclePhoto} />
+            <button type="button" onClick={() => setCaptureGuide('vehicle')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Vehicle</button>
             <p className="rounded-2xl border border-[#e2e6ed] bg-[#f7f8fa] px-4 py-3 text-[12px] leading-5 text-[#667080]">
               Make the number plate and vehicle body clearly visible. Additional front,
               rear and interior photo fields need a matching verified backend contract.
