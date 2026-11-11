@@ -53,7 +53,7 @@ Source: [CruiXe Ride Main](https://www.figma.com/design/YLDdDmUNi4qbEb3mFfwpkB/C
 | 33 | `631:95` | Find drivers | Pending detailed parity |
 | 34 | `631:96` | Ride confirmation | Pending detailed parity |
 | 35 | `631:97` | Economy searching | Pending detailed parity |
-| 36 | `631:100` | Driver offers | Pending detailed parity |
+| 36 | `631:100` | Driver offers | Live Driver Offers panel styled as Figma comparison cards; final visual QA pending |
 | 37 | `631:99` | No drivers found | No-drivers Figma styling integrated with live fare/search/cancel; visual and final QA pending |
 | 38 | `631:103` | Rate driver | Pending detailed parity |
 | 39 | `631:104` | Trip complete | Pending detailed parity |
@@ -102,3 +102,9 @@ Source: [CruiXe Ride Main](https://www.figma.com/design/YLDdDmUNi4qbEb3mFfwpkB/C
 
 - When an actual `share` ride times out, the existing Rider matching recovery surface uses the same Figma treatment and actions. `tierKey` is sourced from the actual ride, not mock data.
 - This Figma variant is **outside** the exact 50-frame selection and must not inflate the 50-screen completion count. Shared matching and boarding remain pending.
+
+### Live Driver Offers (Figma `631:100`)
+
+- Existing `RideMatching` offer stack now has the Figma-style header, scrollable responsive driver cards and more accessible Accept/Decline controls.
+- Names, rating, price, ETA and trip history still come from the actual offer/profile state; `acceptOffer`/`declineOffer` and realtime subscriptions are unchanged.
+- This is **one partially migrated frame**; browser/mobile QA and exact visual/asset parity are deferred to final acceptance. No Wallet work.
