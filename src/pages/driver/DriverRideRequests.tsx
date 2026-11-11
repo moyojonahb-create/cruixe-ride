@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Wallet, User } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { User } from 'lucide-react';
 import { toast } from 'sonner';
 import LazyMapboxMap from '@/components/map/LazyMapboxMap';
+import { NotificationBell } from '@/components/NotificationCenter';
 import { supabase } from '@/lib/supabaseClient';
 import { getDriverProfile, submitOffer, defaultNightMultiplier } from '@/lib/offerHelpers';
 import { fetchEnrichedOpenRides, type EnrichedRideRequest } from '@/lib/driverRideRequests';
@@ -15,29 +16,34 @@ import RideGlassPanel from '@/components/ride/RideGlassPanel';
 import SwipeDismissCard from '@/components/driver/SwipeDismissCard';
 import GenderChip from '@/components/driver/GenderChip';
 import DriverBottomNav from '@/components/driver/DriverBottomNav';
-import { redCta, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, glassSurface } from '@/components/ride/rideGlass';
+import { redCta, RIDE_FONT, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2 } from '@/components/ride/rideGlass';
 import DriverAvailabilityControl from '@/components/driver/DriverAvailabilityControl';
+import { getDriverEarnings } from '@/lib/walletApi';
 
 function fmtUSD(n: number): string {
   return n % 1 === 0 ? `$${n}` : `$${n.toFixed(2)}`;
 }
 
-const panelStyle = {
-  background: 'rgba(255,255,255,.9)',
-  backdropFilter: 'blur(28px) saturate(190%)',
-  WebkitBackdropFilter: 'blur(28px) saturate(190%)',
-};
-
 const AUTO_ACCEPT_KEY = 'pickme-driver-auto-accept';
+const actionClass = 'min-h-11 rounded-[14px] px-3 text-sm font-semibold';
 
 export default function DriverRideRequests() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const view = params.get('view');
+  const showHome = view === 'home';
+  const showWaiting = view === 'waiting';
+  const showDrive = view === 'drive';
   const [rides, setRides] = useState<EnrichedRideRequest[]>([]);
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(() => getDismissedRideIds());
   const [loading, setLoading] = useState(true);
   const [driverCoords, setDriverCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [isOnline, setIsOnline] = useState(false);
-  const [balance, setBalance] = useState(0);
+  const [driverName, setDriverName] = useState('');
+  const [earnings, setEarnings] = useState<number | null>(null);
+  const [tripsToday, setTripsToday] = useState<number | null>(null);
+  const [recenterSignal, setRecenterSignal] = useState(0);
+  const [requestKind, setRequestKind] = useState<'ride' | 'parcel' | null>(null);
   const [autoAccept] = useState(() => localStorage.getItem(AUTO_ACCEPT_KEY) === '1');
   const autoAcceptedIds = useRef<Set<string>>(new Set());
   const undoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -95,11 +101,31 @@ export default function DriverRideRequests() {
     supabase.auth.getUser().then(({ data }) => {
       const uid = data.user?.id;
       if (!uid) return;
-      supabase.from('wallets').select('balance').eq('user_id', uid).maybeSingle()
-        .then(({ data: w }) => { if (!cancelled && w) setBalance(Number(w.balance)); });
+      supabase.from('profiles').select('full_name').eq('user_id', uid).maybeSingle()
+        .then(({ data: profile }) => {
+          if (!cancelled && profile?.full_name) setDriverName(profile.full_name.trim().split(/\s+/)[0]);
+        });
     });
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    if (!driverRowId || !showHome) return;
+    let cancelled = false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    void getDriverEarnings().then((entries) => {
+      if (cancelled) return;
+      const total = entries
+        .filter((entry) => new Date(entry.created_at) >= today)
+        .reduce((sum, entry) => sum + entry.driver_earnings, 0);
+      setEarnings(total);
+    }).catch(() => {});
+    supabase.from('rides').select('id', { count: 'exact', head: true })
+      .eq('driver_id', driverRowId).eq('status', 'completed').gte('created_at', today.toISOString())
+      .then(({ count, error }) => { if (!cancelled && !error) setTripsToday(count); });
+    return () => { cancelled = true; };
+  }, [driverRowId, showHome]);
 
   const refresh = useCallback(async () => {
     try {
@@ -224,88 +250,180 @@ export default function DriverRideRequests() {
     if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
   };
 
-  return (
-    <div className="relative w-full h-[100dvh] overflow-hidden" style={{ background: '#F2F4F7' }}>
-      <div className="absolute inset-0">
-        <LazyMapboxMap defaultCenter={driverCoords ?? undefined} driverLocation={driverCoords} className="w-full h-full" height="100%" />
-      </div>
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'rgba(17,17,17,.12)' }} />
+  const filteredRides = visibleRides.filter(({ ride }) => {
+    const isParcel = ride.vehicle_type === 'parcel';
+    return requestKind === null || (requestKind === 'parcel' ? isParcel : !isParcel);
+  });
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  const handleAvailabilityApplied = (online: boolean) => {
+    navigate(online ? '/driver/requests?view=waiting' : '/driver/requests?view=home', { replace: true });
+  };
 
-      {/* Floating top chrome — status pill sits in the top-left corner,
-          wallet pill stays on its own row below-right. */}
-      <div
-        className="absolute z-20 inline-flex items-center shrink-0"
-        style={{ top: 'calc(env(safe-area-inset-top) + 10px)', left: 16, height: 40, padding: '0 14px', borderRadius: 999, gap: 7, ...glassSurface }}
-      >
-        <span className="rounded-full" style={{ width: 7, height: 7, background: isOnline ? '#22A447' : '#9AA1AD' }} />
-        <span style={{ fontSize: 13, fontWeight: 700, color: RIDE_TEXT }}>{isOnline ? 'Online' : 'Offline'}</span>
-        <DriverAvailabilityControl isOnline={isOnline} onChange={handleAvailabilityChange} coords={driverCoords} compact />
+  return (
+    <main className="relative h-[100dvh] overflow-hidden bg-[#f2f4f7] text-[#1f2129]" style={{ fontFamily: RIDE_FONT }}>
+      <div className="absolute inset-0">
+        <LazyMapboxMap
+          defaultCenter={driverCoords ?? undefined}
+          driverLocation={driverCoords}
+          height="100%"
+          navigationFollow={recenterSignal > 0}
+          recenterSignal={recenterSignal}
+          followZoom={13}
+        />
       </div>
-      <div className="absolute inset-x-0 z-20 flex items-center" style={{ top: 59, left: 16, right: 16, gap: 10 }}>
+
+      <div className="absolute inset-x-0 top-[max(16px,env(safe-area-inset-top))] z-20 mx-auto flex max-w-[480px] items-center gap-2 px-4">
         <button
           type="button"
-          onClick={() => navigate('/driver/wallet')}
-          className="ml-auto inline-flex items-center shrink-0 active:scale-95 transition-transform"
-          style={{ height: 44, padding: '0 14px', borderRadius: 999, gap: 7, ...glassSurface }}
+          onClick={() => navigate(showHome ? '/profile' : '/driver/requests?view=home')}
+          className="grid size-11 place-items-center rounded-full bg-white shadow-sm"
+          aria-label={showHome ? 'Back to Rider account' : 'Back to Driver home'}
         >
-          <Wallet style={{ width: 15, height: 15, color: RIDE_RED }} />
-          <span className="tabular-nums" style={{ fontSize: 13, fontWeight: 700, color: RIDE_TEXT }}>{fmtUSD(balance)}</span>
+          <img src="/brand/ride/driver-back.svg" alt="" />
         </button>
+        <span className="grid size-11 place-items-center rounded-full bg-white shadow-sm" aria-hidden="true">
+          <img src="/brand/ride/map-location.svg" alt="" className="size-5" />
+        </span>
+        <NotificationBell className="ml-auto size-11 bg-white shadow-sm" iconSource="/brand/ride/driver-notifications.svg" />
       </div>
 
-      {/* Sheet */}
-      <div className="absolute left-0 right-0 bottom-0 z-10" style={{ top: 170, maxWidth: 480, margin: '0 auto', width: '100%' }}>
-        <RideGlassPanel panelStyle={panelStyle} style={{ height: '100%', paddingBottom: 'env(safe-area-inset-bottom)' }}>
-          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain" style={{ paddingBottom: 100 }}>
-            <div className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center" style={{ gap: 7 }}>
-                  <span style={{ fontSize: 15, fontWeight: 800, color: RIDE_TEXT }}>Available requests</span>
-                  {visibleRides.length > 0 && (
-                    <span
-                      className="inline-flex items-center justify-center rounded-full"
-                      style={{ minWidth: 19, height: 19, padding: '0 5px', background: RIDE_RED }}
-                    >
-                      <span style={{ fontSize: 11, fontWeight: 700, color: '#fff' }}>{visibleRides.length}</span>
-                    </span>
-                  )}
-                </span>
+      <div className="absolute inset-x-0 bottom-0 top-[clamp(166px,52dvh,540px)] z-10 mx-auto flex max-w-[480px] flex-col">
+        {driverCoords && (
+          <button
+            type="button"
+            onClick={() => setRecenterSignal((value) => value + 1)}
+            className="absolute -top-[70px] right-4 grid size-11 place-items-center rounded-full bg-white shadow-sm"
+            aria-label="Center map on your location"
+          >
+            <img src="/brand/ride/map-recenter.svg" alt="" className="size-[21px]" />
+          </button>
+        )}
+        <RideGlassPanel variant="ribbon" handleWidth={56} className="min-h-0 flex-1">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-[max(104px,calc(86px_+_env(safe-area-inset-bottom)))] pt-3">
+            {showHome ? (
+              <div className="flex flex-col gap-3">
+                <div>
+                  <h1 className="text-[21px] font-bold leading-tight">{greeting}{driverName ? `, ${driverName}` : ''}</h1>
+                  <p className="mt-1 text-xs text-[#667085]">Ready when you are. Drive on your schedule.</p>
+                </div>
+                <div className="relative rounded-[17px] border border-[#e4e7ed] bg-white p-3.5">
+                  <img src="/brand/ride/availability-accent.svg" alt="" className="pointer-events-none absolute inset-x-0 top-0 h-auto w-full rounded-[17px]" />
+                  <div className="relative flex items-center justify-between gap-3">
+                    <p className="flex items-center gap-2.5 text-[15px] font-bold">
+                      <span className={`size-3 shrink-0 rounded-full ${isOnline ? 'bg-[#138862]' : 'bg-[#667085]'}`} />
+                      {isOnline ? 'You’re online' : 'You’re offline'}
+                    </p>
+                    <DriverAvailabilityControl
+                      isOnline={isOnline}
+                      onChange={handleAvailabilityChange}
+                      onApplied={handleAvailabilityApplied}
+                      coords={driverCoords}
+                      appearance="switch"
+                    />
+                  </div>
+                  <p className="relative text-[11px] text-[#667085]">{isOnline ? 'Available for verified ride requests' : 'Turn on when you’re ready for requests'}</p>
+                </div>
+                <div>
+                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[#667085]">Your drive at a glance</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button type="button" onClick={() => navigate('/driver/wallet')} className="rounded-[17px] bg-[#f3f4f6] p-3 text-left">
+                      <span className="block text-[11px] text-[#667085]">Today’s earnings</span>
+                      <strong className="mt-0.5 block text-lg">{earnings === null ? '—' : `$${earnings.toFixed(2)}`}</strong>
+                    </button>
+                    <button type="button" onClick={() => navigate('/driver/trips')} className="rounded-[17px] bg-[#f3f4f6] p-3 text-left">
+                      <span className="block text-[11px] text-[#667085]">Trips today</span>
+                      <strong className="mt-0.5 block text-lg">{tripsToday ?? '—'}</strong>
+                    </button>
+                  </div>
+                </div>
               </div>
-              {visibleRides.length > 0 && (
-                <span style={{ fontSize: 11, fontWeight: 500, color: '#9AA1AD', marginTop: -6 }}>Swipe a card left to dismiss</span>
-              )}
-
-              {loading ? (
-                <div className="space-y-3">
-                  {Array.from({ length: 2 }).map((_, i) => <div key={i} className="h-24 rounded-2xl bg-muted animate-pulse" />)}
+            ) : showWaiting ? (
+              <div className="flex flex-col gap-3">
+                <h1 className="text-[21px] font-bold leading-tight">Waiting for ride requests</h1>
+                <p className="text-xs text-[#667085]">Stay online to receive your next booking.</p>
+                <div className="rounded-[17px] bg-[#1f2129] p-4 text-white">
+                  <p className="flex items-center gap-2.5 text-sm font-semibold">
+                    <span className={`size-3 rounded-full ${isOnline ? 'bg-[#22b364]' : 'bg-[#667085]'}`} />
+                    {isOnline ? 'You’re online' : 'You’re offline'}
+                  </p>
+                  <p className="mt-1.5 text-xs">{isOnline ? 'Ready for incoming ride requests' : 'Go online when you’re ready for requests'}</p>
                 </div>
-              ) : visibleRides.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-border py-14 text-center">
-                  <p className="text-sm text-muted-foreground">{isOnline ? 'No open ride requests right now.' : 'You are offline. Go online to receive ride requests.'}</p>
+                <button type="button" onClick={() => navigate('/driver/requests')} className="rounded-[14px] border border-[#e4e7ed] bg-[#f3f4f6] px-3 py-2 text-left">
+                  <span className="block text-sm font-semibold">
+                    {visibleRides.length > 0 ? `${visibleRides.length} incoming ${visibleRides.length === 1 ? 'request' : 'requests'}` : 'No incoming requests yet'}
+                  </span>
+                  <span className="block text-[11px] text-[#667085]">New bookings will appear in Requests.</span>
+                </button>
+                <DriverAvailabilityControl
+                  isOnline={isOnline}
+                  onChange={handleAvailabilityChange}
+                  onApplied={handleAvailabilityApplied}
+                  coords={driverCoords}
+                  appearance="outline"
+                />
+              </div>
+            ) : showDrive ? (
+              <div className="flex flex-col gap-3">
+                <h1 className="text-[21px] font-bold leading-tight">Drive status</h1>
+                <p className="text-xs text-[#667085]">Review trip changes and driving tools.</p>
+                <div className="rounded-[17px] border border-[#e4e7ed] bg-[#f3f4f6] p-4">
+                  <p className="font-bold">No trip in progress</p>
+                  <p className="mt-4 text-xs text-[#667085]">Your next confirmed trip appears here.</p>
                 </div>
-              ) : (
-                visibleRides.map(({ ride, km, minutes }) => (
-                  <SwipeDismissCard key={ride.id} onDismiss={() => handleDismiss(ride)}>
-                    <RequestCard ride={ride} km={km} minutes={minutes} onView={() => navigate(`/driver/ride/${ride.id}`)} onDismiss={() => handleDismiss(ride)} />
-                  </SwipeDismissCard>
-                ))
-              )}
-            </div>
+                <button type="button" onClick={() => navigate('/driver/trips')} className={`${actionClass} bg-primary text-primary-foreground`}>Trip history</button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <h1 className="text-[21px] font-bold leading-tight">Ride requests</h1>
+                <p className="text-xs text-[#667085]">Requests arrive here when you’re online and approved.</p>
+                <div className="flex gap-3">
+                  {(['ride', 'parcel'] as const).map((kind) => (
+                    <button
+                      key={kind}
+                      type="button"
+                      aria-pressed={requestKind === kind}
+                      onClick={() => setRequestKind((current) => current === kind ? null : kind)}
+                      className={`${actionClass} flex-1 border border-primary ${requestKind === kind ? 'bg-primary text-primary-foreground' : 'bg-white text-[#111]'}`}
+                    >
+                      {kind === 'ride' ? 'Ride requests' : 'Parcel requests'}
+                    </button>
+                  ))}
+                </div>
+                {loading ? (
+                  <div role="status" className="h-20 animate-pulse rounded-[17px] bg-[#f3f4f6]" aria-label="Loading requests" />
+                ) : filteredRides.length === 0 ? (
+                  <div className="rounded-[17px] border border-[#e4e7ed] bg-[#f3f4f6] p-4">
+                    <p className="font-bold">No active requests</p>
+                    <p className="mt-4 text-xs text-[#667085]">{isOnline ? 'New bookings will appear here.' : 'Go online on Home to receive offers.'}</p>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-[11px] text-[#667085]">Swipe a card left to dismiss.</p>
+                    {filteredRides.map(({ ride, km, minutes }) => (
+                      <SwipeDismissCard key={ride.id} onDismiss={() => handleDismiss(ride)}>
+                        <RequestCard ride={ride} km={km} minutes={minutes} onView={() => navigate(`/driver/ride/${ride.id}`)} onDismiss={() => handleDismiss(ride)} />
+                      </SwipeDismissCard>
+                    ))}
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </RideGlassPanel>
       </div>
 
       {undoRide && (
-        <div className="absolute left-0 right-0 z-30 flex justify-center" style={{ bottom: 100 }}>
-          <div className="flex items-center" style={{ gap: 12, padding: '10px 16px', borderRadius: 999, background: '#1F1F1F', boxShadow: '0 10px 24px rgba(0,0,0,.3)' }}>
-            <span style={{ fontSize: 12.5, fontWeight: 600, color: '#fff' }}>Request dismissed</span>
-            <button type="button" onClick={handleUndo} style={{ fontSize: 12.5, fontWeight: 700, color: '#FFDD00' }}>Undo</button>
+        <div className="absolute inset-x-0 bottom-24 z-30 flex justify-center">
+          <div className="flex items-center gap-3 rounded-full bg-[#1f2129] px-4 py-2.5 text-xs font-semibold text-white shadow-lg">
+            <span>Request dismissed</span>
+            <button type="button" onClick={handleUndo} className="font-bold text-[#ffdd00]">Undo</button>
           </div>
         </div>
       )}
 
-      <DriverBottomNav />
-    </div>
+      <DriverBottomNav requestBadgeCount={visibleRides.length} />
+    </main>
   );
 }
 

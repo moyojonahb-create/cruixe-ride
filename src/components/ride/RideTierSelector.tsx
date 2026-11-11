@@ -1,16 +1,14 @@
-import { Users, Clock, Zap, Minus, Plus } from 'lucide-react';
+import { Clock, Minus, Plus, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import carFrontEconomy from '@/assets/cars/car-front-economy.png';
-import carSlantShare from '@/assets/cars/car-slant-share.png';
-import carParcel from '@/assets/cars/car-parcel.png';
-import { tintBlue, tintYellow, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, RIDE_YELLOW } from './rideGlass';
-
-const TIER_THUMBNAILS: Partial<Record<RideTierId, string>> = {
-  economy: carFrontEconomy,
-  share: carSlantShare,
-  parcel: carParcel,
-};
+import carImage from '@/assets/rider-home/car.webp';
+import parcelImage from '@/assets/rider-home/parcel.webp';
+import selectedIcon from '@/assets/rider-home/selected.svg';
+import unselectedIcon from '@/assets/rider-home/unselected.svg';
+import fastIcon from '@/assets/rider-home/tier-fast.svg';
+import leafIcon from '@/assets/rider-home/tier-leaf.svg';
+import secureIcon from '@/assets/rider-home/tier-secure.svg';
+import reliableIcon from '@/assets/rider-home/tier-reliable.svg';
 
 export type RideTierId = 'economy' | 'share' | 'parcel';
 
@@ -18,8 +16,7 @@ export interface RideTierOption {
   id: RideTierId;
   name: string;
   capacity: number;
-  /** Null before a destination is known — a fare/ETA needs a real route.
-   * Rendered as "See fare next" rather than a fabricated number. */
+  /** A fare and ETA need a real route. */
   etaMinutes: number | null;
   price: number | null;
   badge: string;
@@ -36,16 +33,32 @@ interface RideTierSelectorProps {
   className?: string;
 }
 
-function tintFor(id: RideTierId) {
-  return id === 'share' ? tintYellow : tintBlue;
-}
-
-const SECONDARY_CARD_HEIGHT = 52;
-// Matches every tier's declared `capacity: 4` above, and the "first 3 free,
-// 4th costs extra" fare math in RideView.tsx/RideMatching.tsx
-// (`Math.max(passengerCount - 3, 0)`) — the stepper must not let a rider
-// pick a count neither the tier cards nor the fare breakdown account for.
-const MAX_TIER_PASSENGERS = 4;
+const tierDetails = {
+  economy: {
+    image: carImage,
+    subtitle: 'Affordable rides',
+    badges: [
+      { label: 'Fast pickup', icon: fastIcon, color: '#fff4c4' },
+      { label: 'Best value', icon: leafIcon, color: '#d1f5e1' },
+    ],
+  },
+  share: {
+    image: carImage,
+    subtitle: 'Share a ride and save',
+    badges: [
+      { label: 'Lower cost', icon: null, color: '#d1f5e1' },
+      { label: 'Eco friendly', icon: leafIcon, color: '#d1f5e1' },
+    ],
+  },
+  parcel: {
+    image: parcelImage,
+    subtitle: 'Parcel delivery',
+    badges: [
+      { label: 'Secure', icon: secureIcon, color: '#f3dffb' },
+      { label: 'Reliable', icon: reliableIcon, color: '#fff4c4' },
+    ],
+  },
+} satisfies Record<RideTierId, { image: string; subtitle: string; badges: { label: string; icon: string | null; color: string }[] }>;
 
 export default function RideTierSelector({
   options,
@@ -56,190 +69,80 @@ export default function RideTierSelector({
   onPassengerCountChange,
   className,
 }: RideTierSelectorProps) {
-  const hero = options.find((o) => o.id === 'economy') ?? options[0];
-  const rest = options.filter((o) => o.id !== hero?.id);
+  const passengerLimit = options.find((option) => option.id === selected)?.capacity ?? 1;
 
-  if (!hero) return null;
-
-  const selectionRing = (isSelected: boolean) =>
-    isSelected
-      ? {
-          boxShadow: `inset 0 0 0 2px ${RIDE_RED}, 0 8px 20px rgba(184,17,4,.14)`,
-        }
-      : undefined;
-
-  const isHeroSelected = selected === hero.id;
+  if (options.length === 0) return null;
 
   return (
-    <div className={cn('space-y-2', className)}>
-      {/* ── Hero card (Economy) ── */}
-      <motion.button
-        type="button"
-        whileTap={{ scale: 0.985 }}
-        onClick={() => onSelect(hero.id)}
-        aria-pressed={isHeroSelected}
-        className="w-full flex items-center gap-3 rounded-3xl px-3.5 py-3 text-left"
-        style={{ ...tintFor(hero.id), ...selectionRing(isHeroSelected) }}
-      >
-        <div className="w-[68px] h-[52px] shrink-0 flex items-center justify-center">
-          <img src={TIER_THUMBNAILS[hero.id]} alt="" className="w-full h-full object-contain" />
-        </div>
-
-        <div className="flex-1 min-w-0">
-          {/* Row 1: name + tagline (left) / price + selected-radio (right) — price
-              baseline-aligned with the name via items-start on the row. */}
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <p className="text-[16px] font-bold leading-tight" style={{ color: RIDE_TEXT }}>
-                {hero.name}
-              </p>
-              <p className="mt-0.5 text-[11px] font-medium leading-tight" style={{ color: RIDE_TEXT_2 }}>
-                Affordable rides, everyday
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              {hero.price != null ? (
-                <p className="text-[16px] font-bold tabular-nums leading-tight" style={{ color: RIDE_RED }}>
-                  {currencySymbol}
-                  {hero.price.toFixed(2)}
-                </p>
-              ) : (
-                <p className="text-[11px] font-semibold leading-tight" style={{ color: RIDE_TEXT_2 }}>
-                  See fare next
-                </p>
+    <div className={cn('space-y-3', className)}>
+      <div role="group" aria-label="Ride options" className="space-y-3">
+        {options.map((option) => {
+          const isSelected = selected === option.id;
+          const { image, subtitle, badges } = tierDetails[option.id];
+          return (
+            <motion.button
+              key={option.id}
+              type="button"
+              whileTap={{ scale: 0.985 }}
+              onClick={() => onSelect(option.id)}
+              aria-pressed={isSelected}
+              className={cn(
+                'flex min-h-[84px] w-full items-center gap-2 rounded-[15px] border px-2 py-1.5 text-left text-[#111] shadow-[0_4px_8px_#0002] sm:gap-3',
+                isSelected ? 'border-[#ff000d] bg-[#fdebeb]' : 'border-[#d4d5d9] bg-[#f7f7fa]'
               )}
-              <span
-                className="rounded-full flex items-center justify-center shrink-0"
-                style={{ width: 17, height: 17, border: `2px solid ${RIDE_RED}` }}
-              >
-                {isHeroSelected && <span className="rounded-full" style={{ width: 8, height: 8, background: RIDE_RED }} />}
-              </span>
-            </div>
-          </div>
-
-          {/* Row 2: meta (left) / "Fast pickup" badge (right) */}
-          <div className="mt-1.5 flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-[11px] font-medium" style={{ color: RIDE_TEXT_2 }}>
-              <span className="inline-flex items-center gap-1">
-                <Users className="w-3.5 h-3.5" />
-                {hero.capacity}
-              </span>
-              <span>·</span>
-              {hero.etaMinutes != null && (
-                <span className="inline-flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5" />
-                  {hero.etaMinutes} min
-                </span>
-              )}
-            </div>
-            <span
-              className="inline-flex items-center gap-1 rounded-full shrink-0"
-              style={{ padding: '2px 7px', background: RIDE_YELLOW, color: RIDE_TEXT }}
             >
-              <Zap className="w-2.5 h-2.5" fill="currentColor" />
-              <span className="text-[10px] font-bold">{hero.badge}</span>
-            </span>
-          </div>
-        </div>
-      </motion.button>
-
-      {/* ── Secondary grid (Share / Parcel) — identical structure + fixed height,
-          so the two cards can never diverge based on content. ── */}
-      {rest.length > 0 && (
-        <div className={cn('grid gap-2', rest.length > 1 ? 'grid-cols-2' : 'grid-cols-1')}>
-          {rest.map((option) => {
-            const isSelected = selected === option.id;
-            const isParcel = option.id === 'parcel';
-            return (
-              <motion.button
-                key={option.id}
-                type="button"
-                whileTap={{ scale: 0.985 }}
-                onClick={() => onSelect(option.id)}
-                aria-pressed={isSelected}
-                className="flex items-center gap-2 rounded-3xl pl-1.5 pr-2.5 text-left"
-                style={{ height: SECONDARY_CARD_HEIGHT, ...tintFor(option.id), ...selectionRing(isSelected) }}
-              >
-                <div className="shrink-0 flex items-center justify-center" style={{ width: 54, height: 40 }}>
-                  <img
-                    src={TIER_THUMBNAILS[option.id]}
-                    alt=""
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-
-                <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
-                  {/* Row 1: name (left) + price (right) — single line, vertically
-                      centered with each other. */}
-                  <div className="flex items-center justify-between gap-1.5">
-                    <p className="flex-1 min-w-0 truncate text-[13px] font-bold leading-none tracking-[-0.01em]" style={{ color: RIDE_TEXT }}>
-                      {option.name}
-                    </p>
-                    {option.price != null ? (
-                      <p className="shrink-0 text-[15px] font-bold tabular-nums leading-none tracking-[-0.01em]" style={{ color: RIDE_TEXT }}>
-                        {currencySymbol}
-                        {option.price.toFixed(2)}
-                      </p>
-                    ) : (
-                      <p className="shrink-0 text-[10px] font-semibold leading-none" style={{ color: RIDE_TEXT_2 }}>
-                        See fare next
-                      </p>
+              <img src={image} alt="" className="h-[74px] w-[clamp(70px,27vw,115px)] shrink-0 object-cover" />
+              <div className="min-w-0 flex-1">
+                <span className="block text-base font-bold leading-tight">{option.name}</span>
+                <span className="block text-xs text-[#585a60]">{subtitle}</span>
+                {option.price != null && (
+                  <span className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs">
+                    <span className="font-bold tabular-nums">{currencySymbol}{option.price.toFixed(2)}</span>
+                    {option.etaMinutes != null && (
+                      <span className="inline-flex items-center gap-1 text-[#585a60]"><Clock className="size-3" />{option.etaMinutes} min</span>
                     )}
-                  </div>
-                  {/* Row 2: meta (nowrap, can shrink) + badge (never shrinks),
-                      same row — the badge can never force the meta text to wrap. */}
-                  <div className="flex items-center gap-1.5">
-                    <p className="min-w-0 flex-1 truncate text-[11px] font-medium leading-tight" style={{ color: RIDE_TEXT_2 }}>
-                      {isParcel ? 'Delivery' : option.capacity}{option.etaMinutes != null ? ` · ${option.etaMinutes} min` : ''}
-                    </p>
-                    {!isParcel && (
-                      <span
-                        className="shrink-0 inline-flex items-center rounded-full whitespace-nowrap"
-                        style={{ padding: '1px 4px', background: RIDE_YELLOW, color: RIDE_TEXT, fontSize: 9, fontWeight: 700, lineHeight: 1.4 }}
-                      >
-                        {option.badge}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </motion.button>
-            );
-          })}
-        </div>
-      )}
+                  </span>
+                )}
+                <span className="mt-1.5 flex flex-wrap gap-x-1.5 gap-y-1">
+                  {badges.map((badge) => (
+                    <span key={badge.label} className="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none" style={{ background: badge.color }}>
+                      {badge.icon ? <img src={badge.icon} alt="" /> : <Users className="size-3" />}
+                      {badge.label}
+                    </span>
+                  ))}
+                </span>
+              </div>
+              <img src={isSelected ? selectedIcon : unselectedIcon} alt="" className="shrink-0" />
+            </motion.button>
+          );
+        })}
+      </div>
 
-      {/* ── Passenger stepper — Economy/Share only; a parcel has no seats.
-          RideView already threads passengerCount into the fare breakdown
-          and the ride request, this was the only piece not wired up. ── */}
       {onPassengerCountChange && selected !== 'parcel' && (
-        <div className="flex items-center justify-between rounded-2xl px-3.5 py-2" style={{ ...tintBlue }}>
-          <span className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold" style={{ color: RIDE_TEXT }}>
-            <Users className="w-3.5 h-3.5" style={{ color: RIDE_TEXT_2 }} />
+        <div className="flex items-center justify-between rounded-[15px] border border-[#e0e3e9] bg-white px-3 text-[#111]">
+          <span className="inline-flex items-center gap-2 text-sm font-semibold">
+            <Users className="size-4" />
             Passengers
           </span>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center">
             <button
               type="button"
-              onClick={() => onPassengerCountChange(Math.max(1, passengerCount - 1))}
+              onClick={() => onPassengerCountChange(passengerCount - 1)}
               disabled={passengerCount <= 1}
               aria-label="Fewer passengers"
-              className="w-6 h-6 rounded-full flex items-center justify-center active:scale-90 transition-transform disabled:opacity-30"
-              style={{ background: 'rgba(255,255,255,.85)', boxShadow: `inset 0 0 0 1px rgba(17,17,17,.1)` }}
+              className="grid size-11 place-items-center rounded-full disabled:opacity-30"
             >
-              <Minus className="w-3 h-3" style={{ color: RIDE_TEXT }} />
+              <Minus className="size-4" />
             </button>
-            <span className="tabular-nums text-[14px] font-bold w-4 text-center" style={{ color: RIDE_TEXT }}>
-              {passengerCount}
-            </span>
+            <span className="w-4 text-center text-sm font-bold tabular-nums">{passengerCount}</span>
             <button
               type="button"
-              onClick={() => onPassengerCountChange(Math.min(MAX_TIER_PASSENGERS, passengerCount + 1))}
-              disabled={passengerCount >= MAX_TIER_PASSENGERS}
+              onClick={() => onPassengerCountChange(passengerCount + 1)}
+              disabled={passengerCount >= passengerLimit}
               aria-label="More passengers"
-              className="w-6 h-6 rounded-full flex items-center justify-center active:scale-90 transition-transform disabled:opacity-30"
-              style={{ background: 'rgba(255,255,255,.85)', boxShadow: `inset 0 0 0 1px rgba(17,17,17,.1)` }}
+              className="grid size-11 place-items-center rounded-full disabled:opacity-30"
             >
-              <Plus className="w-3 h-3" style={{ color: RIDE_TEXT }} />
+              <Plus className="size-4" />
             </button>
           </div>
         </div>

@@ -138,10 +138,10 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/ride" replace />} />
           <Route path="/home" element={<SuspenseWrap><Index /></SuspenseWrap>} />
-          <Route path="/auth" element={<MarketingShell><Auth /></MarketingShell>} />
+          <Route path="/auth" element={<SuspenseWrap><Auth /></SuspenseWrap>} />
           <Route path="/reset-password" element={<MarketingShell><ResetPassword /></MarketingShell>} />
           <Route path="/login" element={<Navigate to="/auth" replace />} />
-          <Route path="/signup" element={<MarketingShell><Signup /></MarketingShell>} />
+          <Route path="/signup" element={<SuspenseWrap><Signup /></SuspenseWrap>} />
 
           {/* Legacy / mapp compatibility redirects */}
           <Route path="/mapp" element={<Navigate to="/ride" replace />} />

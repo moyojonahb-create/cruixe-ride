@@ -8,11 +8,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Loader2, ArrowLeft, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { Loader2, ArrowLeft, RefreshCw, CheckCircle2, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { lovable } from '@/integrations/lovable/index';
 import { updateMyProfile } from '@/lib/businessApi';
+import RiderAuthFrame, { AuthFieldIcon, AuthForwardIcon, RiderAuthSocial, riderAuthInput, riderAuthSubmit } from '@/components/auth/RiderAuthFrame';
 
 const signupSchema = z.object({
   fullName: z.string().trim().min(2, 'Full Name is required').max(100, 'Name too long'),
@@ -22,10 +23,14 @@ const signupSchema = z.object({
   phone: z.string()
     .min(9, 'Phone number must be at least 9 digits')
     .max(20, 'Phone number too long')
-    .regex(/^(\+263|0)[0-9\s-]{8,}$/, 'Use 077... or +263...'),
+    .regex(/^(?:(?:\+263|0)[0-9\s-]{8,}|[1-9][0-9\s-]{8})$/, 'Enter a Zimbabwean mobile number'),
   email: z.string().trim().email('Enter a valid email address').max(255, 'Email too long').optional().or(z.literal('')),
   password: z.string().min(8, 'Password must be at least 8 characters').max(72, 'Password too long')
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~])/, 'Must include uppercase, lowercase, number, and special character'),
+  confirmPassword: z.string(),
+}).refine((d) => d.confirmPassword === d.password, {
+  path: ['confirmPassword'],
+  message: 'Passwords must match',
 }).refine((d) => !d.nickname || d.nickname.length >= 3, {
   path: ['nickname'],
   message: 'Nickname must be at least 3 characters',
@@ -40,6 +45,7 @@ const Signup = () => {
   const next = useMemo(() => searchParams.get('next') || '/ride', [searchParams]);
   const [step, setStep] = useState<SignupStep>('details');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [visiblePasswords, setVisiblePasswords] = useState({ password: false, confirmPassword: false });
   const [formData, setFormData] = useState<SignupFormData | null>(null);
   const { signUp } = useAuth();
   const navigate = useNavigate();
@@ -65,6 +71,7 @@ const Signup = () => {
       phone: '',
       email: '',
       password: '',
+      confirmPassword: '',
     },
   });
 
@@ -74,7 +81,7 @@ const Signup = () => {
       cleaned = '+263' + cleaned.substring(1);
     }
     if (!cleaned.startsWith('+')) {
-      cleaned = '+' + cleaned;
+      cleaned = '+263' + cleaned;
     }
     return cleaned;
   };
@@ -315,119 +322,113 @@ const Signup = () => {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-primary flex items-center justify-center p-4 pt-[calc(16px+env(safe-area-inset-top))] pb-[calc(16px+env(safe-area-inset-bottom))]">
-      <div className="w-full max-w-[520px] bg-background backdrop-blur-[10px] rounded-3xl p-5 shadow-[0_18px_40px_rgba(0,0,0,0.22)]">
-        <div className="flex items-center gap-3 mb-4">
-          <Link to="/" className="p-2 -ml-2 rounded-full hover:bg-muted transition-colors">
-            <ArrowLeft className="h-5 w-5 text-foreground" />
-          </Link>
-          <div>
-            <h1 className="text-xl font-black text-foreground">Create your account</h1>
-            <p className="text-sm text-muted-foreground">Sign up as a User to get started.</p>
-          </div>
-        </div>
-
-        {/* Google Sign-In */}
-        <button
-          onClick={async () => {
-            const result = await lovable.auth.signInWithOAuth("google", {
-              redirect_uri: window.location.origin + '/app',
-            });
-            if (result?.error) {
-              toast({ title: 'Google sign-in failed', variant: 'destructive' });
-            }
-          }}
-          className="w-full flex items-center justify-center gap-3 p-3.5 border border-border/60 rounded-2xl hover:bg-muted/50 active:scale-[0.98] transition-all mb-3"
-        >
-          <svg className="w-5 h-5" viewBox="0 0 24 24">
-            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
-            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-          </svg>
-          <span className="font-semibold text-[15px]">Continue with Google</span>
-        </button>
-
-        <div className="flex items-center gap-3 mb-3">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-xs text-muted-foreground font-medium">or</span>
-          <div className="flex-1 h-px bg-border" />
-        </div>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmitDetails)} className="space-y-4">
-            <FormField control={form.control} name="fullName" render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-foreground font-semibold">Full Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="John Doe" className="h-12 rounded-2xl border-border bg-background text-foreground" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-
-            <FormField control={form.control} name="nickname" render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-foreground font-semibold">
-                  Nickname <span className="text-muted-foreground font-normal">(optional)</span>
-                </FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g. jonahb" autoComplete="username" className="h-12 rounded-2xl border-border bg-background text-foreground" {...field} />
-                </FormControl>
-                <p className="text-xs text-muted-foreground">This is the name shown in the app. You can also sign in with it.</p>
-                <FormMessage />
-              </FormItem>
-            )} />
-
-
-            <FormField control={form.control} name="phone" render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-foreground font-semibold">Phone Number</FormLabel>
-                <FormControl>
-                  <Input type="tel" inputMode="tel" placeholder="+263 77 123 4567" className="h-12 rounded-2xl border-border bg-background text-foreground" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-
-            <FormField control={form.control} name="email" render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-foreground font-semibold">
-                  Email <span className="text-muted-foreground font-normal">(optional)</span>
-                </FormLabel>
-                <FormControl>
-                  <Input type="email" inputMode="email" placeholder="you@email.com" className="h-12 rounded-2xl border-border bg-background text-foreground" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-
-            <FormField control={form.control} name="password" render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-foreground font-semibold">Password</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="••••••••" className="h-12 rounded-2xl border-border bg-background text-foreground" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-
-            <Button type="submit" className="w-full h-12 rounded-2xl bg-foreground hover:bg-foreground/90 text-background font-black text-base mt-2" disabled={isSubmitting}>
-              {isSubmitting ? (<><Loader2 className="h-4 w-4 animate-spin mr-2" /> Sending code...</>) : 'Continue'}
-            </Button>
-          </form>
-        </Form>
-
-        <p className="mt-4 text-xs text-muted-foreground leading-relaxed">
-          By continuing you agree to CruiXe's basic terms of use.
-        </p>
-
-        <p className="mt-4 text-center text-sm text-muted-foreground">
-          Already have an account?{' '}
-          <Link to="/login" className="text-accent font-semibold hover:underline">Sign in</Link>
-        </p>
+    <RiderAuthFrame variant="signup">
+      <div className="mb-4 space-y-1.5">
+        <h1 className="text-[25px] font-bold leading-tight">Create CruiXe Account</h1>
+        <p className="text-[13.5px] font-semibold text-[#6b707d]">Join CruiXe and book your first ride.</p>
       </div>
-    </div>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmitDetails)} className="space-y-3">
+          <FormField control={form.control} name="fullName" render={({ field }) => (
+            <FormItem>
+              <FormLabel className="sr-only">Full name</FormLabel>
+              <div className="relative">
+                <AuthFieldIcon name="name" />
+                <FormControl><Input placeholder="Full name" autoComplete="name" className={riderAuthInput} {...field} /></FormControl>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )} />
+
+          <FormField control={form.control} name="nickname" render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-foreground font-semibold">
+                Nickname <span className="text-muted-foreground font-normal">(optional)</span>
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="e.g. jonahb" autoComplete="username" className={riderAuthInput} {...field} />
+              </FormControl>
+              <p className="text-xs text-muted-foreground">This is the name shown in the app. You can also sign in with it.</p>
+              <FormMessage />
+            </FormItem>
+          )} />
+
+
+          <FormField control={form.control} name="email" render={({ field }) => (
+            <FormItem>
+              <FormLabel className="sr-only">Email address (optional)</FormLabel>
+              <div className="relative">
+                <AuthFieldIcon name="email" />
+                <FormControl>
+                  <Input type="email" inputMode="email" autoComplete="email" placeholder="Email address (optional)" className={riderAuthInput} {...field} />
+                </FormControl>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )} />
+
+          <FormField control={form.control} name="phone" render={({ field }) => (
+            <FormItem>
+              <FormLabel className="sr-only">Mobile number</FormLabel>
+              <div className="relative">
+                <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-4 flex items-center gap-2 text-sm">
+                  <img src="/brand/auth/zimbabwe.svg" alt="" /> +263
+                </span>
+                <FormControl><Input type="tel" inputMode="tel" placeholder="Mobile number" autoComplete="tel" className={`${riderAuthInput} pl-28`} {...field} /></FormControl>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )} />
+
+          {(['password', 'confirmPassword'] as const).map((name) => {
+            const label = name === 'password' ? 'Password' : 'Confirm password';
+            const visible = visiblePasswords[name];
+            return (
+              <FormField key={name} control={form.control} name={name} render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="sr-only">{label}</FormLabel>
+                  <div className="relative">
+                    <AuthFieldIcon name="password" />
+                    <FormControl>
+                      <Input type={visible ? 'text' : 'password'} autoComplete="new-password" placeholder={label} className={`${riderAuthInput} pr-12`} {...field} />
+                    </FormControl>
+                    <button type="button" aria-label={`${visible ? 'Hide' : 'Show'} ${label.toLowerCase()}`}
+                      className="absolute right-1 top-1/2 grid size-11 -translate-y-1/2 place-items-center text-[#696e7a]"
+                      onClick={() => setVisiblePasswords((current) => ({ ...current, [name]: !current[name] }))}
+                    >
+                      {visible ? <EyeOff className="size-5" /> : <img src="/brand/auth/password-visible.svg" alt="" />}
+                    </button>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )} />
+            );
+          })}
+
+          <Button type="submit" className={riderAuthSubmit} disabled={isSubmitting}>
+            {isSubmitting ? (<><Loader2 className="h-4 w-4 animate-spin mr-2" /> Sending code...</>) : 'Create Account'}
+            <AuthForwardIcon />
+          </Button>
+        </form>
+      </Form>
+
+      <div className="mt-5">
+        <RiderAuthSocial signingUp onSelect={async (provider) => {
+          const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin + '/app' });
+          if (result?.error) {
+            toast({ title: 'Sign-in unavailable', description: 'Try your email or a different sign-in method.', variant: 'destructive' });
+          }
+        }} />
+      </div>
+      <p className="mt-2 text-center text-[13px] text-[#6b707d]">
+        Already have an account?{' '}
+        <Link to="/login" className="inline-flex min-h-11 items-center font-bold text-[#111]">Sign in</Link>
+      </p>
+      <p className="text-center text-xs text-[#6b707d]">
+        By continuing you agree to CruiXe’s <Link to="/terms" className="underline">terms of use</Link>.
+      </p>
+    </RiderAuthFrame>
   );
 };
 

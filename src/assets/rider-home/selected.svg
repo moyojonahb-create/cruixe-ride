@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="21.0066" height="21" viewBox="0 0 21.0066 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Rider selection &#194;&#183; Selected">
+<g id="Selected indicator &#194;&#183; Red outline">
+<ellipse cx="10.5033" cy="10.5" rx="10.5033" ry="10.5" fill="white"/>
+<mask id="stroke0_0_48" fill="white">
+<path d="M21.0066 10.5C21.0066 16.299 16.3041 21 10.5033 21C4.70248 21 0 16.299 0 10.5C0 4.70101 4.70248 0 10.5033 0C16.3041 0 21.0066 4.70101 21.0066 10.5Z"/>
+</mask>
+<ellipse cx="10.5033" cy="10.5" rx="10.5033" ry="10.5" stroke-width="4" stroke="#FF000D" mask="url(#stroke0_0_48)"/>
+</g>
+<ellipse id="Selected &#194;&#183; Red center" cx="10.5033" cy="10.4994" rx="4.37637" ry="4.375" fill="#FF000D"/>
+</g>
+</svg>

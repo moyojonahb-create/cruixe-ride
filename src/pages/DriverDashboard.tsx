@@ -620,6 +620,21 @@ export default function DriverDashboard() {
     );
   }
 
+  const finishCollection = () => {
+    setUncollectedRide(null);
+    if (!activeTrip) nav('/driver/requests?view=waiting', { replace: true });
+    void refresh();
+  };
+
+  const collection = uncollectedRide && (
+    <TripCollectSheet
+      key={uncollectedRide.id}
+      ride={uncollectedRide}
+      onDone={finishCollection}
+      footer={<DriverBottomNav activeTab="Requests" embedded disabled />}
+    />
+  );
+
   // Active trip — 4p (en route to pickup) / 4q (in trip) live entirely in
   // FullScreenNavigation now; there's no more "trip connected, tap Navigate
   // to start turn-by-turn" middle screen. Both mockups show navigation
@@ -630,13 +645,7 @@ export default function DriverDashboard() {
         {/* Edge case: a new ride got matched before the previous one's
             collection was confirmed (dispatch marks the driver available
             again immediately on completion) — collection still wins. */}
-        {uncollectedRide && (
-          <TripCollectSheet
-            key={uncollectedRide.id}
-            ride={uncollectedRide}
-            onDone={() => { setUncollectedRide(null); refresh(); }}
-          />
-        )}
+        {collection}
         {callStatus !== "idle" && (
           <ActiveCallOverlay
             status={callStatus}
@@ -727,13 +736,7 @@ export default function DriverDashboard() {
 
       {/* Edge case: a ride completed and hasn't been collected/confirmed yet
           — takes priority over handing off to the request list. */}
-      {uncollectedRide && (
-        <TripCollectSheet
-          key={uncollectedRide.id}
-          ride={uncollectedRide}
-          onDone={() => { setUncollectedRide(null); refresh(); }}
-        />
-      )}
+      {collection}
 
       {earningsOpen ? (
         <div className="min-h-[100dvh] pb-24" style={{ background: "#F2F4F7" }}>

@@ -15,7 +15,7 @@ function props() {
   return {
     activeField: 'pickup' as 'pickup' | 'dropoff',
     onActiveFieldChange: vi.fn(), pickupName: 'Selected pickup', dropoffName: 'Selected destination',
-    query: '', onQueryChange: vi.fn(), onClose: vi.fn(), onUseMyLocation: vi.fn(),
+    query: '', onQueryChange: vi.fn(), onClose: vi.fn(), onContinue: vi.fn(), onUseMyLocation: vi.fn(),
     onChooseOnMap: vi.fn(), onSelectPlace: vi.fn(), results: [], onRequestSetFavorite: vi.fn(),
   };
 }
@@ -77,5 +77,14 @@ describe('DestinationSearchScreen', () => {
     expect(callbacks.onSelectPlace).toHaveBeenLastCalledWith({ name: 'Home', lat: -17.825, lng: 31.033 });
     fireEvent.click(screen.getByRole('button', { name: 'Market Harare' }));
     expect(callbacks.onSelectPlace).toHaveBeenLastCalledWith({ name: 'Market', lat: -17.83, lng: 31.04, secondary: 'Harare' });
+  });
+
+  it('allows continuing only when pickup and destination are both selected', () => {
+    const callbacks = props();
+    const { rerender } = render(<DestinationSearchScreen {...callbacks} dropoffName="" />);
+    expect(screen.getByRole('button', { name: 'Continue' })).toBeDisabled();
+    rerender(<DestinationSearchScreen {...callbacks} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    expect(callbacks.onContinue).toHaveBeenCalledOnce();
   });
 });

@@ -1,92 +1,87 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, TrendingUp, Clock, User } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { haptic } from '@/lib/haptics';
-import { RIDE_RED } from '@/components/ride/rideGlass';
 
 const tabs = [
-  // /driver/dashboard is no longer a screen of its own — it's the traffic
-  // controller that shows FullScreenNavigation during an active trip and
-  // otherwise hands off to /driver/requests, which is the real "home" now
-  // (online status, wallet, the request list).
-  { label: 'Home', icon: Home, path: '/driver/requests' },
-  { label: 'Earnings', icon: TrendingUp, path: '/driver/dashboard', state: { openEarnings: true } },
-  { label: 'Trips', icon: Clock, path: '/driver/trips' },
-  { label: 'Profile', icon: User, path: '/driver/profile' },
-];
+  { label: 'Home', asset: 'driver-home.svg', path: '/driver/requests?view=home' },
+  { label: 'Requests', asset: 'driver-requests.svg', path: '/driver/requests' },
+  { label: 'Drive', asset: 'driver-drive.svg', path: '/driver/requests?view=drive' },
+  { label: 'Earnings', asset: 'driver-earnings.svg', path: '/driver/dashboard', state: { openEarnings: true } },
+  { label: 'Account', asset: 'driver-account.svg', path: '/driver/profile' },
+] as const;
+
+type DriverTab = (typeof tabs)[number]['label'];
 
 interface DriverBottomNavProps {
-  /** Unseen new-ride-request count — there's no dedicated Requests tab, so
-   * this surfaces on Home, where the request feed actually lives. */
   requestBadgeCount?: number;
+  activeTab?: DriverTab;
+  embedded?: boolean;
+  disabled?: boolean;
 }
 
-/** Driver-mode bottom nav — separate from the rider-facing BottomNavBar
- * (Home/Trips/Drive/Profile), since driver mode needs its own Earnings tab
- * and none of these existed as a persistent nav on driver screens before. */
-export default function DriverBottomNav({ requestBadgeCount = 0 }: DriverBottomNavProps) {
+export default function DriverBottomNav({
+  requestBadgeCount = 0,
+  activeTab,
+  embedded = false,
+  disabled = false,
+}: DriverBottomNavProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const view = new URLSearchParams(location.search).get('view');
 
-  const isActive = (tab: (typeof tabs)[number]) => {
-    if (tab.label === 'Earnings') return false;
-    return location.pathname === tab.path;
-  };
+  const currentTab = activeTab ?? (
+    location.pathname === '/driver/profile' ? 'Account' :
+    location.pathname === '/driver/dashboard' && location.state?.openEarnings ? 'Earnings' :
+    location.pathname === '/driver/trips' || view === 'drive' ? 'Drive' :
+    view === 'home' || view === 'waiting' ? 'Home' : 'Requests'
+  );
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50"
-      style={{
-        height: 88,
-        paddingBottom: 'env(safe-area-inset-bottom)',
-        background: 'rgba(255,255,255,.94)',
-        backdropFilter: 'blur(26px) saturate(190%)',
-        WebkitBackdropFilter: 'blur(26px) saturate(190%)',
-        boxShadow: 'inset 0 .5px 0 rgba(255,255,255,.9), 0 -8px 24px rgba(17,17,17,.06)',
-      }}
+      aria-label="Driver navigation"
+      className={cn(
+        'mx-auto w-full max-w-[480px] px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-2',
+        !embedded && 'fixed inset-x-0 bottom-0 z-50'
+      )}
     >
-      <div className="flex items-center justify-around h-16 max-w-lg mx-auto px-2">
+      <div className="flex h-[61px] items-center justify-center gap-1 rounded-full border border-[#e4e7ed] bg-white px-2 shadow-[0_5px_9px_rgba(23,23,33,0.14)]">
         {tabs.map((tab) => {
-          const active = isActive(tab);
+          const active = currentTab === tab.label;
           return (
             <button
               key={tab.label}
+              type="button"
+              aria-label={tab.label}
+              aria-current={active ? 'page' : undefined}
+              disabled={disabled}
               onClick={() => {
                 haptic('light');
-                navigate(tab.path, tab.state ? { state: tab.state } : undefined);
+                navigate(tab.path, 'state' in tab ? { state: tab.state } : undefined);
               }}
-              className="relative flex flex-col items-center justify-center gap-0.5 transition-transform active:scale-95"
-              style={{ width: 70, height: 46 }}
-            >
-              {active && (
-                <motion.div
-                  layoutId="driverBottomNav"
-                  className="absolute inset-0"
-                  style={{ borderRadius: 14, background: 'rgba(184,17,4,.1)' }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                />
+              className={cn(
+                'relative flex h-11 min-w-11 items-center justify-center gap-2 rounded-full px-2 text-[#1f2129] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
+                active && 'min-w-0 max-w-[116px] flex-1 bg-primary text-primary-foreground shadow-[0_0_7px_rgba(255,0,13,0.27)]'
               )}
-              <span className="relative">
-                <tab.icon
-                  className="relative z-10 h-5 w-5"
-                  style={{ color: active ? RIDE_RED : '#9AA1AD', strokeWidth: active ? 2.4 : 2 }}
-                />
-                {tab.label === 'Home' && requestBadgeCount > 0 && (
-                  <span
-                    className="absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full text-[9px] font-black flex items-center justify-center z-10"
-                    style={{ background: RIDE_RED, color: '#fff' }}
-                  >
-                    {requestBadgeCount > 9 ? '9+' : requestBadgeCount}
-                  </span>
-                )}
-              </span>
+            >
               <span
-                className={cn('relative z-10 text-[10px]', active ? 'font-bold' : 'font-medium')}
-                style={{ color: active ? RIDE_RED : '#9AA1AD' }}
-              >
-                {tab.label}
-              </span>
+                aria-hidden="true"
+                className="block size-5 shrink-0 bg-current"
+                style={{
+                  mask: `url('/brand/ride/${tab.asset}') center / contain no-repeat`,
+                  WebkitMask: `url('/brand/ride/${tab.asset}') center / contain no-repeat`,
+                }}
+              />
+              {active && <span className="truncate text-[11px] font-semibold">{tab.label}</span>}
+              {tab.label === 'Requests' && requestBadgeCount > 0 && (
+                <span
+                  className={cn(
+                    'absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-bold',
+                    active ? 'bg-white text-primary' : 'bg-primary text-primary-foreground'
+                  )}
+                >
+                  {requestBadgeCount > 9 ? '9+' : requestBadgeCount}
+                </span>
+              )}
             </button>
           );
         })}
