@@ -94,10 +94,4 @@ DROP POLICY IF EXISTS "Admins can read notification history" ON public.notificat
 CREATE POLICY "Admins can read notification history"
 ON public.notification_history
 FOR SELECT
-USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles
-    WHERE profiles.user_id = auth.uid()
-      AND profiles.role = 'admin'
-  )
-);
+USING (public.has_role(auth.uid(), 'admin'::public.app_role));

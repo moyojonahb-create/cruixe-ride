@@ -3,12 +3,15 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
+import { validateStagingEnvironment } from "./scripts/stagingEnvironment";
 
 const publicEnv = (env: Record<string, string>, key: string) => env[key] || process.env[key] || '';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
+  const isStaging = mode === 'staging' || publicEnv(env, 'VITE_APP_ENV') === 'staging';
+  const stagingEnv = isStaging ? validateStagingEnvironment({ ...env, ...process.env }) : null;
   return ({
   server: {
     host: "::" ,
@@ -75,10 +78,11 @@ export default defineConfig(({ mode }) => {
         // backendSocketClient.connect() throws immediately and the Go
         // realtime channel is simply never attempted in production.
         ['VITE_WS_URL', ['VITE_WS_URL'], 'wss://koloi-ride-with-confidence-production.up.railway.app/ws'],
+        ['VITE_APP_ENV', ['VITE_APP_ENV'], isStaging ? 'staging' : 'production'],
 
       ] as const
     )
-      .map(([key, sources, fallback]) => [key, sources.map((s) => publicEnv(env, s)).find(Boolean) || fallback] as const)
+      .map(([key, sources, fallback]) => [key, isStaging ? (stagingEnv?.[key] ?? sources.map((s) => publicEnv(env, s)).find(Boolean) ?? '') : (sources.map((s) => publicEnv(env, s)).find(Boolean) || fallback)] as const)
       .filter(([, value]) => Boolean(value))
       .map(([key, value]) => [`import.meta.env.${key}`, JSON.stringify(value)])
   ),

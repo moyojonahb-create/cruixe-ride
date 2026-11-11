@@ -46,6 +46,7 @@ type DriverAuthorizer interface {
 // rider_id/ride_status/pickup_location/estimated_fare names this handler
 // used to assume).
 type rideAPIRecord struct {
+	DriverCollectedAt    string
 	AssignedDriverUserID string
 	ID                   string
 	RiderID              string
@@ -111,39 +112,48 @@ func canonicalRideStatus(status string) (string, bool) {
 func rideAPIResponse(ride rideAPIRecord) fiber.Map {
 	fareMoney, _ := wallet.NewMoneyFromDecimal(ride.FareDecimal, wallet.CurrencyUSD)
 	status := publicRideStatus(ride.Status)
+	var paymentStatus any
+	if ride.PaymentMethod == "cash" {
+		paymentStatus = "pending"
+		if ride.DriverCollectedAt != "" {
+			paymentStatus = "paid"
+		}
+	}
 	driverID := any(nil)
 	if ride.DriverID != "" {
 		driverID = ride.DriverID
 	}
 	return fiber.Map{
-		"id":                ride.ID,
-		"ride_id":           ride.ID,
-		"user_id":           ride.RiderID,
-		"rider_id":          ride.RiderID,
-		"driver_id":         driverID,
-		"driver_user_id":    ride.AssignedDriverUserID,
-		"pickup_address":    ride.PickupAddress,
-		"pickup_location":   ride.PickupAddress,
-		"dropoff_address":   ride.DropoffAddress,
-		"dropoff_location":  ride.DropoffAddress,
-		"pickup_lat":        ride.PickupLat,
-		"pickup_lon":        ride.PickupLon,
-		"dropoff_lat":       ride.DropoffLat,
-		"dropoff_lon":       ride.DropoffLon,
-		"distance_km":       ride.DistanceKm,
-		"duration_minutes":  ride.DurationMinutes,
-		"route_polyline":    ride.RoutePolyline,
-		"vehicle_type":      ride.VehicleType,
-		"passenger_count":   ride.PassengerCount,
-		"town_id":           ride.TownID,
-		"gender_preference": ride.GenderPreference,
-		"fare":              decimalUSDFromMinor(fareMoney.MinorUnits),
-		"estimated_fare":    decimalUSDFromMinor(fareMoney.MinorUnits),
-		"payment_method":    ride.PaymentMethod,
-		"ride_status":       ride.Status,
-		"status":            status,
-		"created_at":        ride.CreatedAt,
-		"expires_at":        ride.ExpiresAt,
+		"id":                  ride.ID,
+		"ride_id":             ride.ID,
+		"user_id":             ride.RiderID,
+		"rider_id":            ride.RiderID,
+		"driver_id":           driverID,
+		"driver_user_id":      ride.AssignedDriverUserID,
+		"pickup_address":      ride.PickupAddress,
+		"pickup_location":     ride.PickupAddress,
+		"dropoff_address":     ride.DropoffAddress,
+		"dropoff_location":    ride.DropoffAddress,
+		"pickup_lat":          ride.PickupLat,
+		"pickup_lon":          ride.PickupLon,
+		"dropoff_lat":         ride.DropoffLat,
+		"dropoff_lon":         ride.DropoffLon,
+		"distance_km":         ride.DistanceKm,
+		"duration_minutes":    ride.DurationMinutes,
+		"route_polyline":      ride.RoutePolyline,
+		"vehicle_type":        ride.VehicleType,
+		"passenger_count":     ride.PassengerCount,
+		"town_id":             ride.TownID,
+		"gender_preference":   ride.GenderPreference,
+		"fare":                decimalUSDFromMinor(fareMoney.MinorUnits),
+		"estimated_fare":      decimalUSDFromMinor(fareMoney.MinorUnits),
+		"payment_method":      ride.PaymentMethod,
+		"driver_collected_at": nullableString(ride.DriverCollectedAt),
+		"payment_status":      paymentStatus,
+		"ride_status":         ride.Status,
+		"status":              status,
+		"created_at":          ride.CreatedAt,
+		"expires_at":          ride.ExpiresAt,
 	}
 }
 
@@ -432,6 +442,7 @@ func RegisterCompatibilityRoutes(app fiber.Router, h *Handler, requireAuth fiber
 	app.Post("/api/rides/:rideId/status", requireAuth, h.UpdateStatus)
 	app.Post("/api/rides/:rideId/complete", requireAuth, h.CompleteRide)
 	app.Post("/api/rides/:rideId/settle", requireAuth, h.SettleRide)
+	app.Post("/api/rides/:rideId/confirm-cash", requireAuth, h.ConfirmCash)
 }
 
 func (h *Handler) List(c *fiber.Ctx) error {
@@ -520,7 +531,8 @@ func (h *Handler) GetRide(c *fiber.Ctx) error {
 		       passenger_count, COALESCE(town_id, ''),
 		       COALESCE(gender_preference, 'any'), created_at,
 		       COALESCE(expires_at, created_at + interval '5 minutes'),
-		       COALESCE((SELECT d.user_id::text FROM public.drivers d WHERE d.id=public.rides.driver_id),'')
+		       COALESCE((SELECT d.user_id::text FROM public.drivers d WHERE d.id=public.rides.driver_id),''),
+		       COALESCE(to_char(driver_collected_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"'), '')
 		FROM public.rides
 		WHERE id = $1
 		  AND (user_id::text = $2 OR EXISTS (SELECT 1 FROM public.drivers d WHERE d.id=public.rides.driver_id AND d.user_id::text=$2))
@@ -547,6 +559,7 @@ func (h *Handler) GetRide(c *fiber.Ctx) error {
 		&ride.CreatedAt,
 		&ride.ExpiresAt,
 		&ride.AssignedDriverUserID,
+		&ride.DriverCollectedAt,
 	)
 	if err != nil {
 		if err == pgx.ErrNoRows {

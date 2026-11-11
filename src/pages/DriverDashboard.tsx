@@ -84,7 +84,7 @@ export default function DriverDashboard() {
   const [acceptingRides, setAcceptingRides] = useState(true);
   // Set from refresh()'s driver_collected_at check, so it also fires on a
   // fresh page load, not just right after this session's own completeTrip().
-  const [uncollectedRide, setUncollectedRide] = useState<{ id: string; fare: number; payment_method: string; dropoff_address: string; user_id: string } | null>(null);
+  const [uncollectedRide, setUncollectedRide] = useState<{ id: string; fare: number; payment_method: string; pickup_address: string; dropoff_address: string; user_id: string } | null>(null);
 
   // Retained for the presence heartbeat only — position tracking moved to the
   // native foreground service via backgroundLocation.ts.
@@ -513,14 +513,15 @@ export default function DriverDashboard() {
       // completion happening while this query was in flight.
       const { data: uncollectedRow } = await supabase
         .from('rides')
-        .select('id, fare, payment_method, dropoff_address, user_id')
+        .select('id, fare, payment_method, pickup_address, dropoff_address, user_id')
         .or(`driver_id.eq.${p.id},driver_id.eq.${user?.id}`)
         .eq('status', 'completed')
         .is('driver_collected_at', null)
         .order('updated_at', { ascending: false })
         .limit(1)
         .maybeSingle();
-      setUncollectedRide(uncollectedRow ?? null);
+      // Keep the saved confirmation receipt visible until the driver leaves it.
+      setUncollectedRide((current) => uncollectedRow ?? current);
 
       // Everything the dashboard shell needs to decide what to render
       // (profile, approval status, active trip) is in hand.
