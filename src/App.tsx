@@ -85,6 +85,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const LiveTrackingPage = lazy(() => import("./pages/LiveTrackingPage"));
 const Batch20ScreenReview = lazy(() => import("./pages/staging/Batch20ScreenReview"));
 const ParcelBatch20Review = lazy(() => import("./pages/staging/ParcelBatch20Review"));
+const CommunicationBatch20Review = lazy(() => import("./pages/staging/CommunicationBatch20Review"));
 
 import PageSkeleton from "./components/PageSkeleton";
 
@@ -226,6 +227,7 @@ export default function App() {
           <Route path="/student-verification" element={<SuspenseWrap><AuthGuard><StudentVerificationPage /></AuthGuard></SuspenseWrap>} />
           {import.meta.env.MODE === "staging" && <Route path="/staging/figma-20" element={<SuspenseWrap><Batch20ScreenReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/parcel-20" element={<SuspenseWrap><ParcelBatch20Review /></SuspenseWrap>} />}
+          {import.meta.env.MODE === "staging" && <Route path="/staging/communication-20" element={<SuspenseWrap><CommunicationBatch20Review /></SuspenseWrap>} />}
 
           <Route path="*" element={<MarketingShell><NotFound /></MarketingShell>} />
         </Routes>

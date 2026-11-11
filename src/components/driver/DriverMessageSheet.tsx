@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { User, Phone, X, ArrowUp, RotateCw, Check, CheckCheck } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
-const RED_GRADIENT = 'linear-gradient(135deg,#E01B00,#B81104)';
-const RED_SHADOW = '0 6px 14px rgba(184,17,4,.3)';
-const RED_SOLID = '#B81104';
+const RED_GRADIENT = '#ff000d';
+const RED_SHADOW = '0 4px 10px rgba(255,0,13,.18)';
+const RED_SOLID = '#ff000d';
 const RIDER_BG = '#F1F3F5';
 const RIDER_TEXT = '#16181C';
 
@@ -307,6 +307,7 @@ export default function DriverMessageSheet({
       <motion.div
         key="sheet"
         role="dialog"
+        data-figma-node="1240:116"
         aria-label={`Messages with ${passengerName}`}
         initial={{ y: '100%' }}
         animate={{ y: dragY }}
@@ -320,7 +321,7 @@ export default function DriverMessageSheet({
           top: 150,
           borderTopLeftRadius: 26,
           borderTopRightRadius: 26,
-          background: 'rgba(255,255,255,.92)',
+          background: '#FFFFFF',
           backdropFilter: 'blur(28px) saturate(190%)',
           WebkitBackdropFilter: 'blur(28px) saturate(190%)',
           boxShadow: '0 -14px 44px rgba(17,17,17,.28)',
@@ -351,16 +352,16 @@ export default function DriverMessageSheet({
         {/* Header */}
         <div
           className="flex items-center"
-          style={{ padding: '6px 16px 14px', gap: 10, borderBottom: '.5px solid rgba(17,17,17,.08)' }}
+          style={{ padding: '12px 16px 14px', gap: 10, borderBottom: '1px solid #e2e6ed', background: '#FFFFFF' }}
         >
           <span
             className="shrink-0 flex items-center justify-center rounded-full"
-            style={{ width: 42, height: 42, background: 'linear-gradient(135deg,#C6CBD4,#868E9B)', boxShadow: '0 0 0 2px rgba(255,255,255,.95)' }}
+            style={{ width: 42, height: 42, background: '#1f2129', boxShadow: '0 0 0 2px rgba(255,255,255,.95)' }}
           >
             <User style={{ width: 21, height: 21, color: '#fff' }} strokeWidth={2.2} />
           </span>
           <div className="min-w-0" style={{ flex: 1 }}>
-            <p className="truncate" style={{ fontSize: 15.5, fontWeight: 700, color: '#111111', letterSpacing: '-.015em' }}>
+            <p className="truncate" style={{ fontSize: 15.5, fontWeight: 700, color: '#1f2129', letterSpacing: '-.015em' }}>
               {passengerName}
             </p>
             <span className="flex items-center" style={{ gap: 5, marginTop: 2 }}>

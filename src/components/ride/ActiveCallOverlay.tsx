@@ -37,10 +37,12 @@ export default function ActiveCallOverlay({
       : "";
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[90] bg-primary text-primary-foreground shadow-lg animate-in slide-in-from-top duration-300">
+    <div data-figma-node={status === "connecting" ? "1240:169" : status === "ringing" ? "1240:214" : status === "connected" ? "1240:259" : status === "ended" ? "1240:301" : "1240:329"}
+      className="fixed top-0 left-0 right-0 z-[90] border-b-4 border-[#ff000d] bg-[#1f2129] text-white shadow-lg animate-in slide-in-from-top duration-300">
       <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-sm truncate">{otherUserName}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[.08em] text-[#ffd11c]">In-app call</p>
+          <p className="mt-1 truncate text-[15px] font-bold">{otherUserName}</p>
           <p className="text-xs opacity-80">{statusText}</p>
         </div>
 
@@ -50,7 +52,7 @@ export default function ActiveCallOverlay({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-9 w-9 rounded-full text-primary-foreground hover:bg-primary-foreground/20"
+                className="h-11 w-11 rounded-full text-white hover:bg-white/15"
                 onClick={onToggleMute}
               >
                 {isMuted ? (
@@ -75,7 +77,7 @@ export default function ActiveCallOverlay({
           )}
           <Button
             size="icon"
-            className="h-9 w-9 rounded-full bg-destructive hover:bg-destructive/90 text-white"
+            className="h-11 w-11 rounded-full bg-[#ff000d] hover:bg-[#e6000b] text-white"
             onClick={onEndCall}
           >
             <PhoneOff className="h-4 w-4" />
