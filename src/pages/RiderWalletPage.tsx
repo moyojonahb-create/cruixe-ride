@@ -197,102 +197,79 @@ export default function RiderWalletPage() {
       </header>
 
       <div className="px-4 pt-4 space-y-5 max-w-lg mx-auto pb-28">
-        {/* ===== Glass Balance Card ===== */}
-        <section
-          className="relative overflow-hidden rounded-[28px] p-5 text-white"
-          style={{
-            background: 'var(--gradient-primary)',
-            boxShadow:
-              '0 20px 40px -16px hsl(var(--primary)/0.45), 0 8px 16px -8px hsl(var(--primary)/0.35)',
-          }}
-        >
-          {/* Glass orbs */}
-          <div className="absolute -top-16 -right-12 w-56 h-56 rounded-full bg-white/15 blur-3xl" />
-          <div className="absolute -bottom-20 -left-10 w-52 h-52 rounded-full bg-accent/20 blur-3xl" />
-          <div className="absolute top-0 left-0 right-0 h-px bg-white/30" />
-
-          <div className="relative z-10">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-white/90 font-semibold">
-                  Welcome back
-                </p>
-                <p className="text-[15px] font-bold mt-0.5 truncate max-w-[180px]">{displayName}</p>
-              </div>
-              <div className="flex items-center gap-1.5 bg-white/15 backdrop-blur-md border border-white/25 px-2.5 py-1 rounded-full">
-                <ShieldCheck className="h-3 w-3" />
-                <span className="text-[10px] font-bold tracking-wide">PROTECTED</span>
-              </div>
-            </div>
-
-            <div className="mt-5">
-              <div className="flex items-center gap-2">
-                <p className="text-[11px] uppercase tracking-[0.18em] text-white/90 font-semibold">
-                  Available Balance
-                </p>
-                <button
-                  onClick={() => setHideBalance((v) => !v)}
-                  className="text-white/80 hover:text-white"
-                  aria-label="Toggle balance visibility"
-                >
-                  {hideBalance ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                </button>
-              </div>
-              <p className="text-[40px] leading-none font-black tracking-tight mt-2">
-                {hideBalance ? <span className="tracking-[0.3em]">••••••</span> : `$${balance.toFixed(2)}`}
-              </p>
-              <p className="text-[11px] text-white/80 mt-2">
-                Last updated {formatDistanceToNow(lastUpdated, { addSuffix: true })}
-              </p>
-            </div>
-
-            {/* Sub-stats */}
-            <div className="mt-5 grid grid-cols-2 gap-2.5">
-              <div className="rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 px-3 py-2.5">
-                <p className="text-[10px] uppercase tracking-wider text-white/90 font-semibold">Pending</p>
-                <p className="text-[15px] font-extrabold mt-0.5">
-                  {hideBalance ? '••••' : `$${pendingBalance.toFixed(2)}`}
-                </p>
-              </div>
-              <button
-                onClick={copyAccount}
-                disabled={!pickme_account}
-                className="rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 px-3 py-2.5 text-left active:scale-[0.98] transition-transform"
-              >
-                <p className="text-[10px] uppercase tracking-wider text-white/90 font-semibold flex items-center gap-1">
-                  Account
-                  {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                </p>
-                <p className="text-[13px] font-mono font-extrabold tracking-[0.1em] mt-0.5 truncate">
-                  {pickme_account || 'PMR••••••R'}
-                </p>
-              </button>
-            </div>
+        {/* Wallet balance: Figma 285:30. Values and actions remain connected to useWallet. */}
+        <section aria-label="Available wallet balance" className="rounded-[20px] bg-[#f6f6f8] px-4 py-4 font-['Poppins'] text-[#1f2126]">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[10px] font-medium uppercase tracking-[0.08em] text-[#61666e]">Available balance</span>
+            <span className="text-[10px] font-medium text-[#61666e]">USD</span>
+          </div>
+          <div className="mt-1 flex min-w-0 items-center gap-3">
+            <p className="min-w-0 flex-1 truncate text-[32px] font-semibold leading-[48px] tabular-nums" aria-live="polite">
+              {hideBalance ? '••••••' : `$${balance.toFixed(2)}`}
+            </p>
+            <button
+              type="button"
+              onClick={() => setHideBalance((v) => !v)}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#e31b23]"
+              aria-label={hideBalance ? 'Show wallet balance' : 'Hide wallet balance'}
+              aria-pressed={hideBalance}
+            >
+              {hideBalance ? <EyeOff className="h-[22px] w-[22px]" /> : <Eye className="h-[22px] w-[22px]" />}
+            </button>
+          </div>
+          <div className="mt-1 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-[#e5e5e8] pt-3 text-[11px] text-[#61666e]">
+            <span>Pending: {hideBalance ? '••••' : `$${pendingBalance.toFixed(2)}`}</span>
+            <span>Updated {formatDistanceToNow(lastUpdated, { addSuffix: true })}</span>
           </div>
         </section>
 
-        {/* ===== Quick Action Grid ===== */}
-        <section className="grid grid-cols-4 gap-2.5">
+        {/* Existing account identifier remains usable without replacing the Figma balance figure. */}
+        {pickme_account && (
+          <button
+            type="button"
+            onClick={copyAccount}
+            className="flex w-full items-center justify-between gap-3 rounded-[16px] border border-[#f0f0f2] bg-white px-4 py-3 text-left text-[#1f2126]"
+            aria-label="Copy wallet account number"
+          >
+            <span className="min-w-0">
+              <span className="block text-[10px] font-medium uppercase tracking-wider text-[#61666e]">Wallet account</span>
+              <span className="block truncate font-mono text-[13px] font-semibold">{pickme_account}</span>
+            </span>
+            {copied ? <Check className="h-5 w-5 shrink-0 text-[#e31b23]" /> : <Copy className="h-5 w-5 shrink-0" />}
+          </button>
+        )}
+
+        {/* Figma 285:31 quick actions. Keep all existing money operations reachable. */}
+        <section aria-label="Wallet quick actions" className="grid grid-cols-4 gap-2 font-['Poppins']">
           {[
-            { label: 'Deposit',  icon: Plus,          onClick: () => setShowDeposit(true),  tint: 'bg-blue-50 text-blue-700',   ring: 'ring-blue-100' },
-            { label: 'Withdraw', icon: ArrowUpRight,  onClick: () => setShowWithdraw(true), tint: 'bg-violet-50 text-violet-700', ring: 'ring-violet-100', disabled: balance < 5 },
-            { label: 'Transfer', icon: Send,          onClick: () => setShowTransfer(true), tint: 'bg-emerald-50 text-emerald-700', ring: 'ring-emerald-100', disabled: balance <= 0 },
-            { label: 'History',  icon: History,       onClick: () => setShowTransactions(true), tint: 'bg-amber-50 text-amber-700', ring: 'ring-amber-100' },
-          ].map(({ label, icon: Icon, onClick, tint, ring, disabled }) => (
+            { label: 'Top Up', icon: Plus, onClick: () => setShowDeposit(true), disabled: false },
+            { label: 'Pay for Ride', icon: Send, onClick: () => navigate('/ride'), disabled: false },
+            { label: 'Transactions', icon: History, onClick: () => setShowTransactions(true), disabled: false },
+            { label: 'More', icon: Settings, onClick: () => setShowSettings((v) => !v), disabled: false },
+          ].map(({ label, icon: Icon, onClick, disabled }) => (
             <button
+              type="button"
               key={label}
               onClick={onClick}
               disabled={disabled}
-              className="group flex flex-col items-center gap-1.5 rounded-2xl bg-white p-3 shadow-sm border border-slate-100 active:scale-[0.97] transition-all disabled:opacity-50 disabled:active:scale-100"
-              style={{ boxShadow: '0 1px 2px rgba(15,23,42,0.04), 0 4px 12px -4px rgba(15,23,42,0.06)' }}
+              className="flex min-w-0 flex-col items-center gap-2 rounded-xl px-0.5 py-2 text-[#1f2126] transition-transform active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#e31b23] disabled:opacity-50"
             >
-              <span className={`h-10 w-10 rounded-2xl ${tint} ring-4 ${ring} flex items-center justify-center`}>
-                <Icon className="h-5 w-5" />
+              <span className={`flex h-[52px] w-[52px] items-center justify-center rounded-[18px] ${label === 'Pay for Ride' ? 'bg-[#fecf04]' : 'bg-[#f6f6f8]'}`}>
+                <Icon className="h-6 w-6" />
               </span>
-              <span className="text-[11px] font-semibold text-foreground">{label}</span>
+              <span className="min-h-[30px] text-center text-[10px] font-medium leading-[15px]">{label}</span>
             </button>
           ))}
         </section>
+
+        <div className="grid grid-cols-2 gap-2">
+          <button type="button" onClick={() => setShowWithdraw(true)} disabled={balance < 5} className="rounded-[14px] border border-[#e5e5e8] bg-white px-3 py-3 text-[12px] font-semibold text-[#1f2126] disabled:opacity-50">
+            Withdraw
+          </button>
+          <button type="button" onClick={() => setShowTransfer(true)} disabled={balance <= 0} className="rounded-[14px] border border-[#e5e5e8] bg-white px-3 py-3 text-[12px] font-semibold text-[#1f2126] disabled:opacity-50">
+            Transfer
+          </button>
+        </div>
 
         {/* ===== Payment Providers ===== */}
         <section>
@@ -331,16 +308,16 @@ export default function RiderWalletPage() {
         {/* ===== Recent Transactions ===== */}
         <section>
           <div className="flex items-center justify-between mb-2.5">
-            <h2 className="text-[13px] font-bold text-foreground">Recent Transactions</h2>
+            <h2 className="text-[19px] font-semibold text-[#1f2126]">Recent Activity</h2>
             <button
               onClick={() => setShowTransactions(true)}
-              className="text-[11px] font-semibold text-primary"
+              className="text-[12px] font-medium text-[#e31b23]"
             >
               View all
             </button>
           </div>
 
-          <div className="rounded-2xl bg-white border border-slate-100 overflow-hidden"
+          <div className="rounded-[18px] bg-white border border-[#f0f0f2] overflow-hidden"
                style={{ boxShadow: '0 1px 2px rgba(15,23,42,0.04), 0 4px 12px -4px rgba(15,23,42,0.05)' }}>
             {transactions.length === 0 ? (
               <div className="px-4 py-8 text-center">
