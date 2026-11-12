@@ -83,6 +83,9 @@ const AdminMigrationExport = lazy(() => import("./pages/admin/AdminMigrationExpo
 const StudentVerificationPage = lazy(() => import("./pages/StudentVerificationPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const LiveTrackingPage = lazy(() => import("./pages/LiveTrackingPage"));
+const DriverTenScreenReview = import.meta.env.MODE === "staging"
+  ? lazy(() => import("./pages/staging/DriverTenScreenReview"))
+  : null;
 const RecoveryScreenReview = import.meta.env.MODE === "staging"
   ? lazy(() => import("./pages/staging/RecoveryScreenReview"))
   : null;
@@ -234,6 +237,7 @@ export default function App() {
           <Route path="/admin/migration-export" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMigrationExport /></AdminGuard></SuspenseWrap>} />
           <Route path="/admin/maps-qa" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMapsQA /></AdminGuard></SuspenseWrap>} />
           <Route path="/student-verification" element={<SuspenseWrap><AuthGuard><StudentVerificationPage /></AuthGuard></SuspenseWrap>} />
+          {import.meta.env.MODE === "staging" && <Route path="/staging/driver-10" element={<SuspenseWrap><DriverTenScreenReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/recovery" element={<SuspenseWrap><RecoveryScreenReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/figma-20" element={<SuspenseWrap><Batch20ScreenReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/parcel-20" element={<SuspenseWrap><ParcelBatch20Review /></SuspenseWrap>} />}
