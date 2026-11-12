@@ -1,4 +1,10 @@
-import { ArrowLeft, CheckCircle2, Camera, ShieldCheck } from 'lucide-react';
+import './driverOnboardingFonts.css';
+import { useEffect, useRef, useState } from 'react';
+import redWave from '@/assets/driver-onboarding/red-wave.svg';
+import paper from '@/assets/driver-onboarding/paper.svg';
+import shield from '@/assets/driver-onboarding/shield.svg';
+import back from '@/assets/driver-onboarding/back.svg';
+import camera from '@/assets/driver-onboarding/camera.svg';
 
 export type DriverCaptureKind = 'profile' | 'identity' | 'licence' | 'documents' | 'vehicle';
 
@@ -24,13 +30,13 @@ const GUIDES: Record<DriverCaptureKind, { title: string; description: string; ti
   documents: {
     title: 'Capture vehicle documents',
     description: 'Choose a clear image for review.',
-    tip: 'Capture readable insurance and other required vehicle documents.',
+    tip: 'Capture readable registration, insurance and other required documents.',
     frame: '1102:259',
   },
   vehicle: {
     title: 'Capture vehicle photos',
     description: 'Choose a clear image for review.',
-    tip: 'Photograph your actual car in daylight, showing the plate and bodywork.',
+    tip: 'Photograph the real car in daylight, including plate and bodywork.',
     frame: '1102:312',
   },
 };
@@ -46,47 +52,55 @@ export default function DriverCaptureGuide({
   onBack: () => void;
 }) {
   const guide = GUIDES[kind];
+  const container = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(400);
+  useEffect(() => {
+    const element = container.current;
+    if (!element) return;
+    const measure = () => { if (element.clientWidth) setWidth(element.clientWidth); };
+    measure();
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
+    observer?.observe(element);
+    window.addEventListener('resize', measure);
+    return () => { observer?.disconnect(); window.removeEventListener('resize', measure); };
+  }, []);
+  // Scale the artwork's wrapper while preserving the exported SVG root dimensions.
+  const artworkStyle = { transform: `scaleX(${width / 400})`, transformOrigin: 'top left' };
   return (
-    <div data-figma-node={guide.frame} className="flex min-h-[100dvh] w-full flex-col bg-white font-['Poppins',system-ui,sans-serif] text-[#1f2129]">
-      <header className="relative min-h-[244px] shrink-0 bg-[#1f2129] px-6 pt-[max(1.5rem,env(safe-area-inset-top))] text-white">
-        <div className="flex items-center justify-between gap-3">
-          <button onClick={onBack} type="button" aria-label="Back to upload checklist" className="grid h-11 w-11 place-items-center rounded-full bg-white text-[#1f2129]">
-            <ArrowLeft className="h-6 w-6" />
-          </button>
-          <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-[10px] font-bold text-[#1f2129]">
-            <ShieldCheck className="h-4 w-4 text-[#ff000d]" /> DRIVER CHECK
-          </span>
-        </div>
-        <p className="mt-9 text-[30px] font-bold tracking-tight">CruiXe DRIVER</p>
-        <div className="mt-1 h-1 w-[52px] rounded-full bg-gradient-to-r from-[#ff000d] to-[#ffd11c]" />
-        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-9 rounded-t-[50%] bg-[#ff000d]" />
-        <div aria-hidden="true" className="absolute inset-x-0 -bottom-3 h-9 rounded-t-[50%] bg-white" />
+    <div ref={container} data-figma-node={guide.frame} className="relative isolate flex min-h-[max(845px,100dvh)] w-full flex-col overflow-x-clip bg-white font-['Poppins',system-ui,sans-serif] text-[#1f2129]">
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-[246px] bg-[#1f2129]" />
+      <div aria-hidden="true" className="pointer-events-none absolute left-0 top-[216px] w-[400px]" style={artworkStyle}>
+        <img src={redWave} alt="" className="block max-w-none" />
+      </div>
+      <div aria-hidden="true" className="pointer-events-none absolute left-0 top-[237px] w-[400px]" style={artworkStyle}>
+        <img src={paper} alt="" className="block max-w-none" />
+      </div>
+      <header className="relative h-[237px] shrink-0 text-white">
+        <button onClick={onBack} type="button" aria-label="Back to upload checklist" className="absolute left-[19px] top-[max(27px,env(safe-area-inset-top))] grid h-[47px] w-[47px] place-items-center rounded-full bg-white shadow-[0_3px_4px_rgba(0,0,0,.07)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ff000d]">
+          <img src={back} alt="" className="block max-w-none" />
+        </button>
+        <span className="absolute right-[18px] top-[max(32px,env(safe-area-inset-top))] flex h-9 w-[148px] items-center gap-2 rounded-full bg-white pl-[11px] text-[10px] font-bold text-[#1f2129] shadow-[0_4px_7px_rgba(0,0,0,.06)]">
+          <img src={shield} alt="" className="block max-w-none" /> DRIVER CHECK
+        </span>
+        <p className="absolute left-[26px] top-[96px] text-[30px] font-bold leading-[45px] tracking-tight">CruiXe DRIVER</p>
+        <div className="absolute left-[27px] top-[147px] h-1 w-[52px] rounded-full bg-gradient-to-r from-[#ff000d] to-[#ffd11c]" />
+        <div aria-hidden="true" className="absolute left-1/2 top-[227px] h-[5px] w-[54px] -translate-x-1/2 rounded-full bg-white" />
       </header>
-      <main className="relative flex flex-1 flex-col px-[22px] pb-5 pt-9">
-        <h1 className="text-[24px] font-bold">{guide.title}</h1>
-        <p className="mt-2 text-[12px] text-[#667080]">{guide.description}</p>
-        <div className="mt-6 flex items-center gap-3 text-[10px] font-semibold tracking-wide">
-          <span className="h-1 w-[34px] rounded-full bg-gradient-to-r from-[#ff000d] to-[#ffd11c]" />
+      <main className="relative flex flex-1 flex-col px-5 pb-[max(47px,env(safe-area-inset-bottom))] pt-[38px]">
+        <h1 className="px-0.5 text-[22px] font-bold leading-[37px]">{guide.title}</h1>
+        <p className="mt-2 px-0.5 text-[11.7px] leading-7 text-[#667080]">{guide.description}</p>
+        <div className="mt-[15px] flex min-h-[22px] items-center gap-[10px] px-0.5 text-[10px] font-semibold">
+          <span className="h-1 w-[34px] shrink-0 rounded-full bg-gradient-to-r from-[#ff000d] to-[#ffd11c]" />
           UPLOAD GUIDANCE
         </div>
-        <div className="mt-6 flex items-start gap-3 rounded-[15px] border border-[#e2e6ed] p-4">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-[12px] bg-[#f7f8fa] text-[#ff000d]">
-            <Camera className="h-6 w-6" />
-          </span>
-          <div>
-            <h2 className="text-[13px] font-semibold">Photo checklist</h2>
-            <p className="mt-2 text-[12px] leading-5 text-[#667080]">{guide.tip}</p>
-          </div>
+        <div className="mt-[9px] min-h-[190px] rounded-[16px] border border-[#e2e6ed] bg-[#f7f8fa] px-4 pb-5 pt-[19px]">
+          <div className="ml-[9px]"><img src={camera} alt="" className="block max-w-none" /></div>
+          <p className="mt-[30px] text-[12.7px] font-medium leading-[19px]">{guide.tip}</p>
+          <p className="mt-4 text-[10.6px] leading-4 text-[#667080]">Avoid glare · show all edges · keep text readable</p>
         </div>
-        <div className="mt-3 flex items-start gap-3 rounded-[15px] bg-[#f7f8fa] p-4">
-          <CheckCircle2 className="h-5 w-5 shrink-0 text-[#ff000d]" />
-          <p className="text-[12px] leading-5 text-[#667080]">Avoid glare, show the whole subject, and keep the image sharp and readable.</p>
-        </div>
-        <p className="mt-5 text-[11px] leading-5 text-[#667080]">
-          Return to your application to choose a file or take a photo. Document submission remains private and subject to verification.
-        </p>
-        <div className="mt-auto pt-12">
-          <button type="button" onClick={onBack} className="min-h-[55px] w-full rounded-[18px] bg-[#ff000d] px-5 text-[15px] font-semibold text-white">
+        <div className="mt-auto pt-10">
+          <p className="mb-5 px-0.5 text-[10.1px] font-medium leading-[15.5px] text-[#667080]">Return to your checklist to choose a file or take a photo.</p>
+          <button type="button" onClick={onBack} className="min-h-[55px] w-full rounded-[18px] bg-[#ff000d] px-5 text-[15px] font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ff000d]">
             Back to checklist
           </button>
         </div>

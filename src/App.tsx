@@ -83,9 +83,15 @@ const AdminMigrationExport = lazy(() => import("./pages/admin/AdminMigrationExpo
 const StudentVerificationPage = lazy(() => import("./pages/StudentVerificationPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const LiveTrackingPage = lazy(() => import("./pages/LiveTrackingPage"));
-const Batch20ScreenReview = lazy(() => import("./pages/staging/Batch20ScreenReview"));
-const ParcelBatch20Review = lazy(() => import("./pages/staging/ParcelBatch20Review"));
-const CommunicationBatch20Review = lazy(() => import("./pages/staging/CommunicationBatch20Review"));
+const Batch20ScreenReview = import.meta.env.MODE === "staging"
+  ? lazy(() => import("./pages/staging/Batch20ScreenReview"))
+  : () => null;
+const ParcelBatch20Review = import.meta.env.MODE === "staging"
+  ? lazy(() => import("./pages/staging/ParcelBatch20Review"))
+  : () => null;
+const CommunicationBatch20Review = import.meta.env.MODE === "staging"
+  ? lazy(() => import("./pages/staging/CommunicationBatch20Review"))
+  : () => null;
 
 import PageSkeleton from "./components/PageSkeleton";
 

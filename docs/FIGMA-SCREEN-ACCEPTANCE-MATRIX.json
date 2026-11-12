@@ -327,16 +327,19 @@
         "src/components/driver/ApplicationStatus.tsx"
       ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register; DriverRegistrationPage \u2192 DriverRegistrationWizard; application status via /driver/application",
-      "backend_dependency": "useAuth; businessApi.createDriverApplication/createDriverDocument; staging Auth and authorized document storage",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "route_or_entry_point": "/driver/application \u2192 status \u2192 review documents / driver welcome",
+      "backend_dependency": "useDriverApplication; authenticated drivers + driver_documents reads; existing protected Go application upsert and document submission.",
+      "visual_match_status": "REVIEWED: exact Figma context/screenshot + original SVG exports + local Poppins; responsive browser fixtures at 360/375/390/400/430.",
+      "functional_integration_status": "TESTED_LOCAL: actual component callbacks; authenticated route/upload round-trip remains unverified.",
+      "test_evidence": [
+        "src/test/DriverApplicationStatus.test.tsx",
+        "src/test/DriverApplicationPage.test.tsx",
+        "src/test/useDriverApplication.test.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "outstanding_problems": [
+        "Authenticated staging entrypoint, upload/review round-trip and final hands-on acceptance remain pending."
+      ],
+      "final_acceptance_status": "TESTED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/ApplicationStatus.tsx",
       "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
@@ -353,16 +356,19 @@
         "src/components/driver/ApplicationStatus.tsx"
       ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register; DriverRegistrationPage \u2192 DriverRegistrationWizard; application status via /driver/application",
-      "backend_dependency": "useAuth; businessApi.createDriverApplication/createDriverDocument; staging Auth and authorized document storage",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "route_or_entry_point": "/driver/application \u2192 status \u2192 review documents / driver welcome",
+      "backend_dependency": "useDriverApplication; authenticated drivers + driver_documents reads; existing protected Go application upsert and document submission.",
+      "visual_match_status": "REVIEWED: exact Figma context/screenshot + original SVG exports + local Poppins; responsive browser fixtures at 360/375/390/400/430.",
+      "functional_integration_status": "TESTED_LOCAL: actual component callbacks; authenticated route/upload round-trip remains unverified.",
+      "test_evidence": [
+        "src/test/DriverApplicationStatus.test.tsx",
+        "src/test/DriverApplicationPage.test.tsx",
+        "src/test/useDriverApplication.test.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "outstanding_problems": [
+        "Authenticated staging entrypoint, upload/review round-trip and final hands-on acceptance remain pending."
+      ],
+      "final_acceptance_status": "TESTED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/ApplicationStatus.tsx",
       "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
@@ -379,16 +385,19 @@
         "src/components/driver/ApplicationStatus.tsx"
       ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register; DriverRegistrationPage \u2192 DriverRegistrationWizard; application status via /driver/application",
-      "backend_dependency": "useAuth; businessApi.createDriverApplication/createDriverDocument; staging Auth and authorized document storage",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "route_or_entry_point": "/driver/application \u2192 status \u2192 review documents / driver welcome",
+      "backend_dependency": "useDriverApplication; authenticated drivers + driver_documents reads; existing protected Go application upsert and document submission.",
+      "visual_match_status": "REVIEWED: exact Figma context/screenshot + original SVG exports + local Poppins; responsive browser fixtures at 360/375/390/400/430.",
+      "functional_integration_status": "TESTED_LOCAL: actual component callbacks; authenticated route/upload round-trip remains unverified.",
+      "test_evidence": [
+        "src/test/DriverApplicationStatus.test.tsx",
+        "src/test/DriverApplicationPage.test.tsx",
+        "src/test/useDriverApplication.test.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "outstanding_problems": [
+        "Authenticated staging entrypoint, upload/review round-trip and final hands-on acceptance remain pending."
+      ],
+      "final_acceptance_status": "TESTED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/ApplicationStatus.tsx",
       "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
@@ -405,16 +414,17 @@
         "src/components/driver/DriverCaptureGuide.tsx"
       ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register \u2192 capture guide overlay",
-      "backend_dependency": "Local capture guidance; upload authorization belongs to registration wizard",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "route_or_entry_point": "/driver/register \u2192 upload guidance \u2192 Back to checklist",
+      "backend_dependency": "Existing registration wizard owns camera/gallery and authorized upload; guide navigation is local.",
+      "visual_match_status": "REVIEWED: exact Figma context/screenshot + original SVG exports + local Poppins; responsive browser fixtures at 360/375/390/400/430.",
+      "functional_integration_status": "TESTED_LOCAL: actual component callbacks; authenticated route/upload round-trip remains unverified.",
+      "test_evidence": [
+        "src/test/DriverCaptureGuide.test.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "outstanding_problems": [
+        "Authenticated staging entrypoint, upload/review round-trip and final hands-on acceptance remain pending."
+      ],
+      "final_acceptance_status": "TESTED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/DriverCaptureGuide.tsx",
       "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
@@ -431,16 +441,17 @@
         "src/components/driver/DriverCaptureGuide.tsx"
       ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register \u2192 capture guide overlay",
-      "backend_dependency": "Local capture guidance; upload authorization belongs to registration wizard",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "route_or_entry_point": "/driver/register \u2192 upload guidance \u2192 Back to checklist",
+      "backend_dependency": "Existing registration wizard owns camera/gallery and authorized upload; guide navigation is local.",
+      "visual_match_status": "REVIEWED: exact Figma context/screenshot + original SVG exports + local Poppins; responsive browser fixtures at 360/375/390/400/430.",
+      "functional_integration_status": "TESTED_LOCAL: actual component callbacks; authenticated route/upload round-trip remains unverified.",
+      "test_evidence": [
+        "src/test/DriverCaptureGuide.test.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "outstanding_problems": [
+        "Authenticated staging entrypoint, upload/review round-trip and final hands-on acceptance remain pending."
+      ],
+      "final_acceptance_status": "TESTED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/DriverCaptureGuide.tsx",
       "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
@@ -457,16 +468,17 @@
         "src/components/driver/DriverCaptureGuide.tsx"
       ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register \u2192 capture guide overlay",
-      "backend_dependency": "Local capture guidance; upload authorization belongs to registration wizard",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "route_or_entry_point": "/driver/register \u2192 upload guidance \u2192 Back to checklist",
+      "backend_dependency": "Existing registration wizard owns camera/gallery and authorized upload; guide navigation is local.",
+      "visual_match_status": "REVIEWED: exact Figma context/screenshot + original SVG exports + local Poppins; responsive browser fixtures at 360/375/390/400/430.",
+      "functional_integration_status": "TESTED_LOCAL: actual component callbacks; authenticated route/upload round-trip remains unverified.",
+      "test_evidence": [
+        "src/test/DriverCaptureGuide.test.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "outstanding_problems": [
+        "Authenticated staging entrypoint, upload/review round-trip and final hands-on acceptance remain pending."
+      ],
+      "final_acceptance_status": "TESTED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/DriverCaptureGuide.tsx",
       "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
@@ -483,16 +495,17 @@
         "src/components/driver/DriverCaptureGuide.tsx"
       ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register \u2192 capture guide overlay",
-      "backend_dependency": "Local capture guidance; upload authorization belongs to registration wizard",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "route_or_entry_point": "/driver/register \u2192 upload guidance \u2192 Back to checklist",
+      "backend_dependency": "Existing registration wizard owns camera/gallery and authorized upload; guide navigation is local.",
+      "visual_match_status": "REVIEWED: exact Figma context/screenshot + original SVG exports + local Poppins; responsive browser fixtures at 360/375/390/400/430.",
+      "functional_integration_status": "TESTED_LOCAL: actual component callbacks; authenticated route/upload round-trip remains unverified.",
+      "test_evidence": [
+        "src/test/DriverCaptureGuide.test.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "outstanding_problems": [
+        "Authenticated staging entrypoint, upload/review round-trip and final hands-on acceptance remain pending."
+      ],
+      "final_acceptance_status": "TESTED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/DriverCaptureGuide.tsx",
       "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
@@ -509,16 +522,17 @@
         "src/components/driver/DriverCaptureGuide.tsx"
       ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register \u2192 capture guide overlay",
-      "backend_dependency": "Local capture guidance; upload authorization belongs to registration wizard",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "route_or_entry_point": "/driver/register \u2192 upload guidance \u2192 Back to checklist",
+      "backend_dependency": "Existing registration wizard owns camera/gallery and authorized upload; guide navigation is local.",
+      "visual_match_status": "REVIEWED: exact Figma context/screenshot + original SVG exports + local Poppins; responsive browser fixtures at 360/375/390/400/430.",
+      "functional_integration_status": "TESTED_LOCAL: actual component callbacks; authenticated route/upload round-trip remains unverified.",
+      "test_evidence": [
+        "src/test/DriverCaptureGuide.test.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "outstanding_problems": [
+        "Authenticated staging entrypoint, upload/review round-trip and final hands-on acceptance remain pending."
+      ],
+      "final_acceptance_status": "TESTED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/DriverCaptureGuide.tsx",
       "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
@@ -8099,5 +8113,22 @@
     "1102:155",
     "1102:206",
     "1102:259"
-  ]
+  ],
+  "latest_increment": {
+    "date": "2026-11-12",
+    "migrated_frame_ids": [
+      "1101:619",
+      "1101:689",
+      "1101:759",
+      "1102:105",
+      "1102:155",
+      "1102:206",
+      "1102:259",
+      "1102:312"
+    ],
+    "browser_fixture_cases_passed": 50,
+    "fully_accepted_count": 0,
+    "figma_originals": "Preserved editable; export-only reads, no source mutations",
+    "limitation": "Real-component fixtures and local source checks; authenticated staging upload/review/operability acceptance still pending."
+  }
 }

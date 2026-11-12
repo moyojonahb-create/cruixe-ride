@@ -19,7 +19,12 @@ interface Document {
 }
 
 const requiredDocuments = [
-  { type: 'license', label: "Driver's License", description: 'Valid driver license (front and back)' },
+  { type: 'personal_photo', label: 'Profile photo', description: 'Your current front-facing profile photo' },
+  { type: 'id_card', label: 'Identity document', description: 'Clear image of your identity document' },
+  { type: 'selfie_with_id', label: 'Selfie with ID', description: 'Your identity verification photo' },
+  { type: 'license', label: "Driver's License · Front", description: 'Valid driver license front' },
+  { type: 'license_back', label: "Driver's License · Back", description: 'Valid driver license back' },
+  { type: 'vehicle_photo', label: 'Vehicle photo', description: 'A current photo of your vehicle' },
   { type: 'registration', label: 'Vehicle Registration', description: 'Vehicle registration certificate' },
   { type: 'insurance', label: 'Insurance', description: 'Valid vehicle insurance document' },
   { type: 'police_clearance', label: 'Police Clearance', description: 'Police clearance certificate' },
@@ -36,7 +41,7 @@ const DocumentUpload = ({ driverId }: DocumentUploadProps) => {
   const [uploadingType, setUploadingType] = useState<string | null>(null);
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
-  const { data: documents = [], isLoading } = useQuery({
+  const { data: documents = [], isLoading, error: documentsError } = useQuery({
     queryKey: ['driver-documents', driverId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -79,10 +84,10 @@ const DocumentUpload = ({ driverId }: DocumentUploadProps) => {
         description: 'Your document has been submitted for review.',
       });
     },
-    onError: (error: Error) => {
+    onError: () => {
       toast({
         title: 'Upload failed',
-        description: error.message || 'Failed to upload document',
+        description: 'We could not upload your document. Please try again or contact support.',
         variant: 'destructive',
       });
     },
@@ -120,6 +125,10 @@ const DocumentUpload = ({ driverId }: DocumentUploadProps) => {
     }
   };
 
+  if (documentsError) {
+    return <div role="alert" className="rounded-xl border p-4 text-sm">We could not load your application documents. Please refresh this page or try again later.</div>;
+  }
+
   if (isLoading) {
     return (
       <Card>
@@ -138,8 +147,8 @@ const DocumentUpload = ({ driverId }: DocumentUploadProps) => {
             <FileText className="h-6 w-6 text-accent" />
           </div>
           <div>
-            <CardTitle>Required Documents</CardTitle>
-            <CardDescription>Upload all required documents for verification</CardDescription>
+            <CardTitle>Application documents</CardTitle>
+            <CardDescription>Review your documents and replace any that need attention</CardDescription>
           </div>
         </div>
       </CardHeader>
@@ -151,7 +160,7 @@ const DocumentUpload = ({ driverId }: DocumentUploadProps) => {
           return (
             <div
               key={doc.type}
-              className="flex items-center justify-between p-4 border rounded-lg"
+              className="flex flex-wrap items-center justify-between gap-3 rounded-lg border p-4"
             >
               <div className="flex-1">
                 <p className="font-medium">{doc.label}</p>
@@ -174,13 +183,15 @@ const DocumentUpload = ({ driverId }: DocumentUploadProps) => {
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) handleFileSelect(doc.type, file);
+                    e.target.value = '';
                   }}
                 />
 
                 <Button
                   variant={uploadedDoc ? 'outline' : 'default'}
                   size="sm"
-                  disabled={isUploading}
+                  disabled={uploadingType !== null}
+                  aria-label={`${uploadedDoc ? 'Re-upload' : 'Upload'} ${doc.label}`}
                   onClick={() => fileInputRefs.current[doc.type]?.click()}
                 >
                   {isUploading ? (

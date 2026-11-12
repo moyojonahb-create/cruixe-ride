@@ -18,6 +18,8 @@ describe('CruiXe Driver capture guidance', () => {
     render(<DriverCaptureGuide kind={kind} onBack={onBack} />);
     expect(screen.getByRole('heading', { level: 1, name: title })).toBeInTheDocument();
     expect(screen.getByText('UPLOAD GUIDANCE')).toBeInTheDocument();
+    expect(screen.getByText('Return to your checklist to choose a file or take a photo.')).toBeInTheDocument();
+    expect(screen.queryByText(/when the app is implemented/i)).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Back to checklist' }));
     expect(onBack).toHaveBeenCalledOnce();
   });

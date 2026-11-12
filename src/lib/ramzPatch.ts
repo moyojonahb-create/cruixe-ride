@@ -14,6 +14,12 @@ import type { CodeFinding } from '@/lib/ramzCodeScan';
 
 const RAW_MODULES = import.meta.glob(
   [
+    // Staging review tooling is intentionally excluded from shipped source scanners.
+    '!/src/pages/staging/**',
+    '!/src/components/journeys/**',
+    '!/src/lib/journeyBatch20Screens.ts',
+    '!/src/lib/parcelBatch20Screens.ts',
+    '!/src/lib/communicationBatch20Screens.ts',
     '/src/hooks/**/*.{ts,tsx}',
     '/src/lib/**/*.ts',
     '/src/components/ride/**/*.{ts,tsx}',

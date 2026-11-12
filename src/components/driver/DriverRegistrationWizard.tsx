@@ -1,18 +1,20 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Loader2, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import CarLoadingSpinner from '@/components/CarLoadingSpinner';
 import DriverCaptureGuide, { type DriverCaptureKind } from '@/components/driver/DriverCaptureGuide';
-import { createDriverDocument, createDriverApplication } from '@/lib/businessApi';
+import { createDriverDocument, upsertDriverApplication } from '@/lib/businessApi';
 
 const TOTAL_STEPS = 7;
 
@@ -52,21 +54,34 @@ interface FileUploadBoxProps {
   onSelect: (file: File) => void;
 }
 
-function FileUploadBox({ label, file, onSelect }: FileUploadBoxProps) {
+export function FileUploadBox({ label, file, onSelect }: FileUploadBoxProps) {
   const ref = useRef<HTMLInputElement>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (!file || !file.type.startsWith('image/')) {
+      setPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
   return (
     <div className="flex min-w-0 flex-1 flex-col items-center gap-2">
       <button
         type="button"
+        aria-label={`Choose ${label}`}
         onClick={() => ref.current?.click()}
         className="flex h-[86px] w-full min-w-0 items-center justify-center overflow-hidden rounded-[15px] border border-[#e2e6ed] bg-[#f7f8fa] transition-colors hover:border-[#ff000d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#ff000d]"
       >
-        {file ? (
+        {previewUrl ? (
           <img
-            src={URL.createObjectURL(file)}
+            src={previewUrl}
             alt={label}
             className="h-full w-full object-cover"
           />
+        ) : file ? (
+          <span className="max-w-full truncate px-2 text-xs">{file.name}</span>
         ) : (
           <Plus className="h-7 w-7 text-[#ff000d]" />
         )}
@@ -80,6 +95,7 @@ function FileUploadBox({ label, file, onSelect }: FileUploadBoxProps) {
         onChange={(e) => {
           const f = e.target.files?.[0];
           if (f) onSelect(f);
+          e.target.value = '';
         }}
       />
     </div>
@@ -89,6 +105,8 @@ function FileUploadBox({ label, file, onSelect }: FileUploadBoxProps) {
 export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverRegistrationWizardProps) {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
@@ -167,7 +185,9 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
       const vehicle = vehicleForm.getValues();
 
       // Create driver record through Go. Storage uploads remain in Supabase.
-      const driver = await createDriverApplication({
+      const driver = await upsertDriverApplication({
+        profile: { full_name: `${personal.firstName.trim()} ${personal.surname.trim()}`, gender: personal.gender },
+        driver: {
         vehicle_type: vehicle.vehicleType,
         vehicle_make: vehicle.vehicleMake,
         vehicle_model: vehicle.vehicleModel,
@@ -175,7 +195,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
         vehicle_color: vehicle.vehicleColor,
         plate_number: vehicle.plateNumber,
         gender: personal.gender,
-        status: 'pending',
+        },
       });
       const driverId = driver.id;
       if (!driverId) throw new Error('Failed to create driver application');
@@ -205,31 +225,31 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
         if (r.status === 'rejected') console.error('Driver document upload failed:', r.reason);
       });
 
-      // Brief processing animation
-      await new Promise(r => setTimeout(r, 2500));
-
       if (failedCount > 0) {
         toast({
           title: 'Application submitted with warnings',
-          description: `${failedCount} document(s) failed to upload. You can re-upload them from your driver dashboard.`,
+          description: `${failedCount} document(s) failed to upload. Open your application to upload the affected documents again.`,
           variant: 'destructive',
         });
       } else {
-        toast({ title: 'Application submitted!', description: 'Your documents are being reviewed.' });
+        const hasDocuments = [licenseFront, licenseBack, idCard, selfieWithId, vehiclePhoto, insuranceDoc, personalPhoto].some(Boolean);
+        toast({ title: 'Application saved', description: hasDocuments ? 'Your documents have been submitted for review.' : 'Open your application to add documents for review.' });
       }
+      await queryClient.invalidateQueries({ queryKey: ['driver-profile', user.id] });
       onSuccess();
+      if (failedCount > 0) navigate('/driver/application');
     } catch (error: unknown) {
       let errorMessage = 'Failed to submit application.';
       if (error instanceof Error) {
         const errMsg = error.message.toLowerCase();
         if (errMsg.includes('new row violates row-level security') || errMsg.includes('42501')) {
-          errorMessage = 'Permission denied. Please contact support or try admin add-driver.js';
+          errorMessage = 'We could not save your application. Please sign in again or contact support.';
         } else if (errMsg.includes('bucket') || errMsg.includes('storage')) {
-          errorMessage = 'Storage upload failed. Check "driver-documents" bucket in Supabase dashboard.';
+          errorMessage = 'We could not upload your document. Please try again or contact support.';
         } else if (errMsg.includes('column') || errMsg.includes('does not exist')) {
-          errorMessage = 'Database schema mismatch. Run migrations.';
+          errorMessage = 'Registration is temporarily unavailable. Please try again later or contact support.';
         } else {
-          errorMessage = error.message;
+          errorMessage = 'We could not save your application. Please try again or contact support.';
         }
         console.error('Driver registration error:', error);
       }
