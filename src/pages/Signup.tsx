@@ -7,13 +7,14 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Loader2, RefreshCw, CheckCircle2, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { lovable } from '@/integrations/lovable/index';
 import { authDestination, authEntryPath } from '@/lib/authDestination';
 import { updateMyProfile } from '@/lib/businessApi';
+import DriverAuthFrame, { DriverVerificationMethods, driverAuthInput, driverAuthSubmit } from '@/components/auth/DriverAuthFrame';
 import RiderAuthFrame, { AuthFieldIcon, AuthForwardIcon, RiderAuthSocial, riderAuthInput, riderAuthSubmit } from '@/components/auth/RiderAuthFrame';
 
 const signupSchema = z.object({
@@ -39,12 +40,21 @@ const signupSchema = z.object({
 
 type SignupFormData = z.infer<typeof signupSchema>;
 
-type SignupStep = 'details' | 'verify-phone' | 'complete';
+type SignupStep = 'details' | 'security' | 'verify-phone' | 'complete';
 
 const Signup = () => {
   const [searchParams] = useSearchParams();
   const next = useMemo(() => authDestination(searchParams.get('next')), [searchParams]);
+  const destinationPath = next.split(/[?#]/)[0];
+  const isDriverSignup = destinationPath === '/driver' || destinationPath.startsWith('/driver/');
   const [step, setStep] = useState<SignupStep>('details');
+  const detailsHeading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    if (isDriverSignup && step === 'details') {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      detailsHeading.current?.focus({ preventScroll: true });
+    }
+  }, [isDriverSignup, step]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [signupCompletionError, setSignupCompletionError] = useState<string | null>(null);
   const [showVerificationMethods, setShowVerificationMethods] = useState(false);
@@ -203,6 +213,7 @@ const Signup = () => {
         const { data: taken } = await (supabase.rpc as any)('nickname_is_taken', { _nickname: formattedData.nickname });
         if (taken) {
           form.setError('nickname', { message: 'That nickname is already taken.' });
+          if (isDriverSignup) setStep('details');
           return;
         }
       }
@@ -302,6 +313,10 @@ const Signup = () => {
       );
     }
 
+    if (isDriverSignup && showVerificationMethods) {
+      return <DriverVerificationMethods countdown={countdown} isSending={isSendingOtp} onSms={() => void sendOtp(formData.phone)} onBack={() => setShowVerificationMethods(false)} />;
+    }
+
     return (
       <div className="min-h-[100dvh] bg-primary flex items-center justify-center p-4 pt-[calc(16px+env(safe-area-inset-top))] pb-[calc(16px+env(safe-area-inset-bottom))]">
         <div className="w-full max-w-[520px] bg-background rounded-3xl p-5 shadow-[0_18px_40px_rgba(0,0,0,0.22)]">
@@ -366,7 +381,7 @@ const Signup = () => {
                   countdownRef.current = null;
                   setCountdown(0); setCodeSent(false); setOtpSendError(null);
                   detailsSubmissionRef.current = false;
-                  setStep('details'); setOtp(''); setShowVerificationMethods(false);
+                  setStep(isDriverSignup ? 'security' : 'details'); setOtp(''); setShowVerificationMethods(false);
                 }}
                 disabled={isVerifying || isSendingOtp}
                 className="text-muted-foreground"
@@ -395,15 +410,53 @@ const Signup = () => {
     );
   }
 
+  if (isDriverSignup && step === 'security') {
+    return (
+      <DriverAuthFrame mode="security" busy={isSubmitting} onBack={() => setStep('details')}>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmitDetails, (errors) => {
+            if (errors.fullName || errors.nickname || errors.email) setStep('details');
+          })} className="mt-4">
+            <FormField control={form.control} name="phone" render={({ field }) => (
+              <FormItem className="space-y-[5px]">
+                <FormLabel className="block min-h-[23px] px-0.5 text-[12.5px] font-semibold leading-[23px]">Mobile number</FormLabel>
+                <FormControl><Input type="tel" inputMode="tel" autoComplete="tel" placeholder="+263 | Enter your phone number" className={driverAuthInput} {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+            {(['password', 'confirmPassword'] as const).map((name) => (
+              <FormField key={name} control={form.control} name={name} render={({ field }) => (
+                <FormItem className="mt-[25px] space-y-[5px]">
+                  <FormLabel className="block min-h-[23px] px-0.5 text-[12.5px] font-semibold leading-[23px]">{name === 'password' ? 'Create password' : 'Confirm password'}</FormLabel>
+                  <FormControl><Input type="password" autoComplete="new-password" placeholder={name === 'password' ? 'At least 8 characters' : 'Enter your password again'} className={driverAuthInput} {...field} /></FormControl>
+                  {name === 'password' && <FormDescription className="px-0.5 text-[10.2px] leading-4 text-[#667080]">Use 8–72 characters with uppercase, lowercase, a number and a special character.</FormDescription>}
+                  <FormMessage />
+                </FormItem>
+              )} />
+            ))}
+            <p className="mt-2 px-0.5 text-[10.2px] font-medium leading-7 text-[#667080]">Your one-time code will be sent by SMS to this phone.</p>
+            <Button type="submit" disabled={isSubmitting} className={`${driverAuthSubmit} mt-[10px]`}>{isSubmitting ? 'Sending code...' : 'Continue'}</Button>
+          </form>
+        </Form>
+        <div className="mt-[10px] flex min-h-[46px] items-center justify-between px-1 text-[12.3px] text-[#667080]">
+          <span>Already registered?</span><Link to={authEntryPath('/auth', next)} className="flex min-h-11 items-center font-semibold text-[#111]">Sign in</Link>
+        </div>
+      </DriverAuthFrame>
+    );
+  }
+
   return (
     <RiderAuthFrame variant="signup">
       <div className="mb-4 space-y-1.5">
-        <h1 className="text-[25px] font-bold leading-tight">Create CruiXe Account</h1>
-        <p className="text-[13.5px] font-semibold text-[#6b707d]">Join CruiXe and book your first ride.</p>
+        <h1 ref={detailsHeading} tabIndex={-1} className="outline-none text-[25px] font-bold leading-tight">Create CruiXe Account</h1>
+        <p className="text-[13.5px] font-semibold text-[#6b707d]">{isDriverSignup ? 'Start your driver registration.' : 'Join CruiXe and book your first ride.'}</p>
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmitDetails)} className="space-y-3">
+        <form onSubmit={isDriverSignup ? async (event) => {
+          event.preventDefault();
+          if (await form.trigger(['fullName', 'nickname', 'email'])) setStep('security');
+        } : form.handleSubmit(onSubmitDetails)} className="space-y-3">
           <FormField control={form.control} name="fullName" render={({ field }) => (
             <FormItem>
               <FormLabel className="sr-only">Full name</FormLabel>
@@ -442,6 +495,7 @@ const Signup = () => {
             </FormItem>
           )} />
 
+          {!isDriverSignup && <>
           <FormField control={form.control} name="phone" render={({ field }) => (
             <FormItem>
               <FormLabel className="sr-only">Mobile number</FormLabel>
@@ -480,8 +534,10 @@ const Signup = () => {
             );
           })}
 
+          </>}
+
           <Button type="submit" className={riderAuthSubmit} disabled={isSubmitting}>
-            {isSubmitting ? (<><Loader2 className="h-4 w-4 animate-spin mr-2" /> Sending code...</>) : 'Create Account'}
+            {isSubmitting ? (<><Loader2 className="h-4 w-4 animate-spin mr-2" /> Sending code...</>) : isDriverSignup ? 'Continue' : 'Create Account'}
             <AuthForwardIcon />
           </Button>
         </form>

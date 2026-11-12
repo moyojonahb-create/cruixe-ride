@@ -82,20 +82,28 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/Signup.tsx",
+        "src/components/auth/DriverAuthFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/signup?next=%2Fdriver%2Fregister \u2192 personal details \u2192 Account Security \u2192 Verify phone \u2192 Other verification methods",
+      "backend_dependency": "Existing omniflex-otp SMS and shared Supabase signup; live staging not verified; voice unsupported.",
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "MOCKED_REGRESSION_TESTED; authenticated staging UNVERIFIED",
+      "test_evidence": [
+        "src/test/Signup.verification.test.tsx: 16 passing tests",
+        "Seven Chromium fixture viewports: 360/375/390/400/430px, XR414x896,16Pro402x874",
+        "docs/FIGMA-DRIVER-AUTH-SCREENS-2026-11-13.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Authenticated staging SMS/account creation pending.",
+        "Retained password confirmation/policy and16px inputs deliberately differ from prototype; voice remains unavailable.",
+        "Preceding personal details1092:105 and Verify Phone1093:105 visual migrations remain separate."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Executed Node22 regression tests and isolated Chromium fixtures on 2026-11-13. Test network/auth fixtures are mocked."
     },
     {
       "figma_name": "CruiXe Driver / 04 \u00b7 Verify Phone",
@@ -137,20 +145,28 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/Signup.tsx",
+        "src/components/auth/DriverAuthFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/signup?next=%2Fdriver%2Fregister \u2192 personal details \u2192 Account Security \u2192 Verify phone \u2192 Other verification methods",
+      "backend_dependency": "Existing omniflex-otp SMS and shared Supabase signup; live staging not verified; voice unsupported.",
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "MOCKED_REGRESSION_TESTED; authenticated staging UNVERIFIED",
+      "test_evidence": [
+        "src/test/Signup.verification.test.tsx: 16 passing tests",
+        "Seven Chromium fixture viewports: 360/375/390/400/430px, XR414x896,16Pro402x874",
+        "docs/FIGMA-DRIVER-AUTH-SCREENS-2026-11-13.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Authenticated staging SMS/account creation pending.",
+        "Retained password confirmation/policy and16px inputs deliberately differ from prototype; voice remains unavailable.",
+        "Preceding personal details1092:105 and Verify Phone1093:105 visual migrations remain separate."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion.",
+      "test_evidence_note": "Executed Node22 regression tests and isolated Chromium fixtures on 2026-11-13. Test network/auth fixtures are mocked.",
       "functional_recovery_increment_2026_11_13": {
         "source_files": [
           "src/pages/Signup.tsx",
