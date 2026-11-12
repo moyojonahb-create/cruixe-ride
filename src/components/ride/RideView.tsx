@@ -1428,7 +1428,7 @@ export default function RideView() {
         className="absolute left-0 right-0 z-50"
         onRibbonClick={() => setSheetExpanded((e) => !e)}
         handleWidth={64}
-        panelStyle={{ background: '#fffafa' }}
+        panelStyle={{ background: '#fff' }}
         style={{
           bottom: 0,
           // Idle content is fixed and compact (three row-2 tiles + row-3 buttons) —

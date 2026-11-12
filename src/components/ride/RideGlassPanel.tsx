@@ -54,7 +54,7 @@ const RideGlassPanel = forwardRef<HTMLDivElement, RideGlassPanelProps>(function 
           fades toward the bottom so only a curved sliver shows above/around
           the panel. */}
       {solidRibbon ? (
-        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-10 h-14 overflow-hidden">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-10 aspect-[400/65] overflow-hidden">
           <img src="/brand/ride/red-ribbon.svg" alt="" className="absolute inset-x-0 top-0 w-full" />
           <img src="/brand/ride/white-ribbon.svg" alt="" className="absolute inset-x-0 top-[21px] w-full" />
         </div>
@@ -90,11 +90,13 @@ const RideGlassPanel = forwardRef<HTMLDivElement, RideGlassPanelProps>(function 
       {/* Frosted glass panel — sits in front of the red glow, offset down so
           the glow's curved top edge peeks out from behind it. */}
       <div
-        className="relative z-10 flex-1 min-h-0 flex flex-col overflow-hidden"
+        className={cn('relative flex-1 min-h-0 flex flex-col overflow-hidden', solidRibbon ? 'z-0' : 'z-10')}
         style={{
           ...(solidRibbon ? { background: '#fff' } : glassPanel),
           ...panelStyle,
-          marginTop: solidRibbon ? 55 : 16,
+          // The exported ribbon is 400 × 65. Percentage margins follow sheet
+          // width, so the content starts below its full curve at every size.
+          marginTop: solidRibbon ? '16.25%' : 16,
           borderTopLeftRadius: solidRibbon ? 0 : 22,
           borderTopRightRadius: solidRibbon ? 0 : 22,
         }}

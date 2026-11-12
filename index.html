@@ -8,8 +8,6 @@
     <meta name="author" content="CruiXe Technologies" />
 
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: dark)" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="CruiXe" />
@@ -77,7 +75,12 @@
 
   <body>
     <style>
+      /* Let Safari derive its chrome from the current page, not a fixed pale band. */
       html, body { background: #f2f4f7; }
+      html:has(#instant-splash:not([aria-hidden="true"])),
+      body:has(#instant-splash:not([aria-hidden="true"])) { background: #ff000d; }
+      html:has(#instant-splash-2:not([aria-hidden="true"])),
+      body:has(#instant-splash-2:not([aria-hidden="true"])) { background: #f5ece7; }
       .cruixe-launch {
         position: fixed;
         inset: 0;
