@@ -50,7 +50,7 @@ jobs:
           VITE_SUPABASE_PUBLISHABLE_KEY: ci-dummy-publishable
           VITE_GO_BACKEND_URL: http://127.0.0.1:59998
           VITE_WS_URL: ws://127.0.0.1:59998/ws
-        run: npm test -- src/test/authDestination.test.ts src/test/AuthGuard.destination.test.tsx src/test/DriverTripRecovery.test.tsx src/test/riderEmergencyContact.test.ts src/test/TrustedContactSheet.test.tsx src/test/SafetyPage.connections.test.tsx
+        run: npm test -- src/test/authDestination.test.ts src/test/AuthGuard.destination.test.tsx src/test/DriverTripRecovery.test.tsx src/test/riderEmergencyContact.test.ts src/test/TrustedContactSheet.test.tsx src/test/SafetyPage.connections.test.tsx src/test/ResetPassword.test.tsx
       - run: npx tsc --noEmit -p tsconfig.app.json
       - run: npm run lint
       - run: npm run build

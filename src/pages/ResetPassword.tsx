@@ -1,13 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye, EyeOff, Loader2, CheckCircle2, Clock3 } from 'lucide-react';
+import { Loader2, Clock3 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import CruiXeLogo from '@/components/CruiXeLogo';
+import { NewPasswordScreen, PasswordUpdatedScreen } from '@/components/auth/RecoveryScreens';
 
 const SHELL_CLASS = 'min-h-[100dvh] bg-[#fdfdfd] px-4 py-6 flex items-center justify-center font-[\'Poppins\',system-ui,sans-serif] text-[#20252f]';
 const SHELL_STYLE = { paddingTop: 'max(1.5rem, env(safe-area-inset-top))', paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' } as const;
@@ -19,7 +16,6 @@ const ResetPassword = () => {
   const [hasRecoverySession, setHasRecoverySession] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [resetSucceeded, setResetSucceeded] = useState(false);
@@ -74,6 +70,8 @@ const ResetPassword = () => {
       }
       toast({ title: 'Password updated', description: 'Your CruiXe account security has been updated.' });
       setResetSucceeded(true);
+    } catch {
+      setFormError("Could not update your password. Check your connection and try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -89,22 +87,15 @@ const ResetPassword = () => {
   }
 
   if (resetSucceeded) {
-    return (
-      <main className={SHELL_CLASS} style={SHELL_STYLE} data-figma-node="491:1082">
-        <section className="w-full max-w-[400px] rounded-[28px] bg-white px-5 py-8 text-center shadow-sm">
-          <h1 className="text-[22px] font-bold">Password updated</h1>
-          <p className="mt-4 text-[12px] text-[#6c7684]">You can now continue securely to CruiXe.</p>
-          <div className="mx-auto my-8 grid h-[132px] w-[132px] place-items-center rounded-full bg-[#ff000d]">
-            <CheckCircle2 className="h-[72px] w-[72px] text-white" />
-          </div>
-          <p className="text-[13px] font-semibold">Your account security has been updated.</p>
-          <p className="mt-2 text-[12px] text-[#6c7684]">Keep your password private.</p>
-          <Button className="mt-8 h-[54px] w-full rounded-[18px] bg-[#ff000d] font-semibold text-white hover:bg-[#e9000d]" onClick={() => navigate('/ride', { replace: true })}>
-            Continue to CruiXe
-          </Button>
-        </section>
-      </main>
-    );
+    return <PasswordUpdatedScreen busy={isSubmitting} error={formError} onContinue={async () => {
+      setIsSubmitting(true); setFormError(null);
+      try {
+        const { error } = await supabase.auth.signOut({ scope: 'local' });
+        if (error) throw error;
+        navigate('/auth', { replace: true });
+      } catch { setFormError('Could not return to sign in. Please try again.'); }
+      finally { setIsSubmitting(false); }
+    }} />;
   }
 
   if (!hasRecoverySession) {
@@ -127,66 +118,9 @@ const ResetPassword = () => {
     );
   }
 
-  return (
-    <div className={SHELL_CLASS} style={SHELL_STYLE} data-figma-node="491:1042">
-      <Card className="w-full max-w-[400px] rounded-[28px] border border-[#e1e5ea] bg-white shadow-sm">
-        <CardHeader className="text-center space-y-4">
-          <Link to="/auth" className="mx-auto">
-            <CruiXeLogo size="md" />
-          </Link>
-          <CardTitle className="text-[22px] font-bold text-[#20252f]">Set a new password</CardTitle>
-          <CardDescription className="text-[12px] text-[#6c7684]">Choose a strong password for your account.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {formError && (
-              <div className="rounded-xl bg-destructive/10 border border-destructive/30 px-4 py-3 text-sm text-destructive font-medium">
-                ⚠️ {formError}
-              </div>
-            )}
-            <div className="space-y-2">
-              <Label htmlFor="new-password">New password</Label>
-              <div className="relative">
-                <Input
-                  id="new-password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete="new-password"
-                  className="h-[51px] rounded-[13px] border-[#e1e5ea] bg-white pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirm-password">Confirm password</Label>
-              <Input
-                id="confirm-password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                autoComplete="new-password"
-                className="h-[51px] rounded-[13px] border-[#e1e5ea] bg-white"
-              />
-            </div>
-            <Button type="submit" className="h-[55px] w-full rounded-[18px] bg-[#ff000d] font-semibold text-white hover:bg-[#e9000d]" disabled={isSubmitting}>
-              {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              Update password
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
-  );
+  return <NewPasswordScreen password={password} confirmation={confirmPassword}
+    onPassword={setPassword} onConfirmation={setConfirmPassword} onSubmit={handleSubmit}
+    busy={isSubmitting} error={formError} />;
 };
 
 export default ResetPassword;
