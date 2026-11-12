@@ -46,6 +46,7 @@ const Signup = () => {
   const next = useMemo(() => authDestination(searchParams.get('next')), [searchParams]);
   const [step, setStep] = useState<SignupStep>('details');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [signupCompletionError, setSignupCompletionError] = useState<string | null>(null);
   const [visiblePasswords, setVisiblePasswords] = useState({ password: false, confirmPassword: false });
   const [formData, setFormData] = useState<SignupFormData | null>(null);
   const { signUp } = useAuth();
@@ -199,6 +200,7 @@ const Signup = () => {
   };
 
   const completeSignup = async (data: SignupFormData) => {
+    setSignupCompletionError(null);
     setIsSubmitting(true);
     try {
       const email = data.email?.trim() || `${data.phone.replace(/\+/g, '')}@pickme.phone`;
@@ -214,6 +216,7 @@ const Signup = () => {
         if (message.includes('weak_password') || message.includes('Password should contain')) {
           message = 'Password must include uppercase, lowercase, number, and a special character (e.g. !@#$%).';
         }
+        setSignupCompletionError(message);
         toast({ title: 'Signup failed', description: message, variant: 'destructive' });
         return;
       }
@@ -224,6 +227,7 @@ const Signup = () => {
       toast({ title: 'Account created!', description: 'Welcome to CruiXe.' });
       navigate(next);
     } catch {
+      setSignupCompletionError('Account creation could not be completed. Please try again.');
       toast({ title: 'Sign up failed', description: 'Please try again.', variant: 'destructive' });
     } finally {
       setIsSubmitting(false);
@@ -247,10 +251,21 @@ const Signup = () => {
                 <CheckCircle2 className="h-10 w-10 text-accent" />
               </div>
               <p className="text-lg font-semibold text-foreground">Phone Verified!</p>
-              <p className="text-sm text-muted-foreground">
-                {isSubmitting ? 'Creating your account...' : 'Completing registration...'}
-              </p>
-              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              {signupCompletionError ? (
+                <>
+                  <p role="alert" className="text-center text-sm text-destructive">{signupCompletionError}</p>
+                  <Button type="button" onClick={() => void completeSignup(formData)} disabled={isSubmitting} className="min-h-11 w-full rounded-xl">
+                    {isSubmitting ? 'Retrying account creation...' : 'Try again'}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    {isSubmitting ? 'Creating your account...' : 'Completing registration...'}
+                  </p>
+                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                </>
+              )}
             </div>
           </div>
         </div>
