@@ -580,7 +580,7 @@ export default function FullScreenNavigation({
   ].filter(Boolean) as string[];
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-background">
+    <motion.div data-map-screen="true" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-background">
       <NavigationMap
         pickup={pickup}
         dropoff={dropoff}

@@ -238,7 +238,7 @@ export default function DriverRideRequests() {
   };
 
   return (
-    <main className="relative h-[100dvh] overflow-hidden bg-[#f2f4f7] text-[#1f2129]" style={{ fontFamily: RIDE_FONT }}>
+    <main data-map-screen="true" className="relative h-[100dvh] overflow-hidden bg-[#f2f4f7] text-[#1f2129]" style={{ fontFamily: RIDE_FONT }}>
       <div className="absolute inset-0">
         <LazyMapboxMap
           defaultCenter={driverCoords ?? undefined}

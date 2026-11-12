@@ -195,7 +195,7 @@ export default function LiveTrackingPage() {
   const status = statusLabels[ride.status] || statusLabels.pending;
 
   return (
-    <div className="relative h-[100dvh] w-full overflow-hidden bg-background">
+    <div data-map-screen="true" className="relative h-[100dvh] w-full overflow-hidden bg-background">
       {/* Map — takes most of screen */}
       <div className="absolute inset-0 bottom-0">
         <TripMapboxMap

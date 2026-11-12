@@ -163,7 +163,7 @@ export default function DriverRideDetails() {
   const note = ride.rider_note || (isParcel ? ride.parcel?.deliveryNote ?? null : null);
 
   return (
-    <div data-figma-node={isParcel ? "1210:116" : undefined} className="min-h-[100dvh] flex flex-col relative" style={{ background: '#F2F4F7' }}>
+    <div data-map-screen="true" data-figma-node={isParcel ? "1210:116" : undefined} className="min-h-[100dvh] flex flex-col relative" style={{ background: '#F2F4F7' }}>
       {/* Floating header over the map */}
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center" style={{ padding: 'calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px', gap: 10, pointerEvents: 'none' }}>
         <button type="button" onClick={handleClose} aria-label="Back" className="shrink-0 flex items-center justify-center rounded-full active:scale-90 transition-transform" style={{ width: 36, height: 36, background: 'rgba(255,255,255,.92)', boxShadow: '0 2px 8px rgba(17,17,17,.12)', pointerEvents: 'auto' }}>

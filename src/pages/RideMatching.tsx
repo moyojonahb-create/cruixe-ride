@@ -753,7 +753,7 @@ export default function RideMatching() {
   const tierKey = ride?.vehicle_type && TIER_LABELS[ride.vehicle_type] ? ride.vehicle_type : 'economy';
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-background">
+    <div data-map-screen="true" className="relative w-full h-[100dvh] overflow-hidden bg-background">
       {/* Map */}
       <div className="absolute inset-0">
         <LazyMapboxMap

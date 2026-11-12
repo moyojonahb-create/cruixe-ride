@@ -8,8 +8,8 @@
     <meta name="author" content="CruiXe Technologies" />
 
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#FF000D" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#FF000D" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: dark)" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="CruiXe" />
@@ -77,7 +77,7 @@
 
   <body>
     <style>
-      html, body { background: #ff000d; }
+      html, body { background: #f2f4f7; }
       .cruixe-launch {
         position: fixed;
         inset: 0;
@@ -141,7 +141,8 @@
         window.__splashReady = false;
         window.__splashMinDone = false;
 
-        var SECOND_SPLASH_DURATION = 1200;
+        var FIRST_SPLASH_DURATION = 5000;
+        var SECOND_SPLASH_DURATION = 3000;
         var secondSplashStarted = false;
 
         function showSecondSplash() {
@@ -178,11 +179,11 @@
         setTimeout(function () {
           window.__splashMinDone = true;
           tryHide();
-        }, 800);
+        }, FIRST_SPLASH_DURATION);
 
         // React calls window.__dismissSplash() once the bootstrap resolves
         // (or its own timeout elapses and continues with cached data). Still
-        // gated by the short floor above so it never cuts the splash short.
+        // gated by the five-second floor above so it never cuts the splash short.
         window.__dismissSplash = function () {
           window.__splashReady = true;
           tryHide();

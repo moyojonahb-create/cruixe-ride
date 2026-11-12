@@ -1280,7 +1280,7 @@ export default function RideView() {
   // MAIN RIDE BOOKING UI
   // ═══════════════════════════════════════════
   return (
-    <div className="relative h-[100dvh] w-full overflow-hidden bg-background">
+    <div data-map-screen="true" className="relative h-[100dvh] w-full overflow-hidden bg-background">
       {/* ── MAP ── */}
       <div className="absolute inset-0">
         <MapboxMap pickup={pickupLocation} dropoff={dropoffLocation} routeGeometry={routeData?.geometry} onMapClick={handleMapClick} defaultCenter={mapCenter} preferredCenter={preferredCenter} defaultZoom={mapZoom} className="w-full h-full" height="100%" drivers={nearbyDrivers} stops={rideStops.filter(s => s.lat && s.lng)} riderGender={(riderPrefs?.gender as "male" | "female" | undefined) ?? null} bottomInset={sheetHeight + 24} />
