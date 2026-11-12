@@ -118,7 +118,16 @@
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion.",
+      "functional_recovery_increment_2026_11_13": {
+        "source_files": [
+          "src/pages/Signup.tsx",
+          "src/test/Signup.verification.test.tsx"
+        ],
+        "evidence": "docs/FIGMA-SIGNUP-VERIFICATION-RECOVERY-2026-11-13.md",
+        "result": "Six mocked regression tests and seven Chromium fixture viewport checks passed; no authenticated staging acceptance.",
+        "visual_status": "UNVERIFIED; exact asset downloads return HTTP 403; no new visual implementation."
+      }
     },
     {
       "figma_name": "CruiXe Driver / 04B \u00b7 Verification Methods",
@@ -141,7 +150,16 @@
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion.",
+      "functional_recovery_increment_2026_11_13": {
+        "source_files": [
+          "src/pages/Signup.tsx",
+          "src/test/Signup.verification.test.tsx"
+        ],
+        "evidence": "docs/FIGMA-SIGNUP-VERIFICATION-RECOVERY-2026-11-13.md",
+        "result": "Six mocked regression tests and seven Chromium fixture viewport checks passed; no authenticated staging acceptance.",
+        "visual_status": "UNVERIFIED; exact asset downloads return HTTP 403; no new visual implementation."
+      }
     },
     {
       "figma_name": "CruiXe Driver / 05 \u00b7 Your profile photo",

@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Loader2, ArrowLeft, RefreshCw, CheckCircle2, EyeOff } from 'lucide-react';
+import { Loader2, RefreshCw, CheckCircle2, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { lovable } from '@/integrations/lovable/index';
@@ -63,6 +63,10 @@ const Signup = () => {
   const [otp, setOtp] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [otpSendError, setOtpSendError] = useState<string | null>(null);
+  const [codeSent, setCodeSent] = useState(false);
+  const detailsSubmissionRef = useRef(false);
+  const otpSendRef = useRef(false);
   const [isVerified, setIsVerified] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
@@ -107,7 +111,9 @@ const Signup = () => {
 
   // Send OTP via omniflex-otp edge function (unauthenticated - we haven't signed up yet)
   const sendOtp = async (phoneNumber: string) => {
-    if (countdown > 0) return;
+    if (countdown > 0 || otpSendRef.current) return;
+    otpSendRef.current = true;
+    setOtpSendError(null);
     setShowVerificationMethods(false);
     setIsSendingOtp(true);
     try {
@@ -123,12 +129,15 @@ const Signup = () => {
       if (!res.ok || !data.success) {
         throw new Error(data.error || data.message || 'Failed to send OTP');
       }
+      setCodeSent(true);
       toast({ title: 'Code sent!', description: `Verification code sent to ${phoneNumber}` });
       startCountdown();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to send code';
+      setOtpSendError(message);
       toast({ title: 'Failed to send code', description: message, variant: 'destructive' });
     } finally {
+      otpSendRef.current = false;
       setIsSendingOtp(false);
     }
   };
@@ -166,40 +175,58 @@ const Signup = () => {
   };
 
   const onSubmitDetails = async (data: SignupFormData) => {
-    const formattedData = {
-      ...data,
-      nickname: data.nickname?.trim() || '',
-      phone: formatPhoneNumber(data.phone),
-    };
+    if (detailsSubmissionRef.current) return;
+    detailsSubmissionRef.current = true;
+    let advancedToVerification = false;
+    setIsSubmitting(true);
+    try {
+      const formattedData = {
+        ...data,
+        nickname: data.nickname?.trim() || '',
+        phone: formatPhoneNumber(data.phone),
+      };
 
-    // Check if phone number is already registered
-    const { data: existingPhone } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('phone', formattedData.phone)
-      .maybeSingle();
+      // Check if phone number is already registered
+      const { data: existingPhone } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('phone', formattedData.phone)
+        .maybeSingle();
 
-    if (existingPhone) {
-      toast({ title: 'Phone already registered', description: 'This phone number is already linked to an account. Please sign in instead.', variant: 'destructive' });
-      return;
-    }
-
-    // Nickname must be unique (it doubles as a sign-in identifier)
-    if (formattedData.nickname) {
-      const { data: taken } = await (supabase.rpc as any)('nickname_is_taken', { _nickname: formattedData.nickname });
-      if (taken) {
-        form.setError('nickname', { message: 'That nickname is already taken.' });
+      if (existingPhone) {
+        toast({ title: 'Phone already registered', description: 'This phone number is already linked to an account. Please sign in instead.', variant: 'destructive' });
         return;
       }
+
+      // Nickname must be unique (it doubles as a sign-in identifier)
+      if (formattedData.nickname) {
+        const { data: taken } = await (supabase.rpc as any)('nickname_is_taken', { _nickname: formattedData.nickname });
+        if (taken) {
+          form.setError('nickname', { message: 'That nickname is already taken.' });
+          return;
+        }
+      }
+
+      // Email uniqueness is enforced by Supabase Auth at signup time
+
+      advancedToVerification = true;
+      setFormData(formattedData);
+      setShowVerificationMethods(false);
+      setStep('verify-phone');
+      // A changed number needs its own code; never retain an old countdown.
+      if (countdownRef.current) clearInterval(countdownRef.current);
+      countdownRef.current = null;
+      setCountdown(0);
+      setCodeSent(false);
+      setOtpSendError(null);
+      await sendOtp(formattedData.phone);
+    } catch {
+      toast({ title: 'Unable to continue', description: 'Please check your connection and try again.', variant: 'destructive' });
+    } finally {
+      // Keep stale resolver callbacks from resubmitting after the step changes.
+      if (!advancedToVerification) detailsSubmissionRef.current = false;
+      setIsSubmitting(false);
     }
-
-    // Email uniqueness is enforced by Supabase Auth at signup time
-
-    setFormData(formattedData);
-    setShowVerificationMethods(false);
-    setStep('verify-phone');
-    // Send OTP immediately
-    await sendOtp(formattedData.phone);
   };
 
   const completeSignup = async (data: SignupFormData) => {
@@ -300,9 +327,11 @@ const Signup = () => {
             <div className="text-center space-y-2">
               <h2 className="text-xl font-bold text-foreground">Verify your phone</h2>
               <p className="text-sm text-muted-foreground">
-                We sent a 6-digit code to <span className="font-medium">{formData.phone}</span>
+                {codeSent ? 'We sent a 6-digit code to ' : 'Request a 6-digit code for '}<span className="font-medium">{formData.phone}</span>
               </p>
             </div>
+
+            {otpSendError && <p role="alert" className="text-center text-sm text-destructive">Could not send your code. {otpSendError} Please try again.</p>}
 
             <div className="flex justify-center">
               <InputOTP maxLength={6} value={otp} onChange={setOtp} disabled={isVerifying}>
@@ -332,8 +361,14 @@ const Signup = () => {
             <div className="flex items-center justify-between">
               <Button
                 variant="ghost"
-                onClick={() => { setStep('details'); setOtp(''); setShowVerificationMethods(false); }}
-                disabled={isVerifying}
+                onClick={() => {
+                  if (countdownRef.current) clearInterval(countdownRef.current);
+                  countdownRef.current = null;
+                  setCountdown(0); setCodeSent(false); setOtpSendError(null);
+                  detailsSubmissionRef.current = false;
+                  setStep('details'); setOtp(''); setShowVerificationMethods(false);
+                }}
+                disabled={isVerifying || isSendingOtp}
                 className="text-muted-foreground"
               >
                 Change number
