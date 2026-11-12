@@ -47,6 +47,7 @@ const Signup = () => {
   const [step, setStep] = useState<SignupStep>('details');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [signupCompletionError, setSignupCompletionError] = useState<string | null>(null);
+  const [showVerificationMethods, setShowVerificationMethods] = useState(false);
   const [visiblePasswords, setVisiblePasswords] = useState({ password: false, confirmPassword: false });
   const [formData, setFormData] = useState<SignupFormData | null>(null);
   const { signUp } = useAuth();
@@ -107,6 +108,7 @@ const Signup = () => {
   // Send OTP via omniflex-otp edge function (unauthenticated - we haven't signed up yet)
   const sendOtp = async (phoneNumber: string) => {
     if (countdown > 0) return;
+    setShowVerificationMethods(false);
     setIsSendingOtp(true);
     try {
       const res = await fetch(
@@ -194,6 +196,7 @@ const Signup = () => {
     // Email uniqueness is enforced by Supabase Auth at signup time
 
     setFormData(formattedData);
+    setShowVerificationMethods(false);
     setStep('verify-phone');
     // Send OTP immediately
     await sendOtp(formattedData.phone);
@@ -276,6 +279,24 @@ const Signup = () => {
       <div className="min-h-[100dvh] bg-primary flex items-center justify-center p-4 pt-[calc(16px+env(safe-area-inset-top))] pb-[calc(16px+env(safe-area-inset-bottom))]">
         <div className="w-full max-w-[520px] bg-background rounded-3xl p-5 shadow-[0_18px_40px_rgba(0,0,0,0.22)]">
           <div className="space-y-6">
+            {showVerificationMethods ? (
+              <section aria-label="Verification methods" data-node-id="1097:106" className="space-y-4 font-['Poppins',sans-serif]">
+                <button type="button" onClick={() => setShowVerificationMethods(false)} className="grid size-11 place-items-center rounded-full border bg-white text-xl" aria-label="Back to phone verification">‹</button>
+                <h2 className="text-[26px] font-bold text-[#1f2129]">Choose verification</h2>
+                <p className="text-[12px] text-[#667080]">Use another method to verify your phone.</p>
+                <div className="flex items-center gap-3 text-[11px] font-semibold"><span className="h-1 w-9 rounded bg-gradient-to-r from-[#ff000d] to-[#ffd11c]" />VERIFICATION OPTIONS</div>
+                <p className="text-[13px]">Both methods use your registered mobile number.</p>
+                <button type="button" onClick={() => void sendOtp(formData.phone)} disabled={countdown > 0 || isSendingOtp} className="w-full rounded-[17px] border border-[#ffd300] bg-white px-4 py-4 text-left disabled:opacity-60">
+                  <span className="block text-[15px] font-semibold">Text message (SMS)</span>
+                  <span className="block text-[11px] text-[#667080]">{countdown > 0 ? `You can request a new code in ${countdown}s` : 'Get a new one-time code by text.'}</span>
+                </button>
+                <div aria-disabled="true" className="w-full rounded-[17px] border border-[#e3e7ee] bg-[#f8f9fa] px-4 py-4 text-left opacity-70">
+                  <span className="block text-[15px] font-semibold">Automated phone call</span>
+                  <span className="block text-[11px] text-[#667080]">Unavailable until voice verification is supported.</span>
+                </div>
+                <p className="text-[11px] text-[#667080]">Voice call availability depends on SMS/voice provider support.</p>
+              </section>
+            ) : <>
             <div className="text-center space-y-2">
               <h2 className="text-xl font-bold text-foreground">Verify your phone</h2>
               <p className="text-sm text-muted-foreground">
@@ -311,7 +332,7 @@ const Signup = () => {
             <div className="flex items-center justify-between">
               <Button
                 variant="ghost"
-                onClick={() => { setStep('details'); setOtp(''); }}
+                onClick={() => { setStep('details'); setOtp(''); setShowVerificationMethods(false); }}
                 disabled={isVerifying}
                 className="text-muted-foreground"
               >
@@ -331,6 +352,8 @@ const Signup = () => {
                 {countdown > 0 ? `Resend in ${countdown}s` : 'Resend code'}
               </Button>
             </div>
+            <button type="button" className="w-full min-h-11 text-center text-sm font-semibold text-[#1f2129] underline" onClick={() => setShowVerificationMethods(true)}>Other verification methods</button>
+            </>}
           </div>
         </div>
       </div>
