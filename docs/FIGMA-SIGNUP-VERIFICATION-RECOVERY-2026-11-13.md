@@ -34,3 +34,18 @@ Node 22.16.0 (default shell Node 24 was not used for repository checks):
 To resume visual migration, restore authenticated download access for the exact asset URLs emitted by Figma MCP, or provide the original exports for `1095:154` / `1097:107` (photo), `1095:156` / `1097:109` (wave), `1095:158` / `1097:111` (curve), `1095:176` / `1097:129` (shield), and `1478:49` / `1478:59` (arrow), preserving intrinsic SVG sizes. Do not substitute screenshots for screens. No password is needed.
 
 Authenticated staging OTP, account creation, driver persistence/uploads and application review require dedicated test accounts/sessions and staging service configuration. Environment status exposes no configured staging credential bindings. Never use production accounts to fill this gap. No staging deployment was attempted: staging deployment access/authorization was not established. No preview URL exists for this increment. No production deployment, main modification, merge, schema change or force-push occurred. Remaining migration phases stay incomplete and final acceptance stays UNVERIFIED.
+
+## Asset access resolution — follow-up
+
+The current onboarding asset blocker is resolved. Temporary HTTP download URLs
+still return 403, but authenticated `use_figma` with read-only
+`node.exportAsync` retrieves the actual layer data. SVG_STRING exports return
+small original vector files. The photo's PNG export exceeds the 48000-byte
+response limit, so it was retrieved in 25 ordered byte slices, assembled locally,
+and validated by PNG decoding (400×246, 248850 bytes) and visual inspection.
+
+Exports are saved under `public/brand/driver-auth/`, with node IDs and dimensions
+in its README. This is a working connector export route; no account, sharing,
+password, domain, backend, or design changes were needed. The earlier blocked
+status describes the HTTP route, and no longer blocks these assets. Visual
+implementation/acceptance and authenticated staging verification remain pending.
