@@ -16,6 +16,7 @@ import RideGlassPanel from '@/components/ride/RideGlassPanel';
 import SwipeDismissCard from '@/components/driver/SwipeDismissCard';
 import GenderChip from '@/components/driver/GenderChip';
 import DriverBottomNav from '@/components/driver/DriverBottomNav';
+import { useDriverTripRecovery } from '@/components/driver/useDriverTripRecovery';
 import { redCta, RIDE_FONT, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2 } from '@/components/ride/rideGlass';
 import DriverAvailabilityControl from '@/components/driver/DriverAvailabilityControl';
 import { getDriverEarnings } from '@/lib/walletApi';
@@ -66,35 +67,10 @@ export default function DriverRideRequests() {
     setIsOnline(online);
     if (!online) { setRides([]); lastRideIds.current = new Set(); }
   }, []);
-  useEffect(() => {
-    getDriverProfile().then((p) => { setIsOnline(p?.is_online ?? false); setDriverRowId(p?.id ?? null); }).catch(() => {});
-  }, []);
-
-  // If a rider accepts this driver's offer while they're sitting on this
-  // screen (or the app relaunches mid-trip — force-quit recovery), bounce
-  // straight to /driver/dashboard, which owns rendering FullScreenNavigation
-  // for an active trip. Without this, an accepted ride only showed up if the
-  // driver happened to already be on the dashboard route.
-  useEffect(() => {
-    if (!driverRowId) return;
-    let cancelled = false;
-    const checkActiveTrip = async () => {
-      const { data } = await supabase
-        .from('rides')
-        .select('id')
-        .eq('driver_id', driverRowId)
-        .in('status', ['accepted', 'arrived', 'in_progress'])
-        .limit(1)
-        .maybeSingle();
-      if (!cancelled && data) navigate('/driver/dashboard', { replace: true });
-    };
-    checkActiveTrip();
-    const channel = supabase
-      .channel(`driver-active-trip-${driverRowId}`)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rides', filter: `driver_id=eq.${driverRowId}` }, () => { checkActiveTrip(); })
-      .subscribe();
-    return () => { cancelled = true; supabase.removeChannel(channel); };
-  }, [driverRowId, navigate]);
+  // The dashboard owns accepted-trip navigation and unpaid-cash recovery.
+  // Recheck on foreground/online and poll when Realtime misses a handoff.
+  const recoverTrip = useCallback(() => navigate('/driver/dashboard', { replace: true }), [navigate]);
+  useDriverTripRecovery(driverRowId, recoverTrip);
 
   useEffect(() => {
     let cancelled = false;
@@ -137,6 +113,7 @@ export default function DriverRideRequests() {
         void expireOldRides();
       }
       const profile = await getDriverProfile();
+      setDriverRowId(profile?.id ?? null);
 
       const online = profile?.is_online ?? false;
       setIsOnline(online);

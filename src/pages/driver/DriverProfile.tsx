@@ -92,8 +92,18 @@ export default function DriverProfilePage() {
       setEmergencyPhone(profileRow.data?.emergency_contact_phone ?? '');
 
       if (driverProfile) {
+        // Documents reference the driver's row PK, not the Auth user UUID.
+        void supabase.from('driver_documents').select('*')
+          .eq('driver_id', driverProfile.id)
+          .then(({ data }) => setDocuments((data ?? []).map((document) => ({
+            document_type: document.document_type, status: document.status,
+            // The expiry migration is newer than the generated client types.
+            expiry_date: 'expiry_date' in document && typeof document.expiry_date === 'string' ? document.expiry_date : null,
+          }))), () => setDocuments([]));
         fetchDriverWeekStats(driverProfile.id, driverProfile.created_at).then(setWeekStats).catch(() => {});
         fetchOpenRides(driverProfile.gender).then((rows) => setWaitingCount(rows.length)).catch(() => {});
+      } else {
+        setDocuments([]);
       }
     } catch (e) {
       toast.error('Could not load profile', { description: (e as Error).message });
@@ -117,9 +127,6 @@ export default function DriverProfilePage() {
         setLastDepositDate(d?.created_at ?? null);
       })
       .catch(() => setProofStatus(null));
-
-    (supabase as any).from('driver_documents').select('document_type, status, expiry_date').eq('driver_id', user.id)
-      .then(({ data }) => setDocuments((data as DriverDocRow[]) ?? []), () => setDocuments([]));
 
     const { data: photoRow } = await (supabase as any).from('drivers').select('vehicle_photo_url').eq('user_id', user.id).maybeSingle();
     if (photoRow) {

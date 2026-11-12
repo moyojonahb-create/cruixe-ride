@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { useDriverStatus } from '@/hooks/useDriverStatus';
-import AuthModalWrapper from '@/components/auth/AuthModalWrapper';
 
 const brand = '/brand/driver-welcome';
 const benefits = [
@@ -19,8 +17,6 @@ export default function DriverModeLanding() {
   const { isApproved, isDriver } = useDriverStatus();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
-  const [authOpen, setAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
   const handleDriverAction = () => {
     if (isDriver && isApproved) {
@@ -84,7 +80,7 @@ export default function DriverModeLanding() {
                 </button>
               ) : (
                 <>
-                  <button type="button" onClick={() => { setAuthMode('login'); setAuthOpen(true); }} className={`${actionClass} border border-[#ff000d] bg-white text-[#111]`}>Sign in</button>
+                  <Link to="/auth?next=%2Fdriver" className={`${actionClass} border border-[#ff000d] bg-white text-[#111]`}>Sign in</Link>
                   <Link to="/signup?next=%2Fdriver%2Fregister" className={`${actionClass} bg-[#ff000d] text-white`}>Create account</Link>
                 </>
               )}
@@ -93,13 +89,6 @@ export default function DriverModeLanding() {
           </div>
         </section>
       </div>
-
-      <AuthModalWrapper
-        isOpen={authOpen}
-        onClose={() => setAuthOpen(false)}
-        mode={authMode}
-        onSwitchMode={() => setAuthMode((mode) => mode === 'login' ? 'signup' : 'login')}
-      />
     </main>
   );
 }

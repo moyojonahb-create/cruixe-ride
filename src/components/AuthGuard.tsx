@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { authEntryPath } from '@/lib/authDestination';
 import PageSkeleton from '@/components/PageSkeleton';
 
 interface Props {
@@ -26,7 +27,7 @@ export default function AuthGuard({ children }: Props) {
   }
 
   if (!user) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to={authEntryPath('/auth', location.pathname + location.search + location.hash)} replace />;
   }
 
   return <>{children}</>;

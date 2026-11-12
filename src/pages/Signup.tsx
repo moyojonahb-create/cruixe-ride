@@ -12,6 +12,7 @@ import { Loader2, ArrowLeft, RefreshCw, CheckCircle2, EyeOff } from 'lucide-reac
 import { useToast } from '@/hooks/use-toast';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { lovable } from '@/integrations/lovable/index';
+import { authDestination, authEntryPath } from '@/lib/authDestination';
 import { updateMyProfile } from '@/lib/businessApi';
 import RiderAuthFrame, { AuthFieldIcon, AuthForwardIcon, RiderAuthSocial, riderAuthInput, riderAuthSubmit } from '@/components/auth/RiderAuthFrame';
 
@@ -42,7 +43,7 @@ type SignupStep = 'details' | 'verify-phone' | 'complete';
 
 const Signup = () => {
   const [searchParams] = useSearchParams();
-  const next = useMemo(() => searchParams.get('next') || '/ride', [searchParams]);
+  const next = useMemo(() => authDestination(searchParams.get('next')), [searchParams]);
   const [step, setStep] = useState<SignupStep>('details');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [visiblePasswords, setVisiblePasswords] = useState({ password: false, confirmPassword: false });
@@ -415,7 +416,7 @@ const Signup = () => {
 
       <div className="mt-5">
         <RiderAuthSocial signingUp onSelect={async (provider) => {
-          const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin + '/app' });
+          const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin + authEntryPath('/auth', next) });
           if (result?.error) {
             toast({ title: 'Sign-in unavailable', description: 'Try your email or a different sign-in method.', variant: 'destructive' });
           }
@@ -423,7 +424,7 @@ const Signup = () => {
       </div>
       <p className="mt-2 text-center text-[13px] text-[#6b707d]">
         Already have an account?{' '}
-        <Link to="/login" className="inline-flex min-h-11 items-center font-bold text-[#111]">Sign in</Link>
+        <Link to={authEntryPath('/auth', next)} className="inline-flex min-h-11 items-center font-bold text-[#111]">Sign in</Link>
       </p>
       <p className="text-center text-xs text-[#6b707d]">
         By continuing you agree to CruiXe’s <Link to="/terms" className="underline">terms of use</Link>.

@@ -9,10 +9,12 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { lovable } from '@/integrations/lovable/index';
 import RiderAuthFrame, { AuthFieldIcon, AuthForwardIcon, RiderAuthSocial, riderAuthInput, riderAuthSubmit } from '@/components/auth/RiderAuthFrame';
+import { authDestination, authEntryPath } from '@/lib/authDestination';
 import { updateMyProfile } from '@/lib/businessApi';
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
+  const destination = authDestination(searchParams.get('next'));
   const defaultMode = searchParams.get('mode') === 'signup' ? 'signup' : 'login';
   const [mode, setMode] = useState<'login' | 'signup'>(defaultMode);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,9 +38,9 @@ const Auth = () => {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate('/ride', { replace: true });
+      navigate(destination, { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, destination]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +48,6 @@ const Auth = () => {
     if (!email || !password) return;
     setIsSubmitting(true);
 
-    const identifier = await loginIdentifierToEmail(email);
     const isNetworkError = (err: unknown) => {
       const m = (err as Error)?.message?.toLowerCase() ?? '';
       return m.includes('failed to fetch')
@@ -56,6 +57,7 @@ const Auth = () => {
     };
 
     try {
+      const identifier = await loginIdentifierToEmail(email);
       let lastError: Error | null = null;
 
       // Retry transient network failures; never retry a real credential rejection.
@@ -63,7 +65,7 @@ const Auth = () => {
         const { error } = await signIn(identifier, password);
         if (!error) {
           toast({ title: 'Welcome back!' });
-          navigate('/ride', { replace: true });
+          navigate(destination, { replace: true });
           return;
         }
         lastError = error;
@@ -80,6 +82,8 @@ const Auth = () => {
             : lastError.message || 'Sign in failed. Please try again.'
         );
       }
+    } catch {
+      setLoginError('Sign in could not be completed. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -191,7 +195,7 @@ const Auth = () => {
       }
 
       toast({ title: 'Account created!', description: 'Welcome to CruiXe.' });
-      navigate('/ride', { replace: true });
+      navigate(destination, { replace: true });
     } finally {
       setIsSubmitting(false);
     }
@@ -222,7 +226,7 @@ const Auth = () => {
           <span aria-current="page" className="grid min-h-11 place-items-center rounded-xl bg-[#ff000d] text-sm font-semibold text-white shadow-md">
             Sign in
           </span>
-          <Link to="/signup" className="grid min-h-11 place-items-center rounded-xl border border-[#dbdee3] bg-[#f8f9fa] text-sm font-semibold shadow-md">
+          <Link to={authEntryPath('/signup', destination)} className="grid min-h-11 place-items-center rounded-xl border border-[#dbdee3] bg-[#f8f9fa] text-sm font-semibold shadow-md">
             Sign up
           </Link>
         </nav>
@@ -387,7 +391,7 @@ const Auth = () => {
 
       <div className="mt-5">
         <RiderAuthSocial signingUp={mode === 'signup'} onSelect={async (provider) => {
-          const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin + '/ride' });
+          const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin + authEntryPath('/auth', destination) });
           if (result?.error) {
             toast({ title: 'Sign-in unavailable', description: 'Try your email or a different sign-in method.', variant: 'destructive' });
           }
@@ -397,7 +401,7 @@ const Auth = () => {
         {mode === 'login' ? (
           <p>
             Don’t have an account?{' '}
-            <Link to="/signup" className="inline-flex min-h-11 items-center font-bold">Create One</Link>
+            <Link to={authEntryPath('/signup', destination)} className="inline-flex min-h-11 items-center font-bold">Create One</Link>
           </p>
         ) : (
           <p>

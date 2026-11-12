@@ -1,3 +1,8 @@
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/lib/supabaseClient';
+import ShareTripButton from '@/components/ride/ShareTripButton';
+import TrustedContactSheet from '@/components/ride/TrustedContactSheet';
 import { MessageSquare, Users, Phone, Shield, Car, AlertTriangle, Lock, Send, Sparkles, PhoneCall, CircleAlert, ChevronRight } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import CruiXeLogo from '@/components/CruiXeLogo';
@@ -13,23 +18,40 @@ const protectionCards = [
 
 export default function SafetyPage() {
   const navigate = useNavigate();
+  const [contactsOpen, setContactsOpen] = useState(false);
   const location = useLocation();
   const isMapp = location.pathname.startsWith('/mapp');
 
-  const handleShareTrip = async () => {
-    const shareText = 'I’m sharing my current ride safety status from CruiXe.';
-    if (typeof navigator !== 'undefined' && navigator.share) {
+  const { user } = useAuth();
+  const [activeTrip, setActiveTrip] = useState<{ id: string; user_id: string; pickup_address: string; dropoff_address: string } | null>(null);
+  const [tripLookupError, setTripLookupError] = useState(false);
+  useEffect(() => {
+    let active = true;
+    setActiveTrip(null);
+    setTripLookupError(false);
+    if (!user) return;
+    let request = 0;
+    const refresh = async () => {
+      const operation = ++request;
+      setActiveTrip(null);
       try {
-        await navigator.share({ title: 'CruiXe Safety', text: shareText, url: window.location.href });
-        return;
+        const { data, error } = await supabase.from('rides')
+          .select('id, user_id, pickup_address, dropoff_address')
+          .eq('user_id', user.id).in('status', ['accepted', 'enroute', 'enroute_pickup', 'arrived', 'in_progress'])
+          .order('created_at', { ascending: false }).limit(1).maybeSingle();
+        if (active && operation === request) { setActiveTrip(error ? null : data); setTripLookupError(!!error); }
       } catch {
-        // fall back to clipboard if the share sheet is dismissed
+        if (active && operation === request) { setActiveTrip(null); setTripLookupError(true); }
       }
-    }
-    if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
-    }
-  };
+    };
+    const visible = () => { if (document.visibilityState === 'visible') void refresh(); };
+    void refresh();
+    window.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', visible);
+    const timer = window.setInterval(refresh, 30000);
+    return () => { active = false; request += 1; window.removeEventListener('focus', refresh); document.removeEventListener('visibilitychange', visible); window.clearInterval(timer); };
+  }, [user?.id]);
+  const shareableTrip = activeTrip?.user_id === user?.id ? activeTrip : null;
 
   return (
     <div className="min-h-[100dvh] bg-background flex flex-col">
@@ -87,18 +109,19 @@ export default function SafetyPage() {
               </div>
               <PhoneCall className="h-4 w-4" />
             </a>
-            <button onClick={handleShareTrip} className="flex items-center justify-between rounded-2xl border border-border/50 bg-background/70 px-4 py-3 text-left">
-              <div>
-                <p className="text-sm font-semibold text-foreground">Share trip status</p>
-                <p className="text-xs text-muted-foreground">Alert trusted contacts quickly</p>
-              </div>
-              <Send className="h-4 w-4 text-muted-foreground" />
-            </button>
+            {shareableTrip ? (
+              <ShareTripButton rideId={shareableTrip.id} pickupAddress={shareableTrip.pickup_address} dropoffAddress={shareableTrip.dropoff_address} variant="row" rowIcon={<Send className="h-4 w-4 text-muted-foreground" />} className="flex items-center gap-3 rounded-2xl border border-border/50 bg-background/70 px-4 py-3 text-left" />
+            ) : (
+              <button onClick={() => navigate('/ride')} className="flex items-center justify-between rounded-2xl border border-border/50 bg-background/70 px-4 py-3 text-left">
+                <div><p className="text-sm font-semibold text-foreground">Open my ride</p><p className="text-xs text-muted-foreground">{tripLookupError ? 'Could not check your active trip. Open your ride to retry.' : 'Live sharing is available after a driver accepts your ride.'}</p></div>
+                <Send className="h-4 w-4 text-muted-foreground" />
+              </button>
+            )}
           </div>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <a href="tel:995" className="rounded-[22px] border border-border/50 bg-card/80 p-4 text-left shadow-sm">
+          <button type="button" onClick={() => setContactsOpen(true)} className="rounded-[22px] border border-border/50 bg-card/80 p-4 text-left shadow-sm">
             <div className="flex items-center gap-3">
               <div className="rounded-2xl bg-red-500/10 p-2.5 text-red-600"><Phone className="h-4 w-4" /></div>
               <div>
@@ -106,8 +129,8 @@ export default function SafetyPage() {
                 <p className="text-sm text-muted-foreground">Reach help instantly</p>
               </div>
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">Call the emergency support line or use the in-app help desk.</p>
-          </a>
+            <p className="mt-3 text-xs text-muted-foreground">Add, edit, remove or call your saved emergency contact.</p>
+          </button>
           <div className="rounded-[22px] border border-border/50 bg-card/80 p-4 shadow-sm">
             <div className="flex items-center gap-3">
               <div className="rounded-2xl bg-amber-500/10 p-2.5 text-amber-600"><CircleAlert className="h-4 w-4" /></div>
@@ -165,6 +188,7 @@ export default function SafetyPage() {
         </div>
       </div>
 
+      <TrustedContactSheet open={contactsOpen} onClose={() => setContactsOpen(false)} />
       <BottomNavBar />
     </div>
   );
