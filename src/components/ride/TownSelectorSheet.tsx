@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { MapPin, ChevronDown, Search, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TOWNS, type TownConfig } from '@/lib/towns';
+import townIcon from '@/assets/rider-home/town.svg';
 
 interface TownSelectorSheetProps {
   currentTown: TownConfig;
@@ -33,7 +34,7 @@ export default function TownSelectorSheet({ currentTown, onSelect }: TownSelecto
       left: rect.left,
       top: rect.top,
       width: rect.width,
-      minWidth: Math.max(rect.width, 320),
+      minWidth: Math.min(Math.max(rect.width, 320), window.innerWidth - 24),
     });
   };
 
@@ -57,24 +58,16 @@ export default function TownSelectorSheet({ currentTown, onSelect }: TownSelecto
 
   return (
     <>
-      {/* Trigger button — glass pill per the /ride redesign spec */}
       <button
         ref={triggerRef}
+        type="button"
         onClick={handleOpen}
-        className="inline-flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform"
-        style={{
-          height: 36,
-          padding: '0 12px',
-          borderRadius: 999,
-          background: 'rgba(255,255,255,.62)',
-          backdropFilter: 'blur(20px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-          boxShadow: 'inset 0 .5px 0 rgba(255,255,255,.9), inset 0 0 0 .5px rgba(255,255,255,.6), 0 6px 14px rgba(0,0,0,.06)',
-        }}
+        aria-expanded={open}
+        className="inline-flex min-h-8 min-w-0 items-center gap-1.5 rounded-full border border-[#d4d5d9] bg-[#f7f7fa] px-2.5 text-xs font-semibold text-[#111] shadow-sm transition-transform active:scale-95"
       >
-        <MapPin className="w-3.5 h-3.5" fill="currentColor" style={{ color: '#B81104' }} />
-        <span className="text-[12.5px] font-semibold" style={{ color: '#111111' }}>{currentTown.name}</span>
-        <ChevronDown className="w-3.5 h-3.5" style={{ color: '#666666' }} />
+        <img src={townIcon} alt="" className="shrink-0" />
+        <span className="truncate">{currentTown.name}</span>
+        <ChevronDown className="size-3.5 shrink-0 text-[#666]" />
       </button>
 
       {/* Popover anchored to the trigger button — pops upward from where the

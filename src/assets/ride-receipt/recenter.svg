@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Icon / gps" clip-path="url(#clip0_0_23)">
+<path id="Vector" d="M19.5 13C19.5 16.5899 16.5899 19.5 13 19.5C9.41015 19.5 6.5 16.5899 6.5 13C6.5 9.41015 9.41015 6.5 13 6.5C16.5899 6.5 19.5 9.41015 19.5 13Z" stroke-width="2.05833" stroke-linecap="round" stroke-linejoin="round" stroke="#20232A"/>
+<path id="Vector_2" d="M15.4917 13C15.4917 14.3761 14.3761 15.4917 13 15.4917C11.6239 15.4917 10.5083 14.3761 10.5083 13C10.5083 11.6239 11.6239 10.5083 13 10.5083C14.3761 10.5083 15.4917 11.6239 15.4917 13Z" stroke-width="2.05833" stroke-linecap="round" stroke-linejoin="round" stroke="#20232A"/>
+<path id="Vector_3" d="M13 1.08333V5.41667M13 20.5833V24.9167M1.08333 13H5.41667M20.5833 13H24.9167" stroke-width="2.05833" stroke-linecap="round" stroke-linejoin="round" stroke="#20232A"/>
+</g>
+<defs>
+<clipPath id="clip0_0_23">
+<rect width="26" height="26" fill="white"/>
+</clipPath>
+</defs>
+</svg>

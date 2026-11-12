@@ -5,8 +5,7 @@
  */
 import type { CSSProperties } from 'react';
 
-export const RIDE_RED = '#B81104';
-export const RIDE_RED_GRADIENT = 'linear-gradient(135deg, #E01B00, #B81104)';
+export const RIDE_RED = '#FF000D';
 export const RIDE_YELLOW = '#FFDD00';
 export const RIDE_TEXT = '#111111';
 export const RIDE_TEXT_2 = '#666666';
@@ -63,7 +62,7 @@ export const tintYellow: CSSProperties = {
 
 /** Solid red CTA fill with the intentional red glow + top sheen. */
 export const redCta: CSSProperties = {
-  background: RIDE_RED_GRADIENT,
+  background: RIDE_RED,
   boxShadow:
     '0 12px 26px rgba(184,17,4,.36), inset 0 1px 0 rgba(255,255,255,.28)',
   color: '#fff',

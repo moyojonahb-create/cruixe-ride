@@ -61,9 +61,10 @@ interface NotificationBellProps {
    * /ride map chrome's 52px glass circles). */
   className?: string;
   style?: CSSProperties;
+  iconSource?: string;
 }
 
-export function NotificationBell({ className, style }: NotificationBellProps = {}) {
+export function NotificationBell({ className, style, iconSource }: NotificationBellProps = {}) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -146,7 +147,7 @@ export function NotificationBell({ className, style }: NotificationBellProps = {
         style={style}
         aria-label="Notifications"
       >
-        <Bell className="w-5 h-5 text-foreground" strokeWidth={2.2} />
+        {iconSource ? <img src={iconSource} alt="" /> : <Bell className="w-5 h-5 text-foreground" strokeWidth={2.2} />}
         <AnimatePresence>
           {unreadCount > 0 && (
             <motion.span

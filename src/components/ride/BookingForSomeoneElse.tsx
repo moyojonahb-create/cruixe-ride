@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Banknote, BellRing, ChevronRight, Phone, User, UserPlus, Users, X } from 'lucide-react';
 import { normalizePhoneZW } from '@/lib/region';
 import RideGlassPanel from './RideGlassPanel';
-import { redCta, tintBlue, tintYellow, RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3 } from './rideGlass';
+import { redCta, tintBlue, tintYellow, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3 } from './rideGlass';
 
 interface BookingForSomeoneElseProps {
   open: boolean;
@@ -40,7 +40,7 @@ const chipGlass: CSSProperties = {
   boxShadow: 'inset 0 .75px 0 rgba(255,255,255,.98), inset 0 0 0 .5px rgba(17,17,17,.09)',
 };
 const segmentSelected: CSSProperties = {
-  background: RIDE_RED_GRADIENT,
+  background: RIDE_RED,
   boxShadow: '0 8px 18px rgba(184,17,4,.3)',
 };
 const iconTileGlass: CSSProperties = {
@@ -105,16 +105,16 @@ export default function BookingForSomeoneElse({
             >
               <RideGlassPanel panelStyle={panelStyle} style={{ maxHeight: '90vh', paddingBottom: 'env(safe-area-inset-bottom)' }} onRibbonClick={onClose}>
                 <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
-                  <div className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+                  <div data-figma-node={enabled ? "504:410" : undefined} className="p-4 font-['Poppins',system-ui,sans-serif]" style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
                     {/* Section 1 — header */}
                     <div className="flex items-center" style={{ gap: 11 }}>
                       <span className="shrink-0 flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 14, ...iconTileGlass }}>
                         <UserPlus style={{ width: 19, height: 19, color: RIDE_RED }} />
                       </span>
                       <div className="min-w-0" style={{ flex: 1 }}>
-                        <p style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>Who is riding?</p>
+                        <p style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>{enabled ? 'Book for someone else' : 'Who is riding?'}</p>
                         <p className="truncate" style={{ marginTop: 3, fontSize: 12.5, fontWeight: 500, lineHeight: 1.2, color: RIDE_TEXT_2 }}>
-                          {tierLabel} · {pickupName} → {dropoffName}
+                          {enabled ? 'Enter the passenger details for this trip.' : `${tierLabel} · ${pickupName} → ${dropoffName}`}
                         </p>
                       </div>
                       <button

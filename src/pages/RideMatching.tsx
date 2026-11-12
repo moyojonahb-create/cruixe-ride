@@ -33,7 +33,7 @@ import RideGlassPanel from '@/components/ride/RideGlassPanel';
 import NoteToDriverSheet from '@/components/ride/NoteToDriverSheet';
 import SafetySheet from '@/components/ride/SafetySheet';
 import ShareTripButton from '@/components/ride/ShareTripButton';
-import { openTripReceipt } from '@/components/ride/TripReceiptButton';
+import { openTripReceipt, refreshTripReceiptPayment } from '@/components/ride/TripReceiptButton';
 import DriverMessageSheet from '@/components/driver/DriverMessageSheet';
 import EcoCashPaymentModal from '@/components/wallet/EcoCashPaymentModal';
 import IncomingCallModal from '@/components/ride/IncomingCallModal';
@@ -753,7 +753,7 @@ export default function RideMatching() {
   const tierKey = ride?.vehicle_type && TIER_LABELS[ride.vehicle_type] ? ride.vehicle_type : 'economy';
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-background">
+    <div data-map-screen="true" className="relative w-full h-[100dvh] overflow-hidden bg-background">
       {/* Map */}
       <div className="absolute inset-0">
         <LazyMapboxMap
@@ -893,9 +893,16 @@ export default function RideMatching() {
           growing/shrinking rather than a guessed bottom offset. */}
       {!isMatched && !timedOut && !isComplete && (
         <div
-          className="absolute left-4 right-4 z-30 flex flex-col items-end pointer-events-none"
-          style={{ bottom: sheetTop + 8, gap: 8 }}
+          data-figma-node="631:100"
+          className="absolute left-3 right-3 z-30 flex max-h-[min(58dvh,480px)] flex-col gap-2 overflow-y-auto overscroll-contain rounded-[22px] border border-[#e2e6ed] bg-white/95 px-3 pb-3 pt-4 shadow-[0_12px_30px_rgba(17,17,17,.16)] backdrop-blur-xl"
+          style={{ bottom: sheetTop + 8 }}
         >
+          {visibleOffers.length > 0 && (
+            <div className="pointer-events-none sticky top-0 z-10 -mx-3 -mt-4 border-b border-[#e2e6ed] bg-white/95 px-4 py-3 backdrop-blur-xl">
+              <h2 className="text-[17px] font-bold text-[#1f2129]">Driver Offers</h2>
+              <p className="mt-0.5 text-[12px] text-[#667080]">Choose a driver to pick you up</p>
+            </div>
+          )}
           <AnimatePresence initial={false}>
             {visibleOffers.map(({ offer, profile, secondsLeft }) => (
               <BidCard
@@ -1061,16 +1068,11 @@ export default function RideMatching() {
                       distanceKm: ride.distance_km,
                       durationMinutes: ride.duration_minutes,
                       driverName: driver?.full_name ?? undefined,
-                      vehicleInfo: driver ? `${driver.vehicle_make || ''} ${driver.vehicle_model || ''}`.trim() || undefined : undefined,
+                      vehicleInfo: driver ? [driver.vehicle_make, driver.vehicle_model, driver.vehicle_color].filter(Boolean).join(' ') || undefined : undefined,
                       plateNumber: driver?.plate_number || undefined,
                       paymentMethod: ride.payment_method,
                       paymentConfirmed: !ride.payment_failed && (isCashPayment ? !!ride.driver_collected_at : ride.wallet_paid === true),
-                    }, async () => {
-                      const latest = await fetchRideById(ride.id);
-                      if (!latest) throw new Error('Could not refresh payment confirmation');
-                      setRide(latest);
-                      return { fare: latest.fare, tripDate: latest.created_at, paymentConfirmed: !latest.payment_failed && (latest.payment_method === 'cash' ? !!latest.driver_collected_at : latest.wallet_paid === true) };
-                    })}
+                    }, () => refreshTripReceiptPayment(ride.id, setRide))}
                     className="shrink-0 flex items-center justify-center active:scale-[0.97] transition-transform"
                     style={{ width: 110, height: 48, borderRadius: 15, ...receiptGlass }}
                   >
@@ -1249,6 +1251,7 @@ export default function RideMatching() {
               /* ───────── 4c: Driver found — matched, en route to pickup ───────── */
               <motion.div
                 key="matched"
+                data-figma-node={tierKey === 'share' ? (ride?.status === 'arrived' ? '526:648' : '526:562') : '345:600'}
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.28, ease: 'easeOut' }}
@@ -1417,16 +1420,19 @@ export default function RideMatching() {
               </motion.div>
             ) : timedOut ? (
               /* ───────── No drivers found ───────── */
-              <motion.div key="timeout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 space-y-3">
-                <h2 className="text-lg font-extrabold text-foreground">No drivers available right now</h2>
-                <p className="text-sm text-muted-foreground">
-                  We couldn't match you in the last minute. A higher fare reaches more drivers — or you can keep waiting at the same price, or cancel.
-                </p>
-                <TripSummary ride={ride} />
+              <motion.div key="timeout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} data-figma-node={tierKey === 'parcel' ? '631:102' : tierKey === 'share' ? '629:90' : '631:99'} className="space-y-4 px-4 pb-5 pt-4 text-[#1f2129]">
+                <div role="status" className="rounded-[18px] border border-[#ffe2e6] bg-[#fff7f8] px-4 py-4">
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-[#ff000d]">Driver search update</p>
+                  <h2 className="mt-1 text-[19px] font-bold text-[#1f2129]">No drivers found nearby</h2>
+                  <p className="mt-2 text-[12px] leading-5 text-[#667080]">
+                    Keep searching for available drivers, adjust your fare, or cancel the request.
+                  </p>
+                </div>
+                <div className="rounded-[17px] bg-[#f6f6f8] px-2 py-2"><TripSummary ride={ride} /></div>
 
                 {/* Raise fare — same stepper/bounds as the searching screen,
                     not a second fare model. */}
-                <div className="flex items-center justify-center gap-3.5 py-1">
+                <div className="flex items-center justify-center gap-3.5 rounded-[17px] border border-[#e2e6ed] bg-white px-3 py-3">
                   <button
                     type="button"
                     onClick={() => handleFareChange(-FARE_STEP)}
@@ -1457,20 +1463,20 @@ export default function RideMatching() {
                   </button>
                 </div>
 
-                <button onClick={handleKeepWaiting} className="w-full py-3 rounded-2xl bg-primary text-primary-foreground font-bold">
+                <button onClick={handleKeepWaiting} type="button" className="min-h-[54px] w-full rounded-[17px] bg-[#ff000d] px-4 text-[14px] font-semibold text-white">
                   Keep searching
                 </button>
                 <button
                   onClick={() => setCancelSheetOpen(true)}
                   disabled={cancelling}
-                  className="w-full py-2.5 rounded-2xl border border-border text-sm font-semibold text-foreground disabled:opacity-50"
+                  className="min-h-[52px] w-full rounded-[17px] border border-[#ff000d] bg-white px-4 text-[14px] font-semibold text-[#ff000d] disabled:opacity-50"
                 >
                   Cancel request
                 </button>
               </motion.div>
             ) : (
               /* ───────── Searching ───────── */
-              <motion.div key="searching" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 space-y-3.5">
+              <motion.div key="searching" data-figma-node={tierKey === 'parcel' ? '631:101' : tierKey === 'share' ? '526:410' : '631:97'} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 space-y-3.5">
                 {/* Status row: radar badge + title + elapsed M:SS countdown */}
                 <div className="flex items-center gap-3">
                   <span className="relative shrink-0 flex items-center justify-center rounded-full" style={{ width: 42, height: 42, ...glassSurface }}>
@@ -1478,7 +1484,7 @@ export default function RideMatching() {
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="text-[14px] font-bold" style={{ color: RIDE_TEXT }}>Finding drivers near you</p>
+                      <p className="text-[14px] font-bold" style={{ color: RIDE_TEXT }}>{tierKey === 'parcel' ? 'Finding a parcel courier' : tierKey === 'share' ? 'Finding shared ride' : 'Finding drivers near you'}</p>
                       <span className="ml-auto text-[12.5px] font-bold tabular-nums shrink-0" style={{ color: RIDE_RED }}>{countdownText}</span>
                     </div>
                     {viewerCount > 0 ? (
@@ -1727,22 +1733,13 @@ const BidCard = memo(function BidCard({
       animate={{ opacity: 1, y: [14, -2, 0], scale: [0.94, 1.01, 1] }}
       exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.18 } }}
       transition={{ duration: 0.32, times: [0, 0.6, 1], ease: 'easeOut' }}
-      className="pointer-events-auto flex items-center"
-      style={{
-        padding: '7px 8px 8px 7px',
-        borderRadius: 15,
-        gap: 9,
-        overflow: 'hidden',
-        background: 'rgba(255,255,255,.82)',
-        backdropFilter: 'blur(24px) saturate(190%)',
-        WebkitBackdropFilter: 'blur(24px) saturate(190%)',
-        boxShadow: 'inset 0 .5px 0 rgba(255,255,255,.95), inset 0 0 0 .5px rgba(255,255,255,.6), 0 10px 26px rgba(17,17,17,.18)',
-      }}
+      className="pointer-events-auto flex w-full flex-wrap items-center gap-3 rounded-[17px] border border-[#e2e6ed] bg-[#fdfdfd] px-3 py-3 shadow-sm"
+      style={{ minHeight: 110 }}
     >
       {/* Avatar + countdown ring — the ring IS the countdown, no numeric seconds. */}
       <span
         className="relative shrink-0 flex items-center justify-center rounded-full"
-        style={{ width: 40, height: 40, background: `conic-gradient(#B81104 ${pct}%, rgba(17,17,17,.1) 0)` }}
+        style={{ width: 44, height: 44, background: `conic-gradient(#ff000d ${pct}%, rgba(17,17,17,.1) 0)` }}
       >
         <span
           className="flex items-center justify-center rounded-full"
@@ -1754,11 +1751,11 @@ const BidCard = memo(function BidCard({
 
       {/* Name + price, then rating · trips · vehicle/ETA */}
       <div className="min-w-0" style={{ flex: 1 }}>
-        <div className="flex items-baseline justify-center" style={{ gap: 6 }}>
+        <div className="flex items-baseline justify-between gap-2">
           <span style={{ fontSize: 15, fontWeight: 700, letterSpacing: '-.015em', color: RIDE_TEXT }} className="truncate">{name}</span>
           <span style={{ fontSize: 14, fontWeight: 700, color: RIDE_TEXT }} className="tabular-nums shrink-0">${Number(offer.price).toFixed(2)}</span>
         </div>
-        <div className="flex items-center justify-center" style={{ marginTop: 2, gap: 4, fontSize: 10.5, fontWeight: 500, color: '#666666' }}>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1" style={{ marginTop: 5, fontSize: 10.5, fontWeight: 500, color: '#666666' }}>
           {rating != null && rating > 0 && (
             <>
               <span className="flex items-center" style={{ gap: 2 }}>
@@ -1775,32 +1772,24 @@ const BidCard = memo(function BidCard({
       </div>
 
       {/* Decline / Accept */}
-      <div className="flex items-center shrink-0" style={{ gap: 6 }}>
+      <div className="flex w-full items-center gap-2">
         <button
           type="button"
           onClick={() => onDecline(offer)}
           disabled={busy}
           aria-label={`Decline ${name}'s offer`}
-          className="flex items-center justify-center rounded-full active:scale-90 transition-transform disabled:opacity-50"
-          style={{ width: 32, height: 32, background: 'rgba(17,17,17,.06)', boxShadow: 'inset 0 0 0 1px rgba(17,17,17,.08)' }}
+          className="flex min-h-11 flex-1 items-center justify-center gap-1 rounded-[13px] border border-[#e2e6ed] bg-white px-3 text-[12px] font-semibold text-[#667080] active:scale-[.98] disabled:opacity-50"
         >
-          <X style={{ width: 15, height: 15, color: '#666666' }} strokeWidth={2.6} />
+          <X style={{ width: 15, height: 15 }} strokeWidth={2.6} /> Decline
         </button>
         <button
           type="button"
           onClick={() => onAccept(offer)}
           disabled={busy}
           aria-label={`Accept ${name}'s offer`}
-          className="flex items-center justify-center active:scale-95 transition-transform disabled:opacity-60"
-          style={{
-            height: 32,
-            padding: '0 14px',
-            borderRadius: 999,
-            background: 'linear-gradient(135deg,#E01B00,#B81104)',
-            boxShadow: '0 6px 14px rgba(184,17,4,.34), inset 0 1px 0 rgba(255,255,255,.28)',
-          }}
+          className="flex min-h-11 flex-[2] items-center justify-center rounded-[13px] bg-[#ff000d] px-4 active:scale-[.98] disabled:opacity-60"
         >
-          <span style={{ fontSize: 12.5, fontWeight: 700, color: '#FFFFFF' }}>{busy ? '…' : 'Accept'}</span>
+          <span style={{ fontSize: 12.5, fontWeight: 700, color: '#FFFFFF' }}>{busy ? 'Working…' : 'Accept offer'}</span>
         </button>
       </div>
     </motion.div>

@@ -16,6 +16,12 @@ import { heuristicScanFile } from './ramzHeuristicScan';
 // scanner internals themselves (they trip their own rules with literal regex strings).
 const RAW_MODULES = import.meta.glob(
   [
+    // Staging review tooling is intentionally excluded from shipped source scanners.
+    '!/src/pages/staging/**',
+    '!/src/components/journeys/**',
+    '!/src/lib/journeyBatch20Screens.ts',
+    '!/src/lib/parcelBatch20Screens.ts',
+    '!/src/lib/communicationBatch20Screens.ts',
     '/src/**/*.{ts,tsx}',
     '!/src/test/**',
     '!/src/integrations/supabase/types.ts',

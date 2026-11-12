@@ -139,7 +139,7 @@ describe("wallet PIN gate enforcement (UI)", () => {
 describe("consistent white header across marketing/static routes", () => {
   const app = readFileSync(join(SRC, "App.tsx"), "utf8");
   const required = [
-    "/auth", "/signup", "/safety", "/terms", "/privacy",
+    "/safety", "/terms", "/privacy",
     "/offline", "/install", "/delete-account",
   ];
 
@@ -157,6 +157,11 @@ describe("consistent white header across marketing/static routes", () => {
       const re = new RegExp(`path="${route}"[^>]*element=\\{<MarketingShell>`);
       expect(app, `route ${route} should use <MarketingShell>`).toMatch(re);
     }
+  });
+
+  it("auth routes use their full-screen layouts within the route boundary", () => {
+    expect(app).toContain('path="/auth" element={<SuspenseWrap><Auth /></SuspenseWrap>}');
+    expect(app).toContain('path="/signup" element={<SuspenseWrap><Signup /></SuspenseWrap>}');
   });
 
   it("CruiXeLogo lg size scales down on mobile", () => {

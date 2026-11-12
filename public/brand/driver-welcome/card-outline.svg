@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="360" height="80" viewBox="0 0 360 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Flexible work &#194;&#183; soft grey perimeter fade">
+<path id="Vector" d="M196 1.4H20C9.7 1.4 1.4 9.7 1.4 20V60C1.4 70.3 9.7 78.6 20 78.6H196" stroke-width="1.8" stroke-linecap="round" stroke="url(#paint0_linear_0_22)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_22" x1="-5.39631e-08" y1="3.08832e-06" x2="196" y2="3.08832e-06" gradientUnits="userSpaceOnUse">
+<stop stop-color="#9CA3AF" stop-opacity="0.58"/>
+<stop offset="0.25" stop-color="#9CA3AF" stop-opacity="0.38"/>
+<stop offset="0.62" stop-color="#9CA3AF" stop-opacity="0.15"/>
+<stop offset="1" stop-color="#9CA3AF" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

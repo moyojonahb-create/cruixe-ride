@@ -17,11 +17,11 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 12%;
 
-    /* Primary — Milano Red #B81104 */
-    --primary: 4 96% 37%;
+    /* Primary — CruiXe Red #FF000D */
+    --primary: 356.941 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    /* Hover #960E03 / Dark #7F0B02 */
+    /* Brand interaction shades */
     --primary-hover: 4 96% 30%;
     --primary-dark: 4 97% 25%;
     --primary-light: 4 96% 45%;
@@ -42,12 +42,12 @@
 
     --border: 0 0% 90%;
     --input: 0 0% 90%;
-    --ring: 4 96% 37%;
+    --ring: 356.941 100% 50%;
 
     --radius: 0.875rem;
 
     /* Sidebar */
-    --sidebar-background: 4 96% 37%;
+    --sidebar-background: 356.941 100% 50%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 52 100% 50%;
     --sidebar-primary-foreground: 0 0% 12%;
@@ -57,7 +57,7 @@
     --sidebar-ring: 52 100% 50%;
 
     /* CruiXe design tokens */
-    --cruixe-red: 4 96% 37%;
+    --cruixe-red: 356.941 100% 50%;
     --cruixe-red-dark: 4 97% 25%;
     --cruixe-red-light: 4 96% 45%;
     --cruixe-yellow: 52 100% 50%;
@@ -76,14 +76,14 @@
 
     /* ─── Shadows — iOS-style layered ─── */
     --shadow-xs: 0 0.5px 1px 0 hsl(0 0% 0% / 0.02), 0 0 0 0.5px hsl(0 0% 0% / 0.02);
-    --shadow-sm: 0 2px 6px hsl(4 96% 37% / 0.06), 0 0 0 0.5px hsl(4 96% 37% / 0.04);
-    --shadow-md: 0 6px 16px -2px hsl(4 96% 37% / 0.10), 0 0 0 0.5px hsl(4 96% 37% / 0.04);
-    --shadow-lg: 0 10px 28px -4px hsl(4 96% 37% / 0.12), 0 0 0 0.5px hsl(4 96% 37% / 0.05);
-    --shadow-xl: 0 20px 48px -8px hsl(4 96% 37% / 0.16), 0 0 0 0.5px hsl(4 96% 37% / 0.05);
-    --shadow-card: 0 2px 8px -2px hsl(4 96% 37% / 0.06), 0 0 0 0.5px hsl(0 0% 100% / 0.5);
-    --shadow-phone: 0 32px 64px -16px hsl(4 96% 37% / 0.35);
+    --shadow-sm: 0 2px 6px hsl(356.941 100% 50% / 0.06), 0 0 0 0.5px hsl(356.941 100% 50% / 0.04);
+    --shadow-md: 0 6px 16px -2px hsl(356.941 100% 50% / 0.10), 0 0 0 0.5px hsl(356.941 100% 50% / 0.04);
+    --shadow-lg: 0 10px 28px -4px hsl(356.941 100% 50% / 0.12), 0 0 0 0.5px hsl(356.941 100% 50% / 0.05);
+    --shadow-xl: 0 20px 48px -8px hsl(356.941 100% 50% / 0.16), 0 0 0 0.5px hsl(356.941 100% 50% / 0.05);
+    --shadow-card: 0 2px 8px -2px hsl(356.941 100% 50% / 0.06), 0 0 0 0.5px hsl(0 0% 100% / 0.5);
+    --shadow-phone: 0 32px 64px -16px hsl(356.941 100% 50% / 0.35);
     --shadow-glow: 0 0 24px hsl(var(--accent) / 0.3);
-    --shadow-btn-primary: 0 4px 20px hsl(4 96% 37% / 0.4), 0 0 0 1px hsl(4 96% 37% / 0.15), inset 0 1px 0 hsla(0, 0%, 100%, 0.15);
+    --shadow-btn-primary: 0 4px 20px hsl(356.941 100% 50% / 0.4), 0 0 0 1px hsl(356.941 100% 50% / 0.15), inset 0 1px 0 hsla(0, 0%, 100%, 0.15);
 
     /* ─── Glassmorphism — Clean White ─── */
     --glass-bg: hsla(0, 0%, 100%, 0.95);
@@ -91,21 +91,21 @@
     --glass-bg-ultra: hsla(0, 0%, 100%, 1);
     --glass-border: hsla(0, 0%, 90%, 0.6);
     --glass-border-subtle: hsla(0, 0%, 88%, 0.4);
-    --glass-border-light: hsl(4 96% 37% / 0.06);
+    --glass-border-light: hsl(356.941 100% 50% / 0.06);
     --glass-blur: blur(20px) saturate(1.2);
     --glass-blur-heavy: blur(24px) saturate(1.3);
     --glass-blur-nav: blur(20px) saturate(1.2);
     --glass-shadow: 0 1px 4px hsl(0 0% 0% / 0.06), 0 0 0 0.5px hsl(0 0% 0% / 0.03);
     --glass-shadow-lg: 0 8px 28px hsl(0 0% 0% / 0.08), 0 0 0 0.5px hsl(0 0% 0% / 0.03);
     --glass-shadow-elevated: 0 12px 40px hsl(0 0% 0% / 0.10), 0 0 0 0.5px hsl(0 0% 0% / 0.04);
-    --glass-glow-brand: 0 0 0 1px hsl(4 96% 37% / 0.12), 0 0 12px hsl(4 96% 37% / 0.06);
+    --glass-glow-brand: 0 0 0 1px hsl(356.941 100% 50% / 0.12), 0 0 12px hsl(356.941 100% 50% / 0.06);
     --glass-glow-yellow: 0 0 0 1px hsl(52 100% 50% / 0.12), 0 0 12px hsl(52 100% 50% / 0.06);
 
     /* iOS-style inset separator */
     --glass-separator: 0.5px solid hsla(0, 0%, 0%, 0.06);
 
     /* ─── Gradients ─── */
-    --gradient-primary: linear-gradient(135deg, hsl(4 96% 37%), hsl(4 97% 25%));
+    --gradient-primary: linear-gradient(135deg, hsl(356.941 100% 50%), hsl(4 97% 25%));
     --gradient-accent: linear-gradient(135deg, hsl(52 100% 50%), hsl(45 100% 55%));
     --gradient-glass-shine: linear-gradient(180deg, hsla(0, 0%, 100%, 0.15) 0%, hsla(0, 0%, 100%, 0) 100%);
   }
@@ -208,7 +208,7 @@
     --glass-shadow: 0 1px 3px hsl(0 0% 0% / 0.2), 0 0 0 0.5px hsl(0 0% 100% / 0.04);
     --glass-shadow-lg: 0 8px 32px hsl(0 0% 0% / 0.3), 0 0 0 0.5px hsl(0 0% 100% / 0.04);
     --glass-shadow-elevated: 0 12px 40px hsl(0 0% 0% / 0.4), 0 0 0 0.5px hsl(0 0% 100% / 0.04);
-    --glass-glow-brand: 0 0 0 0.5px hsl(4 96% 37% / 0.2), 0 0 16px hsl(4 96% 37% / 0.06);
+    --glass-glow-brand: 0 0 0 0.5px hsl(356.941 100% 50% / 0.2), 0 0 16px hsl(356.941 100% 50% / 0.06);
     --glass-separator: 0.5px solid hsla(0, 0%, 100%, 0.06);
     --gradient-primary: linear-gradient(135deg, hsl(4 97% 25%), hsl(4 96% 45%));
     --gradient-glass-shine: linear-gradient(180deg, hsla(0, 0%, 100%, 0.06) 0%, hsla(0, 0%, 100%, 0) 100%);

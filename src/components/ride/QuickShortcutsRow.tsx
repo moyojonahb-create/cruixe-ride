@@ -1,9 +1,9 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/hooks/useAuth';
-import { Home, Briefcase } from 'lucide-react';
-import { RIDE_RED, RIDE_TEXT, tintYellow } from './rideGlass';
+import homeIcon from '@/assets/rider-home/home.svg';
+import workIcon from '@/assets/rider-home/work.svg';
 
 interface QuickPlace {
   id: string;
@@ -20,18 +20,6 @@ interface QuickShortcutsRowProps {
    * and saves whatever's chosen under this key. */
   onRequestSet: (key: 'home' | 'work') => void;
 }
-
-const homeGlass: CSSProperties = {
-  background: 'linear-gradient(135deg, rgba(255,241,240,.9), rgba(184,17,4,.06))',
-  boxShadow: 'inset 0 .75px 0 rgba(255,255,255,.9), inset 0 0 0 .5px rgba(184,17,4,.12)',
-  backdropFilter: 'blur(18px) saturate(180%)',
-  WebkitBackdropFilter: 'blur(18px) saturate(180%)',
-};
-
-const workGlass: CSSProperties = {
-  ...tintYellow,
-  boxShadow: 'inset 0 .75px 0 rgba(255,255,255,.9), inset 0 0 0 .5px rgba(255,221,0,.5)',
-};
 
 /** Row 2's two square tiles, alongside the Where-to card from RideHomeGreeting.
  * Home and Work always keep their own tint (pink / yellow) regardless of
@@ -62,8 +50,8 @@ export default function QuickShortcutsRow({ onSelect, onRequestSet }: QuickShort
   const workFav = places.find((p) => (p.icon?.toLowerCase() ?? '') === 'work');
 
   const tiles = [
-    { key: 'home', label: 'Home', Icon: Home, glass: homeGlass, fav: homeFav },
-    { key: 'work', label: 'Work', Icon: Briefcase, glass: workGlass, fav: workFav },
+    { key: 'home', label: 'Home', icon: homeIcon, background: '#fdebeb', fav: homeFav },
+    { key: 'work', label: 'Work', icon: workIcon, background: '#fef6c9', fav: workFav },
   ] as const;
 
   // Fragment, not a wrapping div — these render as direct flex items inside
@@ -73,6 +61,7 @@ export default function QuickShortcutsRow({ onSelect, onRequestSet }: QuickShort
       {tiles.map((tile, i) => (
         <motion.button
           key={tile.key}
+          type="button"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.04 }}
@@ -80,11 +69,11 @@ export default function QuickShortcutsRow({ onSelect, onRequestSet }: QuickShort
           onClick={() => tile.fav
             ? onSelect({ name: tile.fav.name, lat: tile.fav.latitude, lng: tile.fav.longitude })
             : onRequestSet(tile.key)}
-          className="shrink-0 flex flex-col items-center justify-center gap-1 rounded-2xl active:scale-95 transition-transform disabled:opacity-60"
-          style={{ width: 58, height: 62, padding: 0, ...tile.glass }}
+          className="flex h-[67px] w-[clamp(44px,13vw,54px)] shrink-0 flex-col items-center justify-center gap-1 rounded-[15px] border border-black/5 text-[#111] shadow-sm transition-transform active:scale-95 disabled:opacity-60"
+          style={{ background: tile.background }}
         >
-          <tile.Icon className="w-5 h-5" style={{ color: RIDE_RED }} />
-          <span className="text-[11px] font-semibold" style={{ color: RIDE_TEXT }}>{tile.label}</span>
+          <img src={tile.icon} alt="" />
+          <span className="text-xs font-semibold">{tile.label}</span>
         </motion.button>
       ))}
     </>

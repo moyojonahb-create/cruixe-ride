@@ -1,19 +1,22 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Loader2, ChevronLeft, ChevronRight, Plus, Camera, FileText, Car, User, CreditCard } from 'lucide-react';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Loader2, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import CarLoadingSpinner from '@/components/CarLoadingSpinner';
-import { createDriverDocument, createDriverApplication } from '@/lib/businessApi';
+import DriverCaptureGuide, { type DriverCaptureKind } from '@/components/driver/DriverCaptureGuide';
+import { createDriverDocument, upsertDriverApplication } from '@/lib/businessApi';
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 7;
 
 const personalSchema = z.object({
   firstName: z.string().min(2, 'First name is required'),
@@ -51,26 +54,39 @@ interface FileUploadBoxProps {
   onSelect: (file: File) => void;
 }
 
-function FileUploadBox({ label, file, onSelect }: FileUploadBoxProps) {
+export function FileUploadBox({ label, file, onSelect }: FileUploadBoxProps) {
   const ref = useRef<HTMLInputElement>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (!file || !file.type.startsWith('image/')) {
+      setPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex min-w-0 flex-1 flex-col items-center gap-2">
       <button
         type="button"
+        aria-label={`Choose ${label}`}
         onClick={() => ref.current?.click()}
-        className="w-28 h-28 rounded-2xl bg-muted/60 border-2 border-dashed border-border hover:border-accent flex items-center justify-center transition-colors"
+        className="flex h-[86px] w-full min-w-0 items-center justify-center overflow-hidden rounded-[15px] border border-[#e2e6ed] bg-[#f7f8fa] transition-colors hover:border-[#ff000d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#ff000d]"
       >
-        {file ? (
+        {previewUrl ? (
           <img
-            src={URL.createObjectURL(file)}
+            src={previewUrl}
             alt={label}
-            className="w-full h-full object-cover rounded-2xl"
+            className="h-full w-full object-cover"
           />
+        ) : file ? (
+          <span className="max-w-full truncate px-2 text-xs">{file.name}</span>
         ) : (
-          <Plus className="w-8 h-8 text-muted-foreground" />
+          <Plus className="h-7 w-7 text-[#ff000d]" />
         )}
       </button>
-      <span className="text-xs text-muted-foreground text-center max-w-[7rem]">{label}</span>
+      <span className="max-w-full text-center text-[11px] font-medium leading-4 text-[#667080]">{label}</span>
       <input
         ref={ref}
         type="file"
@@ -79,6 +95,7 @@ function FileUploadBox({ label, file, onSelect }: FileUploadBoxProps) {
         onChange={(e) => {
           const f = e.target.files?.[0];
           if (f) onSelect(f);
+          e.target.value = '';
         }}
       />
     </div>
@@ -88,10 +105,13 @@ function FileUploadBox({ label, file, onSelect }: FileUploadBoxProps) {
 export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverRegistrationWizardProps) {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const [showProcessing, setShowProcessing] = useState(false);
+  const [captureGuide, setCaptureGuide] = useState<DriverCaptureKind | null>(null);
 
   // File state
   const [personalPhoto, setPersonalPhoto] = useState<File | null>(null);
@@ -137,12 +157,13 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
       if (step === 1) {
         const valid = await personalForm.trigger();
         if (!valid) return;
-      } else if (step === 2) {
+      } else if (step === 3) {
         const valid = await licenseForm.trigger();
         if (!valid) return;
       } else if (step === 4) {
         const valid = await vehicleForm.trigger();
         if (!valid) return;
+      } else if (step === TOTAL_STEPS) {
         await handleSubmit();
         return;
       }
@@ -164,7 +185,9 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
       const vehicle = vehicleForm.getValues();
 
       // Create driver record through Go. Storage uploads remain in Supabase.
-      const driver = await createDriverApplication({
+      const driver = await upsertDriverApplication({
+        profile: { full_name: `${personal.firstName.trim()} ${personal.surname.trim()}`, gender: personal.gender },
+        driver: {
         vehicle_type: vehicle.vehicleType,
         vehicle_make: vehicle.vehicleMake,
         vehicle_model: vehicle.vehicleModel,
@@ -172,7 +195,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
         vehicle_color: vehicle.vehicleColor,
         plate_number: vehicle.plateNumber,
         gender: personal.gender,
-        status: 'pending',
+        },
       });
       const driverId = driver.id;
       if (!driverId) throw new Error('Failed to create driver application');
@@ -202,31 +225,31 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
         if (r.status === 'rejected') console.error('Driver document upload failed:', r.reason);
       });
 
-      // Brief processing animation
-      await new Promise(r => setTimeout(r, 2500));
-
       if (failedCount > 0) {
         toast({
           title: 'Application submitted with warnings',
-          description: `${failedCount} document(s) failed to upload. You can re-upload them from your driver dashboard.`,
+          description: `${failedCount} document(s) failed to upload. Open your application to upload the affected documents again.`,
           variant: 'destructive',
         });
       } else {
-        toast({ title: 'Application submitted!', description: 'Your documents are being reviewed.' });
+        const hasDocuments = [licenseFront, licenseBack, idCard, selfieWithId, vehiclePhoto, insuranceDoc, personalPhoto].some(Boolean);
+        toast({ title: 'Application saved', description: hasDocuments ? 'Your documents have been submitted for review.' : 'Open your application to add documents for review.' });
       }
+      await queryClient.invalidateQueries({ queryKey: ['driver-profile', user.id] });
       onSuccess();
+      if (failedCount > 0) navigate('/driver/application');
     } catch (error: unknown) {
       let errorMessage = 'Failed to submit application.';
       if (error instanceof Error) {
         const errMsg = error.message.toLowerCase();
         if (errMsg.includes('new row violates row-level security') || errMsg.includes('42501')) {
-          errorMessage = 'Permission denied. Please contact support or try admin add-driver.js';
+          errorMessage = 'We could not save your application. Please sign in again or contact support.';
         } else if (errMsg.includes('bucket') || errMsg.includes('storage')) {
-          errorMessage = 'Storage upload failed. Check "driver-documents" bucket in Supabase dashboard.';
+          errorMessage = 'We could not upload your document. Please try again or contact support.';
         } else if (errMsg.includes('column') || errMsg.includes('does not exist')) {
-          errorMessage = 'Database schema mismatch. Run migrations.';
+          errorMessage = 'Registration is temporarily unavailable. Please try again later or contact support.';
         } else {
-          errorMessage = error.message;
+          errorMessage = 'We could not save your application. Please try again or contact support.';
         }
         console.error('Driver registration error:', error);
       }
@@ -237,46 +260,79 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
     }
   };
 
+  if (captureGuide) {
+    return <DriverCaptureGuide kind={captureGuide} onBack={() => setCaptureGuide(null)} />;
+  }
+
   if (showProcessing) {
     return <CarLoadingSpinner message="Checking all the details — you're almost on your way!" onClose={onClose} />;
   }
 
-  const stepIcons = [
-    { icon: User, label: 'Personal' },
-    { icon: CreditCard, label: 'License' },
-    { icon: FileText, label: 'ID card' },
-    { icon: Car, label: 'Vehicle' },
+  const stepDescriptions = [
+    "Your personal details and profile photo help riders recognise you.",
+    "Upload your identity document and an ID-matching selfie.",
+    "We need a valid licence before you can drive.",
+    "Tell us which car you will use for trips.",
+    "Upload your current vehicle insurance documentation.",
+    "Photograph the actual vehicle you drive.",
+    "Check your information before you submit it for review.",
+  ];
+  const stepTitles = [
+    "Your profile photo", "Verify your identity", "Driver’s licence",
+    "About your vehicle", "Vehicle documents", "Photograph your car", "Review your details",
   ];
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-        <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
-          ✕
-        </button>
-        <span className="text-xs text-accent font-medium">Help</span>
-      </div>
+    <div className="min-h-[100dvh] bg-[#fdfdfd] font-['Poppins',system-ui,sans-serif] text-[#1f2129]">
+      <div className="mx-auto flex min-h-[100dvh] w-full max-w-[440px] flex-col bg-white">
+        {/* Figma Driver onboarding frame family 1101:105–1101:315.
+            Preserve existing form schema, progression, uploads and submission calls. */}
+        <header className="relative h-[246px] shrink-0 bg-[#1f2129] px-6 pt-[max(2rem,env(safe-area-inset-top))] text-white">
+          <div className="flex items-start justify-between gap-3">
+            <button type="button" aria-label={step === 1 ? 'Close registration' : 'Previous registration step'}
+              onClick={step === 1 ? onClose : handleBack}
+              className="grid h-11 w-11 place-items-center rounded-full bg-white text-[#1f2129] shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#ffd11c]">
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <div className="rounded-full bg-white px-4 py-3 text-[10px] font-bold tracking-[0.08em] text-[#1f2129]">
+              DRIVER CHECK
+            </div>
+          </div>
+          <div className="mt-9">
+            <p className="text-[30px] font-bold tracking-tight">CruiXe <span className="text-white">DRIVER</span></p>
+            <div className="mt-1 h-1 w-[52px] rounded-full bg-gradient-to-r from-[#ff000d] to-[#ffd11c]" />
+          </div>
+        </header>
 
-      {/* Content */}
-      <div className="flex-1 px-5 py-6 overflow-y-auto">
-        <h2 className="text-2xl font-bold text-foreground mb-6">
-          {stepIcons[step - 1].label === 'Personal' && 'Personal information'}
-          {stepIcons[step - 1].label === 'License' && 'Driver license'}
-          {stepIcons[step - 1].label === 'ID card' && 'ID card'}
-          {stepIcons[step - 1].label === 'Vehicle' && 'Vehicle information'}
-        </h2>
+        <div className="relative z-10 -mt-[29px] h-[55px] shrink-0 overflow-hidden" aria-hidden="true">
+          <div className="absolute inset-x-0 top-0 h-[46px] rounded-t-[52%] bg-[#ff000d]" />
+          <div className="absolute inset-x-0 top-[19px] h-[50px] rounded-t-[52%] bg-white" />
+          <div className="absolute left-1/2 top-[13px] h-[5px] w-[54px] -translate-x-1/2 rounded-full bg-white" />
+        </div>
+
+        <div className="px-[22px] pb-3">
+          <h1 className="text-[24px] font-bold leading-[1.35]">{stepTitles[step - 1]}</h1>
+          <p className="mt-1 text-[12px] leading-[18px] text-[#667080]">{stepDescriptions[step - 1]}</p>
+          <div className="mt-5 flex items-center gap-2">
+            <span className="h-1 w-[34px] rounded-full bg-gradient-to-r from-[#ff000d] to-[#ffd11c]" />
+            <span className="text-[10px] font-semibold uppercase tracking-wide">{step === TOTAL_STEPS ? 'FINAL REVIEW' : `DRIVER VERIFICATION · ${step} OF ${TOTAL_STEPS - 1}`}</span>
+          </div>
+        </div>
+
+      {/* Scrollable content, safe at iPhone XR and 16 Pro widths */}
+      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-[20px] py-5">
 
         {/* Step 1: Personal Information */}
         {step === 1 && (
           <Form {...personalForm}>
             <form className="space-y-4">
-              <FileUploadBox label="Personal picture" file={personalPhoto} onSelect={setPersonalPhoto} />
+              <FileUploadBox label="Front-facing selfie" file={personalPhoto} onSelect={setPersonalPhoto} />
+              <button type="button" onClick={() => setCaptureGuide('profile')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Profile</button>
 
               <FormField control={personalForm.control} name="firstName" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="First name" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="First name" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -285,7 +341,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={personalForm.control} name="surname" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Surname" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="Surname" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -294,7 +350,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={personalForm.control} name="dateOfBirth" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="date" placeholder="Date of birth" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input type="date" placeholder="Date of birth" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -304,7 +360,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
                 <FormItem>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="h-14 rounded-2xl bg-muted/40 border-border">
+                      <SelectTrigger className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]">
                         <SelectValue placeholder="Gender" />
                       </SelectTrigger>
                     </FormControl>
@@ -320,19 +376,31 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
           </Form>
         )}
 
-        {/* Step 2: Driver License */}
+        {/* Step 2: Identity document */}
         {step === 2 && (
+          <div className="space-y-4">
+            <div className="flex gap-4">
+              <FileUploadBox label="Official ID document" file={idCard} onSelect={setIdCard} />
+              <FileUploadBox label="Selfie with ID" file={selfieWithId} onSelect={setSelfieWithId} />
+            </div>
+            <button type="button" onClick={() => setCaptureGuide('identity')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Identity document</button>
+          </div>
+        )}
+
+        {/* Step 3: Driver License */}
+        {step === 3 && (
           <Form {...licenseForm}>
             <form className="space-y-4">
               <div className="flex gap-4">
                 <FileUploadBox label="Driver license" file={licenseFront} onSelect={setLicenseFront} />
                 <FileUploadBox label="Back side of license" file={licenseBack} onSelect={setLicenseBack} />
               </div>
+              <button type="button" onClick={() => setCaptureGuide('licence')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Licence</button>
 
               <FormField control={licenseForm.control} name="licenseNumber" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="License number" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="License number" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -341,7 +409,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={licenseForm.control} name="licenseExpiry" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="date" placeholder="Expiration date" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input type="date" placeholder="Expiration date" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage className="text-destructive text-xs" />
                 </FormItem>
@@ -350,29 +418,14 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
           </Form>
         )}
 
-        {/* Step 3: ID Card */}
-        {step === 3 && (
-          <div className="space-y-4">
-            <div className="flex gap-4">
-              <FileUploadBox label="ID card" file={idCard} onSelect={setIdCard} />
-              <FileUploadBox label="Selfie with ID" file={selfieWithId} onSelect={setSelfieWithId} />
-            </div>
-          </div>
-        )}
-
         {/* Step 4: Vehicle Information */}
         {step === 4 && (
           <Form {...vehicleForm}>
             <form className="space-y-4">
-              <div className="flex gap-4">
-                <FileUploadBox label="Vehicle picture" file={vehiclePhoto} onSelect={setVehiclePhoto} />
-                <FileUploadBox label="Vehicle insurance disc" file={insuranceDoc} onSelect={setInsuranceDoc} />
-              </div>
-
               <FormField control={vehicleForm.control} name="vehicleMake" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Vehicle brand" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="Vehicle brand" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -381,7 +434,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={vehicleForm.control} name="vehicleModel" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Vehicle model" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="Vehicle model" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -390,7 +443,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={vehicleForm.control} name="vehicleColor" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Vehicle color" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="Vehicle color" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -399,7 +452,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={vehicleForm.control} name="plateNumber" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Plate number" className="h-14 rounded-2xl bg-muted/40 border-border" {...field} />
+                    <Input placeholder="Plate number" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -408,7 +461,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               <FormField control={vehicleForm.control} name="vehicleYear" render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="number" placeholder="Production year" className="h-14 rounded-2xl bg-muted/40 border-border"
+                    <Input type="number" placeholder="Production year" className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]"
                       {...field} onChange={e => field.onChange(parseInt(e.target.value) || 0)} />
                   </FormControl>
                   <FormMessage />
@@ -419,7 +472,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
                 <FormItem>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="h-14 rounded-2xl bg-muted/40 border-border">
+                      <SelectTrigger className="h-[50px] rounded-[13px] border-[#e2e6ed] bg-white text-[13px]">
                         <SelectValue placeholder="Vehicle type" />
                       </SelectTrigger>
                     </FormControl>
@@ -436,24 +489,71 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
             </form>
           </Form>
         )}
+
+        {/* Step 5: Existing insurance upload — preserve the approved document API contract. */}
+        {step === 5 && (
+          <div className="space-y-4">
+            <FileUploadBox label="Vehicle insurance" file={insuranceDoc} onSelect={setInsuranceDoc} />
+            <button type="button" onClick={() => setCaptureGuide('documents')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Vehicle documents</button>
+            <p className="rounded-2xl border border-[#e2e6ed] bg-[#f7f8fa] px-4 py-3 text-[12px] leading-5 text-[#667080]">
+              Upload a current insurance disc or cover note. Other vehicle document categories
+              will be added once their backend verification requirements are confirmed.
+            </p>
+          </div>
+        )}
+
+        {/* Step 6: Actual vehicle photo, not a sample image. */}
+        {step === 6 && (
+          <div className="space-y-4">
+            <FileUploadBox label="Vehicle photo" file={vehiclePhoto} onSelect={setVehiclePhoto} />
+            <button type="button" onClick={() => setCaptureGuide('vehicle')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Vehicle</button>
+            <p className="rounded-2xl border border-[#e2e6ed] bg-[#f7f8fa] px-4 py-3 text-[12px] leading-5 text-[#667080]">
+              Make the number plate and vehicle body clearly visible. Additional front,
+              rear and interior photo fields need a matching verified backend contract.
+            </p>
+          </div>
+        )}
+
+        {/* Step 7: Review actual entered data; never imply pending means approved. */}
+        {step === 7 && (
+          <div className="space-y-3">
+            {[
+              { label: 'Personal identity', value: [personalForm.getValues('firstName'), personalForm.getValues('surname')].filter(Boolean).join(' ') || 'Not provided' },
+              { label: 'Profile and ID photos', value: [personalPhoto && 'Profile', idCard && 'ID', selfieWithId && 'Selfie with ID'].filter(Boolean).join(' · ') || 'No photos selected' },
+              { label: 'Driver licence', value: licenseForm.getValues('licenseNumber') || 'Not provided' },
+              { label: 'Licence expiry', value: licenseForm.getValues('licenseExpiry') || 'Not provided' },
+              { label: 'Vehicle details', value: [vehicleForm.getValues('vehicleMake'), vehicleForm.getValues('vehicleModel'), vehicleForm.getValues('vehicleYear')].filter(Boolean).join(' ') },
+              { label: 'Registration plate', value: vehicleForm.getValues('plateNumber') || 'Not provided' },
+              { label: 'Vehicle documents', value: [insuranceDoc && 'Insurance', vehiclePhoto && 'Vehicle photo'].filter(Boolean).join(' · ') || 'No vehicle attachments selected' },
+            ].map(({ label, value }) => (
+              <div key={label} className="rounded-[15px] border border-[#e2e6ed] bg-white px-4 py-3">
+                <p className="text-[11px] font-semibold text-[#667080]">{label}</p>
+                <p className="mt-1 break-words text-[13px] font-semibold text-[#1f2129]">{value}</p>
+              </div>
+            ))}
+            <p className="rounded-[15px] bg-[#f7f8fa] px-4 py-3 text-[11px] leading-5 text-[#667080]">
+              Submitting does not approve your account. Our verification team must review the application.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Footer with step indicator and nav */}
-      <div className="px-5 pb-6 pt-3 border-t border-border bg-background">
+      <footer className="sticky bottom-0 border-t border-[#e2e6ed] bg-white px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">
         {/* Progress bar */}
         <div className="flex items-center gap-1 mb-4">
           {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
             <div
               key={i}
               className={`h-1 flex-1 rounded-full transition-colors ${
-                i < step ? 'bg-accent' : i === step ? 'bg-accent/40' : 'bg-muted'
+                i < step ? 'bg-[#ff000d]' : i === step ? 'bg-[#ffd11c]' : 'bg-[#e2e6ed]'
               }`}
             />
           ))}
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-muted-foreground">{step} of {TOTAL_STEPS}</span>
+          <span className="text-sm font-medium text-[#667080]">{step} of {TOTAL_STEPS}</span>
 
           <div className="flex items-center gap-3">
             <Button
@@ -461,7 +561,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
               size="icon"
               onClick={handleBack}
               disabled={step === 1 || isSubmitting || isNavigating}
-              className="rounded-full w-12 h-12"
+              className="h-[54px] w-[54px] rounded-[18px] border-[#ff000d] bg-white text-[#ff000d]"
             >
               <ChevronLeft className="w-5 h-5" />
             </Button>
@@ -469,7 +569,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
             <Button
               onClick={handleNext}
               disabled={isSubmitting || isNavigating}
-              className="rounded-full h-12 px-6 bg-primary text-primary-foreground hover:brightness-110 font-semibold"
+              className="h-[55px] min-w-[170px] rounded-[18px] bg-[#ff000d] px-6 text-[15px] font-semibold text-white hover:bg-[#eb0010]"
             >
               {isSubmitting ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -482,6 +582,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose }: DriverR
             </Button>
           </div>
         </div>
+      </footer>
       </div>
     </div>
   );

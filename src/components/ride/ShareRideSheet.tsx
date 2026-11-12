@@ -2,9 +2,9 @@ import { type CSSProperties } from 'react';
 import { Info, User, UserPlus, Users } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
 import RideGlassPanel from './RideGlassPanel';
-import { redCta, RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3 } from './rideGlass';
+import { redCta, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_3 } from './rideGlass';
 
-// No real multi-passenger pooling/dispatch exists yet (see the report at the
+// No live multi-passenger pooling/dispatch is established (see the report at the
 // end of this session) — this is a stated policy ceiling a future matching
 // window would respect, not a number derived from an actual detour
 // calculation over other riders' routes. This sheet used to run a fake 40s
@@ -13,8 +13,6 @@ import { redCta, RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2, RIDE_TEXT_
 // front of the real one, which is what made the flow feel broken. It's a
 // plain confirm now: tapping Share goes straight into the real search, same
 // as every other tier.
-const DETOUR_CEILING_MINUTES = 6;
-
 function fmtUSD(n: number): string {
   return `$${n.toFixed(2)}`;
 }
@@ -76,7 +74,7 @@ export default function ShareRideSheet({
                     Share this ride and save
                   </p>
                   <p style={{ marginTop: 3, fontSize: 12, fontWeight: 500, lineHeight: 1.2, color: RIDE_TEXT_2 }}>
-                    Up to 2 more riders may join along the way
+                    Maximum 2 passengers total · 1 additional seat
                   </p>
                 </div>
               </div>
@@ -91,8 +89,8 @@ export default function ShareRideSheet({
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="tabular-nums" style={{ fontSize: 13, fontWeight: 700, color: RIDE_TEXT }}>+{DETOUR_CEILING_MINUTES} min</p>
-                  <p style={{ fontSize: 10.5, fontWeight: 500, color: RIDE_TEXT_2 }}>longest detour</p>
+                  <p style={{ fontSize: 12, fontWeight: 700, color: RIDE_TEXT }}>Matching pending</p>
+                  <p style={{ fontSize: 10.5, fontWeight: 500, color: RIDE_TEXT_2 }}>Final route after match</p>
                 </div>
               </div>
 
@@ -101,7 +99,7 @@ export default function ShareRideSheet({
               <div className="flex flex-col" style={{ gap: 7 }}>
                 <span style={{ fontSize: 11, fontWeight: 700, color: RIDE_TEXT_2, textTransform: 'uppercase', letterSpacing: '.12em' }}>Aboard</span>
                 <div className="flex items-center" style={{ ...chipGlass, borderRadius: 16, padding: '10px 12px', gap: 11 }}>
-                  <span className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 34, height: 34, background: RIDE_RED_GRADIENT }}>
+                  <span className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 34, height: 34, background: RIDE_RED }}>
                     <User style={{ width: 17, height: 17, color: '#fff' }} strokeWidth={2.2} />
                   </span>
                   <div className="min-w-0" style={{ flex: 1 }}>
@@ -115,7 +113,7 @@ export default function ShareRideSheet({
                     <UserPlus style={{ width: 16, height: 16, color: '#9AA1AD' }} strokeWidth={2} />
                   </span>
                   <span style={{ fontSize: 13, fontWeight: 500, color: '#9AA1AD' }}>
-                    Two seats open
+                    1 seat open
                   </span>
                 </div>
               </div>
@@ -124,7 +122,7 @@ export default function ShareRideSheet({
               <div className="flex items-start" style={{ ...noteCardTint, borderRadius: 16, padding: '10px 12px', gap: 9 }}>
                 <Info style={{ width: 16, height: 16, color: RIDE_RED, marginTop: 1 }} strokeWidth={2} className="shrink-0" />
                 <p style={{ fontSize: 12, fontWeight: 500, lineHeight: 1.4, color: RIDE_TEXT_3 }}>
-                  Your {fmtUSD(shareFare)} is fixed. It doesn't change if nobody else joins, or if the driver picks up two.
+                  Your requested fare is {fmtUSD(shareFare)}. A confirmed driver offer and any shared-route details will be shown before you accept.
                 </p>
               </div>
 

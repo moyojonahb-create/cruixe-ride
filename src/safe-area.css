@@ -20,6 +20,12 @@ html, body, #root {
   padding-top: env(safe-area-inset-top, 0px);
 }
 
+/* Maps paint behind the notch; their floating controls retain safe-area offsets.
+   Keep the normal inset on non-map pages. :has is supported by iPhone Safari. */
+#root:has([data-map-screen="true"]) {
+  padding-top: 0;
+}
+
 * {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;

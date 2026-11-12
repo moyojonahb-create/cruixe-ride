@@ -1,0 +1,15 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="360" height="80" viewBox="0 0 360 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Safety card &#194;&#183; top left bottom outline fading yellow">
+<path id="Vector" d="M210 1.65H20C9.85 1.65 1.65 9.85 1.65 20V60C1.65 70.15 9.85 78.35 20 78.35H210" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round" stroke="url(#paint0_linear_0_12)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_12" x1="-9.28761e-08" y1="-1.49944e-07" x2="210" y2="-1.49944e-07" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFD300" stop-opacity="0"/>
+<stop offset="0.12" stop-color="#FFD300" stop-opacity="0.32"/>
+<stop offset="0.3" stop-color="#FFD300" stop-opacity="0.94"/>
+<stop offset="0.49" stop-color="#FFD300" stop-opacity="0.78"/>
+<stop offset="0.74" stop-color="#FFD300" stop-opacity="0.29"/>
+<stop offset="1" stop-color="#FFD300" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

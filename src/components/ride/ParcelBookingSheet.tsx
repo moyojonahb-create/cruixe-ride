@@ -161,12 +161,12 @@ export default function ParcelBookingSheet({
           >
             <RideGlassPanel panelStyle={panelStyle} style={{ maxHeight: '90vh', paddingBottom: 'env(safe-area-inset-bottom)' }} onRibbonClick={onClose}>
               <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
-                <div className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+                <div data-figma-node="546:976" className="p-4 font-['Poppins',system-ui,sans-serif]" style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
                   {/* Section 1 — header */}
                   <div className="flex items-center" style={{ gap: 11 }}>
                     <img src={carParcel} alt="" style={{ width: 52, height: 38 }} className="object-contain shrink-0" />
                     <div className="min-w-0" style={{ flex: 1 }}>
-                      <p style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>Send a parcel</p>
+                      <p style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>Parcel recipient details</p>
                       <p className="truncate" style={{ marginTop: 3, fontSize: 12.5, fontWeight: 500, lineHeight: 1.2, color: RIDE_TEXT_2 }}>
                         {pickupName} → {dropoffName} · {distanceKm.toFixed(1)} km
                       </p>

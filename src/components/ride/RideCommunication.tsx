@@ -6,7 +6,7 @@ import { playMessageSound } from "@/lib/notificationSounds";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { createMessage } from "@/lib/businessApi";
-import { RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2, RIDE_FONT, glassSurface } from "./rideGlass";
+import { RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, RIDE_FONT, glassSurface } from "./rideGlass";
 
 type Message = {
   id: string;
@@ -148,7 +148,7 @@ export function RideCommunication({
           className="flex items-center active:scale-[0.98] transition-transform disabled:opacity-70"
           style={{ ...glassSurface, borderRadius: 14, padding: '10px 12px', gap: 10, marginBottom: 10, width: '100%', textAlign: 'left' }}
         >
-          <span className="flex items-center justify-center rounded-full shrink-0" style={{ width: 32, height: 32, background: RIDE_RED_GRADIENT }}>
+          <span className="flex items-center justify-center rounded-full shrink-0" style={{ width: 32, height: 32, background: RIDE_RED }}>
             <PhoneCall style={{ width: 15, height: 15, color: '#fff' }} />
           </span>
           <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: RIDE_TEXT }}>
@@ -161,7 +161,7 @@ export function RideCommunication({
           className="flex items-center active:scale-[0.98] transition-transform"
           style={{ ...glassSurface, borderRadius: 14, padding: '10px 12px', gap: 10, marginBottom: 10, textDecoration: 'none' }}
         >
-          <span className="flex items-center justify-center rounded-full shrink-0" style={{ width: 32, height: 32, background: RIDE_RED_GRADIENT }}>
+          <span className="flex items-center justify-center rounded-full shrink-0" style={{ width: 32, height: 32, background: RIDE_RED }}>
             <Phone style={{ width: 15, height: 15, color: '#fff' }} />
           </span>
           <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: RIDE_TEXT }}>{otherUserPhone}</span>
@@ -205,7 +205,7 @@ export function RideCommunication({
                             borderRadius: 16,
                             padding: '8px 12px',
                             ...(isMe
-                              ? { background: RIDE_RED_GRADIENT, color: '#fff', borderBottomRightRadius: 5 }
+                              ? { background: RIDE_RED, color: '#fff', borderBottomRightRadius: 5 }
                               : { background: '#fff', color: RIDE_TEXT, boxShadow: 'inset 0 0 0 .5px rgba(17,17,17,.08)', borderBottomLeftRadius: 5 }),
                           }}
                         >
@@ -276,7 +276,7 @@ export function RideCommunication({
             onClick={() => sendMessage()}
             disabled={!text.trim() || sending}
             className="flex items-center justify-center shrink-0 active:scale-90 transition-transform disabled:opacity-50"
-            style={{ width: 34, height: 34, borderRadius: 999, background: RIDE_RED_GRADIENT }}
+            style={{ width: 34, height: 34, borderRadius: 999, background: RIDE_RED }}
           >
             <Send style={{ width: 15, height: 15, color: '#fff' }} />
           </button>

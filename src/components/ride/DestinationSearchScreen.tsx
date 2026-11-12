@@ -1,11 +1,13 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useId, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
-  ArrowLeft, Briefcase, Clock, Crosshair, Home, Loader2, Map as MapIcon, MapPin, X,
+  Briefcase, Home, Loader2, X,
 } from 'lucide-react';
 import { useAppBootstrap } from '@/hooks/useAppBootstrap';
 import { cn } from '@/lib/utils';
+import backIcon from '@/assets/rider-home/back.svg';
+import gpsIcon from '@/assets/rider-home/destination-gps.svg';
+import pinIcon from '@/assets/rider-home/destination-pin.svg';
 
 export interface SearchPlace {
   name: string;
@@ -25,12 +27,14 @@ export interface SearchResultRow {
 
 interface DestinationSearchScreenProps {
   activeField: 'pickup' | 'dropoff';
+  riderName?: string;
   onActiveFieldChange: (field: 'pickup' | 'dropoff') => void;
   pickupName: string;
   dropoffName: string;
   query: string;
   onQueryChange: (value: string) => void;
   onClose: () => void;
+  onContinue: () => void;
   onUseMyLocation: () => void;
   gpsLoading?: boolean;
   onChooseOnMap: () => void;
@@ -55,12 +59,14 @@ interface FavoritePlace {
 
 export default function DestinationSearchScreen({
   activeField,
+  riderName,
   onActiveFieldChange,
   pickupName,
   dropoffName,
   query,
   onQueryChange,
   onClose,
+  onContinue,
   onUseMyLocation,
   gpsLoading,
   onChooseOnMap,
@@ -112,18 +118,18 @@ export default function DestinationSearchScreen({
     return (
       <div
         className={cn(
-          'w-full flex items-center gap-3 px-3.5 py-3 text-left',
-          field === 'pickup' && 'border-b border-border/60'
+          'flex w-full items-center gap-3 px-4 py-3 text-left',
+          field === 'pickup' && 'border-b border-[#e1e5ea]'
         )}
       >
         {field === 'pickup' ? (
-          <span aria-hidden="true" className="w-2.5 h-2.5 rounded-full bg-accent ring-[3px] ring-accent/20 shrink-0" />
+          <span aria-hidden="true" className="size-3.5 shrink-0 rounded-full bg-[#ffd300]" />
         ) : (
-          <span aria-hidden="true" className="w-2.5 h-2.5 rounded-[3px] bg-primary ring-[3px] ring-primary/15 shrink-0" />
+          <span aria-hidden="true" className="size-3.5 shrink-0 rounded-full bg-primary" />
         )}
         {isActive ? (
           <div className="flex-1 min-w-0">
-            <label htmlFor={inputId} className="block text-xs font-medium text-muted-foreground">
+            <label htmlFor={inputId} className="block text-[11px] font-semibold uppercase text-[#58616f]">
               {label}
             </label>
             <input
@@ -133,7 +139,7 @@ export default function DestinationSearchScreen({
               value={query}
               onChange={(e) => onQueryChange(e.target.value)}
               placeholder={value || placeholder}
-              className="w-full rounded-sm bg-transparent text-[15px] font-medium text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+              className="min-h-8 w-full rounded-sm bg-transparent text-sm font-semibold text-[#20232a] placeholder:text-[#58616f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             />
           </div>
         ) : (
@@ -144,8 +150,8 @@ export default function DestinationSearchScreen({
             onClick={() => onActiveFieldChange(field)}
             className="flex-1 min-w-0 min-h-11 rounded-sm text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
           >
-            <span className="block text-xs font-medium text-muted-foreground">{label}</span>
-            <span id={`${inputId}-value`} className={cn('block text-[15px] font-medium truncate', value ? 'text-foreground' : 'text-muted-foreground')}>
+            <span className="block text-[11px] font-semibold uppercase text-[#58616f]">{label}</span>
+            <span id={`${inputId}-value`} className="block truncate text-sm font-semibold text-[#20232a]">
               {value || placeholder}
             </span>
           </button>
@@ -172,18 +178,19 @@ export default function DestinationSearchScreen({
     icon: React.ReactNode,
     title: string,
     subtitle: string | undefined,
-    onClick: () => void
+    onClick: () => void,
+    highlighted = false,
   ) => (
     <button
       key={key}
       type="button"
       onClick={onClick}
-      className="w-full flex items-center gap-3.5 px-4 py-3 text-left active:bg-muted/60 hover:bg-muted/40 transition-colors"
+      className={cn('flex min-h-[59px] w-full items-center gap-3 rounded-2xl border border-[#e1e5ea] px-3 py-2.5 text-left transition-colors hover:border-primary', highlighted ? 'bg-[#fff0f0]' : 'bg-white')}
     >
       {icon}
       <div className="min-w-0 flex-1">
-        <p className="text-[15px] font-medium text-foreground truncate">{title}</p>
-        {subtitle && <p className="text-[12px] text-muted-foreground truncate">{subtitle}</p>}
+        <p className="truncate text-sm font-semibold text-[#20232a]">{title}</p>
+        {subtitle && <p className="mt-0.5 truncate text-xs text-[#58616f]">{subtitle}</p>}
       </div>
     </button>
   );
@@ -192,43 +199,45 @@ export default function DestinationSearchScreen({
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="fixed inset-0 z-[70] flex flex-col bg-background"
+      className="fixed inset-0 z-[70] flex flex-col bg-[#f5f6f9] text-[#20232a]"
     >
-      {/* Blue header */}
-      <div className="bg-primary px-4 pb-4" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 12px)' }}>
-        <div className="flex items-center gap-2 mb-3">
+      <div className="relative shrink-0 px-4 pb-3" style={{ paddingTop: 'max(1.75rem, calc(env(safe-area-inset-top) + 12px))' }}>
+        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-[184px] rounded-b-[27px] bg-primary" />
+        <div className="relative mb-3 flex items-center gap-3">
           <button
+            type="button"
             onClick={onClose}
             aria-label="Back"
-            className="w-9 h-9 -ml-1 rounded-full flex items-center justify-center active:scale-90 transition-transform"
+            className="grid size-12 shrink-0 place-items-center rounded-full bg-white shadow-sm transition-transform active:scale-90"
           >
-            <ArrowLeft className="w-5 h-5 text-primary-foreground" />
+            <img src={backIcon} alt="" />
           </button>
-          <h1 className="text-[16px] font-semibold text-primary-foreground">
+          <h1 className="text-xl font-bold text-white sm:text-2xl">
             {settingFavorite
               ? `Search for your ${settingFavorite === 'home' ? 'Home' : 'Work'} address`
-              : activeField === 'pickup' ? 'Set pickup' : 'Set destination'}
+              : riderName ? `Hi ${riderName}, where to?` : 'Where to?'}
           </h1>
         </div>
+        <p className="relative mb-4 text-xs font-medium text-[#111]">Choose your pickup and destination</p>
 
-        <div className="rounded-2xl bg-card shadow-lg overflow-hidden">
+        <div className="relative overflow-hidden rounded-[22px] border border-[#e5e9ef] bg-white shadow-md">
           {fieldRow('pickup')}
           {fieldRow('dropoff')}
         </div>
       </div>
 
       {/* Body */}
-      <div className="flex-1 overflow-y-auto overscroll-contain bg-background pb-8">
+      <div className="flex-1 overflow-y-auto overscroll-contain px-4 pb-4">
         {!searching && (
-          <div className="pt-2">
+          <div className="space-y-2.5">
             {activeField === 'pickup' &&
               optionRow(
                 'gps',
-                <span className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center shrink-0">
+                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#fff0f0]">
                   {gpsLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin text-accent" />
+                    <Loader2 className="size-5 animate-spin text-primary" />
                   ) : (
-                    <Crosshair className="w-5 h-5 text-accent" />
+                    <img src={gpsIcon} alt="" />
                   )}
                 </span>,
                 'Use my current location',
@@ -238,21 +247,20 @@ export default function DestinationSearchScreen({
 
             {optionRow(
               'map',
-              <span className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-                <MapIcon className="w-5 h-5 text-primary" />
+              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white">
+                <img src={pinIcon} alt="" />
               </span>,
               'Choose on map',
               'Drop a pin exactly where you want',
-              onChooseOnMap
+              onChooseOnMap,
+              true
             )}
-
-            <div className="h-2 bg-muted/40 my-1" />
 
             {savedShortcuts.map(({ key, label, icon: Icon }) => {
               const fav = findFavorite(key);
               return optionRow(
                 key,
-                <span className="w-10 h-10 rounded-2xl bg-accent/20 flex items-center justify-center shrink-0">
+                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-accent/20">
                   <Icon className="w-5 h-5 text-primary" />
                 </span>,
                 label,
@@ -266,15 +274,12 @@ export default function DestinationSearchScreen({
 
             {recents.length > 0 && (
               <>
-                <div className="h-2 bg-muted/40 my-1" />
-                <p className="px-4 pt-2 pb-1 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Recent
-                </p>
+                <h2 className="pt-3 text-base font-bold">Recent places</h2>
                 {recents.map((place, i) =>
                   optionRow(
                     `recent-${i}`,
-                    <span className="w-10 h-10 rounded-2xl bg-muted flex items-center justify-center shrink-0">
-                      <Clock className="w-5 h-5 text-muted-foreground" />
+                    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#fff0f0]">
+                      <img src={pinIcon} alt="" />
                     </span>,
                     place.name,
                     place.secondary,
@@ -287,7 +292,7 @@ export default function DestinationSearchScreen({
         )}
 
         {searching && (
-          <div className="pt-1">
+          <div className="space-y-2 pt-1">
             {loading && results.length === 0 && (
               <div className="flex items-center justify-center gap-2 py-10 text-muted-foreground">
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -297,8 +302,8 @@ export default function DestinationSearchScreen({
             {results.map((row) =>
               optionRow(
                 row.id,
-                <span className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <MapPin className="w-5 h-5 text-primary" />
+                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#fff0f0]">
+                  <img src={pinIcon} alt="" />
                 </span>,
                 row.name,
                 row.secondary,
@@ -310,6 +315,16 @@ export default function DestinationSearchScreen({
             )}
           </div>
         )}
+      </div>
+      <div className="shrink-0 px-4 pt-2" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
+        <button
+          type="button"
+          disabled={!pickupName || !dropoffName || Boolean(query.trim())}
+          onClick={onContinue}
+          className="min-h-[54px] w-full rounded-full bg-primary px-4 text-base font-semibold text-white disabled:opacity-50"
+        >
+          Continue
+        </button>
       </div>
     </motion.div>
   );

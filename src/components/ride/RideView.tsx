@@ -34,10 +34,10 @@ import { useWallet } from '@/hooks/useWallet';
 import TripPaymentSelector from './TripPaymentSelector';
 import { Button } from '@/components/ui/button';
 import {
-  Loader2, MapPin, Navigation, Crosshair, ArrowLeft, User, Search,
-  Star, Phone, Clock, ChevronRight, Locate,
+  Loader2, MapPin, Navigation, Crosshair, User, Search,
+  Star, Phone, Clock, ChevronRight,
   Banknote, Wallet, Zap, CarFront, Menu, History, ContactRound,
-  Calendar, ChevronDown, Sparkles, UserPlus, X } from
+  Calendar, ChevronDown, UserPlus } from
 'lucide-react';
 import {
   Sheet, SheetContent, SheetHeader, SheetTitle } from
@@ -85,6 +85,13 @@ import LuggageSheet from '@/components/luggage/LuggageSheet';
 import LocationPermissionPrompt from '@/components/ride/LocationPermissionPrompt';
 import DestinationSearchScreen, { type SearchResultRow } from '@/components/ride/DestinationSearchScreen';
 import RideTierSelector, { type RideTierId, type RideTierOption } from './RideTierSelector';
+import backIcon from '@/assets/rider-home/back.svg';
+import menuIcon from '@/assets/rider-home/menu.svg';
+import locationIcon from '@/assets/rider-home/location.svg';
+import bellIcon from '@/assets/rider-home/bell.svg';
+import radiusIcon from '@/assets/rider-home/radius.svg';
+import scheduleIcon from '@/assets/rider-home/schedule.svg';
+import arrowIcon from '@/assets/rider-home/arrow.svg';
 
 interface SelectedLocation {name: string;lat: number;lng: number;}
 interface GPSState {status: 'idle' | 'loading' | 'success' | 'denied' | 'unavailable';coords: {lat: number;lng: number;} | null;error: string | null;}
@@ -99,9 +106,12 @@ const SERVICE_TABS: {id: ServiceType;label: string;icon: string;}[] = [
 
 const RIDE_TIER_LABELS: Record<RideTierId, string> = {
   economy: 'Economy',
-  share: 'Share Ride',
+  share: 'Shared',
   parcel: 'Parcel',
 };
+
+const SHARED_PASSENGER_LIMIT = 2;
+const mapControlStyle = { width: 49, height: 49, background: '#fff', boxShadow: '0 5px 16px #0003' };
 
 
 export default function RideView() {
@@ -433,7 +443,7 @@ export default function RideView() {
     const etaMinutes = Math.max(1, Math.round(fareEstimate.durationMinutes));
     return [
       { id: 'economy', name: 'Economy', capacity: 4, etaMinutes, price: economyPrice, badge: 'Fast pickup', badgeVariant: 'primary' },
-      { id: 'share', name: 'Share Ride', capacity: 4, etaMinutes: etaMinutes + 2, price: sharePrice, badge: 'Save more', badgeVariant: 'accent' },
+      { id: 'share', name: 'Shared', capacity: SHARED_PASSENGER_LIMIT, etaMinutes: etaMinutes + 2, price: sharePrice, badge: 'Save more', badgeVariant: 'accent' },
       { id: 'parcel', name: 'Parcel', capacity: 1, etaMinutes: Math.max(etaMinutes, 10), price: parcelPrice, badge: 'Send anything', badgeVariant: 'accent' },
     ];
   }, [fareBreakdown, fareEstimate, parcelSize]);
@@ -444,12 +454,13 @@ export default function RideView() {
   // need a real route). Never fabricate a number here.
   const rideTierOptionsNoFare: RideTierOption[] = useMemo(() => [
     { id: 'economy', name: 'Economy', capacity: 4, etaMinutes: null, price: null, badge: 'Fast pickup', badgeVariant: 'primary' },
-    { id: 'share', name: 'Share Ride', capacity: 4, etaMinutes: null, price: null, badge: 'Save more', badgeVariant: 'accent' },
+    { id: 'share', name: 'Shared', capacity: SHARED_PASSENGER_LIMIT, etaMinutes: null, price: null, badge: 'Save more', badgeVariant: 'accent' },
     { id: 'parcel', name: 'Parcel', capacity: 1, etaMinutes: null, price: null, badge: 'Send anything', badgeVariant: 'accent' },
   ], []);
 
   const handleSelectTier = (id: RideTierId) => {
     setSelectedTier(id);
+    if (id === 'share') setPassengerCount((count) => Math.min(count, SHARED_PASSENGER_LIMIT));
     setServiceType(id === 'parcel' ? 'courier' : 'ride');
     haptic('light');
   };
@@ -460,7 +471,7 @@ export default function RideView() {
     setGpsState({ status: 'success', coords: c, error: null });
     if (setPickup) {
       setPickupLocation((prev) => prev && prev.name !== 'My location' ? prev : { name: 'My location', lat: c.lat, lng: c.lng });
-      setActiveField(null);
+      setActiveField((field) => field === 'pickup' ? 'dropoff' : field);
     }
 
     // Use detected town
@@ -587,28 +598,29 @@ export default function RideView() {
       });
   }, [settingFavorite, user?.id, toast]);
 
-  const handleLandmarkSelect = (landmark: Landmark) => {
-    const loc: SelectedLocation = { name: landmark.name, lat: landmark.latitude, lng: landmark.longitude };
+  const applySearchPlace = useCallback((loc: SelectedLocation) => {
     if (activeStopId) {
       setRideStops((prev) => prev.map((s) => s.id === activeStopId ? { ...s, address: loc.name, lat: loc.lat, lng: loc.lng } : s));
       setActiveStopId(null);
-    } else if (activeField === 'pickup') setPickupLocation(loc);else
-    setDropoffLocation(loc);
-    setActiveField(null);setSearchQuery('');setNominatimResults([]);
+      setActiveField(null);
+    } else if (activeField === 'pickup') {
+      setPickupLocation(loc);
+      setActiveField('dropoff');
+    } else {
+      setDropoffLocation(loc);
+    }
+    setSearchQuery('');
+    setNominatimResults([]);
     saveFavoriteIfSetting(loc);
     haptic('light');
+  }, [activeField, activeStopId, saveFavoriteIfSetting]);
+
+  const handleLandmarkSelect = (landmark: Landmark) => {
+    applySearchPlace({ name: landmark.name, lat: landmark.latitude, lng: landmark.longitude });
   };
 
   const handleStreetSelect = (street: Street) => {
-    const loc: SelectedLocation = { name: street.name, lat: street.latitude, lng: street.longitude };
-    if (activeStopId) {
-      setRideStops((prev) => prev.map((s) => s.id === activeStopId ? { ...s, address: loc.name, lat: loc.lat, lng: loc.lng } : s));
-      setActiveStopId(null);
-    } else if (activeField === 'pickup') setPickupLocation(loc);else
-    setDropoffLocation(loc);
-    setActiveField(null);setSearchQuery('');setNominatimResults([]);
-    saveFavoriteIfSetting(loc);
-    haptic('light');
+    applySearchPlace({ name: street.name, lat: street.latitude, lng: street.longitude });
   };
 
   const handleNominatimSelect = async (result: {name: string;lat?: number;lng?: number;placeId?: string;}) => {
@@ -644,14 +656,7 @@ export default function RideView() {
     }
     if (lat === undefined || lng === undefined) return;
 
-    const loc: SelectedLocation = { name, lat, lng };
-    if (activeStopId) {
-      setRideStops((prev) => prev.map((s) => s.id === activeStopId ? { ...s, address: loc.name, lat: loc.lat, lng: loc.lng } : s));
-      setActiveStopId(null);
-    } else if (activeField === 'pickup') setPickupLocation(loc);else
-    setDropoffLocation(loc);
-    setActiveField(null);setSearchQuery('');setNominatimResults([]);
-    saveFavoriteIfSetting(loc);
+    applySearchPlace({ name, lat, lng });
   };
 
   const handleQuickPickSelect = (pick: {name: string;lat: number;lng: number;}) => {
@@ -816,17 +821,19 @@ export default function RideView() {
   const handleMapClick = useCallback(async (coords: {lat: number;lng: number;}) => {
     if (!activeField) return;
     setReverseGeoLoading(true);
+    let name = `${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`;
     try {
       const result = await reverseZW(coords.lat, coords.lng);
-      const name = result?.name || result?.display_name?.split(',')[0] || `${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`;
-      const loc: SelectedLocation = { name, lat: coords.lat, lng: coords.lng };
-      if (activeField === 'pickup') {setPickupLocation(loc);setActiveField('dropoff');} else {setDropoffLocation(loc);setActiveField(null);}
+      name = result?.name || result?.display_name?.split(',')[0] || name;
       if (result) cachePlaceFromNominatim(result).catch(() => {});
     } catch {
-      const loc: SelectedLocation = { name: `${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`, lat: coords.lat, lng: coords.lng };
-      if (activeField === 'pickup') {setPickupLocation(loc);setActiveField('dropoff');} else {setDropoffLocation(loc);setActiveField(null);}
-    } finally {setReverseGeoLoading(false);}
-  }, [activeField]);
+      // The pin remains usable when reverse geocoding is unavailable.
+    } finally {
+      setReverseGeoLoading(false);
+    }
+    applySearchPlace({ name, ...coords });
+    setMapPickMode(false);
+  }, [activeField, applySearchPlace]);
 
   const handlePickPassengerFromContacts = async () => {
     const result = await pickNativeContact();
@@ -1262,6 +1269,7 @@ export default function RideView() {
   }, [landmarks, streets, cachedPlaceResults, nominatimResults, activeField, activeStopId]);
 
   const showHomeContent = rideStatus === 'idle' && !pickupLocation && !dropoffLocation;
+  const showHomeMenu = showHomeContent && !tierPickerOpen && !mapPickMode;
   const unifiedPlaceResults = [...cachedPlaceResults, ...nominatimResults.map((item) => ({ ...item, source: 'nominatim' as const }))]
     .filter((item, index, arr) => {
       const key = `${item.name}-${item.displayName}`.toLowerCase();
@@ -1272,7 +1280,7 @@ export default function RideView() {
   // MAIN RIDE BOOKING UI
   // ═══════════════════════════════════════════
   return (
-    <div className="relative h-[100dvh] w-full overflow-hidden bg-background">
+    <div data-map-screen="true" className="relative h-[100dvh] w-full overflow-hidden bg-background">
       {/* ── MAP ── */}
       <div className="absolute inset-0">
         <MapboxMap pickup={pickupLocation} dropoff={dropoffLocation} routeGeometry={routeData?.geometry} onMapClick={handleMapClick} defaultCenter={mapCenter} preferredCenter={preferredCenter} defaultZoom={mapZoom} className="w-full h-full" height="100%" drivers={nearbyDrivers} stops={rideStops.filter(s => s.lat && s.lng)} riderGender={(riderPrefs?.gender as "male" | "female" | undefined) ?? null} bottomInset={sheetHeight + 24} />
@@ -1280,43 +1288,51 @@ export default function RideView() {
         {/* Map chrome — back button (top-left) + menu/notifications/locate/navigation
             stack (top-right). Nothing else floats over the map, per the reference. */}
         <button
-          onClick={() => showHomeContent ? setMenuOpen(true) : navigate(-1)}
-          aria-label={showHomeContent ? 'Menu' : 'Back'}
-          className="absolute left-3 z-40 flex items-center justify-center rounded-full active:scale-90 transition-transform"
-          style={{ top: 'calc(env(safe-area-inset-top) + 7px)', width: 52, height: 52, ...glassSurface }}
+          type="button"
+          onClick={() => {
+            if (mapPickMode) setMapPickMode(false);
+            else if (tierPickerOpen) setTierPickerOpen(false);
+            else if (showHomeMenu) setMenuOpen(true);
+            else navigate(-1);
+          }}
+          aria-label={showHomeMenu ? 'Menu' : 'Back'}
+          className="absolute left-4 z-40 grid place-items-center rounded-full transition-transform active:scale-90"
+          style={{ top: 'max(2.75rem, calc(env(safe-area-inset-top) + 7px))', ...mapControlStyle }}
         >
-          {showHomeContent ? <Menu className="w-5 h-5" style={{ color: RIDE_TEXT }} /> : <ArrowLeft className="w-5 h-5" style={{ color: RIDE_TEXT }} />}
+          <img src={showHomeMenu ? menuIcon : backIcon} alt="" />
         </button>
 
-        <div className="absolute right-3 z-40 flex flex-col gap-3" style={{ top: 'calc(env(safe-area-inset-top) + 7px)' }}>
+        <div className="absolute right-4 z-40 flex flex-col gap-3" style={{ top: 'max(2.75rem, calc(env(safe-area-inset-top) + 7px))' }}>
           {!showHomeContent && (
             <button
               onClick={() => setMenuOpen(true)}
               aria-label="Menu"
               className="flex items-center justify-center rounded-full active:scale-90 transition-transform"
-              style={{ width: 52, height: 52, ...glassSurface }}
+              style={mapControlStyle}
             >
               <Menu className="w-5 h-5" style={{ color: RIDE_TEXT }} />
             </button>
           )}
-          <NotificationBell
-            className="active:scale-90 transition-transform"
-            style={{ width: 52, height: 52, ...glassSurface }}
-          />
           <button
-            onClick={() => handleUseMyLocation()}
+            type="button"
+            onClick={() => handleUseMyLocation(false, false)}
             aria-label="Use my location"
             className="flex items-center justify-center rounded-full active:scale-90 transition-transform"
-            style={{ width: 52, height: 52, ...glassSurface }}
+            style={mapControlStyle}
           >
-            {gpsState.status === 'loading' ? <Loader2 className="w-5 h-5 animate-spin" style={{ color: RIDE_RED }} /> : <Locate className="w-5 h-5" style={{ color: RIDE_TEXT }} />}
+            {gpsState.status === 'loading' ? <Loader2 className="size-5 animate-spin text-primary" /> : <img src={locationIcon} alt="" />}
           </button>
+          <NotificationBell
+            className="transition-transform active:scale-90"
+            style={mapControlStyle}
+            iconSource={bellIcon}
+          />
           {!showHomeContent && (
             <button
-              onClick={() => handleUseMyLocation()}
+              onClick={() => handleUseMyLocation(false, false)}
               aria-label="Recenter navigation"
               className="flex items-center justify-center rounded-full active:scale-90 transition-transform"
-              style={{ width: 52, height: 52, ...glassSurface }}
+              style={mapControlStyle}
             >
               <Navigation className="w-5 h-5" style={{ color: RIDE_TEXT }} />
             </button>
@@ -1408,35 +1424,37 @@ export default function RideView() {
       {/* ── BOTTOM SHEET ── */}
       <RideGlassPanel
         ref={sheetRef}
+        variant="ribbon"
         className="absolute left-0 right-0 z-50"
         onRibbonClick={() => setSheetExpanded((e) => !e)}
-        handleWidth={showHomeContent ? 140 : undefined}
+        handleWidth={64}
+        panelStyle={{ background: '#fff' }}
         style={{
           bottom: 0,
           // Idle content is fixed and compact (three row-2 tiles + row-3 buttons) —
           // size to it exactly instead of capping by viewport height, so nothing
           // in row 2 or row 3 ever needs a scroll to come into view.
-          maxHeight: showHomeContent ? 'none' : (sheetExpanded ? '60vh' : '38vh'),
+          minHeight: tierPickerOpen ? 'min(62dvh, 530px)' : undefined,
+          maxHeight: showHomeMenu ? 'none' : (tierPickerOpen || sheetExpanded ? '65dvh' : '38dvh'),
           transition: 'max-height 0.3s cubic-bezier(0.32,0.72,0,1)',
           paddingBottom: 'env(safe-area-inset-bottom)',
         }}>
 
         {/* Location pills row — pinned above the content, always visible, never scrolls.
             Same treatment on every screen, including idle (row 1 of the 4e layout). */}
-        <div className="shrink-0 flex items-center gap-2.5 px-4 pt-2 pb-1">
+        {!tierPickerOpen && <div className="flex shrink-0 items-center gap-2.5 px-4 pb-2 pt-2">
           <TownSelectorSheet currentTown={selectedTown} onSelect={handleTownSelect} />
           <span
-            className="ml-auto inline-flex items-center gap-1.5 shrink-0"
-            style={{ height: 36, padding: '0 12px', borderRadius: 999, ...glassSurface }}
+            className="ml-auto inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full border border-[#d4d5d9] bg-[#f7f7fa] px-2.5 text-xs font-semibold text-[#111] shadow-sm"
           >
-            <Sparkles className="w-[13px] h-[13px]" style={{ color: RIDE_TEXT }} />
-            <span className="text-[12.5px] font-medium" style={{ color: RIDE_TEXT }}>{selectedTown.radiusKm}+ km area</span>
+            <img src={radiusIcon} alt="" />
+            <span>{selectedTown.radiusKm} km area</span>
           </span>
-        </div>
+        </div>}
 
         {/* Scrollable content */}
         <div
-          className="flex-1 px-4 pt-1 pb-1.5 space-y-2 min-h-0 overflow-y-auto overscroll-contain"
+          className={cn('min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pb-1.5 pt-1', showHomeContent ? 'px-2' : 'px-4')}
           style={showHomeContent ? { paddingBottom: 4 } : undefined}
         >
           {/* ── HOME CONTENT (idle state, before booking starts) ──
@@ -1458,10 +1476,14 @@ export default function RideView() {
               setSheetExpanded(true);
             };
             return (
-              <div className="flex items-center gap-2" style={{ height: 62 }}>
+              <div className="flex items-center gap-2">
                 <RideHomeGreeting
                   name={firstName}
-                  onSearchClick={() => setTierPickerOpen(true)}
+                  onSearchClick={() => {
+                    setActiveField('pickup');
+                    setSearchQuery('');
+                    setSheetExpanded(true);
+                  }}
                 />
                 <QuickShortcutsRow onSelect={pickDropoff} onRequestSet={requestSetShortcut} />
               </div>
@@ -1473,18 +1495,10 @@ export default function RideView() {
               destination entry; RideTierSelector re-renders with real fares
               once pickup/dropoff (and so a route) exist, below. */}
           {showHomeContent && tierPickerOpen && (
-            <div className="space-y-2">
-              <div className="flex items-center justify-between px-1">
-                <p className="text-[13px] font-bold" style={{ color: RIDE_TEXT }}>Choose a ride</p>
-                <button
-                  type="button"
-                  onClick={() => setTierPickerOpen(false)}
-                  aria-label="Close"
-                  className="flex items-center justify-center rounded-full active:scale-90 transition-transform"
-                  style={{ width: 28, height: 28, background: 'rgba(17,17,17,.06)' }}
-                >
-                  <X className="w-3.5 h-3.5" style={{ color: RIDE_TEXT }} />
-                </button>
+            <div className="space-y-3 pb-4 pt-3">
+              <div className="px-1">
+                <h2 className="text-xl font-bold text-[#111]">Choose your ride</h2>
+                <p className="text-xs text-[#585a60]">Travel your way with CruiXe</p>
               </div>
               <RideTierSelector
                 options={rideTierOptionsNoFare}
@@ -1492,8 +1506,7 @@ export default function RideView() {
                 onSelect={(id) => {
                   handleSelectTier(id);
                   setTierPickerOpen(false);
-                  ensurePickup();
-                  setActiveField('dropoff');
+                  setActiveField('pickup');
                   setSearchQuery('');
                   setSheetExpanded(true);
                 }}
@@ -1540,8 +1553,7 @@ export default function RideView() {
             CruiXe underneath it is redundant with the tier list's own selection
             step and just clutters the screen. */}
         {!tierPickerOpen && <div
-          className="shrink-0 px-4 pb-2 pt-1.5"
-          style={showHomeContent ? { paddingTop: 4 } : undefined}
+          className={cn('shrink-0 pt-1.5', showHomeContent ? 'px-2 pb-4' : 'px-4 pb-2')}
         >
           {showHomeContent ? (
             <div className="flex items-center gap-3">
@@ -1549,24 +1561,16 @@ export default function RideView() {
                 type="button"
                 onClick={() => setSchedulePickerOpen(true)}
                 aria-label={scheduledAt ? 'Scheduled ride' : 'Schedule a ride'}
-                className="flex-1 flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
-                style={{ height: 44, borderRadius: 16, ...glassSurface }}>
-                <Calendar className="w-[18px] h-[18px]" style={{ color: RIDE_RED }} />
-                <span className="text-[14px] font-semibold" style={{ color: RIDE_TEXT }}>Schedule</span>
+                className="flex min-h-[58px] flex-1 items-center justify-center gap-2 rounded-[15px] border border-primary bg-white px-2 text-sm font-semibold text-[#111] transition-transform active:scale-95">
+                <img src={scheduleIcon} alt="" />
+                <span>Schedule</span>
               </button>
-              {/* Same "start booking" action as tapping the Where-to card
-                  above — this is the idle screen's primary CTA, not a
-                  decorative brand mark, so it needs to actually do that. */}
               <button
                 type="button"
                 onClick={() => setTierPickerOpen(true)}
-                className="relative flex-1 flex items-center justify-center gap-2 overflow-hidden active:scale-[0.97] transition-transform"
-                style={{ height: 44, borderRadius: 16, ...redCta }}>
-                <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,0))' }} />
-                <span className="relative text-[16px] font-bold text-white whitespace-nowrap">Let's Crui<span className="italic">X</span>e</span>
-                <span className="relative flex items-center justify-center rounded-full" style={{ width: 23, height: 23, background: 'rgba(255,255,255,.24)', boxShadow: 'inset 0 .5px 0 rgba(255,255,255,.5)' }}>
-                  <ChevronRight className="w-[15px] h-[15px] text-white" strokeWidth={2.6} />
-                </span>
+                className="flex min-h-[58px] flex-1 items-center justify-center gap-2 rounded-[15px] bg-primary px-2 text-sm font-semibold text-white transition-transform active:scale-[0.97]">
+                <span>Let’s CruiXe</span>
+                <img src={arrowIcon} alt="" />
               </button>
             </div>
           ) : pickupLocation && dropoffLocation && fareBreakdown ? (
@@ -1671,6 +1675,7 @@ export default function RideView() {
       {activeField && !mapPickMode && (
         <DestinationSearchScreen
           activeField={activeField}
+          riderName={firstName}
           onActiveFieldChange={(f) => {setActiveField(f);setSearchQuery('');setNominatimResults([]);}}
           pickupName={pickupLocation?.name || ''}
           dropoffName={dropoffLocation?.name || ''}
@@ -1685,16 +1690,16 @@ export default function RideView() {
             // so back returns to the home greeting instead of the summary pill.
             if (!dropoffLocation) setPickupLocation(null);
           }}
+          onContinue={() => {
+            setActiveField(null);
+            setSearchQuery('');
+            setNominatimResults([]);
+            setSheetExpanded(true);
+          }}
           onUseMyLocation={() => handleUseMyLocation()}
           gpsLoading={gpsState.status === 'loading'}
           onChooseOnMap={() => setMapPickMode(true)}
-          onSelectPlace={(place) => {
-            const loc: SelectedLocation = { name: place.name, lat: place.lat, lng: place.lng };
-            if (activeField === 'pickup') {setPickupLocation(loc);setActiveField('dropoff');}
-            else {setDropoffLocation(loc);setActiveField(null);}
-            setSearchQuery('');
-            saveFavoriteIfSetting(loc);
-          }}
+          onSelectPlace={applySearchPlace}
           loading={landmarksLoading || streetsLoading || cachedPlacesLoading || nominatimLoading}
           results={searchResultRows}
           settingFavorite={settingFavorite}

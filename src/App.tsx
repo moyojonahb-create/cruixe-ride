@@ -83,6 +83,18 @@ const AdminMigrationExport = lazy(() => import("./pages/admin/AdminMigrationExpo
 const StudentVerificationPage = lazy(() => import("./pages/StudentVerificationPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const LiveTrackingPage = lazy(() => import("./pages/LiveTrackingPage"));
+const RecoveryScreenReview = import.meta.env.MODE === "staging"
+  ? lazy(() => import("./pages/staging/RecoveryScreenReview"))
+  : null;
+const Batch20ScreenReview = import.meta.env.MODE === "staging"
+  ? lazy(() => import("./pages/staging/Batch20ScreenReview"))
+  : () => null;
+const ParcelBatch20Review = import.meta.env.MODE === "staging"
+  ? lazy(() => import("./pages/staging/ParcelBatch20Review"))
+  : () => null;
+const CommunicationBatch20Review = import.meta.env.MODE === "staging"
+  ? lazy(() => import("./pages/staging/CommunicationBatch20Review"))
+  : () => null;
 
 import PageSkeleton from "./components/PageSkeleton";
 
@@ -138,10 +150,10 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/ride" replace />} />
           <Route path="/home" element={<SuspenseWrap><Index /></SuspenseWrap>} />
-          <Route path="/auth" element={<MarketingShell><Auth /></MarketingShell>} />
-          <Route path="/reset-password" element={<MarketingShell><ResetPassword /></MarketingShell>} />
+          <Route path="/auth" element={<SuspenseWrap><Auth /></SuspenseWrap>} />
+          <Route path="/reset-password" element={<SuspenseWrap><ResetPassword /></SuspenseWrap>} />
           <Route path="/login" element={<Navigate to="/auth" replace />} />
-          <Route path="/signup" element={<MarketingShell><Signup /></MarketingShell>} />
+          <Route path="/signup" element={<SuspenseWrap><Signup /></SuspenseWrap>} />
 
           {/* Legacy / mapp compatibility redirects */}
           <Route path="/mapp" element={<Navigate to="/ride" replace />} />
@@ -222,6 +234,10 @@ export default function App() {
           <Route path="/admin/migration-export" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMigrationExport /></AdminGuard></SuspenseWrap>} />
           <Route path="/admin/maps-qa" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMapsQA /></AdminGuard></SuspenseWrap>} />
           <Route path="/student-verification" element={<SuspenseWrap><AuthGuard><StudentVerificationPage /></AuthGuard></SuspenseWrap>} />
+          {import.meta.env.MODE === "staging" && <Route path="/staging/recovery" element={<SuspenseWrap><RecoveryScreenReview /></SuspenseWrap>} />}
+          {import.meta.env.MODE === "staging" && <Route path="/staging/figma-20" element={<SuspenseWrap><Batch20ScreenReview /></SuspenseWrap>} />}
+          {import.meta.env.MODE === "staging" && <Route path="/staging/parcel-20" element={<SuspenseWrap><ParcelBatch20Review /></SuspenseWrap>} />}
+          {import.meta.env.MODE === "staging" && <Route path="/staging/communication-20" element={<SuspenseWrap><CommunicationBatch20Review /></SuspenseWrap>} />}
 
           <Route path="*" element={<MarketingShell><NotFound /></MarketingShell>} />
         </Routes>

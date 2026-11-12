@@ -163,13 +163,13 @@ export default function DriverRideDetails() {
   const note = ride.rider_note || (isParcel ? ride.parcel?.deliveryNote ?? null : null);
 
   return (
-    <div className="min-h-[100dvh] flex flex-col relative" style={{ background: '#F2F4F7' }}>
+    <div data-map-screen="true" data-figma-node={isParcel ? "1210:116" : undefined} className="min-h-[100dvh] flex flex-col relative" style={{ background: '#F2F4F7' }}>
       {/* Floating header over the map */}
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center" style={{ padding: 'calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px', gap: 10, pointerEvents: 'none' }}>
         <button type="button" onClick={handleClose} aria-label="Back" className="shrink-0 flex items-center justify-center rounded-full active:scale-90 transition-transform" style={{ width: 36, height: 36, background: 'rgba(255,255,255,.92)', boxShadow: '0 2px 8px rgba(17,17,17,.12)', pointerEvents: 'auto' }}>
           <ChevronLeft style={{ width: 19, height: 19, color: RIDE_TEXT }} strokeWidth={2.4} />
         </button>
-        <span style={{ flex: 1, fontSize: 16, fontWeight: 700, color: '#fff', textShadow: '0 1px 3px rgba(0,0,0,.35)', pointerEvents: 'none' }}>Ride request</span>
+        <span style={{ flex: 1, fontSize: 16, fontWeight: 700, color: '#fff', textShadow: '0 1px 3px rgba(0,0,0,.35)', pointerEvents: 'none' }}>{isParcel ? 'New parcel delivery' : 'Ride request'}</span>
       </div>
 
       <div className="flex-1 overflow-y-auto" style={{ padding: '0 16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -189,6 +189,15 @@ export default function DriverRideDetails() {
           )}
         </div>
 
+        {isParcel && (
+          <div className="rounded-[18px] border border-[#f3d8db] bg-white px-4 py-3" role="status">
+            <p className="text-[10px] font-bold uppercase tracking-wide text-[#ff000d]">PARCEL REQUEST</p>
+            <p className="mt-1 text-[18px] font-bold text-[#1f2129]">New parcel delivery</p>
+            <p className="mt-1 text-[12px] leading-5 text-[#667080]">
+              Review the actual route, parcel photograph, contact details and fare before submitting an offer.
+            </p>
+          </div>
+        )}
         {/* Identity card */}
         <div className="flex items-center" style={{ ...glassSurface, borderRadius: 16, padding: '12px 14px', gap: 12 }}>
           {isParcel ? (

@@ -9,7 +9,7 @@ import { resolveEmergencyNumber } from '@/lib/region';
 import ModalBottomSheet from '@/components/ui/ModalBottomSheet';
 import ShareTripButton from './ShareTripButton';
 import DisputeForm from './DisputeForm';
-import { RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2, tintBlue } from './rideGlass';
+import { RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, tintBlue } from './rideGlass';
 
 const HOLD_MS = 3000;
 
@@ -389,7 +389,7 @@ export default function SafetySheet({
                     }
                   }}
                   className="relative w-full shrink-0 flex items-center justify-center select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-70"
-                  style={{ height: 56, borderRadius: 16, overflow: 'hidden', gap: 10, background: RIDE_RED_GRADIENT, boxShadow: '0 12px 26px rgba(184,17,4,.4), inset 0 1px 0 rgba(255,255,255,.3)', touchAction: 'none' }}
+                  style={{ height: 56, borderRadius: 16, overflow: 'hidden', gap: 10, background: RIDE_RED, boxShadow: '0 12px 26px rgba(184,17,4,.4), inset 0 1px 0 rgba(255,255,255,.3)', touchAction: 'none' }}
                 >
                   <span
                     aria-hidden="true"

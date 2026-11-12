@@ -1,140 +1,94 @@
-// Driver mode landing page
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { useDriverStatus } from '@/hooks/useDriverStatus';
-import { Button } from '@/components/ui/button';
-import { Clock, DollarSign, Percent, ChevronRight } from 'lucide-react';
-import CruiXeLogo from '@/components/CruiXeLogo';
-import pickMeCarFront from '@/assets/pickme-car-front.png';
-import { useState } from 'react';
-import AuthModalWrapper from '@/components/auth/AuthModalWrapper';
 
+const brand = '/brand/driver-welcome';
 const benefits = [
-  { icon: Clock, text: 'Flexible hours' },
-  { icon: DollarSign, text: 'Your prices' },
-  { icon: Percent, text: 'Low service payments' },
+  { icon: 'safety', title: 'Safety built in', description: 'Verification and in-trip support.', delay: 0.10 },
+  { icon: 'fares', title: 'Transparent fares', description: 'Review the fare before accepting a trip.', delay: 0.18 },
+  { icon: 'schedule', title: 'Flexible work', description: 'Choose when you go online.', delay: 0.26 },
 ];
 
-const features = [
-  { icon: DollarSign, text: 'Offer your fare' },
-  { icon: Percent, text: 'Keep more with low service fees' },
-  { icon: Clock, text: 'Choose requests and your schedule' },
-];
+const actionClass = 'grid min-h-14 flex-1 place-items-center rounded-[19px] px-2 text-center text-sm font-semibold';
 
 export default function DriverModeLanding() {
   const { user } = useAuth();
   const { isApproved, isDriver } = useDriverStatus();
   const navigate = useNavigate();
-  const location = useLocation();
-  const isMapp = location.pathname.startsWith('/mapp');
-  const prefix = isMapp ? '/mapp' : '';
-
-  const [authOpen, setAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
+  const reduceMotion = useReducedMotion();
 
   const handleDriverAction = () => {
-    if (user && isDriver && isApproved) {
-      navigate('/driver/profile');
+    if (isDriver && isApproved) {
+      navigate('/driver/requests?view=home');
       return;
     }
-    if (user && isDriver) {
-      // Pending/rejected driver - show application status
-      navigate('/driver/application');
-      return;
-    }
-    // New user or not a driver - go to registration
-    navigate('/driver/register');
+    navigate(isDriver ? '/driver/application' : '/driver/register');
   };
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 glass-nav">
-        {!isMapp && (
-          <button onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground text-sm">
-            ← Back
-          </button>
-        )}
-        <CruiXeLogo size="sm" />
-        {!isMapp && <div className="w-12" />}
-      </div>
+    <main className="min-h-[100dvh] bg-[#fdfdfd] font-['Poppins',system-ui,sans-serif] text-[#1f2129]">
+      <div className="mx-auto flex min-h-[100dvh] w-full max-w-[440px] flex-col">
+        <div className="relative h-[229px] shrink-0 overflow-hidden">
+          <img src={`${brand}/hero.webp`} alt="" fetchPriority="high" className="h-full w-full object-cover object-[center_40%]" />
+          <Link to="/ride" aria-label="Back to rides" className="absolute left-2 top-[max(1.5rem,env(safe-area-inset-top))] grid size-12 place-items-center rounded-full">
+            <span className="grid size-8 place-items-center rounded-full bg-[#ff000d]">
+              <img src="/brand/auth/back.svg" alt="" />
+            </span>
+          </Link>
+        </div>
 
-      <div className="flex-1 px-5 py-6 flex flex-col gap-4">
-        {/* Hero card */}
-        <div className="rounded-3xl p-6 mb-2 text-primary-foreground" style={{ background: 'var(--gradient-primary)' }}>
-          <h2 className="text-2xl font-bold text-primary-foreground mb-4">Get income with CruiXe</h2>
-          <div className="space-y-2">
-            {benefits.map((b) => (
-              <div key={b.text} className="flex items-center gap-3 text-primary-foreground/90">
-                <span className="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center">
-                  <b.icon className="w-4 h-4" />
-                </span>
-                <span className="text-sm font-medium">{b.text}</span>
-              </div>
-            ))}
+        <section className="relative isolate -mt-3 flex flex-1 flex-col px-5 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-14">
+          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-16 overflow-hidden" aria-hidden="true">
+            <img src={`${brand}/red-wave.svg`} alt="" className="absolute inset-x-0 top-0 w-full" />
+            <img src={`${brand}/paper.svg`} alt="" className="absolute inset-x-0 top-[21px] w-full" />
+            <span className="absolute left-1/2 top-[11px] h-[5px] w-[54px] -translate-x-1/2 rounded-full bg-white" />
           </div>
-        </div>
 
-        {/* Driver CTA card */}
-        <button
-          onClick={handleDriverAction}
-          className="flex items-center gap-4 p-5 rounded-2xl glass-card hover:bg-foreground/[0.02] transition-colors mb-2"
-        >
-          <img src={pickMeCarFront} alt="" className="h-12 w-auto object-contain shrink-0" />
-          <span className="text-lg font-semibold text-foreground flex-1 text-left">Let's drive</span>
-          <ChevronRight className="w-5 h-5 text-muted-foreground" />
-        </button>
+          <h1 className="text-[21px] font-bold">Welcome to CruiXe Driver</h1>
+          <p className="mt-1.5 text-[12.5px] text-[#68717f]">Work on your schedule. Earn with confidence.</p>
+          <p className="mb-4 mt-6 flex items-center gap-2.5 text-[11px] font-semibold">
+            <span className="h-1 w-[34px] rounded-full bg-[#ff000d]" aria-hidden="true" />
+            WHY DRIVE WITH CRUIXE
+          </p>
 
-        {/* Features list */}
-        <div className="space-y-6 mb-auto">
-          {features.map((f) => (
-            <div key={f.text} className="flex items-center gap-4 glass-card px-3 py-2.5 rounded-2xl">
-              <div className="p-2 rounded-xl bg-accent/20 glass-glow-yellow">
-                <f.icon className="w-5 h-5 text-accent" />
-              </div>
-              <span className="text-foreground font-medium">{f.text}</span>
+          <ul className="space-y-3">
+            {benefits.map(({ icon, title, description, delay }) => (
+              <motion.li key={icon}
+                initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={reduceMotion ? { duration: 0 } : { delay, duration: 0.26, ease: 'easeOut' }}
+                className="relative isolate flex min-h-20 items-center gap-3.5 overflow-hidden rounded-[20px] border border-[#e5e8ed] bg-white px-3.5 py-3 shadow-[0_5px_8px_rgba(26,31,46,.09)]"
+              >
+                <img src={`${brand}/${icon === 'safety' ? 'safety-outline' : 'card-outline'}.svg`} alt="" className="pointer-events-none absolute inset-0 -z-10 h-full w-full" />
+                <span className={`grid size-12 shrink-0 place-items-center rounded-[16px] ${icon === 'safety' ? 'bg-[#ff000d]' : 'bg-[#f0f1f3]'}`}>
+                  <img src={`${brand}/${icon}.svg`} alt="" />
+                </span>
+                <div>
+                  <h2 className="text-[14.5px] font-semibold">{title}</h2>
+                  <p className="mt-1.5 text-xs text-[#636a77]">{description}</p>
+                </div>
+              </motion.li>
+            ))}
+          </ul>
+
+          <div className="mt-auto pt-10">
+            <div className="flex gap-3">
+              {user ? (
+                <button type="button" onClick={handleDriverAction} className={`${actionClass} bg-[#ff000d] text-white`}>
+                  {isDriver && isApproved ? 'Let’s drive' : isDriver ? 'View application' : 'Register to drive'}
+                </button>
+              ) : (
+                <>
+                  <Link to="/auth?next=%2Fdriver" className={`${actionClass} border border-[#ff000d] bg-white text-[#111]`}>Sign in</Link>
+                  <Link to="/signup?next=%2Fdriver%2Fregister" className={`${actionClass} bg-[#ff000d] text-white`}>Create account</Link>
+                </>
+              )}
             </div>
-          ))}
-        </div>
-
-        {/* Bottom actions */}
-        <div className="mt-8 space-y-3">
-          <Button
-            onClick={() => navigate('/driver/register')}
-            className="w-full h-14 rounded-full text-lg font-semibold bg-primary text-primary-foreground hover:opacity-95 shadow-[0_8px_24px_hsl(var(--primary)/0.35)]"
-          >
-            Register
-          </Button>
-
-          {!user && (
-            <>
-              <Button
-                variant="outline"
-                className="w-full h-14 rounded-full text-lg font-medium"
-                onClick={() => { setAuthMode('login'); setAuthOpen(true); }}
-              >
-                I already have an account
-              </Button>
-              <button
-                onClick={() => navigate(`${prefix}/ride`)}
-                className="w-full text-center text-muted-foreground hover:text-foreground text-sm py-2"
-              >
-                Go to passenger mode
-              </button>
-            </>
-          )}
-        </div>
+            <p className="mt-2.5 text-center text-xs text-[#68717f]">Your time. Your vehicle. Your journey.</p>
+          </div>
+        </section>
       </div>
-
-      <AuthModalWrapper
-        isOpen={authOpen}
-        onClose={() => setAuthOpen(false)}
-        mode={authMode}
-        onSwitchMode={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
-      />
-    </div>
+    </main>
   );
 }
-
-
-

@@ -25,6 +25,7 @@ import { useRideRealtime } from "@/hooks/useRideRealtime";
 import { useUnreadRideMessages } from "@/hooks/useUnreadRideMessages";
 import { useVoiceNavigation } from "@/hooks/useVoiceNavigation";
 import DriverMessageSheet from "@/components/driver/DriverMessageSheet";
+import DriverDestinationReached from "@/components/driver/DriverDestinationReached";
 import SafetySheet from "@/components/ride/SafetySheet";
 import { goBackend, GoBackendError } from "@/lib/goBackendClient";
 import { createNotification } from "@/lib/businessApi";
@@ -36,7 +37,8 @@ import { getDetailedRoute, findCurrentStep, getManeuverInstruction, getVoiceInst
 import MapboxMap from "@/components/map/LazyMapboxMap";
 import type { MapEtaCard } from "@/components/MapboxMap";
 import RideGlassPanel from "@/components/ride/RideGlassPanel";
-import { glassSurface, redCta, tintBlue, RIDE_RED, RIDE_RED_GRADIENT, RIDE_TEXT, RIDE_TEXT_2 } from "@/components/ride/rideGlass";
+import { getDriverTripPresentation } from "@/lib/driverTripPresentation";
+import { glassSurface, redCta, tintBlue, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2 } from "@/components/ride/rideGlass";
 
 export interface RiderInfo {
   full_name: string | null;
@@ -269,6 +271,7 @@ export default function FullScreenNavigation({
   const [safetyOpen, setSafetyOpen] = useState(false);
   const [completing, setCompleting] = useState(false);
   const [confirmingEndTrip, setConfirmingEndTrip] = useState(false);
+  const [destinationConfirmOpen, setDestinationConfirmOpen] = useState(false);
   const [recenterSignal, setRecenterSignal] = useState(0);
   const [riderNote, setRiderNote] = useState<string | null>(null);
   const lastFetchPhase = useRef("");
@@ -485,6 +488,7 @@ export default function FullScreenNavigation({
       if (!r?.ok) throw new Error((r?.reason as string) || "Failed to complete trip");
       toast.success("Trip completed!", { description: `Earned ${fmtUSD(Number(r.driver_earnings_usd ?? 0))}` });
       if (voiceEnabled) speak("Trip completed. Great job!", true);
+      setDestinationConfirmOpen(false);
       onTripComplete();
     } catch (e: unknown) {
       toast.error("Failed to complete trip", { description: (e as Error).message });
@@ -570,12 +574,13 @@ export default function FullScreenNavigation({
 
   const passengerName = activeTrip.passenger_name || riderInfo?.full_name || 'Passenger';
   const dialNumber = activeTrip.passenger_phone || riderPhone;
+  const tripPresentation = getDriverTripPresentation(activeTrip.status, passengerName, activeTrip.dropoff_address);
   const metaBits = [
     activeTrip.passenger_count && activeTrip.passenger_count > 1 ? `${activeTrip.passenger_count} passengers` : null,
   ].filter(Boolean) as string[];
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-background">
+    <motion.div data-map-screen="true" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-background">
       <NavigationMap
         pickup={pickup}
         dropoff={dropoff}
@@ -592,7 +597,7 @@ export default function FullScreenNavigation({
           type="button"
           onClick={() => setRecenterSignal((s) => s + 1)}
           className="flex items-center w-full text-left active:scale-[0.98] transition-transform"
-          style={{ padding: '12px 14px', borderRadius: 18, gap: 12, background: RIDE_RED_GRADIENT, boxShadow: '0 12px 28px rgba(184,17,4,.32), inset 0 1px 0 rgba(255,255,255,.28)' }}
+          style={{ padding: '12px 14px', borderRadius: 18, gap: 12, background: RIDE_RED, boxShadow: '0 12px 28px rgba(184,17,4,.32), inset 0 1px 0 rgba(255,255,255,.28)' }}
         >
           <ManeuverIcon step={currentStep} />
           <div className="min-w-0" style={{ flex: 1 }}>
@@ -612,16 +617,16 @@ export default function FullScreenNavigation({
         </button>
       </div>
 
-      {/* 4q — "Trip in progress" chip beneath the banner */}
-      {isInTrip && (
-        <div
-          className="absolute z-20 inline-flex items-center"
-          style={{ top: 130, left: 16, height: 34, padding: '0 12px', borderRadius: 999, gap: 7, ...glassSurface }}
-        >
-          <span className="rounded-full shrink-0" style={{ width: 7, height: 7, background: '#22A447' }} />
-          <span style={{ fontSize: 12.5, fontWeight: 700, color: RIDE_TEXT }}>Trip in progress</span>
-        </div>
-      )}
+      {/* Figma lifecycle labels, sourced from actual trip status. */}
+      <div
+        data-figma-node={tripPresentation.figmaNode}
+        aria-live="polite"
+        className="absolute left-4 z-20 max-w-[calc(100%-6rem)] rounded-[16px] border border-white/80 bg-white/95 px-3.5 py-2.5 shadow-md backdrop-blur-xl"
+        style={{ top: 'calc(env(safe-area-inset-top) + 86px)' }}
+      >
+        <p className="text-[10px] font-bold tracking-[0.08em] text-[#ff000d]">{tripPresentation.eyebrow}</p>
+        <p className="mt-1 truncate text-[13px] font-semibold text-[#1f2129]">{tripPresentation.title}</p>
+      </div>
 
       {/* Voice + minimize controls, right side */}
       <div className="absolute right-4 z-20 flex flex-col gap-3" style={{ top: 'calc(env(safe-area-inset-top) + 76px)' }}>
@@ -662,6 +667,9 @@ export default function FullScreenNavigation({
         >
           <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
             <div className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+              <div className="rounded-xl bg-[#f7f8fa] px-3 py-2.5">
+                <p className="text-[11px] leading-[1.5] text-[#667080]">{tripPresentation.description}</p>
+              </div>
               {isInTrip ? (
                 <>
                   {/* 4q — passenger collapses to one strip */}
@@ -736,14 +744,14 @@ export default function FullScreenNavigation({
                     </button>
                     <button
                       type="button"
-                      onClick={handleEndTripTap}
+                      onClick={() => setDestinationConfirmOpen(true)}
                       disabled={completing}
                       className="relative flex-1 flex items-center justify-center active:scale-[0.97] transition-transform disabled:opacity-70"
                       style={{ height: 48, borderRadius: 15, gap: 9, ...redCta }}
                     >
                       <Flag style={{ width: 17, height: 17 }} className="text-white" strokeWidth={2.4} />
                       <span style={{ fontSize: 15.5, fontWeight: 700 }} className="text-white">
-                        {completing ? 'Completing…' : confirmingEndTrip ? 'Confirm complete trip' : 'Complete trip'}
+                        {completing ? 'Completing…' : confirmingEndTrip ? 'Confirm complete trip' : tripPresentation.nextAction}
                       </span>
                     </button>
                   </div>
@@ -813,7 +821,7 @@ export default function FullScreenNavigation({
                         disabled={callStatus !== 'idle'}
                         aria-label="Call passenger"
                         className="flex items-center justify-center rounded-full active:scale-90 transition-transform disabled:opacity-50"
-                        style={{ width: 40, height: 40, background: RIDE_RED_GRADIENT, boxShadow: '0 6px 14px rgba(184,17,4,.3)' }}
+                        style={{ width: 40, height: 40, background: RIDE_RED, boxShadow: '0 6px 14px rgba(184,17,4,.3)' }}
                       >
                         <Phone style={{ width: 18, height: 18 }} className="text-white" />
                       </button>
@@ -884,7 +892,7 @@ export default function FullScreenNavigation({
                         style={{ height: 48, borderRadius: 15, gap: 9, ...redCta }}
                       >
                         <CheckCircle2 style={{ width: 18, height: 18 }} className="text-white" strokeWidth={2.6} />
-                        <span style={{ fontSize: 15.5, fontWeight: 700 }} className="text-white">Start trip</span>
+                        <span style={{ fontSize: 15.5, fontWeight: 700 }} className="text-white">{tripPresentation.nextAction}</span>
                       </button>
                     ) : (
                       <button
@@ -894,7 +902,7 @@ export default function FullScreenNavigation({
                         style={{ height: 48, borderRadius: 15, gap: 9, ...redCta }}
                       >
                         <CheckCircle2 style={{ width: 18, height: 18 }} className="text-white" strokeWidth={2.6} />
-                        <span style={{ fontSize: 15.5, fontWeight: 700 }} className="text-white">I've arrived</span>
+                        <span style={{ fontSize: 15.5, fontWeight: 700 }} className="text-white">{tripPresentation.nextAction}</span>
                       </button>
                     )}
                   </div>
@@ -909,6 +917,24 @@ export default function FullScreenNavigation({
           </div>
         </RideGlassPanel>
       </div>
+
+      {destinationConfirmOpen && isInTrip && (
+        <DriverDestinationReached
+          passengerName={passengerName}
+          passengerCount={activeTrip.passenger_count ?? null}
+          destination={activeTrip.dropoff_address}
+          fare={activeTrip.fare}
+          paymentMethod={activeTrip.payment_method}
+          confirming={completing}
+          farFromDropoff={confirmingEndTrip}
+          onBack={() => {
+            if (completing) return;
+            setDestinationConfirmOpen(false);
+            setConfirmingEndTrip(false);
+          }}
+          onConfirm={handleEndTripTap}
+        />
+      )}
 
       {/* Cancel reason — asked after a completed hold, before the cancel actually submits */}
       <AnimatePresence>

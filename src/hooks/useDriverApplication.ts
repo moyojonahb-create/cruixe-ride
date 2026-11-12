@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 export const useDriverApplication = () => {
   const { user } = useAuth();
 
-  const { data: driverProfile, isLoading: isLoadingDriver, refetch: refetchDriver } = useQuery({
+  const { data: driverProfile, isLoading: isLoadingDriver, refetch: refetchDriver, error: driverError } = useQuery({
     queryKey: ['driver-profile', user?.id],
     queryFn: async () => {
       if (!user) return null;
@@ -22,7 +22,7 @@ export const useDriverApplication = () => {
     enabled: !!user,
   });
 
-  const { data: documents = [], isLoading: isLoadingDocs } = useQuery({
+  const { data: documents = [], isLoading: isLoadingDocs, error: documentsError } = useQuery({
     queryKey: ['driver-documents', driverProfile?.id],
     queryFn: async () => {
       if (!driverProfile) return [];
@@ -39,16 +39,22 @@ export const useDriverApplication = () => {
     enabled: !!driverProfile,
   });
 
+  // Query results are newest first. Replaced/rejected historical uploads must
+  // not override the current submission for the same document type.
+  const latestDocuments = documents.filter((document, index) =>
+    documents.findIndex((candidate) => candidate.document_type === document.document_type) === index,
+  );
   const documentsStatus = {
-    total: 4, // Required documents count
-    approved: documents.filter((d) => d.status === 'approved').length,
-    pending: documents.filter((d) => d.status === 'pending').length,
-    rejected: documents.filter((d) => d.status === 'rejected').length,
+    total: latestDocuments.length,
+    approved: latestDocuments.filter((d) => d.status === 'approved').length,
+    pending: latestDocuments.filter((d) => d.status === 'pending').length,
+    rejected: latestDocuments.filter((d) => d.status === 'rejected').length,
   };
 
   return {
     driverProfile,
     documents,
+    error: driverError || documentsError,
     documentsStatus,
     isLoading: isLoadingDriver || isLoadingDocs,
     refetchDriver,
