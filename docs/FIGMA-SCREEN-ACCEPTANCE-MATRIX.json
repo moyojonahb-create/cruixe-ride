@@ -113,20 +113,27 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/Signup.tsx",
+        "src/components/auth/DriverPhoneVerification.tsx",
+        "src/components/auth/DriverAuthFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/signup?next=%2Fdriver%2Fregister \u2192 details \u2192 security \u2192 SMS verification",
+      "backend_dependency": "Existing omniflex-otp and shared signup; live staging SMS/account creation pending.",
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DYNAMIC_STATES",
+      "functional_integration_status": "18 mocked Signup regressions pass; live staging acceptance UNVERIFIED",
+      "test_evidence": [
+        "src/test/Signup.verification.test.tsx",
+        "docs/FIGMA-DRIVER-PHONE-VERIFICATION-2026-11-13.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Live staging SMS/account creation acceptance pending.",
+        "Disabled/request/error/verified UI is dynamic; no prototype success is fabricated."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion.",
+      "test_evidence_note": "Executed tests; browser auth/network fixtures are mocked, not live SMS.",
       "functional_recovery_increment_2026_11_13": {
         "source_files": [
           "src/pages/Signup.tsx",

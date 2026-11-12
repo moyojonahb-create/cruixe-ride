@@ -129,10 +129,10 @@ describe('signup verification recovery', () => {
     fetchMock.mockResolvedValueOnce(reply(false));
     mount(); await submit();
     expect(await screen.findByRole('alert')).toHaveTextContent('Could not send your code');
-    expect(screen.queryByText(/We sent a 6-digit/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Code sent to the mobile number/)).not.toBeInTheDocument();
     expect(mocks.signUp).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole('button', { name: 'Resend code' }));
-    await screen.findByText(/We sent a 6-digit/);
+    fireEvent.click(screen.getByRole('button', { name: /Resend code/ }));
+    await screen.findByText(/Code sent to the mobile number/);
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({ action: 'send', phone: '+263771234567' });
@@ -151,8 +151,8 @@ describe('signup verification recovery', () => {
     fetchMock.mockRejectedValueOnce(new Error('offline'));
     mount(); await submit();
     expect(await screen.findByRole('alert')).toHaveTextContent('offline');
-    expect(screen.getByRole('button', { name: 'Resend code' })).toBeEnabled();
-    expect(screen.queryByText(/We sent a 6-digit/)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Resend code/ })).toBeEnabled();
+    expect(screen.queryByText(/Code sent to the mobile number/)).not.toBeInTheDocument();
   });
   it('blocks duplicate submissions during the profile lookup', async () => {
     let resolve!: (value: {data:null}) => void;
@@ -179,7 +179,7 @@ describe('signup verification recovery', () => {
   it('keeps voice unavailable and preserves the SMS cooldown through methods navigation', async () => {
     mount(); await submit();
     await screen.findByRole('button', { name: /Resend in/ });
-    fireEvent.click(screen.getByRole('button', { name: 'Other verification methods' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Use a different method' }));
     expect(await screen.findByRole('heading', { name: 'Choose verification' })).toBeInTheDocument();
     expect(screen.getByText('Automated phone call').parentElement).toHaveAttribute('aria-disabled', 'true');
     expect(screen.getByRole('button', { name: /Text message/ })).toBeDisabled();
@@ -189,18 +189,49 @@ describe('signup verification recovery', () => {
   });
   it('rejects an invalid OTP without creating an account', async () => {
     const { container } = mount(); await submit();
-    fetchMock.mockResolvedValueOnce(reply(false));
+    fetchMock.mockResolvedValueOnce({ ok: false, json: async () => ({ success: false, message: 'Incorrect verification code' }) });
     fireEvent.change(container.querySelector('input[autocomplete="one-time-code"]')!, { target: { value: '123456' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Verify Code' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Verify & continue' }));
     await waitFor(() => expect(mocks.toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Invalid code' })));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Incorrect verification code');
+    expect(screen.getByLabelText('Verification code')).toHaveAttribute('aria-invalid', 'true');
     expect(mocks.signUp).not.toHaveBeenCalled();
-    expect(screen.getByRole('button', { name: 'Verify Code' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Verify & continue' })).toBeDisabled();
+  });
+  it('prevents duplicate verification and navigation while a verification request is pending', async () => {
+    let resolve!: (value: ReturnType<typeof reply>) => void;
+    mount(); await submit();
+    await screen.findByRole('button', { name: /Resend in/ });
+    fetchMock.mockImplementationOnce(() => new Promise(r => { resolve = r; }));
+    fireEvent.change(screen.getByLabelText('Verification code'), { target: { value: '123456' } });
+    const verify = screen.getByRole('button', { name: 'Verify & continue' });
+    fireEvent.click(verify);
+    fireEvent.click(verify);
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Verifying…' })).toBeDisabled());
+    expect(screen.getByRole('button', { name: 'Change number' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Use a different method' })).toBeDisabled();
+    expect(screen.getByLabelText('Verification code')).toBeDisabled();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(mocks.signUp).not.toHaveBeenCalled();
+    resolve(reply(false));
+    expect(await screen.findByRole('alert')).toHaveTextContent('SMS unavailable');
+    expect(screen.getByRole('button', { name: 'Change number' })).toBeEnabled();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+  it('shows a retryable inline verification failure when the network rejects', async () => {
+    mount(); await submit();
+    fetchMock.mockRejectedValueOnce(new Error('Verification network unavailable'));
+    fireEvent.change(screen.getByLabelText('Verification code'), { target: { value: '123456' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Verify & continue' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Verification network unavailable');
+    expect(screen.getByLabelText('Verification code')).toHaveValue('');
+    expect(mocks.signUp).not.toHaveBeenCalled();
   });
   it('retries failed account creation after phone verification without requesting another OTP', async () => {
     mocks.signUp.mockResolvedValueOnce({ error: { message: 'Account service unavailable' } });
     const { container } = mount(); await submit();
     fireEvent.change(container.querySelector('input[autocomplete="one-time-code"]')!, { target: { value: '123456' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Verify Code' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Verify & continue' }));
     expect(await screen.findByRole('alert', {}, { timeout: 2000 })).toHaveTextContent('Account service unavailable');
     expect(screen.queryByRole('heading', { name: 'Driver registration' })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
@@ -213,7 +244,7 @@ describe('signup verification recovery', () => {
     const code = container.querySelector('input[autocomplete="one-time-code"]');
     expect(code).not.toBeNull();
     fireEvent.change(code!, { target: { value: '123456' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Verify Code' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Verify & continue' }));
     expect(await screen.findByRole('heading', { name: 'Driver registration' }, { timeout: 2000 })).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({ action: 'verify', phone: '+263771234567', code: '123456' });

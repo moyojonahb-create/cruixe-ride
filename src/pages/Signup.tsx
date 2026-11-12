@@ -14,6 +14,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp
 import { lovable } from '@/integrations/lovable/index';
 import { authDestination, authEntryPath } from '@/lib/authDestination';
 import { updateMyProfile } from '@/lib/businessApi';
+import DriverPhoneVerification from '@/components/auth/DriverPhoneVerification';
 import DriverAuthFrame, { DriverVerificationMethods, driverAuthInput, driverAuthSubmit } from '@/components/auth/DriverAuthFrame';
 import RiderAuthFrame, { AuthFieldIcon, AuthForwardIcon, RiderAuthSocial, riderAuthInput, riderAuthSubmit } from '@/components/auth/RiderAuthFrame';
 
@@ -72,6 +73,8 @@ const Signup = () => {
   // OTP state
   const [otp, setOtp] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
+  const [verificationError, setVerificationError] = useState<string | null>(null);
+  const verificationRef = useRef(false);
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [otpSendError, setOtpSendError] = useState<string | null>(null);
   const [codeSent, setCodeSent] = useState(false);
@@ -124,6 +127,7 @@ const Signup = () => {
     if (countdown > 0 || otpSendRef.current) return;
     otpSendRef.current = true;
     setOtpSendError(null);
+    setVerificationError(null);
     setShowVerificationMethods(false);
     setIsSendingOtp(true);
     try {
@@ -140,6 +144,7 @@ const Signup = () => {
         throw new Error(data.error || data.message || 'Failed to send OTP');
       }
       setCodeSent(true);
+      setOtp('');
       toast({ title: 'Code sent!', description: `Verification code sent to ${phoneNumber}` });
       startCountdown();
     } catch (err: unknown) {
@@ -154,7 +159,9 @@ const Signup = () => {
 
   // Verify OTP
   const verifyOtp = async () => {
-    if (otp.length !== 6 || !formData) return;
+    if (otp.length !== 6 || !formData || verificationRef.current || isVerified || isSendingOtp) return;
+    verificationRef.current = true;
+    setVerificationError(null);
     setIsVerifying(true);
     try {
       const res = await fetch(
@@ -167,6 +174,7 @@ const Signup = () => {
       );
       const data = await res.json();
       if (!res.ok || !data.success) {
+        setVerificationError(data.message || 'Invalid code. Please try again.');
         toast({ title: 'Invalid code', description: data.message || 'Please try again', variant: 'destructive' });
         setOtp('');
         return;
@@ -177,9 +185,11 @@ const Signup = () => {
       signupTimeoutRef.current = setTimeout(() => completeSignup(formData), 800);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Verification failed';
+      setVerificationError(message);
       toast({ title: 'Verification failed', description: message, variant: 'destructive' });
       setOtp('');
     } finally {
+      verificationRef.current = false;
       setIsVerifying(false);
     }
   };
@@ -281,8 +291,22 @@ const Signup = () => {
     if (signupTimeoutRef.current) clearTimeout(signupTimeoutRef.current);
   }, []);
 
+  const changePhoneNumber = () => {
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    countdownRef.current = null;
+    setCountdown(0); setCodeSent(false); setOtpSendError(null); setVerificationError(null);
+    detailsSubmissionRef.current = false;
+    setStep(isDriverSignup ? 'security' : 'details'); setOtp(''); setShowVerificationMethods(false);
+  };
+
   // OTP Verification Step
   if (step === 'verify-phone' && formData) {
+    if (isDriverSignup) {
+      if (showVerificationMethods && !isVerified) {
+        return <DriverVerificationMethods countdown={countdown} isSending={isSendingOtp} onSms={() => void sendOtp(formData.phone)} onBack={() => setShowVerificationMethods(false)} />;
+      }
+      return <DriverPhoneVerification phone={formData.phone} otp={otp} onOtpChange={setOtp} onVerify={() => void verifyOtp()} onResend={() => void sendOtp(formData.phone)} onChangeNumber={changePhoneNumber} onMethods={() => setShowVerificationMethods(true)} onRetrySignup={() => void completeSignup(formData)} countdown={countdown} codeSent={codeSent} isSending={isSendingOtp} isVerifying={isVerifying} isVerified={isVerified} isSubmitting={isSubmitting} sendError={otpSendError} verificationError={verificationError} signupError={signupCompletionError} />;
+    }
     if (isVerified) {
       return (
         <div className="min-h-[100dvh] bg-primary flex items-center justify-center p-4">
@@ -313,9 +337,6 @@ const Signup = () => {
       );
     }
 
-    if (isDriverSignup && showVerificationMethods) {
-      return <DriverVerificationMethods countdown={countdown} isSending={isSendingOtp} onSms={() => void sendOtp(formData.phone)} onBack={() => setShowVerificationMethods(false)} />;
-    }
 
     return (
       <div className="min-h-[100dvh] bg-primary flex items-center justify-center p-4 pt-[calc(16px+env(safe-area-inset-top))] pb-[calc(16px+env(safe-area-inset-bottom))]">
@@ -376,13 +397,7 @@ const Signup = () => {
             <div className="flex items-center justify-between">
               <Button
                 variant="ghost"
-                onClick={() => {
-                  if (countdownRef.current) clearInterval(countdownRef.current);
-                  countdownRef.current = null;
-                  setCountdown(0); setCodeSent(false); setOtpSendError(null);
-                  detailsSubmissionRef.current = false;
-                  setStep(isDriverSignup ? 'security' : 'details'); setOtp(''); setShowVerificationMethods(false);
-                }}
+                onClick={changePhoneNumber}
                 disabled={isVerifying || isSendingOtp}
                 className="text-muted-foreground"
               >
