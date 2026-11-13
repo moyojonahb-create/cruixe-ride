@@ -39,6 +39,16 @@ async function advanceToReview() {
 }
 
 describe('Driver registration backend submission', () => {
+  it('blocks submission and uploads in screen review even with an authenticated user', async () => {
+    const onSuccess = vi.fn();
+    const { container } = render(<DriverRegistrationWizard previewStep={7} onSuccess={onSuccess} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Preview only' }));
+    expect(container.querySelector('fieldset')).toBeDisabled();
+    expect(mocks.upsert).not.toHaveBeenCalled();
+    expect(mocks.upload).not.toHaveBeenCalled();
+    expect(mocks.document).not.toHaveBeenCalled();
+    expect(onSuccess).not.toHaveBeenCalled();
+  });
   it('saves entered name through the existing protected upsert without sending approval or availability', async () => {
     const onSuccess = vi.fn();
     render(<DriverRegistrationWizard onSuccess={onSuccess} />);

@@ -1,0 +1,57 @@
+.dss-screen{font-family:Poppins,system-ui,sans-serif;color:#1f2129;background:#f4f5f7;min-height:100dvh;max-width:440px;margin:auto;display:flex;flex-direction:column}
+.dss-header{background:#fff;min-height:68px;padding:11px 18px 10px 14px;display:flex;align-items:center;gap:8px}
+.dss-header h1{font-size:18px;font-weight:700;line-height:1.35;flex:1;min-width:0}
+.dss-back{height:47px!important;width:47px!important;border-radius:24px!important;background:#fff!important;box-shadow:0 3px 4px #00000012;flex-shrink:0;padding:0!important}
+.dss-back img{max-width:none}
+.dss-marker{width:25px;height:25px;border-radius:10px;background:#ff000d;flex-shrink:0}
+.dss-marker-icon{width:33px;height:33px;background:#fff0f2;display:grid;place-items:center}
+.dss-main{flex:1;padding:0 18px 24px;min-width:0}
+.dss-intro{font-size:12px;line-height:20px;color:#737882;min-height:76px;padding:16px 2px 20px}
+.dss-card{background:white;border-radius:18px;padding:12px 15px;margin-bottom:20px}
+.dss-card h2{font-size:16px;font-weight:700;line-height:25px;margin:0 2px 10px}
+.dss-fields{display:grid;gap:12px}
+.dss-field{min-height:73px;background:#f4f5f7;border-radius:13px;padding:6px 12px;box-shadow:-4px 0 0 #ff000d;display:block;min-width:0;text-align:left}
+.dss-field>span{display:block;color:#737882;font-size:11px;font-weight:600;line-height:23px}
+.dss-field input,.dss-field select,.dss-field textarea{display:block;width:100%;min-width:0;border:0!important;border-radius:5px!important;background:transparent!important;box-shadow:none!important;padding:2px 0!important;min-height:32px;height:auto;color:#1f2129;font-family:inherit;font-size:16px!important;line-height:24px}
+.dss-field textarea{resize:vertical;max-height:180px}
+.dss-field input::placeholder,.dss-field textarea::placeholder{color:#737882;opacity:1}
+.dss-note{border-radius:16px;background:white;padding:16px 14px;display:flex;align-items:flex-start;gap:12px;margin:20px 0;min-height:83px}
+.dss-note-icon{display:grid;place-items:center;flex-shrink:0;width:35px;height:35px;background:#fff0f2;border-radius:11px;font-size:16px;font-weight:700;color:#111}
+.dss-note-icon-bare{width:23px;height:23px;background:transparent;border-radius:0}
+.dss-note p{font-size:11px;line-height:17px;color:#737882;margin:0}
+.dss-note h2{font-size:13px;font-weight:600;margin:0 0 8px;line-height:20px}
+.dss-offset{box-shadow:-6px 6px 0 #1f2129}
+.dss-hero{position:relative;background:#ff000d;border-radius:19px;box-shadow:0 -7px 0 #161118;display:flex;align-items:center;gap:17px;padding:18px 21px;min-height:83px;overflow:hidden}
+.dss-hero:before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(1deg,#ff000d 34%,#ffd11c 106%)}
+.dss-hero img{flex-shrink:0;max-width:none}
+.dss-hero h2{font-size:19px;font-weight:700;line-height:28px;color:#fff}
+.dss-hero p{font-size:11px;line-height:18px;color:#111;margin-top:4px}
+.dss-security-hero{margin:0 0 60px}
+.dss-security-fields .dss-field{min-height:77px;font-weight:600}
+.dss-security-fields .dss-field>span{font-weight:400}
+.dss-security-fields .dss-fields{gap:14px}
+.dss-wide{min-height:47px;width:100%;background:white!important;border:1.4px solid #ff000d!important;border-radius:13px!important;font-size:12px!important;margin:4px 0;white-space:normal!important}
+.dss-review-hero{margin-top:12px;min-height:86px;padding-left:31px;gap:26px}
+.dss-review-hero h2{color:#111;font-size:14.5px;line-height:22px}
+.dss-review-hero p{font-size:10.5px;margin-top:14px}
+.dss-review-title{font-size:18px;font-weight:700;margin:35px 3px 18px}
+.dss-review-card{background:white;border-radius:17px;padding:0 16px;min-height:249px;margin-bottom:26px}
+.dss-review-card>div{min-height:74px;padding:14px 0 11px;position:relative;border-bottom:1px solid #e5e9ed}
+.dss-review-card>div:last-child{border-bottom:0}
+.dss-review-card>div:before{content:'';position:absolute;left:-11px;top:16px;width:3.5px;height:34px;background:#ff000d;border-radius:3px}
+.dss-review-card dt{font-size:11px;color:#737882;line-height:18px}
+.dss-review-card dd{font-size:13px;font-weight:600;line-height:21px;margin-top:7px}
+.dss-topic{cursor:pointer;width:100%}
+.dss-topic strong{font-size:13px;font-weight:400;line-height:24px;display:block;margin-top:3px}
+.dss-topic:focus-visible{outline:2px solid #ff000d;outline-offset:3px}
+.dss-footer{position:sticky;bottom:0;background:white;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:13px 18px max(20px,env(safe-area-inset-bottom));z-index:5}
+.dss-footer button{height:52px;border-radius:14px!important;white-space:normal;font-size:14px;line-height:20px;padding:4px 8px}
+.dss-footer button:first-child{border:1.5px solid #ff000d;background:white;color:#111;box-shadow:none}
+.dss-footer button:last-child{background:#ff000d;color:white;box-shadow:none}
+.dss-error,.dss-notice{font-size:12px;line-height:20px;margin-top:16px;padding:12px;border-radius:12px;background:white;overflow-wrap:anywhere}
+.dss-error{color:#b91c1c;border:1px solid #fecaca}
+
+.dss-screen[data-driver-account-screen="security"] .dss-note{min-height:112px}
+.dss-screen[data-driver-account-screen="help"] .dss-note{min-height:66px}
+.dss-screen[data-driver-account-screen="support"] .dss-note{min-height:102px}
+.dss-screen h1,.dss-screen h2{font-family:inherit}

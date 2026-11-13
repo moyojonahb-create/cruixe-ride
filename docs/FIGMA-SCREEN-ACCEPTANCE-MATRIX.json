@@ -82,20 +82,28 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/Signup.tsx",
+        "src/components/auth/DriverAuthFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/signup?next=%2Fdriver%2Fregister \u2192 personal details \u2192 Account Security \u2192 Verify phone \u2192 Other verification methods",
+      "backend_dependency": "Existing omniflex-otp SMS and shared Supabase signup; live staging not verified; voice unsupported.",
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "MOCKED_REGRESSION_TESTED; authenticated staging UNVERIFIED",
+      "test_evidence": [
+        "src/test/Signup.verification.test.tsx: 16 passing tests",
+        "Seven Chromium fixture viewports: 360/375/390/400/430px, XR414x896,16Pro402x874",
+        "docs/FIGMA-DRIVER-AUTH-SCREENS-2026-11-13.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Authenticated staging SMS/account creation pending.",
+        "Retained password confirmation/policy and16px inputs deliberately differ from prototype; voice remains unavailable.",
+        "Preceding personal details1092:105 and Verify Phone1093:105 visual migrations remain separate."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Executed Node22 regression tests and isolated Chromium fixtures on 2026-11-13. Test network/auth fixtures are mocked."
     },
     {
       "figma_name": "CruiXe Driver / 04 \u00b7 Verify Phone",
@@ -105,20 +113,36 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/Signup.tsx",
+        "src/components/auth/DriverPhoneVerification.tsx",
+        "src/components/auth/DriverAuthFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/signup?next=%2Fdriver%2Fregister \u2192 details \u2192 security \u2192 SMS verification",
+      "backend_dependency": "Existing omniflex-otp and shared signup; live staging SMS/account creation pending.",
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DYNAMIC_STATES",
+      "functional_integration_status": "18 mocked Signup regressions pass; live staging acceptance UNVERIFIED",
+      "test_evidence": [
+        "src/test/Signup.verification.test.tsx",
+        "docs/FIGMA-DRIVER-PHONE-VERIFICATION-2026-11-13.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Live staging SMS/account creation acceptance pending.",
+        "Disabled/request/error/verified UI is dynamic; no prototype success is fabricated."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Executed tests; browser auth/network fixtures are mocked, not live SMS.",
+      "functional_recovery_increment_2026_11_13": {
+        "source_files": [
+          "src/pages/Signup.tsx",
+          "src/test/Signup.verification.test.tsx"
+        ],
+        "evidence": "docs/FIGMA-SIGNUP-VERIFICATION-RECOVERY-2026-11-13.md",
+        "result": "Six mocked regression tests and seven Chromium fixture viewport checks passed; no authenticated staging acceptance.",
+        "visual_status": "UNVERIFIED; authenticated Plugin API export resolved local assets under public/brand/driver-auth; visual implementation remains pending."
+      }
     },
     {
       "figma_name": "CruiXe Driver / 04B \u00b7 Verification Methods",
@@ -128,20 +152,37 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/Signup.tsx",
+        "src/components/auth/DriverAuthFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/signup?next=%2Fdriver%2Fregister \u2192 personal details \u2192 Account Security \u2192 Verify phone \u2192 Other verification methods",
+      "backend_dependency": "Existing omniflex-otp SMS and shared Supabase signup; live staging not verified; voice unsupported.",
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "MOCKED_REGRESSION_TESTED; authenticated staging UNVERIFIED",
+      "test_evidence": [
+        "src/test/Signup.verification.test.tsx: 16 passing tests",
+        "Seven Chromium fixture viewports: 360/375/390/400/430px, XR414x896,16Pro402x874",
+        "docs/FIGMA-DRIVER-AUTH-SCREENS-2026-11-13.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Authenticated staging SMS/account creation pending.",
+        "Retained password confirmation/policy and16px inputs deliberately differ from prototype; voice remains unavailable.",
+        "Preceding personal details1092:105 and Verify Phone1093:105 visual migrations remain separate."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Executed Node22 regression tests and isolated Chromium fixtures on 2026-11-13. Test network/auth fixtures are mocked.",
+      "functional_recovery_increment_2026_11_13": {
+        "source_files": [
+          "src/pages/Signup.tsx",
+          "src/test/Signup.verification.test.tsx"
+        ],
+        "evidence": "docs/FIGMA-SIGNUP-VERIFICATION-RECOVERY-2026-11-13.md",
+        "result": "Six mocked regression tests and seven Chromium fixture viewport checks passed; no authenticated staging acceptance.",
+        "visual_status": "UNVERIFIED; authenticated Plugin API export resolved local assets under public/brand/driver-auth; visual implementation remains pending."
+      }
     },
     {
       "figma_name": "CruiXe Driver / 05 \u00b7 Your profile photo",
@@ -1234,20 +1275,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverAccountForms.tsx",
+        "src/pages/driver/DriverAccountPage.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/profile \u2192 account actions; /staging/account-10 for no-write review",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DYNAMIC_STATES",
+      "functional_integration_status": "Existing account handlers connected; mocked regressions pass; authenticated staging acceptance pending",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-ACCOUNT-TEN-INCREMENT.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Physical iPhone and authenticated staging checks pending.",
+        "Unsupported fields, support email flow and dynamic review states are documented prototype differences."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Original design contexts/screenshots and SVGs retrieved; local browser and focused regression checks executed."
     },
     {
       "figma_name": "CruiXe Driver / 19F \u00b7 Account Security",
@@ -1257,20 +1303,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverSecuritySupport.tsx",
+        "src/pages/driver/DriverAccountPage.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/profile \u2192 account actions; /staging/account-10 for no-write review",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DYNAMIC_STATES",
+      "functional_integration_status": "Existing account handlers connected; mocked regressions pass; authenticated staging acceptance pending",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-ACCOUNT-TEN-INCREMENT.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Physical iPhone and authenticated staging checks pending.",
+        "Unsupported fields, support email flow and dynamic review states are documented prototype differences."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Original design contexts/screenshots and SVGs retrieved; local browser and focused regression checks executed."
     },
     {
       "figma_name": "CruiXe Driver / 19G \u00b7 Driver Badge Progress",
@@ -1349,20 +1400,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverAccountForms.tsx",
+        "src/pages/driver/DriverAccountPage.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/profile \u2192 account actions; /staging/account-10 for no-write review",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DYNAMIC_STATES",
+      "functional_integration_status": "Existing account handlers connected; mocked regressions pass; authenticated staging acceptance pending",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-ACCOUNT-TEN-INCREMENT.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Physical iPhone and authenticated staging checks pending.",
+        "Unsupported fields, support email flow and dynamic review states are documented prototype differences."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Original design contexts/screenshots and SVGs retrieved; local browser and focused regression checks executed."
     },
     {
       "figma_name": "CruiXe Driver / 19K \u00b7 Change Email",
@@ -1464,20 +1520,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverAccountForms.tsx",
+        "src/pages/driver/DriverAccountPage.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/profile \u2192 account actions; /staging/account-10 for no-write review",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DYNAMIC_STATES",
+      "functional_integration_status": "Existing account handlers connected; mocked regressions pass; authenticated staging acceptance pending",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-ACCOUNT-TEN-INCREMENT.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Physical iPhone and authenticated staging checks pending.",
+        "Unsupported fields, support email flow and dynamic review states are documented prototype differences."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Original design contexts/screenshots and SVGs retrieved; local browser and focused regression checks executed."
     },
     {
       "figma_name": "CruiXe Driver / 19P \u00b7 Change Password",
@@ -1487,20 +1548,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverSecuritySupport.tsx",
+        "src/pages/driver/DriverAccountPage.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/profile \u2192 account actions; /staging/account-10 for no-write review",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DYNAMIC_STATES",
+      "functional_integration_status": "Existing account handlers connected; mocked regressions pass; authenticated staging acceptance pending",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-ACCOUNT-TEN-INCREMENT.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Physical iPhone and authenticated staging checks pending.",
+        "Unsupported fields, support email flow and dynamic review states are documented prototype differences."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Original design contexts/screenshots and SVGs retrieved; local browser and focused regression checks executed."
     },
     {
       "figma_name": "CruiXe Driver / 19Q \u00b7 Two-Step Verification",
@@ -1533,20 +1599,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverSecuritySupport.tsx",
+        "src/pages/driver/DriverAccountPage.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/profile \u2192 account actions; /staging/account-10 for no-write review",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DYNAMIC_STATES",
+      "functional_integration_status": "Existing account handlers connected; mocked regressions pass; authenticated staging acceptance pending",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-ACCOUNT-TEN-INCREMENT.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Physical iPhone and authenticated staging checks pending.",
+        "Unsupported fields, support email flow and dynamic review states are documented prototype differences."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Original design contexts/screenshots and SVGs retrieved; local browser and focused regression checks executed."
     },
     {
       "figma_name": "CruiXe Driver / 19S \u00b7 Contact Support",
@@ -1556,20 +1627,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverSecuritySupport.tsx",
+        "src/pages/driver/DriverAccountPage.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/profile \u2192 account actions; /staging/account-10 for no-write review",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DYNAMIC_STATES",
+      "functional_integration_status": "Existing account handlers connected; mocked regressions pass; authenticated staging acceptance pending",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-ACCOUNT-TEN-INCREMENT.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Physical iPhone and authenticated staging checks pending.",
+        "Unsupported fields, support email flow and dynamic review states are documented prototype differences."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Original design contexts/screenshots and SVGs retrieved; local browser and focused regression checks executed."
     },
     {
       "figma_name": "CruiXe Driver / 19T \u00b7 Profile Update Review",
@@ -1579,20 +1655,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverAccountForms.tsx",
+        "src/pages/driver/DriverAccountPage.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/profile \u2192 account actions; /staging/account-10 for no-write review",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DYNAMIC_STATES",
+      "functional_integration_status": "Existing account handlers connected; mocked regressions pass; authenticated staging acceptance pending",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-ACCOUNT-TEN-INCREMENT.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Physical iPhone and authenticated staging checks pending.",
+        "Unsupported fields, support email flow and dynamic review states are documented prototype differences."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Original design contexts/screenshots and SVGs retrieved; local browser and focused regression checks executed."
     },
     {
       "figma_name": "CruiXe Driver / 19U \u00b7 Verify New Email",
@@ -1694,20 +1775,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverAccountForms.tsx",
+        "src/pages/driver/DriverAccountPage.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/profile \u2192 account actions; /staging/account-10 for no-write review",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DYNAMIC_STATES",
+      "functional_integration_status": "Existing account handlers connected; mocked regressions pass; authenticated staging acceptance pending",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-ACCOUNT-TEN-INCREMENT.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Physical iPhone and authenticated staging checks pending.",
+        "Unsupported fields, support email flow and dynamic review states are documented prototype differences."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Original design contexts/screenshots and SVGs retrieved; local browser and focused regression checks executed."
     },
     {
       "figma_name": "CruiXe Driver / 19Z \u00b7 Password Change Review",
@@ -1717,20 +1803,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverSecuritySupport.tsx",
+        "src/pages/driver/DriverAccountPage.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/profile \u2192 account actions; /staging/account-10 for no-write review",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "TESTED_WITH_DOCUMENTED_DYNAMIC_STATES",
+      "functional_integration_status": "Existing account handlers connected; mocked regressions pass; authenticated staging acceptance pending",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-ACCOUNT-TEN-INCREMENT.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Physical iPhone and authenticated staging checks pending.",
+        "Unsupported fields, support email flow and dynamic review states are documented prototype differences."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Original design contexts/screenshots and SVGs retrieved; local browser and focused regression checks executed."
     },
     {
       "figma_name": "CruiXe Driver / 19AA \u00b7 Two-Step Setup",

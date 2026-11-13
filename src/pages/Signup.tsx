@@ -7,13 +7,15 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Loader2, ArrowLeft, RefreshCw, CheckCircle2, EyeOff } from 'lucide-react';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
+import { Loader2, RefreshCw, CheckCircle2, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { lovable } from '@/integrations/lovable/index';
 import { authDestination, authEntryPath } from '@/lib/authDestination';
 import { updateMyProfile } from '@/lib/businessApi';
+import DriverPhoneVerification from '@/components/auth/DriverPhoneVerification';
+import DriverAuthFrame, { DriverVerificationMethods, driverAuthInput, driverAuthSubmit } from '@/components/auth/DriverAuthFrame';
 import RiderAuthFrame, { AuthFieldIcon, AuthForwardIcon, RiderAuthSocial, riderAuthInput, riderAuthSubmit } from '@/components/auth/RiderAuthFrame';
 
 const signupSchema = z.object({
@@ -39,12 +41,21 @@ const signupSchema = z.object({
 
 type SignupFormData = z.infer<typeof signupSchema>;
 
-type SignupStep = 'details' | 'verify-phone' | 'complete';
+type SignupStep = 'details' | 'security' | 'verify-phone' | 'complete';
 
 const Signup = () => {
   const [searchParams] = useSearchParams();
   const next = useMemo(() => authDestination(searchParams.get('next')), [searchParams]);
+  const destinationPath = next.split(/[?#]/)[0];
+  const isDriverSignup = destinationPath === '/driver' || destinationPath.startsWith('/driver/');
   const [step, setStep] = useState<SignupStep>('details');
+  const detailsHeading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    if (isDriverSignup && step === 'details') {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      detailsHeading.current?.focus({ preventScroll: true });
+    }
+  }, [isDriverSignup, step]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [signupCompletionError, setSignupCompletionError] = useState<string | null>(null);
   const [showVerificationMethods, setShowVerificationMethods] = useState(false);
@@ -62,7 +73,13 @@ const Signup = () => {
   // OTP state
   const [otp, setOtp] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
+  const [verificationError, setVerificationError] = useState<string | null>(null);
+  const verificationRef = useRef(false);
   const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [otpSendError, setOtpSendError] = useState<string | null>(null);
+  const [codeSent, setCodeSent] = useState(false);
+  const detailsSubmissionRef = useRef(false);
+  const otpSendRef = useRef(false);
   const [isVerified, setIsVerified] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
@@ -107,7 +124,10 @@ const Signup = () => {
 
   // Send OTP via omniflex-otp edge function (unauthenticated - we haven't signed up yet)
   const sendOtp = async (phoneNumber: string) => {
-    if (countdown > 0) return;
+    if (countdown > 0 || otpSendRef.current) return;
+    otpSendRef.current = true;
+    setOtpSendError(null);
+    setVerificationError(null);
     setShowVerificationMethods(false);
     setIsSendingOtp(true);
     try {
@@ -123,19 +143,25 @@ const Signup = () => {
       if (!res.ok || !data.success) {
         throw new Error(data.error || data.message || 'Failed to send OTP');
       }
+      setCodeSent(true);
+      setOtp('');
       toast({ title: 'Code sent!', description: `Verification code sent to ${phoneNumber}` });
       startCountdown();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to send code';
+      setOtpSendError(message);
       toast({ title: 'Failed to send code', description: message, variant: 'destructive' });
     } finally {
+      otpSendRef.current = false;
       setIsSendingOtp(false);
     }
   };
 
   // Verify OTP
   const verifyOtp = async () => {
-    if (otp.length !== 6 || !formData) return;
+    if (otp.length !== 6 || !formData || verificationRef.current || isVerified || isSendingOtp) return;
+    verificationRef.current = true;
+    setVerificationError(null);
     setIsVerifying(true);
     try {
       const res = await fetch(
@@ -148,6 +174,7 @@ const Signup = () => {
       );
       const data = await res.json();
       if (!res.ok || !data.success) {
+        setVerificationError(data.message || 'Invalid code. Please try again.');
         toast({ title: 'Invalid code', description: data.message || 'Please try again', variant: 'destructive' });
         setOtp('');
         return;
@@ -158,48 +185,69 @@ const Signup = () => {
       signupTimeoutRef.current = setTimeout(() => completeSignup(formData), 800);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Verification failed';
+      setVerificationError(message);
       toast({ title: 'Verification failed', description: message, variant: 'destructive' });
       setOtp('');
     } finally {
+      verificationRef.current = false;
       setIsVerifying(false);
     }
   };
 
   const onSubmitDetails = async (data: SignupFormData) => {
-    const formattedData = {
-      ...data,
-      nickname: data.nickname?.trim() || '',
-      phone: formatPhoneNumber(data.phone),
-    };
+    if (detailsSubmissionRef.current) return;
+    detailsSubmissionRef.current = true;
+    let advancedToVerification = false;
+    setIsSubmitting(true);
+    try {
+      const formattedData = {
+        ...data,
+        nickname: data.nickname?.trim() || '',
+        phone: formatPhoneNumber(data.phone),
+      };
 
-    // Check if phone number is already registered
-    const { data: existingPhone } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('phone', formattedData.phone)
-      .maybeSingle();
+      // Check if phone number is already registered
+      const { data: existingPhone } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('phone', formattedData.phone)
+        .maybeSingle();
 
-    if (existingPhone) {
-      toast({ title: 'Phone already registered', description: 'This phone number is already linked to an account. Please sign in instead.', variant: 'destructive' });
-      return;
-    }
-
-    // Nickname must be unique (it doubles as a sign-in identifier)
-    if (formattedData.nickname) {
-      const { data: taken } = await (supabase.rpc as any)('nickname_is_taken', { _nickname: formattedData.nickname });
-      if (taken) {
-        form.setError('nickname', { message: 'That nickname is already taken.' });
+      if (existingPhone) {
+        toast({ title: 'Phone already registered', description: 'This phone number is already linked to an account. Please sign in instead.', variant: 'destructive' });
         return;
       }
+
+      // Nickname must be unique (it doubles as a sign-in identifier)
+      if (formattedData.nickname) {
+        const { data: taken } = await (supabase.rpc as any)('nickname_is_taken', { _nickname: formattedData.nickname });
+        if (taken) {
+          form.setError('nickname', { message: 'That nickname is already taken.' });
+          if (isDriverSignup) setStep('details');
+          return;
+        }
+      }
+
+      // Email uniqueness is enforced by Supabase Auth at signup time
+
+      advancedToVerification = true;
+      setFormData(formattedData);
+      setShowVerificationMethods(false);
+      setStep('verify-phone');
+      // A changed number needs its own code; never retain an old countdown.
+      if (countdownRef.current) clearInterval(countdownRef.current);
+      countdownRef.current = null;
+      setCountdown(0);
+      setCodeSent(false);
+      setOtpSendError(null);
+      await sendOtp(formattedData.phone);
+    } catch {
+      toast({ title: 'Unable to continue', description: 'Please check your connection and try again.', variant: 'destructive' });
+    } finally {
+      // Keep stale resolver callbacks from resubmitting after the step changes.
+      if (!advancedToVerification) detailsSubmissionRef.current = false;
+      setIsSubmitting(false);
     }
-
-    // Email uniqueness is enforced by Supabase Auth at signup time
-
-    setFormData(formattedData);
-    setShowVerificationMethods(false);
-    setStep('verify-phone');
-    // Send OTP immediately
-    await sendOtp(formattedData.phone);
   };
 
   const completeSignup = async (data: SignupFormData) => {
@@ -243,8 +291,22 @@ const Signup = () => {
     if (signupTimeoutRef.current) clearTimeout(signupTimeoutRef.current);
   }, []);
 
+  const changePhoneNumber = () => {
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    countdownRef.current = null;
+    setCountdown(0); setCodeSent(false); setOtpSendError(null); setVerificationError(null);
+    detailsSubmissionRef.current = false;
+    setStep(isDriverSignup ? 'security' : 'details'); setOtp(''); setShowVerificationMethods(false);
+  };
+
   // OTP Verification Step
   if (step === 'verify-phone' && formData) {
+    if (isDriverSignup) {
+      if (showVerificationMethods && !isVerified) {
+        return <DriverVerificationMethods countdown={countdown} isSending={isSendingOtp} onSms={() => void sendOtp(formData.phone)} onBack={() => setShowVerificationMethods(false)} />;
+      }
+      return <DriverPhoneVerification phone={formData.phone} otp={otp} onOtpChange={setOtp} onVerify={() => void verifyOtp()} onResend={() => void sendOtp(formData.phone)} onChangeNumber={changePhoneNumber} onMethods={() => setShowVerificationMethods(true)} onRetrySignup={() => void completeSignup(formData)} countdown={countdown} codeSent={codeSent} isSending={isSendingOtp} isVerifying={isVerifying} isVerified={isVerified} isSubmitting={isSubmitting} sendError={otpSendError} verificationError={verificationError} signupError={signupCompletionError} />;
+    }
     if (isVerified) {
       return (
         <div className="min-h-[100dvh] bg-primary flex items-center justify-center p-4">
@@ -275,6 +337,7 @@ const Signup = () => {
       );
     }
 
+
     return (
       <div className="min-h-[100dvh] bg-primary flex items-center justify-center p-4 pt-[calc(16px+env(safe-area-inset-top))] pb-[calc(16px+env(safe-area-inset-bottom))]">
         <div className="w-full max-w-[520px] bg-background rounded-3xl p-5 shadow-[0_18px_40px_rgba(0,0,0,0.22)]">
@@ -300,9 +363,11 @@ const Signup = () => {
             <div className="text-center space-y-2">
               <h2 className="text-xl font-bold text-foreground">Verify your phone</h2>
               <p className="text-sm text-muted-foreground">
-                We sent a 6-digit code to <span className="font-medium">{formData.phone}</span>
+                {codeSent ? 'We sent a 6-digit code to ' : 'Request a 6-digit code for '}<span className="font-medium">{formData.phone}</span>
               </p>
             </div>
+
+            {otpSendError && <p role="alert" className="text-center text-sm text-destructive">Could not send your code. {otpSendError} Please try again.</p>}
 
             <div className="flex justify-center">
               <InputOTP maxLength={6} value={otp} onChange={setOtp} disabled={isVerifying}>
@@ -332,8 +397,8 @@ const Signup = () => {
             <div className="flex items-center justify-between">
               <Button
                 variant="ghost"
-                onClick={() => { setStep('details'); setOtp(''); setShowVerificationMethods(false); }}
-                disabled={isVerifying}
+                onClick={changePhoneNumber}
+                disabled={isVerifying || isSendingOtp}
                 className="text-muted-foreground"
               >
                 Change number
@@ -360,15 +425,53 @@ const Signup = () => {
     );
   }
 
+  if (isDriverSignup && step === 'security') {
+    return (
+      <DriverAuthFrame mode="security" busy={isSubmitting} onBack={() => setStep('details')}>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmitDetails, (errors) => {
+            if (errors.fullName || errors.nickname || errors.email) setStep('details');
+          })} className="mt-4">
+            <FormField control={form.control} name="phone" render={({ field }) => (
+              <FormItem className="space-y-[5px]">
+                <FormLabel className="block min-h-[23px] px-0.5 text-[12.5px] font-semibold leading-[23px]">Mobile number</FormLabel>
+                <FormControl><Input type="tel" inputMode="tel" autoComplete="tel" placeholder="+263 | Enter your phone number" className={driverAuthInput} {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+            {(['password', 'confirmPassword'] as const).map((name) => (
+              <FormField key={name} control={form.control} name={name} render={({ field }) => (
+                <FormItem className="mt-[25px] space-y-[5px]">
+                  <FormLabel className="block min-h-[23px] px-0.5 text-[12.5px] font-semibold leading-[23px]">{name === 'password' ? 'Create password' : 'Confirm password'}</FormLabel>
+                  <FormControl><Input type="password" autoComplete="new-password" placeholder={name === 'password' ? 'At least 8 characters' : 'Enter your password again'} className={driverAuthInput} {...field} /></FormControl>
+                  {name === 'password' && <FormDescription className="px-0.5 text-[10.2px] leading-4 text-[#667080]">Use 8–72 characters with uppercase, lowercase, a number and a special character.</FormDescription>}
+                  <FormMessage />
+                </FormItem>
+              )} />
+            ))}
+            <p className="mt-2 px-0.5 text-[10.2px] font-medium leading-7 text-[#667080]">Your one-time code will be sent by SMS to this phone.</p>
+            <Button type="submit" disabled={isSubmitting} className={`${driverAuthSubmit} mt-[10px]`}>{isSubmitting ? 'Sending code...' : 'Continue'}</Button>
+          </form>
+        </Form>
+        <div className="mt-[10px] flex min-h-[46px] items-center justify-between px-1 text-[12.3px] text-[#667080]">
+          <span>Already registered?</span><Link to={authEntryPath('/auth', next)} className="flex min-h-11 items-center font-semibold text-[#111]">Sign in</Link>
+        </div>
+      </DriverAuthFrame>
+    );
+  }
+
   return (
     <RiderAuthFrame variant="signup">
       <div className="mb-4 space-y-1.5">
-        <h1 className="text-[25px] font-bold leading-tight">Create CruiXe Account</h1>
-        <p className="text-[13.5px] font-semibold text-[#6b707d]">Join CruiXe and book your first ride.</p>
+        <h1 ref={detailsHeading} tabIndex={-1} className="outline-none text-[25px] font-bold leading-tight">Create CruiXe Account</h1>
+        <p className="text-[13.5px] font-semibold text-[#6b707d]">{isDriverSignup ? 'Start your driver registration.' : 'Join CruiXe and book your first ride.'}</p>
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmitDetails)} className="space-y-3">
+        <form onSubmit={isDriverSignup ? async (event) => {
+          event.preventDefault();
+          if (await form.trigger(['fullName', 'nickname', 'email'])) setStep('security');
+        } : form.handleSubmit(onSubmitDetails)} className="space-y-3">
           <FormField control={form.control} name="fullName" render={({ field }) => (
             <FormItem>
               <FormLabel className="sr-only">Full name</FormLabel>
@@ -407,6 +510,7 @@ const Signup = () => {
             </FormItem>
           )} />
 
+          {!isDriverSignup && <>
           <FormField control={form.control} name="phone" render={({ field }) => (
             <FormItem>
               <FormLabel className="sr-only">Mobile number</FormLabel>
@@ -445,8 +549,10 @@ const Signup = () => {
             );
           })}
 
+          </>}
+
           <Button type="submit" className={riderAuthSubmit} disabled={isSubmitting}>
-            {isSubmitting ? (<><Loader2 className="h-4 w-4 animate-spin mr-2" /> Sending code...</>) : 'Create Account'}
+            {isSubmitting ? (<><Loader2 className="h-4 w-4 animate-spin mr-2" /> Sending code...</>) : isDriverSignup ? 'Continue' : 'Create Account'}
             <AuthForwardIcon />
           </Button>
         </form>

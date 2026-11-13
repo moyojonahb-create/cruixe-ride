@@ -22,6 +22,7 @@ import DriverBottomNav from '@/components/driver/DriverBottomNav';
 import defaultDriverAvatar from '@/assets/driver-avatar-jonah.png';
 import { RIDE_RED, RIDE_YELLOW, RIDE_TEXT, RIDE_TEXT_2 } from '@/components/ride/rideGlass';
 import type { DriverProfile as DriverProfileData } from '@/lib/offerHelpers';
+import DriverDetailScreen, { type DriverDetailKind } from '@/components/driver/DriverDetailScreen';
 import DriverAvailabilityControl from '@/components/driver/DriverAvailabilityControl';
 
 const glassSurface: CSSProperties = {
@@ -53,6 +54,7 @@ export default function DriverProfilePage() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
 
+  const [detail, setDetail] = useState<DriverDetailKind | null>(null);
   const [profile, setProfile] = useState<DriverProfileData | null>(null);
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState<string | null>(null);
@@ -242,6 +244,8 @@ export default function DriverProfilePage() {
       </div>
     );
   }
+
+  if (detail) return <DriverDetailScreen kind={detail} fullName={fullName} phone={phone} email={user?.email ?? null} profile={profile} onBack={() => setDetail(null)} onDocuments={() => navigate('/driver/application')} />;
 
   const vehicleTitle = [profile.vehicle_make, profile.vehicle_model].filter(Boolean).join(' ') || 'Vehicle';
   const isOnline = profile.is_online ?? false;
@@ -460,6 +464,11 @@ export default function DriverProfilePage() {
         <section>
           <p style={{ fontSize: 11, fontWeight: 700, color: RIDE_TEXT_2, textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 8 }}>Account</p>
           <div style={{ ...glassSurface, borderRadius: 16, overflow: 'hidden' }}>
+            <AccountRow icon={Pencil} label="Edit personal details" onClick={() => navigate('/driver/account/personal-edit')} />
+            <AccountRow icon={ShieldAlert} label="Account security" onClick={() => navigate('/driver/account/security')} />
+            <AccountRow icon={Pencil} label="Personal details" onClick={() => setDetail('personal')} />
+            <AccountRow icon={Copy} label="Contact details" onClick={() => setDetail('contact')} />
+            <AccountRow icon={Car} label="Vehicle details" onClick={() => setDetail('vehicle')} />
             <AccountRow icon={ChartColumn} label="Earnings & trip history" onClick={() => navigate('/driver/trips')} />
             <AccountRow icon={Star} label="Ratings & feedback" onClick={() => setFeedbackOpen(true)} />
             <div style={{ padding: '0 14px' }}><LanguageRow /></div>
@@ -480,8 +489,8 @@ export default function DriverProfilePage() {
               }
               disabled={!voiceSupported}
             />
-            <AccountRow icon={ShieldAlert} label="Safety & emergency contact" iconColor={RIDE_RED} onClick={() => setEmergencyOpen(true)} />
-            <AccountRow icon={CircleHelp} label="Help & support" href="mailto:support@pickme.co.zw" last />
+            <AccountRow icon={ShieldAlert} label="Safety & emergency contact" iconColor={RIDE_RED} onClick={() => navigate('/driver/account/emergency')} />
+            <AccountRow icon={CircleHelp} label="Help & support" onClick={() => navigate('/driver/account/help')} last />
           </div>
         </section>
 
