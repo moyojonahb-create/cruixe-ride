@@ -30,7 +30,7 @@ export default function DriverAccountPage() {
     if (!profile.data) return <p role="status" className="p-6">Loading account details…</p>;
     return <DriverAccountForms key={`${screen}-${user?.id}`} initialScreen={screen as typeof formScreens[number]} initialFullName={profile.data.full_name || ''} initialContact={profile.data.emergency_contact_phone ? { name: profile.data.emergency_contact_name || '', phone: profile.data.emergency_contact_phone } : null} onBack={back} onSaved={() => { void profile.refetch(); }} />;
   }
-  if (securityScreens.some(value => value === screen)) return <DriverSecuritySupport key={screen} initialScreen={screen as typeof securityScreens[number]} onBack={back} onNavigate={target => navigate({ personal: '/driver/account/personal-edit', emergency: '/driver/account/emergency', documents: '/driver/application', wallet: '/driver/wallet' }[target])} />;
+  if (securityScreens.some(value => value === screen)) return <DriverSecuritySupport key={screen} initialScreen={screen as typeof securityScreens[number]} onBack={back} onNavigate={target => navigate({ personal: '/driver/account/personal-edit', emergency: '/driver/account/emergency', documents: '/driver/records/verification', wallet: '/driver/wallet' }[target])} />;
   // A copied review URL must never manufacture a successful account change.
   return <Navigate to="/driver/profile" replace />;
 }

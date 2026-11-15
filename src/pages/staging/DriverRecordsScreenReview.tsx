@@ -1,0 +1,11 @@
+import { useState } from 'react';
+import DriverRecords, { type RecordDocument } from '@/components/driver/DriverRecords';
+import DriverHistoryScreens, { type HistoryTrip } from '@/components/driver/DriverHistoryScreens';
+import { RECORD_SCREENS } from '@/components/driver/DriverRecordsScreen';
+const profile = { id: 'sample-driver', status: 'pending', vehicle_make: 'Toyota', vehicle_model: 'Aqua', vehicle_color: 'White', plate_number: 'SAMPLE', vehicle_type: 'economy' };
+const documents: RecordDocument[] = [{ id: 'sample-document', document_type: 'registration', status: 'rejected', rejection_reason: 'Sample review: upload a clearer image.', created_at: '2026-11-15T12:00:00Z' }];
+const trips: HistoryTrip[] = [{ id: 'sample-ride', pickup_address: 'CBD', dropoff_address: 'Hillside', fare: 5, status: 'completed', created_at: '2026-11-15T12:00:00Z', vehicle_type: 'economy', payment_method: 'cash', driver_collected_at: null, wallet_paid: false, payment_failed: false, distance_km: 3, duration_minutes: 10 }, { id: 'sample-parcel', pickup_address: 'Montrose', dropoff_address: 'CBD', fare: 7.5, status: 'completed', created_at: '2026-11-15T11:00:00Z', vehicle_type: 'parcel', payment_method: 'cash', driver_collected_at: '2026-11-15T11:15:00Z', wallet_paid: false, payment_failed: false, distance_km: 5, duration_minutes: 15 }];
+export default function DriverRecordsScreenReview() {
+  const [index, setIndex] = useState(0); const screen = RECORD_SCREENS[index][0];
+  return <div className="bg-[#f4f5f7]"><aside className="mx-auto max-w-[440px] space-y-2 p-4 text-sm"><h1 className="font-bold">Driver records · 10 new screens</h1><p>Staging preview with sample records. No account changes or document uploads are submitted.</p><label htmlFor="records-screen">Screen {index + 1} of 10</label><select id="records-screen" className="min-h-12 w-full rounded-xl border bg-white px-3 text-base" value={index} onChange={e => setIndex(Number(e.target.value))}>{RECORD_SCREENS.map(([id, label], i) => <option key={id} value={i}>{i + 1}. {label}</option>)}</select></aside>{index < 7 ? <DriverRecords key={screen} initialScreen={screen} profile={profile} documents={documents} preview onBack={() => setIndex(0)} /> : <DriverHistoryScreens key={screen} initialScreen={screen as 'rides' | 'parcels' | 'trip'} trips={trips} preview onBack={() => setIndex(7)} />}</div>;
+}

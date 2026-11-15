@@ -1252,20 +1252,27 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "react_components": [
+        "src/components/driver/DriverRecords.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/records-10"
+      ],
+      "route_or_entry_point": "/driver/records/verification or /driver/trips",
+      "backend_dependency": "Requires contract inspection",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "CONNECTED_AUTHENTICATED_STAGING_TEST_PENDING",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-RECORDS-TEN-INCREMENT.md",
+        "src/test/DriverRecords.test.tsx"
+      ],
+      "outstanding_problems": [
+        "Physical iPhone XR and authenticated staging acceptance pending.",
+        "Document number and expiry editing unavailable."
+      ],
+      "final_acceptance_status": "PENDING_USER_REVIEW",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "51 focused regressions and 30 Chromium layout checks passed on 2026-11-15."
     },
     {
       "figma_name": "CruiXe Driver / 19E \u00b7 Emergency Contact",
@@ -1474,20 +1481,27 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "react_components": [
+        "src/components/driver/DriverRecords.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/records-10"
+      ],
+      "route_or_entry_point": "/driver/records/verification or /driver/trips",
+      "backend_dependency": "Requires contract inspection",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "CONNECTED_AUTHENTICATED_STAGING_TEST_PENDING",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-RECORDS-TEN-INCREMENT.md",
+        "src/test/DriverRecords.test.tsx"
+      ],
+      "outstanding_problems": [
+        "Physical iPhone XR and authenticated staging acceptance pending.",
+        "Document number and expiry editing unavailable."
+      ],
+      "final_acceptance_status": "PENDING_USER_REVIEW",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "51 focused regressions and 30 Chromium layout checks passed on 2026-11-15."
     },
     {
       "figma_name": "CruiXe Driver / 19N \u00b7 Renew Vehicle Documents",
@@ -1497,20 +1511,27 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "react_components": [
+        "src/components/driver/DriverRecords.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/records-10"
+      ],
+      "route_or_entry_point": "/driver/records/verification or /driver/trips",
+      "backend_dependency": "Requires contract inspection",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "CONNECTED_AUTHENTICATED_STAGING_TEST_PENDING",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-RECORDS-TEN-INCREMENT.md",
+        "src/test/DriverRecords.test.tsx"
+      ],
+      "outstanding_problems": [
+        "Physical iPhone XR and authenticated staging acceptance pending.",
+        "Document number and expiry editing unavailable."
+      ],
+      "final_acceptance_status": "PENDING_USER_REVIEW",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "51 focused regressions and 30 Chromium layout checks passed on 2026-11-15."
     },
     {
       "figma_name": "CruiXe Driver / 19O \u00b7 Edit Emergency Contact",
@@ -1729,20 +1750,27 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "react_components": [
+        "src/components/driver/DriverRecords.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/records-10"
+      ],
+      "route_or_entry_point": "/driver/records/verification or /driver/trips",
+      "backend_dependency": "Requires contract inspection",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "CONNECTED_AUTHENTICATED_STAGING_TEST_PENDING",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-RECORDS-TEN-INCREMENT.md",
+        "src/test/DriverRecords.test.tsx"
+      ],
+      "outstanding_problems": [
+        "Physical iPhone XR and authenticated staging acceptance pending.",
+        "Document number and expiry editing unavailable."
+      ],
+      "final_acceptance_status": "PENDING_USER_REVIEW",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "51 focused regressions and 30 Chromium layout checks passed on 2026-11-15."
     },
     {
       "figma_name": "CruiXe Driver / 19X \u00b7 Document Review Status",
@@ -1752,20 +1780,27 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "react_components": [
+        "src/components/driver/DriverRecords.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/records-10"
+      ],
+      "route_or_entry_point": "/driver/records/verification or /driver/trips",
+      "backend_dependency": "Requires contract inspection",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "CONNECTED_AUTHENTICATED_STAGING_TEST_PENDING",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-RECORDS-TEN-INCREMENT.md",
+        "src/test/DriverRecords.test.tsx"
+      ],
+      "outstanding_problems": [
+        "Physical iPhone XR and authenticated staging acceptance pending.",
+        "Document number and expiry editing unavailable."
+      ],
+      "final_acceptance_status": "PENDING_USER_REVIEW",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "51 focused regressions and 30 Chromium layout checks passed on 2026-11-15."
     },
     {
       "figma_name": "CruiXe Driver / 19Y \u00b7 Emergency Contact Review",
@@ -2038,20 +2073,27 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "react_components": [
+        "src/components/driver/DriverRecords.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/records-10"
+      ],
+      "route_or_entry_point": "/driver/records/verification or /driver/trips",
+      "backend_dependency": "Requires contract inspection",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "CONNECTED_AUTHENTICATED_STAGING_TEST_PENDING",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-RECORDS-TEN-INCREMENT.md",
+        "src/test/DriverRecords.test.tsx"
+      ],
+      "outstanding_problems": [
+        "Physical iPhone XR and authenticated staging acceptance pending.",
+        "Document number and expiry editing unavailable."
+      ],
+      "final_acceptance_status": "PENDING_USER_REVIEW",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "51 focused regressions and 30 Chromium layout checks passed on 2026-11-15."
     },
     {
       "figma_name": "CruiXe Driver / 19AK \u00b7 Resubmit Document",
@@ -2061,20 +2103,27 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "react_components": [
+        "src/components/driver/DriverRecords.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/records-10"
+      ],
+      "route_or_entry_point": "/driver/records/verification or /driver/trips",
+      "backend_dependency": "Requires contract inspection",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "CONNECTED_AUTHENTICATED_STAGING_TEST_PENDING",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-RECORDS-TEN-INCREMENT.md",
+        "src/test/DriverRecords.test.tsx"
+      ],
+      "outstanding_problems": [
+        "Physical iPhone XR and authenticated staging acceptance pending.",
+        "Document number and expiry editing unavailable."
+      ],
+      "final_acceptance_status": "PENDING_USER_REVIEW",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "51 focused regressions and 30 Chromium layout checks passed on 2026-11-15."
     },
     {
       "figma_name": "CruiXe Driver / 19AL \u00b7 Support Inbox",
@@ -2199,20 +2248,27 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "react_components": [
+        "src/components/driver/DriverHistoryScreens.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/records-10"
+      ],
+      "route_or_entry_point": "/driver/records/verification or /driver/trips",
+      "backend_dependency": "Requires contract inspection",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "CONNECTED_AUTHENTICATED_STAGING_TEST_PENDING",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-RECORDS-TEN-INCREMENT.md",
+        "src/test/DriverRecords.test.tsx"
+      ],
+      "outstanding_problems": [
+        "Physical iPhone XR and authenticated staging acceptance pending.",
+        "Document number and expiry editing unavailable."
+      ],
+      "final_acceptance_status": "PENDING_USER_REVIEW",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "51 focused regressions and 30 Chromium layout checks passed on 2026-11-15."
     },
     {
       "figma_name": "CruiXe Driver / 33 \u00b7 Ride History Details",
@@ -2222,20 +2278,27 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "react_components": [
+        "src/components/driver/DriverHistoryScreens.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/records-10"
+      ],
+      "route_or_entry_point": "/driver/records/verification or /driver/trips",
+      "backend_dependency": "Requires contract inspection",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "CONNECTED_AUTHENTICATED_STAGING_TEST_PENDING",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-RECORDS-TEN-INCREMENT.md",
+        "src/test/DriverRecords.test.tsx"
+      ],
+      "outstanding_problems": [
+        "Physical iPhone XR and authenticated staging acceptance pending.",
+        "Document number and expiry editing unavailable."
+      ],
+      "final_acceptance_status": "PENDING_USER_REVIEW",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "51 focused regressions and 30 Chromium layout checks passed on 2026-11-15."
     },
     {
       "figma_name": "CruiXe Driver / 34 \u00b7 Parcel History",
@@ -2245,20 +2308,27 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
-      "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+      "react_components": [
+        "src/components/driver/DriverHistoryScreens.tsx"
       ],
-      "final_acceptance_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/records-10"
+      ],
+      "route_or_entry_point": "/driver/records/verification or /driver/trips",
+      "backend_dependency": "Requires contract inspection",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "CONNECTED_AUTHENTICATED_STAGING_TEST_PENDING",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-RECORDS-TEN-INCREMENT.md",
+        "src/test/DriverRecords.test.tsx"
+      ],
+      "outstanding_problems": [
+        "Physical iPhone XR and authenticated staging acceptance pending.",
+        "Document number and expiry editing unavailable."
+      ],
+      "final_acceptance_status": "PENDING_USER_REVIEW",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "51 focused regressions and 30 Chromium layout checks passed on 2026-11-15."
     },
     {
       "figma_name": "CruiXe Driver / 35 \u00b7 Top-Up Failed",

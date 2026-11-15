@@ -436,7 +436,7 @@ export default function DriverProfilePage() {
         <section>
           <button
             type="button"
-            onClick={() => navigate('/driver/application')}
+            onClick={() => navigate('/driver/records/verification')}
             className="flex items-center w-full text-left active:scale-[0.98] transition-transform"
             style={{ ...(expiringDoc ? tintRed : glassSurface), borderRadius: 16, padding: '12px 14px', gap: 12 }}
           >
@@ -453,7 +453,7 @@ export default function DriverProfilePage() {
               <p style={{ fontSize: 11.5, fontWeight: 500, color: expiringDoc ? RIDE_RED : RIDE_TEXT_2, marginTop: 2 }}>
                 {expiringDoc
                   ? `${expiringDoc.document_type.replace(/_/g, ' ')} expires ${new Date(expiringDoc.expiry_date!).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}`
-                  : documents.length > 0 ? 'Licence, registration, ID — all verified' : 'Complete your document upload'}
+                  : documents.length > 0 ? 'View current document review status' : 'Complete your document upload'}
               </p>
             </div>
             <ChevronRight style={{ width: 16, height: 16, color: RIDE_TEXT_2 }} />
@@ -468,7 +468,7 @@ export default function DriverProfilePage() {
             <AccountRow icon={ShieldAlert} label="Account security" onClick={() => navigate('/driver/account/security')} />
             <AccountRow icon={Pencil} label="Personal details" onClick={() => setDetail('personal')} />
             <AccountRow icon={Copy} label="Contact details" onClick={() => setDetail('contact')} />
-            <AccountRow icon={Car} label="Vehicle details" onClick={() => setDetail('vehicle')} />
+            <AccountRow icon={Car} label="Vehicle details" onClick={() => navigate('/driver/records/vehicle')} />
             <AccountRow icon={ChartColumn} label="Earnings & trip history" onClick={() => navigate('/driver/trips')} />
             <AccountRow icon={Star} label="Ratings & feedback" onClick={() => setFeedbackOpen(true)} />
             <div style={{ padding: '0 14px' }}><LanguageRow /></div>
