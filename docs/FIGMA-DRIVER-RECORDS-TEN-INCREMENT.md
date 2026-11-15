@@ -27,7 +27,7 @@ History reads the latest 50 rides scoped to the Driver ID, distinguishes vehicle
 
 ## Validation
 
-51 focused Vitest checks passed: 13 new Driver records/history regressions, 5 receipt checks, 4 application-status checks and 29 staging guards. TypeScript passed; changed-file ESLint had no errors (four existing-style Fast Refresh export warnings). Chromium rendered all ten screens at 360/400/414px: 30 passing layout checks, no overflow/page errors, all displayed SVGs loaded and all hero text computed white. A selected sample receipt reopened with pending confirmation and Download. Relevant rendered screenshots were visually inspected. New regressions are included in CI.
+52 focused Vitest checks passed: 14 new Driver records/history regressions, 5 receipt checks, 4 application-status checks and 29 staging guards. TypeScript passed; changed-file ESLint had no errors (four existing-style Fast Refresh export warnings). Chromium rendered all ten screens at 360/400/414px: 30 passing layout checks, no overflow/page errors, all displayed SVGs loaded and all hero text computed white. A selected sample receipt reopened with pending confirmation and Download. Relevant rendered screenshots were visually inspected. New regressions are included in CI.
 
 ## Differences and outstanding acceptance
 

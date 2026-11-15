@@ -64,6 +64,14 @@ describe('Driver records', () => {
     expect(mocks.document).toHaveBeenLastCalledWith({ driver_id: 'driver-row', document_type: 'registration', file_url: expect.stringMatching(/^auth-user\/registration_.*\.pdf$/) });
     expect(screen.getByText('pending')).toBeInTheDocument();
   });
+  it('replaces local pending state with the authoritative refreshed review', async () => {
+    const view = render(<DriverRecords {...props} initialScreen="renew" />);
+    fireEvent.change(screen.getByLabelText('Document upload'), { target: { files: [new File(['doc'], 'test.pdf', { type: 'application/pdf' })] } });
+    fireEvent.click(screen.getByText('Submit for review')); await screen.findByText('Document submitted for review');
+    view.rerender(<DriverRecords {...props} initialScreen="renew" documents={[{ id: 'new-document', document_type: 'registration', status: 'approved', created_at: '2026-01-01T00:00:00Z' }]} />);
+    expect(screen.getByText('approved')).toBeInTheDocument();
+    expect(screen.queryByText('pending')).not.toBeInTheDocument();
+  });
   it('rejects unsupported upload types before storage', async () => {
     render(<DriverRecords {...props} initialScreen="renew" />);
     fireEvent.change(screen.getByLabelText('Document upload'), { target: { files: [new File(['x'], 'test.html', { type: 'text/html' })] } });

@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { updateMyDriver, createDriverDocument } from '@/lib/businessApi';
 import { supabase } from '@/lib/supabaseClient';
 import { RecordsShell, RecordsHero, RecordsRows, RecordsNote, type RecordsScreen } from './DriverRecordsScreen';
-export interface RecordDocument { id: string; document_type: string; status: string; rejection_reason?: string | null; created_at: string }
+export interface RecordDocument { id: string; document_type: string; status: string; rejection_reason?: string | null; created_at: string; file_url?: string }
 export interface RecordProfile { id: string; status: string; vehicle_make: string | null; vehicle_model: string | null; vehicle_color: string | null; vehicle_type: string | null; plate_number: string | null }
 export function currentDocuments(documents: RecordDocument[]) {
   const sorted = [...documents].sort((a, b) => b.created_at.localeCompare(a.created_at));
@@ -14,7 +14,9 @@ export default function DriverRecords({ initialScreen = 'verification', profile,
   const [screen, setScreen] = useState(initialScreen);
   const [vehicle, setVehicle] = useState({ vehicle_make: profile.vehicle_make || '', vehicle_model: profile.vehicle_model || '', plate_number: profile.plate_number || '', vehicle_color: profile.vehicle_color || '' });
   const [localDocuments, setLocalDocuments] = useState<RecordDocument[]>([]);
-  const latest = currentDocuments([...localDocuments, ...documents]);
+  // Once the server returns an upload, its review status replaces the local pending state.
+  const unrefreshed = localDocuments.filter(local => !documents.some(server => server.id === local.id || (local.file_url && server.file_url === local.file_url)));
+  const latest = currentDocuments([...unrefreshed, ...documents]);
   const rejected = latest.filter(doc => doc.status === 'rejected');
   const [type, setType] = useState(rejected[0]?.document_type || 'registration');
   const [file, setFile] = useState<File | null>(null);
@@ -48,9 +50,10 @@ export default function DriverRecords({ initialScreen = 'verification', profile,
           if (result.error) throw result.error;
           uploaded.current = { file, type, path };
         }
-        const response = await createDriverDocument({ driver_id: profile.id, document_type: type, file_url: uploaded.current.path });
+        const savedPath = uploaded.current.path;
+        const response = await createDriverDocument({ driver_id: profile.id, document_type: type, file_url: savedPath });
         if (response?.success === false) throw new Error('Document submission failed. Please retry.');
-        setLocalDocuments(old => [...old, { id: response?.id || uploaded.current!.path, document_type: type, status: 'pending', created_at: new Date().toISOString() }]);
+        setLocalDocuments(old => [...old, { id: response?.id || savedPath, document_type: type, status: 'pending', file_url: savedPath, created_at: new Date().toISOString() }]);
         setFile(null); uploaded.current = null; setSaved(true); go('document-review'); onRefresh?.();
       }
     } catch (err) { setError(err instanceof Error ? err.message : 'Unable to save. Please try again.'); }
