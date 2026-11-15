@@ -6,17 +6,11 @@ import {
   CheckCircle2,
   CornerUpLeft,
   CornerUpRight,
-  Flag,
-  MessageCircle,
   Navigation as NavigationIcon,
-  Phone,
   RotateCw,
-  ShieldAlert,
   Undo2,
-  User,
   Volume2,
   VolumeX,
-  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { completeTrip } from "@/lib/completeTrip";
@@ -27,20 +21,18 @@ import { useVoiceNavigation } from "@/hooks/useVoiceNavigation";
 import DriverMessageSheet from "@/components/driver/DriverMessageSheet";
 import { usePickupNoShowReport } from '@/components/driver/driverTripExceptionState';
 import { DriverPickupNoShowScreen } from '@/components/driver/DriverTripExceptionScreens';
+import DriverLifecycleLayout from '@/components/driver/DriverLifecycleLayout';
+import DriverActiveTripContent, { DriverNavigationDock } from '@/components/driver/DriverActiveTripContent';
 import DriverDestinationReached from "@/components/driver/DriverDestinationReached";
 import SafetySheet from "@/components/ride/SafetySheet";
 import { goBackend, GoBackendError } from "@/lib/goBackendClient";
 import { createNotification } from "@/lib/businessApi";
 import { supabase } from "@/lib/supabaseClient";
-import { haptic } from "@/lib/haptics";
-import { useMinutesSince, formatWaitingLabel } from "@/hooks/useMinutesSince";
 import type { Coordinates } from "@/lib/osrm";
 import { getDetailedRoute, findCurrentStep, getManeuverInstruction, getVoiceInstruction, type RouteStep } from "@/lib/osrmSteps";
 import MapboxMap from "@/components/map/LazyMapboxMap";
 import type { MapEtaCard } from "@/components/MapboxMap";
-import RideGlassPanel from "@/components/ride/RideGlassPanel";
-import { getDriverTripPresentation } from "@/lib/driverTripPresentation";
-import { glassSurface, redCta, tintBlue, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2 } from "@/components/ride/rideGlass";
+import { glassSurface, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2 } from "@/components/ride/rideGlass";
 
 export interface RiderInfo {
   full_name: string | null;
@@ -196,17 +188,6 @@ const NavigationMap = memo(function NavigationMap({
   );
 });
 
-/** Ticks on its own 60s interval so the rest of the screen doesn't
- * re-render once a minute just for this label. */
-function ArrivedWaitingLine({ arrivedAt }: { arrivedAt: string }) {
-  const minutes = useMinutesSince(arrivedAt);
-  return (
-    <p style={{ fontSize: 12, fontWeight: 700, color: RIDE_RED, textAlign: 'center' }}>
-      Rider notified — {formatWaitingLabel(minutes)}
-    </p>
-  );
-}
-
 /** Keeps the display awake for as long as this screen is mounted — a driver
  * following directions cannot have the phone sleep mid-navigation. No-op
  * (never throws) where the Wake Lock API isn't supported. Re-acquires on
@@ -269,12 +250,20 @@ export default function FullScreenNavigation({
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [lastSpokenStepIndex, setLastSpokenStepIndex] = useState(-1);
   const [chatOpen, setChatOpen] = useState(false);
+  const latestTrip = useRef(activeTrip);
+  latestTrip.current = activeTrip;
+  const [navigationStarted, setNavigationStarted] = useState(false);
+  const [onboardConfirm, setOnboardConfirm] = useState(false);
+  useEffect(() => { setNavigationStarted(false); setOnboardConfirm(false); }, [activeTrip.id, activeTrip.status]);
   const [noShowOpen, setNoShowOpen] = useState(false);
   const noShowReport = usePickupNoShowReport(activeTrip.id);
   useEffect(() => { setNoShowOpen(false); }, [activeTrip.id, activeTrip.status]);
   const unreadMessages = useUnreadRideMessages(activeTrip?.id, userId, chatOpen);
   const [safetyOpen, setSafetyOpen] = useState(false);
   const [completing, setCompleting] = useState(false);
+  const completionLock = useRef(false);
+  const [statusUpdating, setStatusUpdating] = useState(false);
+  const statusLock = useRef(false);
   const [confirmingEndTrip, setConfirmingEndTrip] = useState(false);
   const [destinationConfirmOpen, setDestinationConfirmOpen] = useState(false);
   const [recenterSignal, setRecenterSignal] = useState(0);
@@ -346,7 +335,6 @@ export default function FullScreenNavigation({
   const isPickupPhase = ["accepted", "enroute", "enroute_pickup"].includes(activeTrip.status);
   const isArrivedWaiting = activeTrip.status === "arrived";
   const isInTrip = activeTrip.status === "in_progress" || activeTrip.status === "ongoing";
-  const canCancel = isPickupPhase || isArrivedWaiting;
   const origin = driverCoords;
   const destination = useMemo(
     () => (isPickupPhase || isArrivedWaiting
@@ -433,11 +421,6 @@ export default function FullScreenNavigation({
   const etaMinutes = route
     ? Math.max(1, Math.round(route.durationMinutes * (remainingDistanceKm / Math.max(0.1, route.distanceKm))))
     : Math.max(1, Math.round((straightDistanceM / 1000 / 25) * 60));
-  // "Arriving" is a clock time, not a countdown — computed once from the
-  // same etaMinutes the banner uses, not a second estimate.
-  const arrivingClockTime = new Date(Date.now() + etaMinutes * 60000)
-    .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
   const mapCards: MapEtaCard[] = useMemo(
     () => (driverCoords
       ? [{ id: phaseKey, at: destination, label: isPickupPhase || isArrivedWaiting ? "Pickup" : "Drop-off", value: `${etaMinutes} min`, subvalue: `${remainingDistanceKm.toFixed(1)} km` }]
@@ -446,6 +429,8 @@ export default function FullScreenNavigation({
   );
 
   const handleStatusUpdate = async (newStatus: string, message: string, voiceMsg?: string) => {
+    if (statusLock.current) return;
+    statusLock.current = true; setStatusUpdating(true);
     try {
       await goBackend.post(`/api/rides/${activeTrip.id}/status`, {
         status: newStatus,
@@ -473,31 +458,33 @@ export default function FullScreenNavigation({
         // by a migration newer than the last typegen) — untyped client call.
         (supabase as any).from('rides').select('driver_arrived_at').eq('id', activeTrip.id).maybeSingle()
           .then(({ data }: any) => {
-            if (data?.driver_arrived_at) {
-              onTripUpdate({ ...activeTrip, status: newStatus, driver_arrived_at: data.driver_arrived_at });
+            if (data?.driver_arrived_at && latestTrip.current.id === activeTrip.id && latestTrip.current.status === 'arrived') {
+              onTripUpdate({ ...latestTrip.current, driver_arrived_at: data.driver_arrived_at });
             }
           })
           .catch(() => {});
       }
     } catch (e: unknown) {
       toast.error("Failed to update trip", { description: (e as Error).message });
-    }
+    } finally { statusLock.current = false; setStatusUpdating(false); }
   };
 
   const handleComplete = async () => {
-    if (completing) return;
+    if (completionLock.current) return;
+    completionLock.current = true;
     setCompleting(true);
     try {
       const result = await completeTrip(activeTrip.id);
       const r = result as Record<string, unknown>;
       if (!r?.ok) throw new Error((r?.reason as string) || "Failed to complete trip");
-      toast.success("Trip completed!", { description: `Earned ${fmtUSD(Number(r.driver_earnings_usd ?? 0))}` });
+      toast.success("Trip completed!", { description: typeof r.driver_earnings_usd === 'number' && Number.isFinite(r.driver_earnings_usd) ? `Earned ${fmtUSD(r.driver_earnings_usd)}` : 'Your receipt is updating.' });
       if (voiceEnabled) speak("Trip completed. Great job!", true);
       setDestinationConfirmOpen(false);
       onTripComplete();
     } catch (e: unknown) {
       toast.error("Failed to complete trip", { description: (e as Error).message });
     } finally {
+      completionLock.current = false;
       setCompleting(false);
       setConfirmingEndTrip(false);
     }
@@ -579,10 +566,7 @@ export default function FullScreenNavigation({
 
   const passengerName = activeTrip.passenger_name || riderInfo?.full_name || 'Passenger';
   const dialNumber = activeTrip.passenger_phone || riderPhone;
-  const tripPresentation = getDriverTripPresentation(activeTrip.status, passengerName, activeTrip.dropoff_address);
-  const metaBits = [
-    activeTrip.passenger_count && activeTrip.passenger_count > 1 ? `${activeTrip.passenger_count} passengers` : null,
-  ].filter(Boolean) as string[];
+
 
   if (noShowOpen && activeTrip.status === 'arrived') return (
     <div data-exception-scroll className="fixed inset-0 z-[100] overflow-y-auto bg-[#fcfbf9]">
@@ -590,9 +574,7 @@ export default function FullScreenNavigation({
     </div>
   );
 
-  return (
-    <motion.div data-map-screen="true" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-background">
-      <NavigationMap
+  const navigationMap = (<NavigationMap
         pickup={pickup}
         dropoff={dropoff}
         driverCoords={driverCoords}
@@ -600,7 +582,15 @@ export default function FullScreenNavigation({
         destination={destination}
         mapCards={mapCards}
         recenterSignal={recenterSignal}
-      />
+      />);
+  return (
+    <motion.div data-map-screen="true" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] overflow-y-auto bg-background">
+      {(isArrivedWaiting || (isPickupPhase && !navigationStarted && activeTrip.status === 'accepted')) ? (
+        <DriverLifecycleLayout frameId={isArrivedWaiting ? onboardConfirm ? '1182:198' : '1153:225' : '1153:105'} map={navigationMap} onBack={() => navigate(profilePath)} onRecenter={() => setRecenterSignal(value => value + 1)} busy={cancelling || statusUpdating}>
+          <DriverActiveTripContent phase={isArrivedWaiting ? onboardConfirm ? 'onboard' : 'arrived' : 'accepted'} passengerName={passengerName} avatarUrl={riderInfo?.avatar_url} passengerCount={activeTrip.passenger_count ?? null} pickup={activeTrip.pickup_address} destination={activeTrip.dropoff_address} fare={activeTrip.fare} paymentMethod={activeTrip.payment_method} riderNote={riderNote} arrivedAt={activeTrip.driver_arrived_at} busy={cancelling || statusUpdating} callDisabled={!dialNumber || callStatus !== 'idle'} unreadMessages={unreadMessages} onNavigate={() => setNavigationStarted(true)} onOnboard={() => setOnboardConfirm(true)} onStart={() => void handleStatusUpdate('in_progress', 'Trip started', 'Drive safely to the destination')} onBackToWaiting={() => setOnboardConfirm(false)} onNoShow={() => setNoShowOpen(true)} onCall={onStartCall} onMessage={() => setChatOpen(true)} onCancel={() => setCancelReasonOpen(true)} onSafety={() => setSafetyOpen(true)} />
+        </DriverLifecycleLayout>
+      ) : <>{navigationMap}
+
 
       {/* Navigation banner — owns the top of the screen, not the sheet. */}
       <div className="absolute z-20" style={{ top: 'calc(env(safe-area-inset-top) + 7px)', left: 16, right: 16 }}>
@@ -613,30 +603,19 @@ export default function FullScreenNavigation({
           <ManeuverIcon step={currentStep} />
           <div className="min-w-0" style={{ flex: 1 }}>
             <p className="tabular-nums" style={{ fontSize: 19, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.1, color: '#fff' }}>
-              {fmtDistance(currentStep ? distToManeuverM : straightDistanceM)}
+              {driverCoords ? fmtDistance(currentStep ? distToManeuverM : straightDistanceM) : 'GPS pending'}
             </p>
             <p className="truncate" style={{ marginTop: 2, fontSize: 12.5, fontWeight: 500, lineHeight: 1.2, color: 'rgba(255,255,255,.85)' }}>
               {currentStep ? getManeuverInstruction(currentStep) : (isPickupPhase || isArrivedWaiting ? 'Head to pickup' : 'Head to drop-off')}
             </p>
           </div>
           <div className="text-right shrink-0">
-            <p className="tabular-nums" style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>{etaMinutes} min</p>
+            <p className="tabular-nums" style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>{driverCoords && route ? `${etaMinutes} min` : 'ETA pending'}</p>
             <p style={{ fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,.78)' }}>
               to {isPickupPhase || isArrivedWaiting ? 'pickup' : 'drop-off'}
             </p>
           </div>
         </button>
-      </div>
-
-      {/* Figma lifecycle labels, sourced from actual trip status. */}
-      <div
-        data-figma-node={tripPresentation.figmaNode}
-        aria-live="polite"
-        className="absolute left-4 z-20 max-w-[calc(100%-6rem)] rounded-[16px] border border-white/80 bg-white/95 px-3.5 py-2.5 shadow-md backdrop-blur-xl"
-        style={{ top: 'calc(env(safe-area-inset-top) + 86px)' }}
-      >
-        <p className="text-[10px] font-bold tracking-[0.08em] text-[#ff000d]">{tripPresentation.eyebrow}</p>
-        <p className="mt-1 truncate text-[13px] font-semibold text-[#1f2129]">{tripPresentation.title}</p>
       </div>
 
       {/* Voice + minimize controls, right side */}
@@ -652,6 +631,11 @@ export default function FullScreenNavigation({
         </button>
       </div>
 
+
+
+      {routeFailed && <p role="status" className="absolute left-4 top-[160px] z-20 max-w-[75%] rounded-xl bg-white px-3 py-2 text-xs text-[#667085]">Live directions are unavailable. Distances use a direct-line estimate.</p>}
+      <DriverNavigationDock destinationPhase={isInTrip} passengerName={passengerName} address={isInTrip ? activeTrip.dropoff_address : activeTrip.pickup_address} etaMinutes={driverCoords && route ? etaMinutes : null} distanceKm={driverCoords ? remainingDistanceKm : null} paymentMethod={activeTrip.payment_method} busy={completing || cancelling || statusUpdating} callDisabled={!dialNumber || callStatus !== 'idle'} unreadMessages={unreadMessages} onCall={onStartCall} onMessage={() => setChatOpen(true)} onArrive={() => void handleStatusUpdate('arrived', 'Arrived at pickup', 'Waiting for the rider')} onSafety={() => setSafetyOpen(true)} onDestination={() => setDestinationConfirmOpen(true)} onCancel={() => setCancelReasonOpen(true)} />
+      </>}
       <DriverMessageSheet
         open={chatOpen}
         onClose={() => setChatOpen(false)}
@@ -665,274 +649,9 @@ export default function FullScreenNavigation({
       />
 
 
-      {/* Bottom sheet */}
-      <div className="absolute left-0 right-0 bottom-0 z-20">
-        <RideGlassPanel
-          panelStyle={{
-            background: 'rgba(255,255,255,.86)',
-            backdropFilter: 'blur(28px) saturate(190%)',
-            WebkitBackdropFilter: 'blur(28px) saturate(190%)',
-            boxShadow: 'inset 0 0 0 .5px rgba(255,255,255,.6), 0 -8px 30px rgba(17,17,17,.06)',
-          }}
-          style={{ maxHeight: '70vh', paddingBottom: 'env(safe-area-inset-bottom)' }}
-        >
-          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
-            <div className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
-              <div className="rounded-xl bg-[#f7f8fa] px-3 py-2.5">
-                <p className="text-[11px] leading-[1.5] text-[#667080]">{tripPresentation.description}</p>
-              </div>
-              {isInTrip ? (
-                <>
-                  {/* 4q — passenger collapses to one strip */}
-                  <div className="flex items-center" style={{ gap: 10 }}>
-                    <span
-                      className="shrink-0 flex items-center justify-center rounded-full"
-                      style={{ width: 34, height: 34, background: 'linear-gradient(135deg,#C6CBD4,#868E9B)', boxShadow: '0 0 0 2px rgba(255,255,255,.95)' }}
-                    >
-                      {riderInfo?.avatar_url ? (
-                        <img src={riderInfo.avatar_url} alt="" className="w-full h-full object-cover rounded-full" />
-                      ) : (
-                        <User style={{ width: 17, height: 17 }} className="text-white" strokeWidth={2.2} />
-                      )}
-                    </span>
-                    <div className="min-w-0" style={{ flex: 1 }}>
-                      <p className="truncate" style={{ fontSize: 14.5, fontWeight: 700, letterSpacing: '-.015em', lineHeight: 1.2, color: RIDE_TEXT }}>
-                        {passengerName}{metaBits.length ? ` · ${metaBits.join(' · ')}` : ''}
-                      </p>
-                      <p className="truncate" style={{ marginTop: 2, fontSize: 11.5, fontWeight: 500, lineHeight: 1.2, color: RIDE_TEXT_2 }}>
-                        {activeTrip.dropoff_address}
-                      </p>
-                    </div>
-                    {dialNumber && (
-                      <button
-                        type="button"
-                        onClick={onStartCall}
-                        disabled={callStatus !== 'idle'}
-                        aria-label="Call passenger"
-                        className="shrink-0 flex items-center justify-center rounded-full active:scale-90 transition-transform disabled:opacity-60"
-                        style={{ width: 38, height: 38, ...glassSurface }}
-                      >
-                        <Phone style={{ width: 17, height: 17, color: RIDE_TEXT }} />
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Three stat tiles */}
-                  <div className="flex items-stretch" style={{ gap: 8 }}>
-                    <div className="min-w-0" style={{ flex: 1, padding: '10px 12px', borderRadius: 14, ...glassSurface }}>
-                      <p style={{ fontSize: 10.5, fontWeight: 600, color: RIDE_TEXT_2 }}>Distance left</p>
-                      <p className="tabular-nums" style={{ marginTop: 2, fontSize: 15, fontWeight: 700, color: RIDE_TEXT }}>{remainingDistanceKm.toFixed(1)} km</p>
-                    </div>
-                    <div className="min-w-0" style={{ flex: 1, padding: '10px 12px', borderRadius: 14, ...glassSurface }}>
-                      <p style={{ fontSize: 10.5, fontWeight: 600, color: RIDE_TEXT_2 }}>Arriving</p>
-                      <p className="tabular-nums" style={{ marginTop: 2, fontSize: 15, fontWeight: 700, color: RIDE_TEXT }}>{arrivingClockTime}</p>
-                    </div>
-                    <div
-                      className="min-w-0"
-                      style={{ flex: 1, padding: '10px 12px', borderRadius: 14, background: 'linear-gradient(135deg, rgba(255,250,205,.95), rgba(255,221,0,.2))', boxShadow: 'inset 0 .5px 0 rgba(255,255,255,.9), inset 0 0 0 .5px rgba(255,221,0,.5)' }}
-                    >
-                      <p style={{ fontSize: 10.5, fontWeight: 600, color: RIDE_TEXT_2 }}>Collect</p>
-                      <p className="tabular-nums" style={{ marginTop: 2, fontSize: 15, fontWeight: 700, color: RIDE_TEXT }}>{fmtUSD(activeTrip.fare)}</p>
-                    </div>
-                  </div>
-
-                  {confirmingEndTrip && (
-                    <p style={{ fontSize: 12, fontWeight: 600, color: RIDE_RED, textAlign: 'center' }}>
-                      You're still far from the drop-off — tap Complete trip again to confirm.
-                    </p>
-                  )}
-
-                  {/* Action row */}
-                  <div className="flex items-center" style={{ gap: 12 }}>
-                    <button
-                      type="button"
-                      onClick={() => setSafetyOpen(true)}
-                      className="shrink-0 flex items-center justify-center active:scale-[0.97] transition-transform"
-                      style={{ width: 104, height: 48, borderRadius: 15, gap: 7, ...glassSurface, boxShadow: 'inset 0 .75px 0 rgba(255,255,255,.98), inset 0 0 0 1px rgba(184,17,4,.22)' }}
-                    >
-                      <ShieldAlert style={{ width: 17, height: 17, color: RIDE_RED }} />
-                      <span style={{ fontSize: 14, fontWeight: 700, color: RIDE_RED }}>Safety</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDestinationConfirmOpen(true)}
-                      disabled={completing}
-                      className="relative flex-1 flex items-center justify-center active:scale-[0.97] transition-transform disabled:opacity-70"
-                      style={{ height: 48, borderRadius: 15, gap: 9, ...redCta }}
-                    >
-                      <Flag style={{ width: 17, height: 17 }} className="text-white" strokeWidth={2.4} />
-                      <span style={{ fontSize: 15.5, fontWeight: 700 }} className="text-white">
-                        {completing ? 'Completing…' : confirmingEndTrip ? 'Confirm complete trip' : tripPresentation.nextAction}
-                      </span>
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {/* 4p (and the arrived-waiting variant) — full passenger identity */}
-                  <div className="flex items-center" style={{ gap: 11 }}>
-                    <span
-                      className="shrink-0 flex items-center justify-center rounded-full"
-                      style={{ width: 44, height: 44, background: 'linear-gradient(135deg,#C6CBD4,#868E9B)', boxShadow: '0 0 0 2px rgba(255,255,255,.95), 0 4px 12px rgba(17,17,17,.12)' }}
-                    >
-                      {riderInfo?.avatar_url ? (
-                        <img src={riderInfo.avatar_url} alt="" className="w-full h-full object-cover rounded-full" />
-                      ) : (
-                        <User style={{ width: 22, height: 22 }} className="text-white" strokeWidth={2.2} />
-                      )}
-                    </span>
-                    <div className="min-w-0" style={{ flex: 1 }}>
-                      <p className="truncate" style={{ fontSize: 16, fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1.2, color: RIDE_TEXT }}>
-                        {passengerName}
-                      </p>
-                      <div className="flex items-center" style={{ marginTop: 3, gap: 5, fontSize: 12, fontWeight: 500, color: RIDE_TEXT_2 }}>
-                        {riderInfo?.completedTrips != null && (
-                          <span className="whitespace-nowrap">{riderInfo.completedTrips} trips</span>
-                        )}
-                        {activeTrip.passenger_count && activeTrip.passenger_count > 1 && (
-                          <>
-                            {riderInfo?.completedTrips != null && <span className="rounded-full" style={{ width: 2.5, height: 2.5, background: RIDE_TEXT_2 }} />}
-                            <span className="whitespace-nowrap">{activeTrip.passenger_count} passengers</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center shrink-0" style={{ gap: 8 }}>
-                      <button
-                        type="button"
-                        onClick={() => setChatOpen((v) => !v)}
-                        aria-label="Message passenger"
-                        className="relative flex items-center justify-center rounded-full active:scale-90 transition-transform"
-                        style={{ width: 40, height: 40, ...glassSurface }}
-                      >
-                        <MessageCircle style={{ width: 18, height: 18, color: RIDE_TEXT }} />
-                        {unreadMessages > 0 && (
-                          <span
-                            className="absolute flex items-center justify-center rounded-full"
-                            style={{ top: -2, right: -2, minWidth: 16, height: 16, padding: '0 3px', background: RIDE_RED, color: '#fff', fontSize: 9.5, fontWeight: 800, boxShadow: '0 0 0 2px rgba(255,255,255,.95)' }}
-                          >
-                            {unreadMessages > 9 ? '9+' : unreadMessages}
-                          </span>
-                        )}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (!dialNumber) {
-                            toast.info('No phone number available for this passenger');
-                            return;
-                          }
-                          haptic('light');
-                          try {
-                            onStartCall();
-                          } catch {
-                            window.location.href = `tel:${dialNumber}`;
-                          }
-                        }}
-                        disabled={callStatus !== 'idle'}
-                        aria-label="Call passenger"
-                        className="flex items-center justify-center rounded-full active:scale-90 transition-transform disabled:opacity-50"
-                        style={{ width: 40, height: 40, background: RIDE_RED, boxShadow: '0 6px 14px rgba(184,17,4,.3)' }}
-                      >
-                        <Phone style={{ width: 18, height: 18 }} className="text-white" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Note from passenger */}
-                  {riderNote && (
-                    <div
-                      className="flex items-start"
-                      style={{ background: 'linear-gradient(135deg, rgba(255,248,247,.9), rgba(184,17,4,.05))', boxShadow: 'inset 0 .5px 0 rgba(255,255,255,.9), inset 0 0 0 .5px rgba(184,17,4,.14)', borderRadius: 16, padding: '10px 12px', gap: 10 }}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={RIDE_RED} strokeWidth="2" style={{ marginTop: 1 }} className="shrink-0">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                      </svg>
-                      <div className="min-w-0">
-                        <p style={{ fontSize: 10.5, fontWeight: 700, color: RIDE_RED, textTransform: 'uppercase', letterSpacing: '.06em' }}>
-                          Note from {passengerName.split(' ')[0]}
-                        </p>
-                        <p style={{ marginTop: 3, fontSize: 12.5, fontWeight: 600, lineHeight: 1.35, color: RIDE_TEXT }}>{riderNote}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Route card */}
-                  <div className="flex items-center" style={{ ...tintBlue, borderRadius: 16, padding: '11px 13px', gap: 11 }}>
-                    <div className="flex flex-col items-center shrink-0" style={{ paddingTop: 2, gap: 3 }}>
-                      <span className="rounded-full" style={{ width: 9, height: 9, background: '#1A73E8', boxShadow: '0 0 0 2px rgba(255,255,255,.9)' }} />
-                      <span style={{ width: 1.5, height: 14, background: 'rgba(17,17,17,.16)' }} />
-                      <span className="rounded-full" style={{ width: 9, height: 9, background: RIDE_RED, boxShadow: '0 0 0 2px rgba(255,255,255,.9)' }} />
-                    </div>
-                    <div className="min-w-0" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                      <p className="truncate" style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.15, color: RIDE_TEXT_2 }}>{activeTrip.pickup_address}</p>
-                      <p className="truncate" style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.15, color: RIDE_TEXT }}>{activeTrip.dropoff_address}</p>
-                    </div>
-                    <div className="flex flex-col items-end shrink-0">
-                      <span className="tabular-nums" style={{ fontSize: 16, fontWeight: 700, letterSpacing: '-.02em', color: RIDE_RED }}>{fmtUSD(activeTrip.fare)}</span>
-                      <span style={{ fontSize: 10.5, fontWeight: 600, color: RIDE_TEXT_2 }}>{activeTrip.payment_method || 'cash'}</span>
-                    </div>
-                  </div>
-
-                  {routeFailed && (
-                    <p style={{ fontSize: 11, color: RIDE_TEXT_2 }}>
-                      Live turn-by-turn is temporarily unavailable — showing a direct-line estimate instead.
-                    </p>
-                  )}
-
-                  {isArrivedWaiting && activeTrip.driver_arrived_at && (
-                    <ArrivedWaitingLine arrivedAt={activeTrip.driver_arrived_at} />
-                  )}
-
-                  {isArrivedWaiting && <button type="button" onClick={() => setNoShowOpen(true)} className="min-h-11 rounded-xl border border-[#ff000d] bg-white px-4 text-sm font-semibold text-[#ff000d]">Rider not at pickup?</button>}
-
-                  {/* Action row */}
-                  <div className="flex items-center" style={{ gap: 12 }}>
-                    <button
-                      type="button"
-                      onClick={() => { haptic('light'); setCancelReasonOpen(true); }}
-                      disabled={!canCancel}
-                      className="relative shrink-0 flex items-center justify-center overflow-hidden select-none active:scale-[0.97] transition-transform disabled:opacity-40"
-                      style={{ width: 104, height: 48, borderRadius: 15, background: '#fff', border: '1.5px solid rgba(184,17,4,.35)' }}
-                    >
-                      <span className="relative" style={{ fontSize: 13.5, fontWeight: 700, color: '#B81104' }}>Cancel</span>
-                    </button>
-                    {isArrivedWaiting ? (
-                      <button
-                        type="button"
-                        onClick={() => handleStatusUpdate("in_progress", "Rider picked up - navigating to dropoff", "Rider picked up. Navigating to destination.")}
-                        className="relative flex-1 flex items-center justify-center active:scale-[0.97] transition-transform"
-                        style={{ height: 48, borderRadius: 15, gap: 9, ...redCta }}
-                      >
-                        <CheckCircle2 style={{ width: 18, height: 18 }} className="text-white" strokeWidth={2.6} />
-                        <span style={{ fontSize: 15.5, fontWeight: 700 }} className="text-white">{tripPresentation.nextAction}</span>
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => handleStatusUpdate("arrived", "Status: Arrived - waiting for rider", "You have arrived at the pickup point")}
-                        className="relative flex-1 flex items-center justify-center active:scale-[0.97] transition-transform"
-                        style={{ height: 48, borderRadius: 15, gap: 9, ...redCta }}
-                      >
-                        <CheckCircle2 style={{ width: 18, height: 18 }} className="text-white" strokeWidth={2.6} />
-                        <span style={{ fontSize: 15.5, fontWeight: 700 }} className="text-white">{tripPresentation.nextAction}</span>
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
-
-              {/* Home indicator */}
-              <div style={{ padding: '6px 0 10px' }} className="flex justify-center">
-                <span className="rounded-full" style={{ width: 140, height: 5, background: RIDE_TEXT }} />
-              </div>
-            </div>
-          </div>
-        </RideGlassPanel>
-      </div>
-
       {destinationConfirmOpen && isInTrip && (
         <DriverDestinationReached
+          mapNode={navigationMap}
           passengerName={passengerName}
           passengerCount={activeTrip.passenger_count ?? null}
           destination={activeTrip.dropoff_address}

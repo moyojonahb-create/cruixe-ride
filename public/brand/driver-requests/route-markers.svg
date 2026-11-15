@@ -1,0 +1,13 @@
+<svg width="22" height="78" viewBox="0 0 22 78" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11 18C14.866 18 18 14.866 18 11C18 7.13401 14.866 4 11 4C7.13401 4 4 7.13401 4 11C4 14.866 7.13401 18 11 18Z" fill="url(#paint0_linear_1164_125)"/>
+<path d="M11 14C12.6569 14 14 12.6569 14 11C14 9.34315 12.6569 8 11 8C9.34315 8 8 9.34315 8 11C8 12.6569 9.34315 14 11 14Z" fill="white"/>
+<path d="M11 19V57V19Z" fill="black"/>
+<path d="M11 19V57" stroke="#CAD3DE" stroke-width="2" stroke-dasharray="3 4"/>
+<path d="M11 72C14.866 72 18 68.866 18 65C18 61.134 14.866 58 11 58C7.13401 58 4 61.134 4 65C4 68.866 7.13401 72 11 72Z" fill="white" stroke="#FF000D" stroke-width="2.5"/>
+<defs>
+<linearGradient id="paint0_linear_1164_125" x1="9.04842" y1="11.6185" x2="20.7692" y2="3.85172" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FF000D"/>
+<stop offset="1" stop-color="#FFD11C"/>
+</linearGradient>
+</defs>
+</svg>

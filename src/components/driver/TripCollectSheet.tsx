@@ -1,13 +1,14 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { ArrowDown, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { getDriverWalletSummary } from '@/lib/walletApi';
 import { confirmCashCollection } from '@/lib/confirmCashCollection';
 import { toast } from 'sonner';
 import { haptic } from '@/lib/haptics';
 import LazyMapboxMap from '@/components/map/LazyMapboxMap';
-import RideGlassPanel from '@/components/ride/RideGlassPanel';
+import DriverLifecycleLayout from './DriverLifecycleLayout';
+import { DriverCashBody, DriverReceiptBody } from './DriverFinishBodies';
 import { RIDE_FONT } from '@/components/ride/rideGlass';
 import { isPlausibleRideCoord, type Coordinates } from '@/lib/osrm';
 
@@ -30,8 +31,6 @@ interface TripCollectSheetProps {
   footer?: ReactNode;
 }
 
-const fmtUSD = (value: number) => `$${value.toFixed(2)}`;
-const actionClass = 'min-h-12 min-w-0 flex-1 rounded-[14px] px-2.5 py-2 text-[15px] font-semibold leading-tight disabled:opacity-70';
 
 function tripPoint(lat: number | null | undefined, lng: number | null | undefined): Coordinates | null {
   if (lat == null || lng == null) return null;
@@ -48,7 +47,9 @@ export default function TripCollectSheet({ ride, onDone, footer }: TripCollectSh
   const [rating, setRating] = useState(0);
   const [ratingSaved, setRatingSaved] = useState(false);
   const [settled, setSettled] = useState<{ commission: number; keep: number } | null>(null);
-  const isCash = (ride.payment_method || 'cash').toLowerCase() === 'cash';
+  const isCash = (ride.payment_method || '').toLowerCase() === 'cash';
+  const confirmationLock = useRef(false);
+  const [confirmationError, setConfirmationError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -65,7 +66,7 @@ export default function TripCollectSheet({ ride, onDone, footer }: TripCollectSh
         try {
           const { earnings } = await getDriverWalletSummary();
           const match = earnings.find((entry) => entry.ride_id === ride.id);
-          if (match) {
+          if (match && Number.isFinite(match.platform_fee) && Number.isFinite(match.driver_earnings)) {
             if (!cancelled) setSettled({ commission: match.platform_fee, keep: match.driver_earnings });
             return;
           }
@@ -77,15 +78,20 @@ export default function TripCollectSheet({ ride, onDone, footer }: TripCollectSh
   }, [ride.id, collected]);
 
   const handleConfirm = async () => {
-    if (confirming || collected) return;
+    if (confirmationLock.current || collected || !isCash || !Number.isFinite(ride.fare)) return;
+    confirmationLock.current = true;
+    setConfirmationError(null);
     setConfirming(true);
     try {
       await confirmCashCollection(ride.id, isCash);
       haptic('medium');
       setCollected(true);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Could not confirm payment. Please try again.');
+      const message = error instanceof Error ? error.message : 'Could not confirm payment. Please try again.';
+      setConfirmationError(message);
+      toast.error(message);
     } finally {
+      confirmationLock.current = false;
       setConfirming(false);
     }
   };
@@ -118,75 +124,13 @@ export default function TripCollectSheet({ ride, onDone, footer }: TripCollectSh
           onEscapeKeyDown={(event) => event.preventDefault()}
           onPointerDownOutside={(event) => event.preventDefault()}
         >
-          <div className="relative h-[clamp(144px,37dvh,342px)] shrink-0 bg-[#f1f3f6]">
-            {pickup || dropoff ? (
-              <LazyMapboxMap pickup={pickup} dropoff={dropoff} height="100%" bottomInset={32} />
-            ) : (
-              <p className="grid h-full place-items-center text-sm text-[#667085]">Trip map unavailable</p>
-            )}
-          </div>
-          <RideGlassPanel variant="ribbon" handleWidth={56} className="-mt-2 flex-[1_0_auto]">
-            <div className="flex flex-1 flex-col gap-3 px-5 pb-3">
-              <span className="min-w-[168px] self-start rounded-full bg-[#ffeff1] px-3 py-1.5 text-center text-[10px] font-bold leading-tight text-[#111]">
-                {collected ? 'TRIP COMPLETED' : 'PAYMENT DUE'}
-              </span>
-              <Dialog.Title className="text-[21px] font-bold leading-tight">
-                {collected ? 'Trip completed' : isCash ? 'Collect cash payment' : 'Confirm payment'}
-              </Dialog.Title>
-              <Dialog.Description className="text-[12px] text-[#667085]">
-                {collected ? 'Thanks for completing this CruiXe ride.' : isCash ? 'Confirm payment only after receiving the cash.' : 'Confirm that this payment has been received.'}
-              </Dialog.Description>
-              {collected ? (
-                <>
-                  <div className="rounded-[17px] border border-[#e7eaf0] px-3.5 py-3">
-                    <p className="text-[10px] font-bold text-[#667085]">TRIP SUMMARY</p>
-                    <div className="mt-2.5 flex items-center justify-between gap-3 text-sm">
-                      <strong className="min-w-0 break-words">{ride.pickup_address || 'Pickup'}</strong>
-                      <ArrowDown aria-hidden="true" className="shrink-0" size={15} />
-                    </div>
-                    <strong className="mt-2 block break-words text-sm">{ride.dropoff_address}</strong>
-                    <p className="text-[11px] text-[#667085]">{passengerName} · {isCash ? 'Cash collected' : 'Payment confirmed'}</p>
-                  </div>
-                  <div className="flex min-h-[57px] items-center justify-between gap-3 rounded-[15px] bg-[#1f2129] px-3.5 py-2.5 text-white">
-                    <span className="text-[10px] font-bold">TOTAL FARE</span>
-                    <strong className="text-[24px] leading-tight">{fmtUSD(ride.fare)}</strong>
-                  </div>
-                  {settled ? (
-                    <details className="text-xs text-[#667085]">
-                      <summary>Driver earnings</summary>
-                      <div className="mt-2 flex justify-between"><span>Platform fee</span><span>{fmtUSD(settled.commission)}</span></div>
-                      <div className="mt-2 flex justify-between"><span>Net earnings</span><span>{fmtUSD(settled.keep)}</span></div>
-                    </details>
-                  ) : <p className="text-[11px] text-[#667085]">Platform fees and driver net earnings require ledger data.</p>}
-                  {showRating && <div className="flex justify-center gap-3" aria-label="Rate rider">{[1, 2, 3, 4, 5].map((value) => <button type="button" key={value} disabled={ratingSaved} style={{ minWidth: 44, minHeight: 44 }} aria-label={`Rate ${value} star${value > 1 ? 's' : ''}`} onClick={() => void saveRating(value)}><Star fill={value <= rating ? '#ffdd00' : 'none'} color="#68717f" /></button>)}</div>}
-                  <div className="flex gap-3">
-                    <button type="button" className={`${actionClass} border border-primary text-[#111]`} aria-expanded={showRating} onClick={() => setShowRating((value) => !value)}>Rate rider</button>
-                    <button type="button" className={`${actionClass} bg-primary text-primary-foreground`} onClick={onDone}>Return to Waiting Room</button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="min-h-[101px] rounded-[17px] border border-[#e7eaf0] p-4">
-                    <p className="text-[10px] font-bold text-[#667085]">AMOUNT TO COLLECT</p>
-                    <strong className="mt-2 block text-[36px] leading-tight">{fmtUSD(ride.fare)}</strong>
-                  </div>
-                  <div className="flex min-h-12 items-center rounded-[15px] bg-[#1f2129] px-3.5 py-2.5 text-[13px] font-semibold text-white">
-                    Payment method: {isCash ? 'Cash' : ride.payment_method}
-                  </div>
-                  <p className="text-[11px] text-[#667085]" aria-live="polite">
-                    {notReceived ? 'Payment is still due. Keep this screen open until you receive the cash.' : 'Never mark the fare paid before collecting it.'}
-                  </p>
-                  <div className="flex gap-3">
-                    <button type="button" disabled={confirming} className={`${actionClass} border border-primary text-[#111]`} onClick={() => setNotReceived(true)}>Not received</button>
-                    <button type="button" disabled={confirming} className={`${actionClass} bg-primary text-primary-foreground`} onClick={() => void handleConfirm()}>
-                      {confirming ? 'Confirming…' : isCash ? 'Cash received' : 'Payment received'}
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-            {footer}
-          </RideGlassPanel>
+          <Dialog.Title className="sr-only">{collected ? 'Saved trip receipt' : 'Confirm cash payment'}</Dialog.Title>
+          <Dialog.Description className="sr-only">Confirm actual cash received and review the saved trip receipt.</Dialog.Description>
+          <DriverLifecycleLayout frameId={collected ? '1185:281' : '1185:198'} map={pickup || dropoff ? <LazyMapboxMap pickup={pickup} dropoff={dropoff} height="100%" bottomInset={32} /> : <p className="grid h-full place-items-center bg-[#f1f3f6] text-sm text-[#667085]">Trip map unavailable</p>} onBack={collected ? onDone : () => setNotReceived(true)} busy={confirming} footer={footer}>
+            {collected ? <DriverReceiptBody pickup={ride.pickup_address || 'Pickup'} destination={ride.dropoff_address} passengerName={passengerName} fare={ride.fare} settled={settled} onRate={() => setShowRating(value => !value)} showRating={showRating} onDone={onDone}>
+              {showRating && <div className="my-2 flex justify-center gap-3" aria-label="Rate rider">{[1,2,3,4,5].map(value => <button type="button" key={value} disabled={ratingSaved} className="min-h-11 min-w-11" aria-label={`Rate ${value} star${value > 1 ? 's' : ''}`} onClick={() => void saveRating(value)}><Star fill={value <= rating ? '#ffdd00' : 'none'} color="#68717f" /></button>)}</div>}
+            </DriverReceiptBody> : <DriverCashBody fare={ride.fare} isCash={isCash} paymentMethod={ride.payment_method} confirming={confirming} notReceived={notReceived} error={confirmationError} onNotReceived={() => setNotReceived(true)} onConfirm={() => void handleConfirm()} />}
+          </DriverLifecycleLayout>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

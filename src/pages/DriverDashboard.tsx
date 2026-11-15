@@ -516,6 +516,7 @@ export default function DriverDashboard() {
         .select('id, fare, payment_method, pickup_address, dropoff_address, user_id, pickup_lat, pickup_lon, dropoff_lat, dropoff_lon')
         .or(`driver_id.eq.${p.id},driver_id.eq.${user?.id}`)
         .eq('status', 'completed')
+        .eq('payment_method', 'cash')
         .is('driver_collected_at', null)
         .order('updated_at', { ascending: false })
         .limit(1)

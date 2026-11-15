@@ -54,6 +54,7 @@ const DriverModeLanding = lazy(() => import("./pages/DriverModeLanding"));
 const DriverRegistrationPage = lazy(() => import("./pages/DriverRegistrationPage"));
 const DriverWalletPage = lazy(() => import("./pages/DriverWalletPage"));
 const DriverRecordsPage = lazy(() => import("./pages/driver/DriverRecordsPage"));
+const DriverTripScreenReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/DriverTripScreenReview")) : null;
 const DriverRecordsScreenReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/DriverRecordsScreenReview")) : null;
 const DriverAccountPage = lazy(() => import("./pages/driver/DriverAccountPage"));
 const DriverProfile = lazy(() => import("./pages/driver/DriverProfile"));
@@ -245,6 +246,7 @@ export default function App() {
           <Route path="/admin/migration-export" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMigrationExport /></AdminGuard></SuspenseWrap>} />
           <Route path="/admin/maps-qa" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMapsQA /></AdminGuard></SuspenseWrap>} />
           <Route path="/student-verification" element={<SuspenseWrap><AuthGuard><StudentVerificationPage /></AuthGuard></SuspenseWrap>} />
+          {import.meta.env.MODE === "staging" && <Route path="/staging/trip-10" element={<SuspenseWrap><DriverTripScreenReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/records-10" element={<SuspenseWrap><DriverRecordsScreenReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/account-10" element={<SuspenseWrap><DriverAccountScreenReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/driver-10" element={<SuspenseWrap><DriverTenScreenReview /></SuspenseWrap>} />}

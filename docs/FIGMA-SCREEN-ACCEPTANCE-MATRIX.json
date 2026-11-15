@@ -632,20 +632,29 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "react_components": [
+        "DriverRideRequests / DriverRequestsBody",
+        "DriverLifecycleLayout"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/trip-10 (staging-only, labelled sample data)"
+      ],
+      "route_or_entry_point": "Driver Requests tab",
+      "backend_dependency": "Existing request/offer, trip transition, location/realtime and cash/ledger services; no new contracts.",
+      "visual_match_status": "Component visual review and70 responsive fixture cases passed; authenticated staging review pending.",
+      "functional_integration_status": "Existing callbacks connected; lifecycle/cash regression tests pass. Live authenticated acceptance pending.",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-TRIP-TEN-INCREMENT-2026-11-16.md",
+        "src/test/DriverLifecycleFlow.test.tsx",
+        "src/test/TripCollectSheet.test.tsx",
+        "src/test/confirmCashCollection.test.ts"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Dedicated authenticated staging trip, realtime/GPS and persisted payment/ledger review remains required."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "57 tests across9 focused suites passed;70 screen/viewport fixture cases. Fixtures do not prove live services."
     },
     {
       "figma_name": "CruiXe Driver / 17 \u00b7 Drive",
@@ -747,20 +756,29 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "react_components": [
+        "DriverRideDetails / DriverOfferBody / DriverFareControl",
+        "DriverLifecycleLayout"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/trip-10 (staging-only, labelled sample data)"
+      ],
+      "route_or_entry_point": "Non-parcel request detail",
+      "backend_dependency": "Existing request/offer, trip transition, location/realtime and cash/ledger services; no new contracts.",
+      "visual_match_status": "Component visual review and70 responsive fixture cases passed; authenticated staging review pending.",
+      "functional_integration_status": "Existing callbacks connected; lifecycle/cash regression tests pass. Live authenticated acceptance pending.",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-TRIP-TEN-INCREMENT-2026-11-16.md",
+        "src/test/DriverLifecycleFlow.test.tsx",
+        "src/test/TripCollectSheet.test.tsx",
+        "src/test/confirmCashCollection.test.ts"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Dedicated authenticated staging trip, realtime/GPS and persisted payment/ledger review remains required."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "57 tests across9 focused suites passed;70 screen/viewport fixture cases. Fixtures do not prove live services."
     },
     {
       "figma_name": "CruiXe Driver / 22 \u00b7 Offer Sent \u00b7 Waiting for Rider",
@@ -794,23 +812,28 @@
         "height": "845"
       },
       "react_components": [
-        "src/lib/driverTripPresentation.ts"
+        "FullScreenNavigation / DriverActiveTripContent",
+        "DriverLifecycleLayout"
       ],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/trip-10 (staging-only, labelled sample data)"
+      ],
+      "route_or_entry_point": "Accepted active trip",
+      "backend_dependency": "Existing request/offer, trip transition, location/realtime and cash/ledger services; no new contracts.",
+      "visual_match_status": "Component visual review and70 responsive fixture cases passed; authenticated staging review pending.",
+      "functional_integration_status": "Existing callbacks connected; lifecycle/cash regression tests pass. Live authenticated acceptance pending.",
       "test_evidence": [
-        "src/test/driverTripPresentation.test.ts"
+        "docs/FIGMA-DRIVER-TRIP-TEN-INCREMENT-2026-11-16.md",
+        "src/test/DriverLifecycleFlow.test.tsx",
+        "src/test/TripCollectSheet.test.tsx",
+        "src/test/confirmCashCollection.test.ts"
       ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Dedicated authenticated staging trip, realtime/GPS and persisted payment/ledger review remains required."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "57 tests across9 focused suites passed;70 screen/viewport fixture cases. Fixtures do not prove live services."
     },
     {
       "figma_name": "CruiXe Driver / 24 \u00b7 En Route to Rider Pickup",
@@ -821,23 +844,28 @@
         "height": "845"
       },
       "react_components": [
-        "src/lib/driverTripPresentation.ts"
+        "FullScreenNavigation / DriverActiveTripContent",
+        "DriverNavigationDock"
       ],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/trip-10 (staging-only, labelled sample data)"
+      ],
+      "route_or_entry_point": "Navigate to pickup (local)",
+      "backend_dependency": "Existing request/offer, trip transition, location/realtime and cash/ledger services; no new contracts.",
+      "visual_match_status": "Component visual review and70 responsive fixture cases passed; authenticated staging review pending.",
+      "functional_integration_status": "Existing callbacks connected; lifecycle/cash regression tests pass. Live authenticated acceptance pending.",
       "test_evidence": [
-        "src/test/driverTripPresentation.test.ts"
+        "docs/FIGMA-DRIVER-TRIP-TEN-INCREMENT-2026-11-16.md",
+        "src/test/DriverLifecycleFlow.test.tsx",
+        "src/test/TripCollectSheet.test.tsx",
+        "src/test/confirmCashCollection.test.ts"
       ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Dedicated authenticated staging trip, realtime/GPS and persisted payment/ledger review remains required."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "57 tests across9 focused suites passed;70 screen/viewport fixture cases. Fixtures do not prove live services."
     },
     {
       "figma_name": "CruiXe Driver / 25 \u00b7 Arrived \u00b7 Waiting for Rider",
@@ -848,23 +876,28 @@
         "height": "845"
       },
       "react_components": [
-        "src/lib/driverTripPresentation.ts"
+        "FullScreenNavigation / DriverActiveTripContent",
+        "DriverLifecycleLayout"
       ],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/trip-10 (staging-only, labelled sample data)"
+      ],
+      "route_or_entry_point": "Saved arrived status",
+      "backend_dependency": "Existing request/offer, trip transition, location/realtime and cash/ledger services; no new contracts.",
+      "visual_match_status": "Component visual review and70 responsive fixture cases passed; authenticated staging review pending.",
+      "functional_integration_status": "Existing callbacks connected; lifecycle/cash regression tests pass. Live authenticated acceptance pending.",
       "test_evidence": [
-        "src/test/driverTripPresentation.test.ts"
+        "docs/FIGMA-DRIVER-TRIP-TEN-INCREMENT-2026-11-16.md",
+        "src/test/DriverLifecycleFlow.test.tsx",
+        "src/test/TripCollectSheet.test.tsx",
+        "src/test/confirmCashCollection.test.ts"
       ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Dedicated authenticated staging trip, realtime/GPS and persisted payment/ledger review remains required."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "57 tests across9 focused suites passed;70 screen/viewport fixture cases. Fixtures do not prove live services."
     },
     {
       "figma_name": "CruiXe Driver / 26 \u00b7 Passenger Onboard \u00b7 Start Trip",
@@ -875,21 +908,28 @@
         "height": "845"
       },
       "react_components": [
-        "src/lib/driverTripPresentation.ts"
+        "FullScreenNavigation / DriverActiveTripContent",
+        "DriverLifecycleLayout"
       ],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "staging_gallery_evidence": [
+        "/staging/trip-10 (staging-only, labelled sample data)"
+      ],
+      "route_or_entry_point": "Passenger onboard confirmation (local)",
+      "backend_dependency": "Existing request/offer, trip transition, location/realtime and cash/ledger services; no new contracts.",
+      "visual_match_status": "Component visual review and70 responsive fixture cases passed; authenticated staging review pending.",
+      "functional_integration_status": "Existing callbacks connected; lifecycle/cash regression tests pass. Live authenticated acceptance pending.",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-TRIP-TEN-INCREMENT-2026-11-16.md",
+        "src/test/DriverLifecycleFlow.test.tsx",
+        "src/test/TripCollectSheet.test.tsx",
+        "src/test/confirmCashCollection.test.ts"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Dedicated authenticated staging trip, realtime/GPS and persisted payment/ledger review remains required."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "57 tests across9 focused suites passed;70 screen/viewport fixture cases. Fixtures do not prove live services."
     },
     {
       "figma_name": "CruiXe Driver / 28 \u00b7 En Route to Destination",
@@ -900,23 +940,28 @@
         "height": "845"
       },
       "react_components": [
-        "src/lib/driverTripPresentation.ts"
+        "FullScreenNavigation / DriverActiveTripContent",
+        "DriverNavigationDock"
       ],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/trip-10 (staging-only, labelled sample data)"
+      ],
+      "route_or_entry_point": "Saved in_progress status",
+      "backend_dependency": "Existing request/offer, trip transition, location/realtime and cash/ledger services; no new contracts.",
+      "visual_match_status": "Component visual review and70 responsive fixture cases passed; authenticated staging review pending.",
+      "functional_integration_status": "Existing callbacks connected; lifecycle/cash regression tests pass. Live authenticated acceptance pending.",
       "test_evidence": [
-        "src/test/driverTripPresentation.test.ts"
+        "docs/FIGMA-DRIVER-TRIP-TEN-INCREMENT-2026-11-16.md",
+        "src/test/DriverLifecycleFlow.test.tsx",
+        "src/test/TripCollectSheet.test.tsx",
+        "src/test/confirmCashCollection.test.ts"
       ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Dedicated authenticated staging trip, realtime/GPS and persisted payment/ledger review remains required."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "57 tests across9 focused suites passed;70 screen/viewport fixture cases. Fixtures do not prove live services."
     },
     {
       "figma_name": "CruiXe Driver / 29 \u00b7 Destination Reached",
@@ -927,23 +972,28 @@
         "height": "845"
       },
       "react_components": [
-        "src/components/driver/DriverDestinationReached.tsx"
+        "DriverDestinationReached / DriverDestinationBody",
+        "DriverLifecycleLayout"
       ],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "staging_gallery_evidence": [
+        "/staging/trip-10 (staging-only, labelled sample data)"
+      ],
+      "route_or_entry_point": "Destination reached action",
+      "backend_dependency": "Existing request/offer, trip transition, location/realtime and cash/ledger services; no new contracts.",
+      "visual_match_status": "Component visual review and70 responsive fixture cases passed; authenticated staging review pending.",
+      "functional_integration_status": "Existing callbacks connected; lifecycle/cash regression tests pass. Live authenticated acceptance pending.",
       "test_evidence": [
-        "src/test/DriverDestinationReached.test.tsx"
+        "docs/FIGMA-DRIVER-TRIP-TEN-INCREMENT-2026-11-16.md",
+        "src/test/DriverLifecycleFlow.test.tsx",
+        "src/test/TripCollectSheet.test.tsx",
+        "src/test/confirmCashCollection.test.ts"
       ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Dedicated authenticated staging trip, realtime/GPS and persisted payment/ledger review remains required."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "57 tests across9 focused suites passed;70 screen/viewport fixture cases. Fixtures do not prove live services."
     },
     {
       "figma_name": "CruiXe Driver / 30 \u00b7 Confirm Cash Payment",
@@ -953,20 +1003,29 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "react_components": [
+        "TripCollectSheet / DriverCashBody",
+        "DriverLifecycleLayout"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/trip-10 (staging-only, labelled sample data)"
+      ],
+      "route_or_entry_point": "Completed cash ride awaiting collection",
+      "backend_dependency": "Existing request/offer, trip transition, location/realtime and cash/ledger services; no new contracts.",
+      "visual_match_status": "Component visual review and70 responsive fixture cases passed; authenticated staging review pending.",
+      "functional_integration_status": "Existing callbacks connected; lifecycle/cash regression tests pass. Live authenticated acceptance pending.",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-TRIP-TEN-INCREMENT-2026-11-16.md",
+        "src/test/DriverLifecycleFlow.test.tsx",
+        "src/test/TripCollectSheet.test.tsx",
+        "src/test/confirmCashCollection.test.ts"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Dedicated authenticated staging trip, realtime/GPS and persisted payment/ledger review remains required."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "57 tests across9 focused suites passed;70 screen/viewport fixture cases. Fixtures do not prove live services."
     },
     {
       "figma_name": "CruiXe Driver / 31 \u00b7 Trip Receipt and Earnings",
@@ -976,20 +1035,29 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "react_components": [
+        "TripCollectSheet / DriverReceiptBody",
+        "DriverLifecycleLayout"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/trip-10 (staging-only, labelled sample data)"
+      ],
+      "route_or_entry_point": "Successful cash collection",
+      "backend_dependency": "Existing request/offer, trip transition, location/realtime and cash/ledger services; no new contracts.",
+      "visual_match_status": "Component visual review and70 responsive fixture cases passed; authenticated staging review pending.",
+      "functional_integration_status": "Existing callbacks connected; lifecycle/cash regression tests pass. Live authenticated acceptance pending.",
+      "test_evidence": [
+        "docs/FIGMA-DRIVER-TRIP-TEN-INCREMENT-2026-11-16.md",
+        "src/test/DriverLifecycleFlow.test.tsx",
+        "src/test/TripCollectSheet.test.tsx",
+        "src/test/confirmCashCollection.test.ts"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Dedicated authenticated staging trip, realtime/GPS and persisted payment/ledger review remains required."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "57 tests across9 focused suites passed;70 screen/viewport fixture cases. Fixtures do not prove live services."
     },
     {
       "figma_name": "CruiXe Driver / 21B \u00b7 New Request \u00b7 Booked for Someone Else",
