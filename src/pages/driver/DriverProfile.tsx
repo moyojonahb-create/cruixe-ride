@@ -23,6 +23,8 @@ import defaultDriverAvatar from '@/assets/driver-avatar-jonah.png';
 import { RIDE_RED, RIDE_YELLOW, RIDE_TEXT, RIDE_TEXT_2 } from '@/components/ride/rideGlass';
 import type { DriverProfile as DriverProfileData } from '@/lib/offerHelpers';
 import DriverDetailScreen, { type DriverDetailKind } from '@/components/driver/DriverDetailScreen';
+import DriverAccountStatusScreen from '@/components/driver/DriverAccountStatusScreen';
+import { useObservedDriverReactivation } from '@/components/driver/useObservedDriverReactivation';
 import DriverAvailabilityControl from '@/components/driver/DriverAvailabilityControl';
 
 const glassSurface: CSSProperties = {
@@ -66,6 +68,8 @@ export default function DriverProfilePage() {
   const [waitingCount, setWaitingCount] = useState(0);
   const [documents, setDocuments] = useState<DriverDocRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [accountStatusOpen, setAccountStatusOpen] = useState(false);
+  const reactivated = useObservedDriverReactivation(profile?.id ?? null, profile?.status ?? null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [pendingAvatarFile, setPendingAvatarFile] = useState<File | null>(null);
   const [uploadingVehiclePhoto, setUploadingVehiclePhoto] = useState(false);
@@ -143,6 +147,29 @@ export default function DriverProfilePage() {
   }, [user?.id]);
 
   useEffect(() => { load(); }, [load]);
+
+  // Re-read the existing protected profile contract after returning from support
+  // and periodically while this page is open. This observes status; it never
+  // grants approval or bypasses the normal availability eligibility checks.
+  useEffect(() => {
+    if (!user?.id || !profile?.id) return;
+    let disposed = false;
+    let refreshing = false;
+    const refreshStatus = async () => {
+      if (refreshing || document.visibilityState === 'hidden') return;
+      refreshing = true;
+      try {
+        const current = await getDriverProfile();
+        if (!disposed && current?.id === profile.id && current.user_id === user.id) {
+          setProfile((previous) => previous?.id === current.id ? { ...previous, status: current.status, is_online: current.is_online } : previous);
+        }
+      } catch { /* Keep the last saved profile; do not infer a status change. */ }
+      finally { refreshing = false; }
+    };
+    window.addEventListener('focus', refreshStatus);
+    const timer = window.setInterval(refreshStatus, 30000);
+    return () => { disposed = true; window.removeEventListener('focus', refreshStatus); window.clearInterval(timer); };
+  }, [user?.id, profile?.id]);
 
   const handleAvatarFile = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -246,6 +273,9 @@ export default function DriverProfilePage() {
   }
 
   if (detail) return <DriverDetailScreen kind={detail} fullName={fullName} phone={phone} email={user?.email ?? null} profile={profile} onBack={() => setDetail(null)} onDocuments={() => navigate('/driver/application')} />;
+  if (accountStatusOpen) {
+    return <DriverAccountStatusScreen status={profile.status} reactivated={reactivated} onBack={() => setAccountStatusOpen(false)} onHome={() => navigate('/driver/dashboard')} />;
+  }
 
   const vehicleTitle = [profile.vehicle_make, profile.vehicle_model].filter(Boolean).join(' ') || 'Vehicle';
   const isOnline = profile.is_online ?? false;
@@ -321,6 +351,10 @@ export default function DriverProfilePage() {
       </div>
 
       <div className="max-w-lg mx-auto px-4" style={{ paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <button type="button" onClick={() => setAccountStatusOpen(true)} className="flex min-h-14 items-center justify-between rounded-2xl border border-[#e3e5eb] bg-white px-4 py-3 text-left" aria-label="Review account status">
+          <span className="font-semibold text-[#262933]">{profile.status === 'suspended' ? 'Account suspended' : reactivated ? 'Account reactivated' : 'Account status'}</span>
+          <ChevronRight className="size-5 shrink-0" aria-hidden="true" />
+        </button>
         {/* Online / request-room block — two separate controls, not nested
             buttons: a <button> inside a <button> is invalid HTML and makes
             taps on the inner one unreliably bubble into the outer navigate. */}

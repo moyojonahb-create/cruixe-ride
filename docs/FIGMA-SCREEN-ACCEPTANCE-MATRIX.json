@@ -2407,20 +2407,26 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverExceptionLayout.tsx",
+        "src/components/driver/DriverTripExceptionScreens.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "Cancelled Driver trip history / arrived active-trip pickup",
+      "backend_dependency": "Existing trip_events attribution/dispute service; no ride-status or fee mutation",
+      "visual_match_status": "BROWSER_FIXTURE_TESTED",
+      "functional_integration_status": "MOCKED_REGRESSION_TESTED; authenticated staging UNVERIFIED",
+      "test_evidence": [
+        "src/test/DriverTripExceptions.test.tsx",
+        "docs/FIGMA-DRIVER-EXCEPTION-INCREMENT-2026-11-16.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Authenticated staging records/actions still require dedicated test sessions.",
+        "NoShow duplicate protection is in-memory for active view; cross-session idempotency is not claimed."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Executed tests and screenshots; test fixtures do not imply live backend acceptance."
     },
     {
       "figma_name": "CruiXe Driver / 39 \u00b7 Pickup No-Show Resolution",
@@ -2430,20 +2436,26 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverExceptionLayout.tsx",
+        "src/components/driver/DriverTripExceptionScreens.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "Cancelled Driver trip history / arrived active-trip pickup",
+      "backend_dependency": "Existing trip_events attribution/dispute service; no ride-status or fee mutation",
+      "visual_match_status": "BROWSER_FIXTURE_TESTED",
+      "functional_integration_status": "MOCKED_REGRESSION_TESTED; authenticated staging UNVERIFIED",
+      "test_evidence": [
+        "src/test/DriverTripExceptions.test.tsx",
+        "docs/FIGMA-DRIVER-EXCEPTION-INCREMENT-2026-11-16.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Authenticated staging records/actions still require dedicated test sessions.",
+        "NoShow duplicate protection is in-memory for active view; cross-session idempotency is not claimed."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Executed tests and screenshots; test fixtures do not imply live backend acceptance."
     },
     {
       "figma_name": "CruiXe Driver / 40 \u00b7 Account Suspended",
@@ -2453,20 +2465,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverExceptionLayout.tsx",
+        "src/components/driver/DriverAccountStatusScreen.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/profile \u2192 Account status",
+      "backend_dependency": "Existing saved Driver profile status/support; observed suspended-to-approved transition only",
+      "visual_match_status": "BROWSER_FIXTURE_TESTED",
+      "functional_integration_status": "MOCKED_REGRESSION_TESTED; authenticated staging UNVERIFIED",
+      "test_evidence": [
+        "src/test/DriverAccountStatus.test.tsx",
+        "docs/FIGMA-DRIVER-EXCEPTION-INCREMENT-2026-11-16.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Authenticated staging account transition/support acceptance pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Executed tests and screenshots; test fixtures do not imply live backend acceptance."
     },
     {
       "figma_name": "CruiXe Driver / 41 \u00b7 Account Reactivated",
@@ -2476,20 +2493,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverExceptionLayout.tsx",
+        "src/components/driver/DriverAccountStatusScreen.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/profile \u2192 Account status",
+      "backend_dependency": "Existing saved Driver profile status/support; observed suspended-to-approved transition only",
+      "visual_match_status": "BROWSER_FIXTURE_TESTED",
+      "functional_integration_status": "MOCKED_REGRESSION_TESTED; authenticated staging UNVERIFIED",
+      "test_evidence": [
+        "src/test/DriverAccountStatus.test.tsx",
+        "docs/FIGMA-DRIVER-EXCEPTION-INCREMENT-2026-11-16.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Authenticated staging account transition/support acceptance pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Executed tests and screenshots; test fixtures do not imply live backend acceptance."
     },
     {
       "figma_name": "CruiXe Driver / 42 \u00b7 Fare Dispute Status",

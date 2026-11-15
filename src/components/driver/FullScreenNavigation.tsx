@@ -25,6 +25,8 @@ import { useRideRealtime } from "@/hooks/useRideRealtime";
 import { useUnreadRideMessages } from "@/hooks/useUnreadRideMessages";
 import { useVoiceNavigation } from "@/hooks/useVoiceNavigation";
 import DriverMessageSheet from "@/components/driver/DriverMessageSheet";
+import { usePickupNoShowReport } from '@/components/driver/driverTripExceptionState';
+import { DriverPickupNoShowScreen } from '@/components/driver/DriverTripExceptionScreens';
 import DriverDestinationReached from "@/components/driver/DriverDestinationReached";
 import SafetySheet from "@/components/ride/SafetySheet";
 import { goBackend, GoBackendError } from "@/lib/goBackendClient";
@@ -267,6 +269,9 @@ export default function FullScreenNavigation({
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [lastSpokenStepIndex, setLastSpokenStepIndex] = useState(-1);
   const [chatOpen, setChatOpen] = useState(false);
+  const [noShowOpen, setNoShowOpen] = useState(false);
+  const noShowReport = usePickupNoShowReport(activeTrip.id);
+  useEffect(() => { setNoShowOpen(false); }, [activeTrip.id, activeTrip.status]);
   const unreadMessages = useUnreadRideMessages(activeTrip?.id, userId, chatOpen);
   const [safetyOpen, setSafetyOpen] = useState(false);
   const [completing, setCompleting] = useState(false);
@@ -579,6 +584,12 @@ export default function FullScreenNavigation({
     activeTrip.passenger_count && activeTrip.passenger_count > 1 ? `${activeTrip.passenger_count} passengers` : null,
   ].filter(Boolean) as string[];
 
+  if (noShowOpen && activeTrip.status === 'arrived') return (
+    <div data-exception-scroll className="fixed inset-0 z-[100] overflow-y-auto bg-[#fcfbf9]">
+      <DriverPickupNoShowScreen key={activeTrip.id} rideId={activeTrip.id} status={activeTrip.status} reportModel={noShowReport} onBack={() => setNoShowOpen(false)} onProfile={() => navigate(profilePath)} onContact={onStartCall} />
+    </div>
+  );
+
   return (
     <motion.div data-map-screen="true" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-background">
       <NavigationMap
@@ -872,6 +883,8 @@ export default function FullScreenNavigation({
                   {isArrivedWaiting && activeTrip.driver_arrived_at && (
                     <ArrivedWaitingLine arrivedAt={activeTrip.driver_arrived_at} />
                   )}
+
+                  {isArrivedWaiting && <button type="button" onClick={() => setNoShowOpen(true)} className="min-h-11 rounded-xl border border-[#ff000d] bg-white px-4 text-sm font-semibold text-[#ff000d]">Rider not at pickup?</button>}
 
                   {/* Action row */}
                   <div className="flex items-center" style={{ gap: 12 }}>

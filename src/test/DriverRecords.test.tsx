@@ -80,6 +80,14 @@ describe('Driver records', () => {
   });
 });
 describe('Driver history', () => {
+  it('opens persisted cancellation details from the current history without opening a receipt', () => {
+    const cancelled = { ...trip, status: 'cancelled', user_id: 'rider-auth' };
+    const open = vi.fn();
+    render(<DriverHistoryScreens trips={[cancelled]} onBack={vi.fn()} onCancelled={open} />);
+    fireEvent.click(screen.getByRole('button', { name: /cancelled ride/ }));
+    expect(open).toHaveBeenCalledWith(cancelled);
+    expect(mocks.receipt).not.toHaveBeenCalled();
+  });
   it('cash stays pending despite completion or wallet flag', () => { expect(historyPayment({ ...trip, wallet_paid: true })).toBe(false); expect(historyPayment({ ...trip, driver_collected_at: '2026-11-15T12:15:00Z' })).toBe(true); });
   it('failed payment is never shown paid', () => { expect(historyPayment({ ...trip, driver_collected_at: '2026-11-15', payment_failed: true })).toBe(false); });
   it('separates parcels from rides and opens the selected record', async () => {
