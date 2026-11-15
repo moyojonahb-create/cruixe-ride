@@ -25,14 +25,14 @@
 .dss-hero:before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(1deg,#ff000d 34%,#ffd11c 106%)}
 .dss-hero img{flex-shrink:0;max-width:none}
 .dss-hero h2{font-size:19px;font-weight:700;line-height:28px;color:#fff}
-.dss-hero p{font-size:11px;line-height:18px;color:#111;margin-top:4px}
+.dss-hero p{font-size:11px;line-height:18px;color:#fff;margin-top:4px}
 .dss-security-hero{margin:0 0 60px}
 .dss-security-fields .dss-field{min-height:77px;font-weight:600}
 .dss-security-fields .dss-field>span{font-weight:400}
 .dss-security-fields .dss-fields{gap:14px}
 .dss-wide{min-height:47px;width:100%;background:white!important;border:1.4px solid #ff000d!important;border-radius:13px!important;font-size:12px!important;margin:4px 0;white-space:normal!important}
 .dss-review-hero{margin-top:12px;min-height:86px;padding-left:31px;gap:26px}
-.dss-review-hero h2{color:#111;font-size:14.5px;line-height:22px}
+.dss-review-hero h2{color:#fff;font-size:14.5px;line-height:22px}
 .dss-review-hero p{font-size:10.5px;margin-top:14px}
 .dss-review-title{font-size:18px;font-weight:700;margin:35px 3px 18px}
 .dss-review-card{background:white;border-radius:17px;padding:0 16px;min-height:249px;margin-bottom:26px}
