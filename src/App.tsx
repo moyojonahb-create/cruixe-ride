@@ -58,6 +58,8 @@ const DriverTripScreenReview = import.meta.env.MODE === "staging" ? lazy(() => i
 const DriverRecordsScreenReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/DriverRecordsScreenReview")) : null;
 const DriverAccountPage = lazy(() => import("./pages/driver/DriverAccountPage"));
 const DriverBadgesPage = lazy(() => import("./pages/driver/DriverBadgesPage"));
+const RiderBookingReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/RiderBookingReview")) : null;
+const RiderFeedbackReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/RiderFeedbackReview")) : null;
 const DriverPreviewBatchReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/DriverPreviewBatchReview")) : null;
 const DriverSupportScreenReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/DriverSupportScreenReview")) : null;
 const DriverBadgeScreenReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/DriverBadgeScreenReview")) : null;
@@ -253,6 +255,8 @@ export default function App() {
           <Route path="/admin/migration-export" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMigrationExport /></AdminGuard></SuspenseWrap>} />
           <Route path="/admin/maps-qa" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMapsQA /></AdminGuard></SuspenseWrap>} />
           <Route path="/student-verification" element={<SuspenseWrap><AuthGuard><StudentVerificationPage /></AuthGuard></SuspenseWrap>} />
+          {import.meta.env.MODE === "staging" && <Route path="/staging/rider-booking" element={<SuspenseWrap><RiderBookingReview /></SuspenseWrap>} />}
+          {import.meta.env.MODE === "staging" && <Route path="/staging/rider-feedback" element={<SuspenseWrap><RiderFeedbackReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/driver-migration-20" element={<SuspenseWrap><DriverPreviewBatchReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/driver-support-10" element={<SuspenseWrap><DriverSupportScreenReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/driver-badges" element={<SuspenseWrap><DriverBadgeScreenReview /></SuspenseWrap>} />}

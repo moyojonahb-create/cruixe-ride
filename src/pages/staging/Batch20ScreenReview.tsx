@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Layers3, ShieldAlert } from 'lucide-react';
 import { JOURNEY_BATCH_20 } from '@/lib/journeyBatch20Screens';
 import Batch20JourneyScreen from '@/components/journeys/Batch20JourneyScreen';
@@ -7,10 +8,11 @@ import Batch20JourneyScreen from '@/components/journeys/Batch20JourneyScreen';
  * Real Rider/Driver journeys still use their current authorised backend handlers.
  */
 export default function Batch20ScreenReview() {
-  const [index, setIndex] = useState(0);
+  const [params, setParams] = useSearchParams();
+  const index = Math.max(0, JOURNEY_BATCH_20.findIndex(item => item.id === params.get('screen')));
   const [actionMessage, setActionMessage] = useState('');
   const screen = JOURNEY_BATCH_20[index];
-  const show = (next: number) => { setIndex(Math.max(0,Math.min(JOURNEY_BATCH_20.length - 1,next))); setActionMessage(''); };
+  const show = (next: number) => { setParams({ screen: JOURNEY_BATCH_20[next].id }); setActionMessage(''); };
   const onAction = (id: string) => setActionMessage(`Visual review only: action on "${id}" requires its authenticated ride handler. No booking was created or modified.`);
   // Intentionally generic staging fixture, never a real user, ride, boarding code or share token.
   const fixture = {
@@ -34,7 +36,7 @@ export default function Batch20ScreenReview() {
       <header className="sticky top-0 z-50 border-b border-[#d9dde3] bg-white px-4 py-3 sm:px-6">
         <div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2"><Layers3 className="h-5 w-5 text-[#ff000d]"/><div><h1 className="text-[14px] font-bold">CruiXe · 20-screen Figma batch</h1><p className="text-[11px] text-[#667080]">Internal staging design QA · not a live booking flow</p></div></div>
-          <div className="flex gap-2"><button type="button" onClick={()=>show(index-1)} disabled={index===0} className="flex min-h-11 items-center gap-1 rounded-xl border px-3 disabled:opacity-30"><ChevronLeft size={16}/> Previous</button><button type="button" onClick={()=>show(index+1)} disabled={index===19} className="flex min-h-11 items-center gap-1 rounded-xl bg-[#ff000d] px-3 text-white disabled:opacity-30">Next <ChevronRight size={16}/></button></div>
+          <div className="flex gap-2"><button type="button" onClick={()=>show(index-1)} disabled={index===0} className="flex min-h-11 items-center gap-1 rounded-xl border px-3 disabled:opacity-30"><ChevronLeft size={16}/> Previous</button><button type="button" onClick={()=>show(index+1)} disabled={index===JOURNEY_BATCH_20.length-1} className="flex min-h-11 items-center gap-1 rounded-xl bg-[#ff000d] px-3 text-white disabled:opacity-30">Next <ChevronRight size={16}/></button></div>
         </div>
       </header>
       <div className="mx-auto grid max-w-[1100px] gap-5 px-3 py-5 md:grid-cols-[260px_minmax(0,1fr)]">

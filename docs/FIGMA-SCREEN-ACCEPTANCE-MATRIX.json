@@ -4516,18 +4516,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/Batch20JourneyScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/journeyBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/figma-20?screen=matching-confirmed",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -4591,16 +4594,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderBookingReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-booking?screen=map-pin",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Map art is a placeholder in map states. Live location and fare workflow verification and rendered comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -4614,16 +4620,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderBookingReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-booking?screen=route-ready",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Map art is a placeholder in map states. Live location and fare workflow verification and rendered comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -4637,16 +4646,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderBookingReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-booking?screen=destination",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Map art is a placeholder in map states. Live location and fare workflow verification and rendered comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -4660,16 +4672,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderBookingReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-booking?screen=pickup",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Map art is a placeholder in map states. Live location and fare workflow verification and rendered comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -4708,16 +4723,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderBookingReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-booking?screen=adjust-fare",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Map art is a placeholder in map states. Live location and fare workflow verification and rendered comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -4731,16 +4749,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderBookingReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-booking?screen=searching-5",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Map art is a placeholder in map states. Live location and fare workflow verification and rendered comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -4754,16 +4775,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderBookingReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-booking?screen=searching-7",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Map art is a placeholder in map states. Live location and fare workflow verification and rendered comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -4777,18 +4801,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/Batch20JourneyScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/journeyBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/figma-20?screen=matching-offers-expired",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -4965,16 +4992,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderFeedbackReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-feedback?screen=cancel-confirm",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data preview with a map placeholder. Figma visual acceptance and live cancellation or rating checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -4988,16 +5018,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderFeedbackReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-feedback?screen=cancel-distance",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data preview with a map placeholder. Figma visual acceptance and live cancellation or rating checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5011,16 +5044,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderFeedbackReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-feedback?screen=cancel-other",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data preview with a map placeholder. Figma visual acceptance and live cancellation or rating checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5034,16 +5070,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderFeedbackReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-feedback?screen=cancel-complete",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data preview with a map placeholder. Figma visual acceptance and live cancellation or rating checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5057,16 +5096,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderFeedbackReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-feedback?screen=cancel-wait",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data preview with a map placeholder. Figma visual acceptance and live cancellation or rating checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5080,16 +5122,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderFeedbackReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-feedback?screen=rating-1",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data preview with a map placeholder. Figma visual acceptance and live cancellation or rating checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5103,16 +5148,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderFeedbackReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-feedback?screen=rating-2",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data preview with a map placeholder. Figma visual acceptance and live cancellation or rating checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5126,16 +5174,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderFeedbackReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-feedback?screen=rating-3",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data preview with a map placeholder. Figma visual acceptance and live cancellation or rating checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5149,16 +5200,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderFeedbackReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-feedback?screen=rating-4",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data preview with a map placeholder. Figma visual acceptance and live cancellation or rating checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5172,16 +5226,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderFeedbackReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-feedback?screen=rating-5",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data preview with a map placeholder. Figma visual acceptance and live cancellation or rating checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5195,16 +5252,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderFeedbackReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-feedback?screen=rating-written",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data preview with a map placeholder. Figma visual acceptance and live cancellation or rating checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5406,18 +5466,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/Batch20JourneyScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/journeyBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/figma-20?screen=shared-match",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5431,18 +5494,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/Batch20JourneyScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/journeyBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/figma-20?screen=shared-rider-joining",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5510,18 +5576,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/Batch20JourneyScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/journeyBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/figma-20?screen=shared-in-progress-a",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5535,18 +5604,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/Batch20JourneyScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/journeyBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/figma-20?screen=shared-in-progress-b",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5704,18 +5776,21 @@
         "width": "400",
         "height": "1070"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/Batch20JourneyScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/journeyBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/figma-20?screen=guest-share-link",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5729,18 +5804,21 @@
         "width": "400",
         "height": "1040"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/Batch20JourneyScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/journeyBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/figma-20?screen=guest-booker-status",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5754,18 +5832,21 @@
         "width": "400",
         "height": "1095"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/Batch20JourneyScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/journeyBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/figma-20?screen=guest-passenger-connected",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5779,18 +5860,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/Batch20JourneyScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/journeyBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/figma-20?screen=guest-invitation",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5804,18 +5888,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/Batch20JourneyScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/journeyBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/figma-20?screen=guest-invalid-link",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5910,18 +5997,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/Batch20JourneyScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/journeyBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/figma-20?screen=schedule-upcoming",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5935,18 +6025,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/Batch20JourneyScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/journeyBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/figma-20?screen=schedule-manage",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -5983,18 +6076,21 @@
         "width": "400",
         "height": "965"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=rider-pickup",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6008,18 +6104,21 @@
         "width": "400",
         "height": "961"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=rider-tracking",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6033,18 +6132,21 @@
         "width": "400",
         "height": "920"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=rider-delivered",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6081,18 +6183,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=rider-resolution",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6106,18 +6211,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=recipient-live",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6131,18 +6239,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=rider-redelivery-review",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6156,18 +6267,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=rider-return-review",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6229,18 +6343,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=recipient-verify",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6373,18 +6490,21 @@
         "width": "400",
         "height": "928"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=rider-issue",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing shared staging gallery layout. Frame-by-frame Figma comparison and live service checks pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -7134,16 +7254,20 @@
         "width": "400",
         "height": "1130"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/ride/TrustedContactSheet.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/safety",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/TrustedContactSheet.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Entry condition on the Safety page: Open the Add or Edit contact view.",
+        "Authenticated staging and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -7341,16 +7465,20 @@
         "width": "400",
         "height": "1090"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/ride/TrustedContactSheet.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/safety",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/TrustedContactSheet.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Entry condition on the Safety page: Open Trusted Contacts.",
+        "Authenticated staging and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -7364,16 +7492,20 @@
         "width": "400",
         "height": "1130"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/ride/TrustedContactSheet.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/safety",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/TrustedContactSheet.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Entry condition on the Safety page: Choose Remove on an existing contact.",
+        "Authenticated staging and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -8054,16 +8186,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderBookingReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-booking?screen=adjust-5",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Map art is a placeholder in map states. Live location and fare workflow verification and rendered comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -8077,16 +8212,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderBookingReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-booking?screen=no-drivers-5",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Map art is a placeholder in map states. Live location and fare workflow verification and rendered comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -8100,16 +8238,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderBookingReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-booking?screen=adjust-7",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Map art is a placeholder in map states. Live location and fare workflow verification and rendered comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -8123,16 +8264,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderBookingReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-booking?screen=no-drivers-7",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Map art is a placeholder in map states. Live location and fare workflow verification and rendered comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
