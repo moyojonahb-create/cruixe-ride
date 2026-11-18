@@ -1,3 +1,4 @@
+import DriverAuthFrame, { driverAuthInput, driverAuthSubmit } from '@/components/auth/DriverAuthFrame';
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -17,6 +18,7 @@ const Auth = () => {
   const destination = authDestination(searchParams.get('next'));
   const defaultMode = searchParams.get('mode') === 'signup' ? 'signup' : 'login';
   const [mode, setMode] = useState<'login' | 'signup'>(defaultMode);
+  const driverSignIn = mode === 'login' && (destination.split(/[?#]/)[0] === '/driver' || destination.startsWith('/driver/'));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user, loading, signIn, signUp } = useAuth();
   const navigate = useNavigate();
@@ -210,18 +212,18 @@ const Auth = () => {
     );
   }
 
-  return (
-    <RiderAuthFrame variant={mode}>
-      <div className="mb-5 space-y-1.5">
+  const content = (
+    <>
+      {!driverSignIn && <div className="mb-5 space-y-1.5">
         <h1 className="text-[25px] font-bold leading-tight">
           {mode === 'login' ? 'Welcome to CruiXe' : 'Create CruiXe Account'}
         </h1>
         <p className="text-[13.5px] font-semibold text-[#6b707d]">
           {mode === 'login' ? 'Book rides safely and confidently.' : 'Join CruiXe and book your first ride.'}
         </p>
-      </div>
+      </div>}
 
-      {mode === 'login' && (
+      {mode === 'login' && !driverSignIn && (
         <nav aria-label="Account access" className="mb-5 grid grid-cols-2 gap-2">
           <span aria-current="page" className="grid min-h-11 place-items-center rounded-xl bg-[#ff000d] text-sm font-semibold text-white shadow-md">
             Sign in
@@ -233,16 +235,16 @@ const Auth = () => {
       )}
 
       {mode === 'login' ? (
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="mt-2 space-y-4">
           {loginError && (
             <div role="alert" className="rounded-xl bg-destructive/10 border border-destructive/30 px-4 py-3 text-sm text-destructive font-medium animate-in fade-in slide-in-from-top-2 duration-300">
               ⚠️ {loginError}
             </div>
           )}
           <div className="space-y-2">
-            <Label htmlFor="login-email" className="sr-only">Email, nickname or phone</Label>
+            <Label htmlFor="login-email" className={driverSignIn ? undefined : "sr-only"}>Email, nickname or phone</Label>
             <div className="relative">
-              <AuthFieldIcon name="email" />
+              {!driverSignIn && <AuthFieldIcon name="email" />}
               <Input
                 id="login-email"
                 type="text"
@@ -250,14 +252,14 @@ const Auth = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="username"
-                className={riderAuthInput}
+                className={driverSignIn ? driverAuthInput : riderAuthInput}
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="login-password" className="sr-only">Password</Label>
+            <Label htmlFor="login-password" className={driverSignIn ? undefined : "sr-only"}>Password</Label>
             <div className="relative">
-              <AuthFieldIcon name="password" />
+              {!driverSignIn && <AuthFieldIcon name="password" />}
               <Input
                 id="login-password"
                 type={showPassword ? 'text' : 'password'}
@@ -265,7 +267,7 @@ const Auth = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
-                className={`${riderAuthInput} pr-12`}
+                className={`${driverSignIn ? driverAuthInput : riderAuthInput} pr-12`}
               />
               <button
                 type="button"
@@ -284,10 +286,10 @@ const Auth = () => {
             </button>
           </div>
 
-          <Button type="submit" className={riderAuthSubmit} disabled={isSubmitting}>
+          <Button type="submit" className={driverSignIn ? driverAuthSubmit : riderAuthSubmit} disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 size-4 animate-spin" />}
-            Continue
-            <AuthForwardIcon />
+            {driverSignIn ? 'Sign in' : 'Continue'}
+            {!driverSignIn && <AuthForwardIcon />}
           </Button>
         </form>
       ) : (
@@ -401,7 +403,7 @@ const Auth = () => {
         {mode === 'login' ? (
           <p>
             Don’t have an account?{' '}
-            <Link to={authEntryPath('/signup', destination)} className="inline-flex min-h-11 items-center font-bold">Create One</Link>
+            <Link to={authEntryPath('/signup', destination)} className="inline-flex min-h-11 items-center font-bold">{driverSignIn ? 'Create driver account' : 'Create One'}</Link>
           </p>
         ) : (
           <p>
@@ -410,8 +412,11 @@ const Auth = () => {
           </p>
         )}
       </div>
-    </RiderAuthFrame>
+    </>
   );
+  return driverSignIn
+    ? <DriverAuthFrame mode="signin" onBack={() => navigate('/driver')} busy={isSubmitting}>{content}</DriverAuthFrame>
+    : <RiderAuthFrame variant={mode}>{content}</RiderAuthFrame>;
 };
 
 export default Auth;

@@ -13,20 +13,22 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/DriverModeLanding.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "route_or_entry_point": "/driver",
+      "backend_dependency": "Existing Driver account, application and document contracts",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Welcome routes to the real Driver account and application entry points.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Related regression coverage. Final acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 02 \u00b7 Sign In",
@@ -36,20 +38,23 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/Auth.tsx",
+        "src/components/auth/DriverAuthFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "route_or_entry_point": "/auth?next=%2Fdriver",
+      "backend_dependency": "Existing Driver account, application and document contracts",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sign-in uses the existing identity resolution, password reset, and provider callbacks.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Related regression coverage. Final acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 03 \u00b7 Create Account",
@@ -59,20 +64,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/Signup.tsx",
+        "src/components/auth/DriverAuthFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/signup?next=%2Fdriver%2Fregister",
+      "backend_dependency": "Existing Driver account, application and document contracts",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/Signup.verification.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Driver signup keeps the supported full name, nickname and optional email fields. DOB and sex require a verified persistence contract.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Related regression coverage. Final acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 03B \u00b7 Account Security",
@@ -196,19 +206,22 @@
         "src/components/driver/DriverRegistrationWizard.tsx"
       ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register; DriverRegistrationPage \u2192 DriverRegistrationWizard; application status via /driver/application",
-      "backend_dependency": "useAuth; businessApi.createDriverApplication/createDriverDocument; staging Auth and authorized document storage",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/register step 1",
+      "backend_dependency": "Existing Driver account, application and document contracts",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverRegistrationSubmission.test.tsx",
+        "src/test/DriverFileUploadBox.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The existing selfie and personal information fields remain available.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/DriverRegistrationWizard.tsx",
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Related regression coverage. Final acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 06 \u00b7 Verify your identity",
@@ -218,21 +231,26 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverRegistrationWizard.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register; DriverRegistrationPage \u2192 DriverRegistrationWizard; application status via /driver/application",
-      "backend_dependency": "useAuth; businessApi.createDriverApplication/createDriverDocument; staging Auth and authorized document storage",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/register step 2",
+      "backend_dependency": "Existing Driver account, application and document contracts",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverRegistrationSubmission.test.tsx",
+        "src/test/DriverFileUploadBox.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing ID and selfie-with-ID upload types. A separate back-side ID contract remains pending.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/DriverRegistrationWizard.tsx",
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Related regression coverage. Final acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 07 \u00b7 Driver's licence",
@@ -242,21 +260,26 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverRegistrationWizard.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register; DriverRegistrationPage \u2192 DriverRegistrationWizard; application status via /driver/application",
-      "backend_dependency": "useAuth; businessApi.createDriverApplication/createDriverDocument; staging Auth and authorized document storage",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/register step 3",
+      "backend_dependency": "Existing Driver account, application and document contracts",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverRegistrationSubmission.test.tsx",
+        "src/test/DriverFileUploadBox.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing licence fields and front/back upload types. Structured licence data persistence remains pending.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/DriverRegistrationWizard.tsx",
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Related regression coverage. Final acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 08 \u00b7 About your vehicle",
@@ -270,19 +293,22 @@
         "src/components/driver/DriverRegistrationWizard.tsx"
       ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register; DriverRegistrationPage \u2192 DriverRegistrationWizard; application status via /driver/application",
-      "backend_dependency": "useAuth; businessApi.createDriverApplication/createDriverDocument; staging Auth and authorized document storage",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/register step 4",
+      "backend_dependency": "Existing Driver account, application and document contracts",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverRegistrationSubmission.test.tsx",
+        "src/test/DriverFileUploadBox.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses existing vehicle form fields and application upsert.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/DriverRegistrationWizard.tsx",
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Related regression coverage. Final acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 09 \u00b7 Vehicle documents",
@@ -292,21 +318,26 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverRegistrationWizard.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register; DriverRegistrationPage \u2192 DriverRegistrationWizard; application status via /driver/application",
-      "backend_dependency": "useAuth; businessApi.createDriverApplication/createDriverDocument; staging Auth and authorized document storage",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/register step 5",
+      "backend_dependency": "Existing Driver account, application and document contracts",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverRegistrationSubmission.test.tsx",
+        "src/test/DriverFileUploadBox.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Insurance uses the existing document contract. Additional document types require end-to-end verification.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/DriverRegistrationWizard.tsx",
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Related regression coverage. Final acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 10 \u00b7 Photograph your car",
@@ -316,21 +347,26 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverRegistrationWizard.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register; DriverRegistrationPage \u2192 DriverRegistrationWizard; application status via /driver/application",
-      "backend_dependency": "useAuth; businessApi.createDriverApplication/createDriverDocument; staging Auth and authorized document storage",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/register step 6",
+      "backend_dependency": "Existing Driver account, application and document contracts",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverRegistrationSubmission.test.tsx",
+        "src/test/DriverFileUploadBox.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing vehicle photo slot. Separate multi-angle photo slots require a backend contract.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/DriverRegistrationWizard.tsx",
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Related regression coverage. Final acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 11 \u00b7 Review your details",
@@ -340,21 +376,26 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverRegistrationWizard.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "/driver/register; DriverRegistrationPage \u2192 DriverRegistrationWizard; application status via /driver/application",
-      "backend_dependency": "useAuth; businessApi.createDriverApplication/createDriverDocument; staging Auth and authorized document storage",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/register step 7",
+      "backend_dependency": "Existing Driver account, application and document contracts",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverRegistrationSubmission.test.tsx",
+        "src/test/DriverFileUploadBox.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Displays real entered details and submits through the existing application workflow.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
       "candidate_component_without_id": "src/components/driver/DriverRegistrationWizard.tsx",
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Related regression coverage. Final acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 12 \u00b7 Application received",

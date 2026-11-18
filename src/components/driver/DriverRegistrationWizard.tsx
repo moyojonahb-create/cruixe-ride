@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { Loader2, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -43,6 +43,16 @@ type PersonalData = z.infer<typeof personalSchema>;
 type LicenseData = z.infer<typeof licenseSchema>;
 type VehicleData = z.infer<typeof vehicleSchema>;
 
+const registrationFrames = [
+  { id: '1101:105', section: 'IDENTITY VERIFICATION · 1 OF 6', next: 'Continue to ID', note: 'Only your approved profile photo is shown to riders.' },
+  { id: '1101:170', section: 'IDENTITY VERIFICATION · 2 OF 6', next: 'Continue to licence', note: 'Your ID images are private.' },
+  { id: '1101:240', section: 'DRIVER QUALIFICATION · 3 OF 6', next: 'Continue to vehicle', note: 'Use your legal details from your identity document.' },
+  { id: '1101:315', section: 'VEHICLE DETAILS · 4 OF 6', next: 'Continue to documents', note: 'Your vehicle details must match its documents.' },
+  { id: '1101:391', section: 'VEHICLE VERIFICATION · 5 OF 6', next: 'Continue to car photos', note: 'We’ll review document requirements for your location.' },
+  { id: '1101:466', section: 'VEHICLE PHOTOS · 6 OF 6', next: 'Review application', note: 'Photos should be recent, clear and unedited.' },
+  { id: '1101:546', section: 'FINAL REVIEW', next: 'Submit for review', note: 'Our verification team will review your documents.' },
+] as const;
+
 interface DriverRegistrationWizardProps {
   onSuccess: () => void;
   onClose?: () => void;
@@ -54,9 +64,10 @@ interface FileUploadBoxProps {
   label: string;
   file: File | null;
   onSelect: (file: File) => void;
+  hint?: string;
 }
 
-export function FileUploadBox({ label, file, onSelect }: FileUploadBoxProps) {
+export function FileUploadBox({ label, file, onSelect, hint }: FileUploadBoxProps) {
   const ref = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   useEffect(() => {
@@ -69,26 +80,21 @@ export function FileUploadBox({ label, file, onSelect }: FileUploadBoxProps) {
     return () => URL.revokeObjectURL(url);
   }, [file]);
   return (
-    <div className="flex min-w-0 flex-1 flex-col items-center gap-2">
+    <div className="min-w-0">
       <button
         type="button"
         aria-label={`Choose ${label}`}
         onClick={() => ref.current?.click()}
-        className="flex h-[86px] w-full min-w-0 items-center justify-center overflow-hidden rounded-[15px] border border-[#e2e6ed] bg-[#f7f8fa] transition-colors hover:border-[#ff000d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#ff000d]"
+        className="flex min-h-20 w-full min-w-0 items-center gap-4 rounded-[15px] border border-[#e2e6ed] bg-white p-3 text-left hover:border-[#ff000d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#ff000d]"
       >
-        {previewUrl ? (
-          <img
-            src={previewUrl}
-            alt={label}
-            className="h-full w-full object-cover"
-          />
-        ) : file ? (
-          <span className="max-w-full truncate px-2 text-xs">{file.name}</span>
-        ) : (
-          <Plus className="h-7 w-7 text-[#ff000d]" />
-        )}
+        <span className="grid size-[42px] shrink-0 place-items-center overflow-hidden rounded-xl bg-[#f4f5f7]">
+          {previewUrl ? <img src={previewUrl} alt={label} className="size-full object-cover" /> : <Plus className="size-5 text-[#ff000d]" />}
+        </span>
+        <span className="min-w-0">
+          <span className="block text-[13px] font-semibold">{label}</span>
+          {(file || hint) && <span className="mt-2 block break-words text-[11px] text-[#667080]">{file?.name ?? hint}</span>}
+        </span>
       </button>
-      <span className="max-w-full text-center text-[11px] font-medium leading-4 text-[#667080]">{label}</span>
       <input
         ref={ref}
         type="file"
@@ -286,20 +292,19 @@ export default function DriverRegistrationWizard({ onSuccess, onClose, previewSt
     "About your vehicle", "Vehicle documents", "Photograph your car", "Review your details",
   ];
 
+  const frame = registrationFrames[step - 1];
   return (
-    <div className="min-h-[100dvh] bg-[#fdfdfd] font-['Poppins',system-ui,sans-serif] text-[#1f2129]">
+    <div data-figma-node={frame.id} className="min-h-[100dvh] bg-[#fdfdfd] font-['Poppins',system-ui,sans-serif] text-[#1f2129]">
       <div className="mx-auto flex min-h-[100dvh] w-full max-w-[440px] flex-col bg-white">
-        {/* Figma Driver onboarding frame family 1101:105–1101:315.
-            Preserve existing form schema, progression, uploads and submission calls. */}
         <header className="relative h-[246px] shrink-0 bg-[#1f2129] px-6 pt-[max(2rem,env(safe-area-inset-top))] text-white">
           <div className="flex items-start justify-between gap-3">
             <button type="button" aria-label={step === 1 ? 'Close registration' : 'Previous registration step'}
               onClick={step === 1 ? onClose : handleBack}
               className="grid h-11 w-11 place-items-center rounded-full bg-white text-[#1f2129] shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#ffd11c]">
-              <ChevronLeft className="h-6 w-6" />
+              <img src="/brand/driver-auth/back.svg" alt="" />
             </button>
-            <div className="rounded-full bg-white px-4 py-3 text-[10px] font-bold tracking-[0.08em] text-[#1f2129]">
-              DRIVER CHECK
+            <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-[10px] font-bold text-[#1f2129]">
+              <img src="/brand/driver-auth/shield.svg" alt="" /> DRIVER CHECK
             </div>
           </div>
           <div className="mt-9">
@@ -308,10 +313,10 @@ export default function DriverRegistrationWizard({ onSuccess, onClose, previewSt
           </div>
         </header>
 
-        <div className="relative z-10 -mt-[29px] h-[55px] shrink-0 overflow-hidden" aria-hidden="true">
-          <div className="absolute inset-x-0 top-0 h-[46px] rounded-t-[52%] bg-[#ff000d]" />
-          <div className="absolute inset-x-0 top-[19px] h-[50px] rounded-t-[52%] bg-white" />
-          <div className="absolute left-1/2 top-[13px] h-[5px] w-[54px] -translate-x-1/2 rounded-full bg-white" />
+        <div className="relative z-10 -mt-[29px] h-[63px] shrink-0 overflow-hidden" aria-hidden="true">
+          <div className="absolute inset-x-0 top-0 h-[66px] bg-[url('/brand/driver-auth/red-wave.svg')] bg-top bg-no-repeat [background-size:100%_auto]" />
+          <div className="absolute inset-x-0 top-[21px] h-[46px] bg-[url('/brand/driver-auth/paper.svg')] bg-top bg-no-repeat [background-size:100%_auto]" />
+          <div className="absolute left-1/2 top-[11px] h-[5px] w-[54px] -translate-x-1/2 rounded-full bg-white" />
         </div>
 
         <div className="px-[22px] pb-3">
@@ -319,7 +324,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose, previewSt
           <p className="mt-1 text-[12px] leading-[18px] text-[#667080]">{stepDescriptions[step - 1]}</p>
           <div className="mt-5 flex items-center gap-2">
             <span className="h-1 w-[34px] rounded-full bg-gradient-to-r from-[#ff000d] to-[#ffd11c]" />
-            <span className="text-[10px] font-semibold uppercase tracking-wide">{step === TOTAL_STEPS ? 'FINAL REVIEW' : `DRIVER VERIFICATION · ${step} OF ${TOTAL_STEPS - 1}`}</span>
+            <span className="text-[10px] font-semibold uppercase tracking-wide">{frame.section}</span>
           </div>
         </div>
 
@@ -330,7 +335,7 @@ export default function DriverRegistrationWizard({ onSuccess, onClose, previewSt
         {step === 1 && (
           <Form {...personalForm}>
             <form className="space-y-4">
-              <FileUploadBox label="Front-facing selfie" file={personalPhoto} onSelect={setPersonalPhoto} />
+              <FileUploadBox label="Front-facing selfie" hint="Take or upload a clear photo of your face" file={personalPhoto} onSelect={setPersonalPhoto} />
               <button type="button" onClick={() => setCaptureGuide('profile')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Profile</button>
 
               <FormField control={personalForm.control} name="firstName" render={({ field }) => (
@@ -383,9 +388,9 @@ export default function DriverRegistrationWizard({ onSuccess, onClose, previewSt
         {/* Step 2: Identity document */}
         {step === 2 && (
           <div className="space-y-4">
-            <div className="flex gap-4">
-              <FileUploadBox label="Official ID document" file={idCard} onSelect={setIdCard} />
-              <FileUploadBox label="Selfie with ID" file={selfieWithId} onSelect={setSelfieWithId} />
+            <div className="grid gap-3">
+              <FileUploadBox label="Official ID document" hint="Keep all corners and details visible" file={idCard} onSelect={setIdCard} />
+              <FileUploadBox label="Selfie with ID" hint="Keep your face and ID readable" file={selfieWithId} onSelect={setSelfieWithId} />
             </div>
             <button type="button" onClick={() => setCaptureGuide('identity')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Identity document</button>
           </div>
@@ -395,9 +400,9 @@ export default function DriverRegistrationWizard({ onSuccess, onClose, previewSt
         {step === 3 && (
           <Form {...licenseForm}>
             <form className="space-y-4">
-              <div className="flex gap-4">
-                <FileUploadBox label="Driver license" file={licenseFront} onSelect={setLicenseFront} />
-                <FileUploadBox label="Back side of license" file={licenseBack} onSelect={setLicenseBack} />
+              <div className="grid gap-3">
+                <FileUploadBox label="Driver license" hint="Upload a sharp photo" file={licenseFront} onSelect={setLicenseFront} />
+                <FileUploadBox label="Back side of license" hint="Keep all details readable" file={licenseBack} onSelect={setLicenseBack} />
               </div>
               <button type="button" onClick={() => setCaptureGuide('licence')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Licence</button>
 
@@ -497,11 +502,10 @@ export default function DriverRegistrationWizard({ onSuccess, onClose, previewSt
         {/* Step 5: Existing insurance upload — preserve the approved document API contract. */}
         {step === 5 && (
           <div className="space-y-4">
-            <FileUploadBox label="Vehicle insurance" file={insuranceDoc} onSelect={setInsuranceDoc} />
+            <FileUploadBox label="Vehicle insurance" hint="Current policy or cover note" file={insuranceDoc} onSelect={setInsuranceDoc} />
             <button type="button" onClick={() => setCaptureGuide('documents')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Vehicle documents</button>
             <p className="rounded-2xl border border-[#e2e6ed] bg-[#f7f8fa] px-4 py-3 text-[12px] leading-5 text-[#667080]">
-              Upload a current insurance disc or cover note. Other vehicle document categories
-              will be added once their backend verification requirements are confirmed.
+              Upload a current insurance disc or cover note.
             </p>
           </div>
         )}
@@ -509,11 +513,10 @@ export default function DriverRegistrationWizard({ onSuccess, onClose, previewSt
         {/* Step 6: Actual vehicle photo, not a sample image. */}
         {step === 6 && (
           <div className="space-y-4">
-            <FileUploadBox label="Vehicle photo" file={vehiclePhoto} onSelect={setVehiclePhoto} />
+            <FileUploadBox label="Vehicle photo" hint="Keep the body and number plate visible" file={vehiclePhoto} onSelect={setVehiclePhoto} />
             <button type="button" onClick={() => setCaptureGuide('vehicle')} className="min-h-11 text-left text-[12px] font-semibold text-[#ff000d]">Photo tips · Vehicle</button>
             <p className="rounded-2xl border border-[#e2e6ed] bg-[#f7f8fa] px-4 py-3 text-[12px] leading-5 text-[#667080]">
-              Make the number plate and vehicle body clearly visible. Additional front,
-              rear and interior photo fields need a matching verified backend contract.
+              Make the number plate and vehicle body clearly visible.
             </p>
           </div>
         )}
@@ -542,50 +545,15 @@ export default function DriverRegistrationWizard({ onSuccess, onClose, previewSt
         )}
       </fieldset>
 
-      {/* Footer with step indicator and nav */}
-      <footer className="sticky bottom-0 border-t border-[#e2e6ed] bg-white px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">
-        {/* Progress bar */}
-        <div className="flex items-center gap-1 mb-4">
-          {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
-            <div
-              key={i}
-              className={`h-1 flex-1 rounded-full transition-colors ${
-                i < step ? 'bg-[#ff000d]' : i === step ? 'bg-[#ffd11c]' : 'bg-[#e2e6ed]'
-              }`}
-            />
-          ))}
-        </div>
-
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-[#667080]">{step} of {TOTAL_STEPS}</span>
-
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleBack}
-              disabled={step === 1 || isSubmitting || isNavigating}
-              className="h-[54px] w-[54px] rounded-[18px] border-[#ff000d] bg-white text-[#ff000d]"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </Button>
-
-            <Button
-              onClick={handleNext}
-              disabled={isSubmitting || isNavigating}
-              className="h-[55px] min-w-[170px] rounded-[18px] bg-[#ff000d] px-6 text-[15px] font-semibold text-white hover:bg-[#eb0010]"
-            >
-              {isSubmitting ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  {step === TOTAL_STEPS ? (preview ? 'Preview only' : 'Submit') : 'Next'}
-                  <ChevronRight className="w-5 h-5 ml-1" />
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
+      <footer className="sticky bottom-0 bg-white px-5 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-3">
+        <p className="mb-4 px-0.5 text-[11px] text-[#667080]">{frame.note}</p>
+        <Button
+          onClick={handleNext}
+          disabled={preview || isSubmitting || isNavigating}
+          className="h-[55px] w-full rounded-[18px] bg-[#ff000d] text-[15px] font-semibold text-white hover:bg-[#eb0010]"
+        >
+          {isSubmitting ? <Loader2 className="size-5 animate-spin" aria-label="Submitting application" /> : preview ? 'Preview only' : frame.next}
+        </Button>
       </footer>
       </div>
     </div>

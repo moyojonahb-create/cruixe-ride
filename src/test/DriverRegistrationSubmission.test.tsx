@@ -30,12 +30,12 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 
 async function advanceToReview() {
-  for (let step = 0; step < 6; step++) {
-    const next = screen.getByRole('button', { name: 'Next' });
+  for (const name of ['Continue to ID', 'Continue to licence', 'Continue to vehicle', 'Continue to documents', 'Continue to car photos', 'Review application']) {
+    const next = await screen.findByRole('button', { name });
     fireEvent.click(next);
     await waitFor(() => expect(next).not.toBeDisabled());
   }
-  await screen.findByRole('button', { name: 'Submit' });
+  await screen.findByRole('button', { name: 'Submit for review' });
 }
 
 describe('Driver registration backend submission', () => {
@@ -53,7 +53,7 @@ describe('Driver registration backend submission', () => {
     const onSuccess = vi.fn();
     render(<DriverRegistrationWizard onSuccess={onSuccess} />);
     await advanceToReview();
-    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Submit for review' }));
     await waitFor(() => expect(onSuccess).toHaveBeenCalledOnce());
     expect(mocks.upsert).toHaveBeenCalledWith({ profile: { full_name: 'Tadiwa Moyo', gender: 'male' }, driver: { vehicle_type: 'economy', vehicle_make: 'Toyota', vehicle_model: 'Aqua', vehicle_year: 2020, vehicle_color: 'White', plate_number: 'ABC123', gender: 'male' } });
     expect(mocks.invalidate).toHaveBeenCalledWith({ queryKey: ['driver-profile', 'authenticated-driver'] });
@@ -64,7 +64,7 @@ describe('Driver registration backend submission', () => {
     const { container } = render(<DriverRegistrationWizard onSuccess={vi.fn()} />);
     fireEvent.change(container.querySelector('input[type="file"]')!, { target: { files: [new File(['image'], 'portrait.jpg', { type: 'image/jpeg' })] } });
     await advanceToReview();
-    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Submit for review' }));
     await waitFor(() => expect(mocks.navigate).toHaveBeenCalledWith('/driver/application'));
     expect(mocks.document).not.toHaveBeenCalled();
     expect(mocks.toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Application submitted with warnings', variant: 'destructive' }));

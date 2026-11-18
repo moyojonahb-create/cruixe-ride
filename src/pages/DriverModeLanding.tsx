@@ -27,7 +27,7 @@ export default function DriverModeLanding() {
   };
 
   return (
-    <main className="min-h-[100dvh] bg-[#fdfdfd] font-['Poppins',system-ui,sans-serif] text-[#1f2129]">
+    <main data-figma-node="1063:103" className="min-h-[100dvh] bg-[#fdfdfd] font-['Poppins',system-ui,sans-serif] text-[#1f2129]">
       <div className="mx-auto flex min-h-[100dvh] w-full max-w-[440px] flex-col">
         <div className="relative h-[229px] shrink-0 overflow-hidden">
           <img src={`${brand}/hero.webp`} alt="" fetchPriority="high" className="h-full w-full object-cover object-[center_40%]" />

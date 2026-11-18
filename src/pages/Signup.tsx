@@ -49,13 +49,6 @@ const Signup = () => {
   const destinationPath = next.split(/[?#]/)[0];
   const isDriverSignup = destinationPath === '/driver' || destinationPath.startsWith('/driver/');
   const [step, setStep] = useState<SignupStep>('details');
-  const detailsHeading = useRef<HTMLHeadingElement>(null);
-  useEffect(() => {
-    if (isDriverSignup && step === 'details') {
-      window.scrollTo({ top: 0, behavior: 'auto' });
-      detailsHeading.current?.focus({ preventScroll: true });
-    }
-  }, [isDriverSignup, step]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [signupCompletionError, setSignupCompletionError] = useState<string | null>(null);
   const [showVerificationMethods, setShowVerificationMethods] = useState(false);
@@ -460,12 +453,12 @@ const Signup = () => {
     );
   }
 
-  return (
-    <RiderAuthFrame variant="signup">
-      <div className="mb-4 space-y-1.5">
-        <h1 ref={detailsHeading} tabIndex={-1} className="outline-none text-[25px] font-bold leading-tight">Create CruiXe Account</h1>
+  const detailsContent = (
+    <>
+      {!isDriverSignup && <div className="mb-4 space-y-1.5">
+        <h1 className="outline-none text-[25px] font-bold leading-tight">Create CruiXe Account</h1>
         <p className="text-[13.5px] font-semibold text-[#6b707d]">{isDriverSignup ? 'Start your driver registration.' : 'Join CruiXe and book your first ride.'}</p>
-      </div>
+      </div>}
 
       <Form {...form}>
         <form onSubmit={isDriverSignup ? async (event) => {
@@ -476,8 +469,8 @@ const Signup = () => {
             <FormItem>
               <FormLabel className="sr-only">Full name</FormLabel>
               <div className="relative">
-                <AuthFieldIcon name="name" />
-                <FormControl><Input placeholder="Full name" autoComplete="name" className={riderAuthInput} {...field} /></FormControl>
+                {!isDriverSignup && <AuthFieldIcon name="name" />}
+                <FormControl><Input placeholder="Full name" autoComplete="name" className={isDriverSignup ? driverAuthInput : riderAuthInput} {...field} /></FormControl>
               </div>
               <FormMessage />
             </FormItem>
@@ -489,7 +482,7 @@ const Signup = () => {
                 Nickname <span className="text-muted-foreground font-normal">(optional)</span>
               </FormLabel>
               <FormControl>
-                <Input placeholder="e.g. jonahb" autoComplete="username" className={riderAuthInput} {...field} />
+                <Input placeholder="e.g. jonahb" autoComplete="username" className={isDriverSignup ? driverAuthInput : riderAuthInput} {...field} />
               </FormControl>
               <p className="text-xs text-muted-foreground">This is the name shown in the app. You can also sign in with it.</p>
               <FormMessage />
@@ -501,9 +494,9 @@ const Signup = () => {
             <FormItem>
               <FormLabel className="sr-only">Email address (optional)</FormLabel>
               <div className="relative">
-                <AuthFieldIcon name="email" />
+                {!isDriverSignup && <AuthFieldIcon name="email" />}
                 <FormControl>
-                  <Input type="email" inputMode="email" autoComplete="email" placeholder="Email address (optional)" className={riderAuthInput} {...field} />
+                  <Input type="email" inputMode="email" autoComplete="email" placeholder="Email address (optional)" className={isDriverSignup ? driverAuthInput : riderAuthInput} {...field} />
                 </FormControl>
               </div>
               <FormMessage />
@@ -551,9 +544,9 @@ const Signup = () => {
 
           </>}
 
-          <Button type="submit" className={riderAuthSubmit} disabled={isSubmitting}>
+          <Button type="submit" className={isDriverSignup ? driverAuthSubmit : riderAuthSubmit} disabled={isSubmitting}>
             {isSubmitting ? (<><Loader2 className="h-4 w-4 animate-spin mr-2" /> Sending code...</>) : isDriverSignup ? 'Continue' : 'Create Account'}
-            <AuthForwardIcon />
+            {!isDriverSignup && <AuthForwardIcon />}
           </Button>
         </form>
       </Form>
@@ -573,8 +566,11 @@ const Signup = () => {
       <p className="text-center text-xs text-[#6b707d]">
         By continuing you agree to CruiXe’s <Link to="/terms" className="underline">terms of use</Link>.
       </p>
-    </RiderAuthFrame>
+    </>
   );
+  return isDriverSignup
+    ? <DriverAuthFrame mode="details" onBack={() => navigate('/driver')} busy={isSubmitting}>{detailsContent}</DriverAuthFrame>
+    : <RiderAuthFrame variant="signup">{detailsContent}</RiderAuthFrame>;
 };
 
 export default Signup;
