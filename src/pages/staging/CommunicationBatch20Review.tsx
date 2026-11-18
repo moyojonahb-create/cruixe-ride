@@ -1,24 +1,26 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Layers3, ShieldAlert } from 'lucide-react';
 import { COMMUNICATION_BATCH_20 } from '@/lib/communicationBatch20Screens';
 import CommunicationBatchScreen from '@/components/journeys/CommunicationBatchScreen';
 
 /** Staging-only visual QA. Buttons do not originate calls or contact real people. */
 export default function CommunicationBatch20Review(){
- const [index,setIndex]=useState(0);
+ const [params, setParams] = useSearchParams();
+ const index = Math.max(0, COMMUNICATION_BATCH_20.findIndex(item => item.id === params.get('screen')));
  const [notice,setNotice]=useState('');
  const [draft,setDraft]=useState('');
  const [muted,setMuted]=useState(false);
  const [speaker,setSpeaker]=useState(false);
  const screen=COMMUNICATION_BATCH_20[index];
- const select=(i:number)=>{setIndex(Math.max(0,Math.min(COMMUNICATION_BATCH_20.length-1,i)));setNotice('');setDraft('');};
+ const select=(i:number)=>{setParams({ screen: COMMUNICATION_BATCH_20[i].id });setNotice('');setDraft('');setMuted(false);setSpeaker(false);};
  const showInert=()=>setNotice('Visual QA only. No call or message was sent. Real actions require verified trip participants and authenticated transport.');
  return <div className="min-h-[100dvh] bg-[#f4f5f7] text-[#1f2129]">
   <header className="sticky top-0 z-50 border-b border-[#e2e6ed] bg-white px-4 py-3">
    <div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-3">
     <div><h1 className="flex items-center gap-2 text-[15px] font-bold"><Layers3 className="h-5 w-5 text-[#ff000d]"/> CruiXe · Communication batch 20</h1><p className="text-[11px] text-[#667080]">Internal staging review · not a real calling session</p></div>
     <div className="flex gap-2"><button onClick={()=>select(index-1)} disabled={index===0} className="flex min-h-11 items-center gap-1 rounded-xl border px-3 disabled:opacity-40"><ChevronLeft size={15}/> Previous</button>
-     <button onClick={()=>select(index+1)} disabled={index===19} className="flex min-h-11 items-center gap-1 rounded-xl bg-[#ff000d] px-3 text-white disabled:opacity-40">Next <ChevronRight size={15}/></button></div>
+     <button onClick={()=>select(index+1)} disabled={index===COMMUNICATION_BATCH_20.length-1} className="flex min-h-11 items-center gap-1 rounded-xl bg-[#ff000d] px-3 text-white disabled:opacity-40">Next <ChevronRight size={15}/></button></div>
    </div>
   </header>
   <div className="mx-auto grid max-w-[1100px] gap-5 px-3 py-5 md:grid-cols-[280px_minmax(0,1fr)]">

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import ParcelCollectionCodeReview, { collectionCodeReview } from './ParcelCollectionCodeReview';
 import { ArrowLeft, ArrowRight, Layers3, ShieldAlert } from 'lucide-react';
 import { PARCEL_BATCH_20 } from '@/lib/parcelBatch20Screens';
 import ParcelBatchScreen from '@/components/journeys/ParcelBatchScreen';
@@ -6,11 +8,14 @@ import ParcelBatchScreen from '@/components/journeys/ParcelBatchScreen';
 /** Staging-only, privacy-preserving Figma review of 20 states. All actions deliberately inert.
  * No fake payments, handovers, courier locations, phone numbers, PINs or notifications.
  */
+const parcelReviews = [...PARCEL_BATCH_20, collectionCodeReview];
+
 export default function ParcelBatch20Review() {
-  const [index,setIndex] = useState(0);
+  const [params, setParams] = useSearchParams();
+  const index = Math.max(0, parcelReviews.findIndex(item => item.id === params.get('screen')));
   const [notice,setNotice] = useState('');
   const screen = PARCEL_BATCH_20[index];
-  const navigateTo = (next:number) => { setIndex(Math.min(PARCEL_BATCH_20.length-1,Math.max(0,next))); setNotice(''); };
+  const navigateTo = (next: number) => { setParams({ screen: parcelReviews[next].id }); setNotice(''); };
   const showInert = (id:string) => setNotice(`This is a visual review of ${id}. The real action needs an authenticated backend connection and is not executed here.`);
   const fixture = {
     pickup: 'Pickup address', destination: 'Delivery destination',
@@ -28,13 +33,13 @@ export default function ParcelBatch20Review() {
           </div>
           <div className="flex items-center gap-2">
             <button onClick={()=>navigateTo(index-1)} disabled={index===0} className="flex min-h-11 items-center gap-1 rounded-xl border px-3 disabled:opacity-40"><ArrowLeft size={15}/> Previous</button>
-            <button onClick={()=>navigateTo(index+1)} disabled={index===PARCEL_BATCH_20.length-1} className="flex min-h-11 items-center gap-1 rounded-xl bg-[#ff000d] px-3 text-white disabled:opacity-40">Next <ArrowRight size={15}/></button>
+            <button onClick={()=>navigateTo(index+1)} disabled={index===parcelReviews.length-1} className="flex min-h-11 items-center gap-1 rounded-xl bg-[#ff000d] px-3 text-white disabled:opacity-40">Next <ArrowRight size={15}/></button>
           </div>
         </div>
       </header>
       <div className="mx-auto grid max-w-[1100px] gap-5 px-3 py-5 md:grid-cols-[270px_minmax(0,1fr)]">
         <nav aria-label="Parcel Figma screens" className="max-h-[70dvh] overflow-y-auto rounded-2xl bg-white p-2">
-          {PARCEL_BATCH_20.map((item,i)=>(
+          {parcelReviews.map((item,i)=>(
             <button type="button" key={item.id} onClick={()=>navigateTo(i)} aria-current={i===index?'page':undefined}
               className={`mb-1 flex min-h-11 w-full items-center gap-2 rounded-xl px-3 text-left text-[12px] ${i===index?'bg-[#fff1f2] font-semibold text-[#d6000c]':'hover:bg-[#f6f6f8]'}`}>
               <span className="w-6 shrink-0 tabular-nums">{String(i+1).padStart(2,'0')}</span>
@@ -49,7 +54,8 @@ export default function ParcelBatch20Review() {
           </div>
           {notice && <p role="status" className="w-full max-w-[440px] rounded-xl bg-[#fff5e6] p-3 text-[12px]">{notice}</p>}
           <div className="w-full max-w-[440px] overflow-hidden rounded-[30px] border-[5px] border-[#1f2129] shadow-xl">
-            <ParcelBatchScreen key={screen.id} screen={screen} data={fixture} onPrimary={showInert} onSecondary={showInert}/>
+            {screen ? <ParcelBatchScreen key={screen.id} screen={screen} data={fixture} onPrimary={showInert} onSecondary={showInert}/> :
+              <ParcelCollectionCodeReview previewOnly={() => showInert(collectionCodeReview.id)} />}
           </div>
         </div>
       </div>

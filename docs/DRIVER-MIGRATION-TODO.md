@@ -4,6 +4,8 @@ Use the [screen acceptance ledger](FIGMA-SCREEN-ACCEPTANCE-MATRIX.json) for Figm
 
 The 20 Account Security, Wallet Dispute and Student Ride frames are at `/staging/driver-migration-20`. The ledger maps each route to its Figma frame. The three student offer states use a sample map and the four call states use a repository sample portrait. Compare both with Figma during visual acceptance.
 
+All Main/Driver ledger rows now map to a code component. The final inventory pass adds one reserved parcel collection-code preview, direct links for 24 existing parcel and communication previews, and mappings for five authenticated Driver states. The shared gallery layouts still need frame-by-frame comparison with Figma.
+
 | Workstream | Deferred work | Acceptance evidence |
 |---|---|---|
 | Support tickets | Add owned ticket creation, inbox, status, message history, replies, resolution and reopening. Keep the existing email contact path available. | Ticket and message IDs come from the server. Test two accounts for isolation, retries, authorized status transitions and recorded staff responses. |

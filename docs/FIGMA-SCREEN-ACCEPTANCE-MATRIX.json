@@ -794,16 +794,18 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverRideRequests.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/requests?view=notifications",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Entry condition: Driver notifications selected.",
+        "Authenticated staging and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -849,16 +851,18 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverRideDetails.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/ride/:rideId",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Entry condition: Ordinary ride with a submitted offer.",
+        "Authenticated staging and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3059,17 +3063,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=driver-accepted",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3083,17 +3091,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=driver-navigate-pickup",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3107,17 +3119,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=driver-arrived-sender",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3131,17 +3147,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=driver-collected",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3155,17 +3175,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=driver-in-transit",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3179,17 +3203,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=driver-arrived-recipient",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3203,17 +3231,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=driver-verify-code",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3227,17 +3259,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=driver-proof",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3251,17 +3287,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=driver-cash",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3275,17 +3315,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/ParcelBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/parcelBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=driver-delivered",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3299,16 +3343,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/ParcelCollectionCodeReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/parcel-20?screen=driver-collection-code",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the staging map placeholder.",
+        "The masked code is a fixture. Secure sender collection verification and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3484,18 +3532,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=sender-message",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3509,18 +3560,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=sender-connecting",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3534,18 +3588,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=sender-ringing",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3559,18 +3616,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=sender-connected",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3584,18 +3644,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=sender-ended",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3609,18 +3672,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=sender-failed",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3634,18 +3700,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=recipient-message",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3659,18 +3728,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=recipient-connecting",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3684,18 +3756,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=recipient-ringing",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3709,18 +3784,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=recipient-connected",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3734,18 +3812,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=recipient-ended",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3759,18 +3840,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=recipient-failed",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3784,16 +3868,18 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/FullScreenNavigation.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/dashboard",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Entry condition: Assigned third-party booking, passenger details opened.",
+        "Authenticated staging and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3807,16 +3893,18 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/FullScreenNavigation.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/dashboard",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Entry condition: Assigned third-party booking, accepted and pre-pickup.",
+        "Authenticated staging and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3830,16 +3918,18 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverRideDetails.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/driver/ride/:rideId",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Entry condition: Third-party booking with a submitted offer.",
+        "Authenticated staging and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3934,18 +4024,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=student-message",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3959,18 +4052,21 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/journeys/CommunicationBatchScreen.tsx"
+      ],
       "staging_gallery_evidence": [
         "src/lib/communicationBatch20Screens.ts"
       ],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/communication-20?screen=student-connecting",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/DriverRemainingPreviews.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing shared gallery layout. Frame-by-frame Figma comparison and live service integration pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
