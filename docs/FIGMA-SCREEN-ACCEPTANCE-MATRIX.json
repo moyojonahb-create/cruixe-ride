@@ -2079,16 +2079,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "react_components": [
+        "src/pages/staging/DriverSupportScreenReview.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/driver-support-10?screen=received"
+      ],
+      "route_or_entry_point": "/staging/driver-support-10?screen=received",
+      "backend_dependency": "Owned support, appeal or payment case contract tracked in docs/DRIVER-MIGRATION-TODO.md",
+      "visual_match_status": "STAGING_FRONTEND_IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging uses sample values and local navigation. Live integration and authenticated visual acceptance are pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2102,16 +2106,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "react_components": [
+        "src/pages/staging/DriverSupportScreenReview.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/driver-support-10?screen=status"
+      ],
+      "route_or_entry_point": "/staging/driver-support-10?screen=status",
+      "backend_dependency": "Owned support, appeal or payment case contract tracked in docs/DRIVER-MIGRATION-TODO.md",
+      "visual_match_status": "STAGING_FRONTEND_IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging uses sample values and local navigation. Live integration and authenticated visual acceptance are pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2324,16 +2332,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "react_components": [
+        "src/pages/staging/DriverSupportScreenReview.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/driver-support-10?screen=inbox"
+      ],
+      "route_or_entry_point": "/staging/driver-support-10?screen=inbox",
+      "backend_dependency": "Owned support, appeal or payment case contract tracked in docs/DRIVER-MIGRATION-TODO.md",
+      "visual_match_status": "STAGING_FRONTEND_IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging uses sample values and local navigation. Live integration and authenticated visual acceptance are pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2347,16 +2359,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "react_components": [
+        "src/pages/staging/DriverSupportScreenReview.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/driver-support-10?screen=conversation"
+      ],
+      "route_or_entry_point": "/staging/driver-support-10?screen=conversation",
+      "backend_dependency": "Owned support, appeal or payment case contract tracked in docs/DRIVER-MIGRATION-TODO.md",
+      "visual_match_status": "STAGING_FRONTEND_IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging uses sample values and local navigation. Live integration and authenticated visual acceptance are pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2370,16 +2386,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "react_components": [
+        "src/pages/staging/DriverSupportScreenReview.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/driver-support-10?screen=reply"
+      ],
+      "route_or_entry_point": "/staging/driver-support-10?screen=reply",
+      "backend_dependency": "Owned support, appeal or payment case contract tracked in docs/DRIVER-MIGRATION-TODO.md",
+      "visual_match_status": "STAGING_FRONTEND_IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging uses sample values and local navigation. Live integration and authenticated visual acceptance are pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2393,16 +2413,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "react_components": [
+        "src/pages/staging/DriverSupportScreenReview.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/driver-support-10?screen=appeal"
+      ],
+      "route_or_entry_point": "/staging/driver-support-10?screen=appeal",
+      "backend_dependency": "Owned support, appeal or payment case contract tracked in docs/DRIVER-MIGRATION-TODO.md",
+      "visual_match_status": "STAGING_FRONTEND_IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging uses sample values and local navigation. Live integration and authenticated visual acceptance are pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2416,16 +2440,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "react_components": [
+        "src/pages/staging/DriverSupportScreenReview.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/driver-support-10?screen=appeal-submitted"
+      ],
+      "route_or_entry_point": "/staging/driver-support-10?screen=appeal-submitted",
+      "backend_dependency": "Owned support, appeal or payment case contract tracked in docs/DRIVER-MIGRATION-TODO.md",
+      "visual_match_status": "STAGING_FRONTEND_IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging uses sample values and local navigation. Live integration and authenticated visual acceptance are pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2847,16 +2875,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "react_components": [
+        "src/pages/staging/DriverSupportScreenReview.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/driver-support-10?screen=resolved"
+      ],
+      "route_or_entry_point": "/staging/driver-support-10?screen=resolved",
+      "backend_dependency": "Owned support, appeal or payment case contract tracked in docs/DRIVER-MIGRATION-TODO.md",
+      "visual_match_status": "STAGING_FRONTEND_IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging uses sample values and local navigation. Live integration and authenticated visual acceptance are pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2870,16 +2902,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "react_components": [
+        "src/pages/staging/DriverSupportScreenReview.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/driver-support-10?screen=reopen"
+      ],
+      "route_or_entry_point": "/staging/driver-support-10?screen=reopen",
+      "backend_dependency": "Owned support, appeal or payment case contract tracked in docs/DRIVER-MIGRATION-TODO.md",
+      "visual_match_status": "STAGING_FRONTEND_IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging uses sample values and local navigation. Live integration and authenticated visual acceptance are pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2893,16 +2929,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "react_components": [
+        "src/pages/staging/DriverSupportScreenReview.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/driver-support-10?screen=cash-issue"
+      ],
+      "route_or_entry_point": "/staging/driver-support-10?screen=cash-issue",
+      "backend_dependency": "Owned support, appeal or payment case contract tracked in docs/DRIVER-MIGRATION-TODO.md",
+      "visual_match_status": "STAGING_FRONTEND_IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging uses sample values and local navigation. Live integration and authenticated visual acceptance are pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
