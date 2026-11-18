@@ -6771,16 +6771,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderMessageReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-messages?screen=chat-arrival-draft",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Note states use a map placeholder. Authenticated messaging, calls, and delivery checks and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6794,16 +6797,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderMessageReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-messages?screen=chat-arrival-sent",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Note states use a map placeholder. Authenticated messaging, calls, and delivery checks and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6817,16 +6823,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderMessageReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-messages?screen=chat-luggage-draft",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Note states use a map placeholder. Authenticated messaging, calls, and delivery checks and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6840,16 +6849,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderMessageReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-messages?screen=chat-luggage-sent",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Note states use a map placeholder. Authenticated messaging, calls, and delivery checks and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6863,16 +6875,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderMessageReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-messages?screen=chat-gate-draft",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Note states use a map placeholder. Authenticated messaging, calls, and delivery checks and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6886,16 +6901,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderMessageReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-messages?screen=chat-gate-sent",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Note states use a map placeholder. Authenticated messaging, calls, and delivery checks and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6909,16 +6927,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderMessageReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-messages?screen=chat-photo",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Note states use a map placeholder. Authenticated messaging, calls, and delivery checks and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6932,16 +6953,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderMessageReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-messages?screen=note-arrival-saved",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Note states use a map placeholder. Authenticated messaging, calls, and delivery checks and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6955,16 +6979,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderMessageReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-messages?screen=note-luggage",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Note states use a map placeholder. Authenticated messaging, calls, and delivery checks and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -6978,16 +7005,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderMessageReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-messages?screen=note-luggage-saved",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Note states use a map placeholder. Authenticated messaging, calls, and delivery checks and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -7001,16 +7031,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderMessageReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-messages?screen=note-gate",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Note states use a map placeholder. Authenticated messaging, calls, and delivery checks and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -7024,16 +7057,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderMessageReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-messages?screen=note-gate-saved",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Note states use a map placeholder. Authenticated messaging, calls, and delivery checks and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -7185,16 +7221,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/RiderMessageReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/rider-messages?screen=note-driver",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY",
+      "test_evidence": [
+        "src/test/RiderFeedbackReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Sample-data review. Note states use a map placeholder. Authenticated messaging, calls, and delivery checks and rendered Figma comparison pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
