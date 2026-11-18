@@ -1,9 +1,10 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { User } from 'lucide-react';
 import { toast } from 'sonner';
 import LazyMapboxMap from '@/components/map/LazyMapboxMap';
-import { NotificationBell } from '@/components/NotificationCenter';
+import DriverNotificationInbox from '@/components/driver/DriverNotificationInbox';
+import { useNotificationInbox } from '@/hooks/useNotificationInbox';
 import { supabase } from '@/lib/supabaseClient';
 import { getDriverProfile, submitOffer, defaultNightMultiplier } from '@/lib/offerHelpers';
 import { fetchEnrichedOpenRides, type EnrichedRideRequest } from '@/lib/driverRideRequests';
@@ -32,11 +33,16 @@ const actionClass = 'min-h-11 rounded-[14px] px-3 text-sm font-semibold';
 
 export default function DriverRideRequests() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [params] = useSearchParams();
   const view = params.get('view');
   const showHome = view === 'home';
   const showWaiting = view === 'waiting';
   const showDrive = view === 'drive';
+  const showNotifications = view === 'notifications';
+  const inbox = useNotificationInbox();
+  const unreadCount = inbox.notifications.filter(item => !item.is_read).length;
+  const openNotifications = () => navigate('/driver/requests?view=notifications', { state: { previousView: view } });
   const [rides, setRides] = useState<EnrichedRideRequest[]>([]);
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(() => getDismissedRideIds());
   const [loading, setLoading] = useState(true);
@@ -239,7 +245,28 @@ export default function DriverRideRequests() {
     navigate(online ? '/driver/requests?view=waiting' : '/driver/requests?view=home', { replace: true });
   };
 
-  if (!showHome && !showWaiting && !showDrive) return <DriverLifecycleLayout frameId="1105:239" sheetTop={461} contentOffset={26} onBack={() => navigate('/driver/requests?view=home')} onRecenter={() => setRecenterSignal(value => value + 1)} map={<LazyMapboxMap defaultCenter={driverCoords ?? undefined} driverLocation={driverCoords} height="100%" navigationFollow={recenterSignal > 0} recenterSignal={recenterSignal} followZoom={13} />} footer={<DriverBottomNav embedded requestBadgeCount={visibleRides.length} activeTab="Requests" />}>
+  if (showNotifications) {
+    const previousView = location.state?.previousView;
+    const returnTo = previousView === 'waiting' || previousView === 'drive' || previousView === 'home'
+      ? `/driver/requests?view=${previousView}`
+      : '/driver/requests';
+    return (
+      <DriverLifecycleLayout
+        frameId="1107:188"
+        sheetTop={461}
+        contentOffset={26}
+        activeTab={null}
+        onBack={() => navigate(returnTo, { replace: true })}
+        notificationsOpen
+        onRecenter={driverCoords ? () => setRecenterSignal(value => value + 1) : undefined}
+        map={<LazyMapboxMap defaultCenter={driverCoords ?? undefined} driverLocation={driverCoords} height="100%" navigationFollow={recenterSignal > 0} recenterSignal={recenterSignal} followZoom={13} />}
+      >
+        <DriverNotificationInbox {...inbox} />
+      </DriverLifecycleLayout>
+    );
+  }
+
+  if (!showHome && !showWaiting && !showDrive) return <DriverLifecycleLayout frameId="1105:239" onNotifications={openNotifications} unreadCount={unreadCount} sheetTop={461} contentOffset={26} onBack={() => navigate('/driver/requests?view=home')} onRecenter={() => setRecenterSignal(value => value + 1)} map={<LazyMapboxMap defaultCenter={driverCoords ?? undefined} driverLocation={driverCoords} height="100%" navigationFollow={recenterSignal > 0} recenterSignal={recenterSignal} followZoom={13} />} footer={<DriverBottomNav embedded requestBadgeCount={visibleRides.length} activeTab="Requests" />}>
     <DriverRequestsBody loading={loading} hasRequests={filteredRides.length > 0} online={isOnline} kind={requestKind} onKindChange={kind => setRequestKind(current => current === kind ? null : kind)}>
       {filteredRides.map(({ride,km,minutes}) => <SwipeDismissCard key={ride.id} onDismiss={() => handleDismiss(ride)}><RequestCard ride={ride} km={km} minutes={minutes} onView={() => navigate(`/driver/ride/${ride.id}`)} onDismiss={() => handleDismiss(ride)} /></SwipeDismissCard>)}
     </DriverRequestsBody>
@@ -271,7 +298,10 @@ export default function DriverRideRequests() {
         <span className="grid size-11 place-items-center rounded-full bg-white shadow-sm" aria-hidden="true">
           <img src="/brand/ride/map-location.svg" alt="" className="size-5" />
         </span>
-        <NotificationBell className="ml-auto size-11 bg-white shadow-sm" iconSource="/brand/ride/driver-notifications.svg" />
+        <button type="button" onClick={openNotifications} aria-label={unreadCount ? `Notifications, ${unreadCount} unread` : 'Notifications'} className="relative ml-auto grid size-11 place-items-center rounded-full bg-white shadow-sm">
+          <img src="/brand/ride/driver-notifications.svg" alt="" />
+          {unreadCount > 0 && <span aria-hidden="true" className="absolute -right-1 -top-1 rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">{unreadCount > 9 ? '9+' : unreadCount}</span>}
+        </button>
       </div>
 
       <div className="absolute inset-x-0 bottom-0 top-[clamp(166px,52dvh,540px)] z-10 mx-auto flex max-w-[480px] flex-col">

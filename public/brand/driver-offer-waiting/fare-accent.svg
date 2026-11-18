@@ -1,0 +1,36 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="360" height="52" viewBox="0 0 360 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="CruiXe &#194;&#183; soft fading yellow corner stroke &#194;&#183; Offer Sent fare" clip-path="url(#clip0_0_17)">
+<path id="Vector" d="M15 1H200" stroke-width="2.7" stroke-linecap="round" stroke="url(#paint0_linear_0_17)"/>
+<path id="Vector_2" d="M1 15V39" stroke-width="2.7" stroke-linecap="round" stroke="url(#paint1_linear_0_17)"/>
+<path id="Vector_3" d="M15 1C5.66667 1 1 5.66667 1 15" stroke-width="2.7" stroke-linecap="round" stroke="url(#paint2_linear_0_17)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_17" x1="2.44283e-07" y1="-3.94053e-07" x2="230" y2="37.44" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFD300" stop-opacity="0"/>
+<stop offset="0.12" stop-color="#FFD300" stop-opacity="0.208"/>
+<stop offset="0.3" stop-color="#FFD300" stop-opacity="0.611"/>
+<stop offset="0.49" stop-color="#FFD300" stop-opacity="0.507"/>
+<stop offset="0.74" stop-color="#FFD300" stop-opacity="0.1885"/>
+<stop offset="1" stop-color="#FFD300" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_17" x1="5.78761e-07" y1="-3.21773e-06" x2="230" y2="37.44" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFD300" stop-opacity="0"/>
+<stop offset="0.12" stop-color="#FFD300" stop-opacity="0.208"/>
+<stop offset="0.3" stop-color="#FFD300" stop-opacity="0.611"/>
+<stop offset="0.49" stop-color="#FFD300" stop-opacity="0.507"/>
+<stop offset="0.74" stop-color="#FFD300" stop-opacity="0.1885"/>
+<stop offset="1" stop-color="#FFD300" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint2_linear_0_17" x1="3.0599e-07" y1="-1.97623e-06" x2="230" y2="37.44" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFD300" stop-opacity="0"/>
+<stop offset="0.12" stop-color="#FFD300" stop-opacity="0.208"/>
+<stop offset="0.3" stop-color="#FFD300" stop-opacity="0.611"/>
+<stop offset="0.49" stop-color="#FFD300" stop-opacity="0.507"/>
+<stop offset="0.74" stop-color="#FFD300" stop-opacity="0.1885"/>
+<stop offset="1" stop-color="#FFD300" stop-opacity="0"/>
+</linearGradient>
+<clipPath id="clip0_0_17">
+<rect width="360" height="52" fill="white"/>
+</clipPath>
+</defs>
+</svg>

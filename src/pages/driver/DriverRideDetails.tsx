@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft, User, Star, Banknote, Users, Briefcase, Quote, Package, UserPlus, Minus, Plus, TrendingUp, TrendingDown, Navigation as NavigationIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import LazyMapboxMap from '@/components/map/LazyMapboxMap';
-import { getDriverProfile, submitOffer, clampTo5, roundTo5 } from '@/lib/offerHelpers';
+import { getDriverProfile, submitOffer, clampTo5, roundTo5, type Offer } from '@/lib/offerHelpers';
 import { fetchEnrichedOpenRides, type EnrichedRideRequest } from '@/lib/driverRideRequests';
 import { fetchRiderTrustSignals, type RiderTrustSignals } from '@/lib/driverStats';
 import { getParcelSignedUrl } from '@/lib/parcelStorage';
@@ -12,6 +12,7 @@ import { openNavTo } from '@/lib/navigation';
 import { dismissRide } from '@/lib/driverDismissedRides';
 import DriverLifecycleLayout from '@/components/driver/DriverLifecycleLayout';
 import DriverBottomNav from '@/components/driver/DriverBottomNav';
+import DriverOfferWaiting from '@/components/driver/DriverOfferWaiting';
 import { DriverOfferBody, DriverFareControl } from '@/components/driver/DriverRequestViews';
 import GenderChip from '@/components/driver/GenderChip';
 import { redCta, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, tintBlue, tintYellow, glassSurface } from '@/components/ride/rideGlass';
@@ -38,6 +39,9 @@ export default function DriverRideDetails() {
   // once the ride loads, then freely adjustable via the +/- stepper.
   const [driverOfferFare, setDriverOfferFare] = useState(0);
   const [driverNote, setDriverNote] = useState('');
+  const [driverRowId, setDriverRowId] = useState<string | null>(null);
+  const [submittedOffer, setSubmittedOffer] = useState<Offer | null>(null);
+  const openAcceptedTrip = useCallback(() => navigate('/driver/dashboard', { replace: true }), [navigate]);
 
   useEffect(() => {
     if (ride) setDriverOfferFare(roundTo5(ride.fare));
@@ -57,6 +61,7 @@ export default function DriverRideDetails() {
     setLoading(true);
     try {
       const profile = await getDriverProfile();
+      setDriverRowId(profile?.id ?? null);
       const list = await fetchEnrichedOpenRides(profile?.gender);
       const found = list.find((r) => r.id === rideId) ?? null;
       setRide(found);
@@ -109,9 +114,13 @@ export default function DriverRideDetails() {
       // counter-offer, going through the same offer/accept pipeline the
       // rider-side bid stack (RideMatching.tsx) reads from. The rider
       // decides from there; nothing here marks the ride accepted.
-      await submitOffer({ ride_id: ride.id, price: driverOfferFare, eta_minutes: eta, message: driverNote.trim() || undefined });
-      toast.success('Offer sent!', { description: 'Waiting for the rider to confirm.' });
-      navigate('/driver/requests');
+      const offer = await submitOffer({ ride_id: ride.id, price: driverOfferFare, eta_minutes: eta, message: driverNote.trim() || undefined });
+      if (ride.vehicle_type === 'parcel') {
+        toast.success('Offer sent!', { description: 'Waiting for the rider to confirm.' });
+        navigate('/driver/requests');
+      } else {
+        setSubmittedOffer(offer);
+      }
     } catch (e) {
       toast.error('Could not send offer', { description: (e as Error).message });
     } finally {
@@ -165,6 +174,18 @@ export default function DriverRideDetails() {
   const pickup = ride.pickup_lat != null && ride.pickup_lon != null ? { lat: ride.pickup_lat, lng: ride.pickup_lon } : null;
   const dropoff = ride.dropoff_lat != null && ride.dropoff_lon != null ? { lat: ride.dropoff_lat, lng: ride.dropoff_lon } : null;
   const note = ride.rider_note || (isParcel ? ride.parcel?.deliveryNote ?? null : null);
+
+  if (submittedOffer?.ride_id === ride.id && submittedOffer.ride_id === rideId) {
+    return (
+      <DriverLifecycleLayout
+        frameId={ride.passenger_name ? '1264:227' : '1127:453'}
+        onBack={handleClose}
+        map={<LazyMapboxMap pickup={pickup} dropoff={dropoff} height="100%" className="h-full w-full" />}
+      >
+        <DriverOfferWaiting key={submittedOffer.id} offer={submittedOffer} ride={ride} driverRowId={driverRowId} onAccepted={openAcceptedTrip} />
+      </DriverLifecycleLayout>
+    );
+  }
 
   if (!isParcel) return <DriverLifecycleLayout frameId="1126:105" onBack={handleClose} busy={submitting} map={<LazyMapboxMap pickup={pickup} dropoff={dropoff} height="100%" className="h-full w-full" />} footer={<><DriverFareControl fare={driverOfferFare} busy={submitting || (!!ride.expires_at && new Date(ride.expires_at).getTime() <= Date.now())} onDecrease={() => adjustOffer(-OFFER_STEP)} onIncrease={() => adjustOffer(OFFER_STEP)} onSend={() => void handleSendOffer()} /><DriverBottomNav embedded activeTab="Requests" disabled={submitting} /></>}>
     <DriverOfferBody ride={ride} busy={submitting} note={driverNote} onNoteChange={setDriverNote} onSkip={handleDecline} />

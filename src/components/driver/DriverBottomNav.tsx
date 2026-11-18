@@ -14,7 +14,7 @@ type DriverTab = (typeof tabs)[number]['label'];
 
 interface DriverBottomNavProps {
   requestBadgeCount?: number;
-  activeTab?: DriverTab;
+  activeTab?: DriverTab | null;
   embedded?: boolean;
   disabled?: boolean;
 }
@@ -29,12 +29,12 @@ export default function DriverBottomNav({
   const location = useLocation();
   const view = new URLSearchParams(location.search).get('view');
 
-  const currentTab = activeTab ?? (
+  const currentTab = activeTab === undefined ? (
     location.pathname === '/driver/profile' ? 'Account' :
     location.pathname === '/driver/dashboard' && location.state?.openEarnings ? 'Earnings' :
     location.pathname === '/driver/trips' || view === 'drive' ? 'Drive' :
     view === 'home' || view === 'waiting' ? 'Home' : 'Requests'
-  );
+  ) : activeTab;
 
   return (
     <nav

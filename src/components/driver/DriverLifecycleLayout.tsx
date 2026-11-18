@@ -10,18 +10,20 @@ export interface DriverLifecycleLayoutProps {
   onBack: () => void;
   onRecenter?: () => void;
   onNotifications?: () => void;
+  notificationsOpen?: boolean;
+  unreadCount?: number;
   mapTools?: ReactNode;
   footer?: ReactNode;
   sheetTop?: number;
   contentOffset?: number;
-  activeTab?: 'Home' | 'Requests' | 'Drive' | 'Earnings' | 'Account';
+  activeTab?: 'Home' | 'Requests' | 'Drive' | 'Earnings' | 'Account' | null;
   busy?: boolean;
   mapHeight?: number;
 }
 
 /** Shared approved Driver trip composition. Map data stays live; no Figma
  * map screenshot is used as the application's routing surface. */
-export default function DriverLifecycleLayout({ frameId, map, children, onBack, onRecenter, onNotifications, mapTools, footer, sheetTop = 322, contentOffset = 30, activeTab = 'Requests', busy = false, mapHeight = 499 }: DriverLifecycleLayoutProps) {
+export default function DriverLifecycleLayout({ frameId, map, children, onBack, onRecenter, onNotifications, notificationsOpen = false, unreadCount = 0, mapTools, footer, sheetTop = 322, contentOffset = 30, activeTab = 'Requests', busy = false, mapHeight = 499 }: DriverLifecycleLayoutProps) {
   const container = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(400);
   useEffect(() => {
@@ -45,7 +47,14 @@ export default function DriverLifecycleLayout({ frameId, map, children, onBack, 
           <span aria-hidden="true" className={circle}><img src="/brand/ride/map-location.svg" alt="" className="block max-w-none" /></span>
         </div>
         <div className="absolute right-[18px] top-[max(44px,env(safe-area-inset-top))] z-20">
-          {onNotifications ? <button type="button" onClick={onNotifications} disabled={busy} aria-label="Notifications" className={circle}><img src="/brand/ride/driver-notifications.svg" alt="" className="block max-w-none" /></button> : <NotificationBell iconSource="/brand/ride/driver-notifications.svg" className={circle} />}
+          {notificationsOpen ? (
+            <span className={circle} aria-hidden="true"><img src="/brand/ride/driver-notifications.svg" alt="" /></span>
+          ) : onNotifications ? (
+            <button type="button" onClick={onNotifications} disabled={busy} aria-label={unreadCount ? `Notifications, ${unreadCount} unread` : 'Notifications'} className={`relative ${circle}`}>
+              <img src="/brand/ride/driver-notifications.svg" alt="" />
+              {unreadCount > 0 && <span aria-hidden="true" className="absolute -right-1 -top-1 rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">{unreadCount > 9 ? '9+' : unreadCount}</span>}
+            </button>
+          ) : <NotificationBell iconSource="/brand/ride/driver-notifications.svg" className={circle} />}
         </div>
         <button type="button" onClick={onRecenter} disabled={!onRecenter || busy} aria-label="Recenter map" className={`absolute right-4 z-20 ${circle}`} style={{top:sheetTop-89}}><img src="/brand/ride/map-recenter.svg" alt="" className="block max-w-none" /></button>
       </>}

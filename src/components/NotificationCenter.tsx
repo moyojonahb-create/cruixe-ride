@@ -1,26 +1,14 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useMemo, type CSSProperties } from 'react';
+import { useState, useMemo, type CSSProperties } from 'react';
 import { Bell, X, Check, Car, DollarSign, AlertTriangle, Star, Gift, MapPin, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useNotificationInbox, type InboxNotification } from '@/hooks/useNotificationInbox';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { showLocalNotification } from '@/lib/push';
-import { markNotificationRead, markNotificationsRead } from '@/lib/businessApi';
 
 type NotificationCategory = 'all' | 'ride' | 'wallet' | 'system';
-
-interface Notification {
-  id: string;
-  title: string;
-  body: string;
-  notification_type: string;
-  is_read: boolean;
-  created_at: string;
-}
 
 const typeIcons: Record<string, typeof Bell> = {
   ride: Car,
@@ -65,10 +53,8 @@ interface NotificationBellProps {
 }
 
 export function NotificationBell({ className, style, iconSource }: NotificationBellProps = {}) {
-  const { user } = useAuth();
   const [open, setOpen] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { notifications, loading, failed, retry, markRead } = useNotificationInbox();
   const [activeFilter, setActiveFilter] = useState<NotificationCategory>('all');
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
@@ -78,7 +64,7 @@ export function NotificationBell({ className, style, iconSource }: NotificationB
   }, [activeFilter, notifications]);
 
   const groupedNotifications = useMemo(() => {
-    const grouped: Record<string, Notification[]> = {};
+    const grouped: Record<string, InboxNotification[]> = {};
     filteredNotifications.forEach((n) => {
       const category = getNotificationCategory(n.notification_type);
       grouped[category] = grouped[category] ?? [];
@@ -87,52 +73,13 @@ export function NotificationBell({ className, style, iconSource }: NotificationB
     return grouped;
   }, [filteredNotifications]);
 
-  useEffect(() => {
-    if (!user) return;
-    loadNotifications();
-
-    const channel = supabase
-      .channel('user-notifications')
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'notifications',
-        filter: `user_id=eq.${user.id}`,
-      }, (payload) => {
-        const notif = payload.new as Notification;
-        setNotifications(prev => [notif, ...prev]);
-        // Show browser notification for new items
-        showLocalNotification(notif.title, notif.body);
-      })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
-  }, [user]);
-
-  const loadNotifications = async () => {
-    if (!user) return;
-    setLoading(true);
-    const { data } = await supabase
-      .from('notifications')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(50);
-    setNotifications((data as Notification[]) || []);
-    setLoading(false);
+  const markAsRead = (id: string) => {
+    void markRead([id]).catch(() => toast.error('Could not mark notification as read'));
   };
 
-  const markAsRead = async (id: string) => {
-    await markNotificationRead(id);
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
-  };
-
-  const markAllRead = async () => {
-    if (!user) return;
-    const unreadIds = notifications.filter(n => !n.is_read).map(n => n.id);
-    if (unreadIds.length === 0) return;
-    await markNotificationsRead(unreadIds);
-    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+  const markAllRead = () => {
+    void markRead(notifications.filter(item => !item.is_read).map(item => item.id))
+      .catch(() => toast.error('Could not mark notifications as read'));
   };
 
   return (
@@ -225,7 +172,14 @@ export function NotificationBell({ className, style, iconSource }: NotificationB
               </div>
             )}
 
-            {!loading && notifications.length === 0 && (
+            {failed && (
+              <div role="alert" className="p-5 text-sm">
+                Could not load notifications.
+                <Button variant="ghost" onClick={retry}>Try again</Button>
+              </div>
+            )}
+
+            {!loading && !failed && notifications.length === 0 && (
               <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
                 <div
                   className="w-20 h-20 rounded-3xl flex items-center justify-center mb-5"
