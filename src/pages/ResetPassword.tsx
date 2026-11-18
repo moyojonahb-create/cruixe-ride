@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import DriverWalletFrame, { walletAction, walletPanel } from '@/components/driver/DriverWalletFrame';
 import { Button } from '@/components/ui/button';
 import { Loader2, Clock3 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -11,6 +14,9 @@ const SHELL_STYLE = { paddingTop: 'max(1.5rem, env(safe-area-inset-top))', paddi
 
 const ResetPassword = () => {
   const navigate = useNavigate();
+  const { search } = useLocation();
+  const driverEntry = new URLSearchParams(search).get('entry') === 'driver';
+  const signInPath = driverEntry ? '/auth?next=%2Fdriver' : '/auth';
   const { toast } = useToast();
   const [checkingSession, setCheckingSession] = useState(true);
   const [hasRecoverySession, setHasRecoverySession] = useState(false);
@@ -92,7 +98,7 @@ const ResetPassword = () => {
       try {
         const { error } = await supabase.auth.signOut({ scope: 'local' });
         if (error) throw error;
-        navigate('/auth', { replace: true });
+        navigate(signInPath, { replace: true });
       } catch { setFormError('Could not return to sign in. Please try again.'); }
       finally { setIsSubmitting(false); }
     }} />;
@@ -110,13 +116,25 @@ const ResetPassword = () => {
           <p className="text-[12px] leading-5 text-[#6c7684]">
             For your security, recovery links can only be used for a limited time.
           </p>
-          <Button className="mt-8 h-[54px] w-full rounded-[18px] bg-[#ff000d] font-semibold text-white hover:bg-[#e9000d]" onClick={() => navigate('/auth')}>
+          <Button className="mt-8 h-[54px] w-full rounded-[18px] bg-[#ff000d] font-semibold text-white hover:bg-[#e9000d]" onClick={() => navigate(signInPath)}>
             Back to sign in
           </Button>
         </section>
       </main>
     );
   }
+
+  if (driverEntry) return <DriverWalletFrame frame="1369:320" title="Reset Password" onBack={() => navigate(signInPath)}
+    footer={<Button type="submit" form="driver-password-reset" className={walletAction} disabled={isSubmitting}>{isSubmitting ? 'Updating…' : 'Update password'}</Button>}>
+    <section className="rounded-[20px] bg-primary p-5 text-white"><h2 className="text-lg font-bold">Choose a new password</h2><p className="mt-2 text-xs">Account recovery</p></section>
+    <form id="driver-password-reset" onSubmit={handleSubmit} className={`space-y-4 ${walletPanel}`}>
+      <h2 className="text-[17px] font-bold">Password details</h2>
+      <div className="space-y-1.5"><Label htmlFor="driver-new-password">New password</Label><Input id="driver-new-password" type="password" autoComplete="new-password" required value={password} onChange={e => setPassword(e.target.value)} disabled={isSubmitting} /></div>
+      <div className="space-y-1.5"><Label htmlFor="driver-confirm-password">Confirm password</Label><Input id="driver-confirm-password" type="password" autoComplete="new-password" required value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} disabled={isSubmitting} /></div>
+      <p className="text-xs text-[#667080]">Use at least 8 characters, upper and lowercase letters, a number, and a special character.</p>
+      {formError && <p role="alert" className="text-sm text-destructive">{formError}</p>}
+    </form>
+  </DriverWalletFrame>;
 
   return <NewPasswordScreen password={password} confirmation={confirmPassword}
     onPassword={setPassword} onConfirmation={setConfirmPassword} onSubmit={handleSubmit}

@@ -1634,8 +1634,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Email changes need an end-to-end verification and identifier migration contract for accounts whose phone login resolves to a generated email. Confirming a UI code alone cannot change the account identity."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -1657,8 +1656,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Phone changes must update authenticated identity, generated login email where applicable, and driver contact data after real verification. Current profile edits do not supply that contract."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -1796,8 +1794,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Requires a verified MFA enrollment, challenge and enforcement flow through staging auth. The existing application has no MFA workflow wired."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -1903,8 +1900,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Email changes need an end-to-end verification and identifier migration contract for accounts whose phone login resolves to a generated email. Confirming a UI code alone cannot change the account identity."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -1926,8 +1922,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Phone changes must update authenticated identity, generated login email where applicable, and driver contact data after real verification. Current profile edits do not supply that contract."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2065,8 +2060,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Requires a verified MFA enrollment, challenge and enforcement flow through staging auth. The existing application has no MFA workflow wired."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2134,8 +2128,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Email changes need an end-to-end verification and identifier migration contract for accounts whose phone login resolves to a generated email. Confirming a UI code alone cannot change the account identity."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2157,8 +2150,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Phone changes must update authenticated identity, generated login email where applicable, and driver contact data after real verification. Current profile edits do not supply that contract."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2180,8 +2172,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Requires a verified MFA enrollment, challenge and enforcement flow through staging auth. The existing application has no MFA workflow wired."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2241,16 +2232,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/ResetPassword.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/reset-password?entry=driver",
+      "backend_dependency": "Existing authenticated recovery and password update",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/ResetPassword.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Real form preserves existing password rules, saving and sign-out. Staging recovery email redirect and rendered Figma comparison need verification."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2970,8 +2965,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2995,8 +2989,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3020,8 +3013,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3045,8 +3037,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3070,8 +3061,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3095,8 +3085,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3120,8 +3109,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3145,8 +3133,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3170,8 +3157,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -3195,8 +3181,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The staging gallery covers the Figma frame. The live flow needs authoritative parcel lifecycle and assigned-driver access, including collection verification, recipient handover, confirmed payment and delivery receipt."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,

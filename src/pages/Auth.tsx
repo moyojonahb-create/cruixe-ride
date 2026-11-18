@@ -104,7 +104,7 @@ const Auth = () => {
     setIsResetting(true);
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(trimmed, {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: `${window.location.origin}/reset-password${driverSignIn ? '?entry=driver' : ''}`,
       });
       if (error) {
         toast({ title: 'Could not send reset email', description: error.message, variant: 'destructive' });

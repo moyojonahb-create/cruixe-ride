@@ -5,7 +5,7 @@ const auth = vi.hoisted(() => ({ updateUser: vi.fn(), signOut: vi.fn(), getSessi
 vi.mock('@/integrations/supabase/client', () => ({ supabase: { auth: { ...auth, onAuthStateChange: () => ({ data: { subscription: { unsubscribe: vi.fn() } } }) } } }));
 vi.mock('@/hooks/use-toast', () => ({ useToast: () => ({ toast: vi.fn() }) }));
 import ResetPassword from '@/pages/ResetPassword';
-function renderPage() { render(<MemoryRouter initialEntries={['/reset-password']}><Routes><Route path="/reset-password" element={<ResetPassword />} /><Route path="/auth" element={<h1>Sign in</h1>} /></Routes></MemoryRouter>); }
+function renderPage(path = '/reset-password') { render(<MemoryRouter initialEntries={[path]}><Routes><Route path="/reset-password" element={<ResetPassword />} /><Route path="/auth" element={<h1>Sign in</h1>} /></Routes></MemoryRouter>); }
 async function submit(password='Secure123!') {
   fireEvent.change(await screen.findByLabelText('New password'), { target: { value: password } });
   fireEvent.change(screen.getByLabelText('Confirm new password'), { target: { value: password } });
@@ -33,6 +33,14 @@ describe('password recovery screens', () => {
     expect(screen.queryByText('Password changed')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button',{name:'Update password'}));
     expect(await screen.findByText('Password changed')).toBeInTheDocument();
+  });
+  it('uses the Driver frame while preserving the existing password update handler', async () => {
+    renderPage('/reset-password?entry=driver');
+    fireEvent.change(await screen.findByLabelText('New password'), { target: { value: 'Secure123!' } });
+    fireEvent.change(screen.getByLabelText('Confirm password'), { target: { value: 'Secure123!' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Update password' }));
+    expect(await screen.findByText('Password changed')).toBeInTheDocument();
+    expect(auth.updateUser).toHaveBeenCalledWith({ password: 'Secure123!' });
   });
   it('does not render the update form without a session', async () => {
     auth.getSession.mockResolvedValue({data:{session:null}}); renderPage();
