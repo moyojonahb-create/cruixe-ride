@@ -586,20 +586,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverRideRequests.tsx",
+        "src/components/driver/DriverLifecycleLayout.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/requests?view=home (offline)",
+      "backend_dependency": "Driver approval, availability, location and daily totals",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/driverAvailability.test.ts"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the live map and genuine daily totals.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Referenced suites cover component or related contract behavior. Authenticated live acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 15B \u00b7 Home \u00b7 Online",
@@ -609,20 +614,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverRideRequests.tsx",
+        "src/components/driver/DriverLifecycleLayout.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/requests?view=home (online)",
+      "backend_dependency": "Driver approval, availability, location and daily totals",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/driverAvailability.test.ts"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the live map and genuine daily totals.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Referenced suites cover component or related contract behavior. Authenticated live acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 16 \u00b7 Requests",
@@ -664,20 +674,23 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverRideRequests.tsx",
+        "src/components/driver/DriverLifecycleLayout.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "route_or_entry_point": "/driver/requests?view=drive",
+      "backend_dependency": "Live map, driver location and trip history",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the live map. Trip tools opens the existing trip history.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Referenced suites cover component or related contract behavior. Authenticated live acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 18 \u00b7 Earnings",
@@ -687,20 +700,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/DriverDashboard.tsx",
+        "src/components/driver/DriverEarningsOverview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/dashboard via the Earnings tab",
+      "backend_dependency": "Wallet PIN and existing authenticated wallet summary/earnings endpoints",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverEarningsOverview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing wallet PIN and hides amounts while locked. The existing analytics appear after unlock.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Referenced suites cover component or related contract behavior. Authenticated live acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 19 \u00b7 Account",
@@ -710,20 +728,22 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverProfile.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "route_or_entry_point": "/driver/profile",
+      "backend_dependency": "Authenticated driver profile, account controls and statistics",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Real profile values and existing statistics replace example profile statistics.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Referenced suites cover component or related contract behavior. Authenticated live acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 20 \u00b7 Notifications",
@@ -1067,20 +1087,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverRideDetails.tsx",
+        "src/components/driver/DriverRequestViews.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/ride/:rideId (guest request)",
+      "backend_dependency": "Driver-visible request data and existing offer submission/acceptance flow",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverLifecycleFlow.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The CTA sends an offer. Passenger phone remains gated by trip acceptance.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Referenced suites cover component or related contract behavior. Authenticated live acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 18A \u00b7 Private Earnings",
@@ -1251,20 +1276,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverProfile.tsx",
+        "src/components/driver/DriverDetailScreen.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/profile \u2192 Personal details",
+      "backend_dependency": "Authenticated driver account and existing personal-edit route",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverDetailScreen.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Existing editable fields open in the existing form. No badge tier or identity fields are inferred.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Referenced suites cover component or related contract behavior. Authenticated live acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 19B \u00b7 Contact Details",
@@ -1274,20 +1304,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverProfile.tsx",
+        "src/components/driver/DriverDetailScreen.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/profile \u2192 Email address or Phone number",
+      "backend_dependency": "Authenticated email and driver phone, account security route",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverDetailScreen.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Account security is used for verification. No preferred contact method or verification status is inferred.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Referenced suites cover component or related contract behavior. Authenticated live acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 19C \u00b7 Vehicle Details",
@@ -1297,20 +1332,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverProfile.tsx",
+        "src/components/driver/DriverDetailScreen.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/profile \u2192 Vehicle details",
+      "backend_dependency": "Existing registered driver vehicle and records route",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverDetailScreen.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Vehicle records handles updates and documents.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Referenced suites cover component or related contract behavior. Authenticated live acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / 19D \u00b7 Driver Verification",
@@ -2797,20 +2837,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverRideRequests.tsx",
+        "src/components/driver/DriverLifecycleLayout.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/requests?view=waiting (online)",
+      "backend_dependency": "Driver availability, live request list and location",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/driverAvailability.test.ts"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Actual request counts replace the example empty state when requests exist.",
+        "Rendered Figma comparison and authenticated staging verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "Referenced suites cover component or related contract behavior. Authenticated live acceptance remains pending."
     },
     {
       "figma_name": "CruiXe Driver / Parcel 01 \u00b7 Delivery Request",

@@ -13,14 +13,13 @@ import { useTrackRideViewer } from '@/lib/rideViewerPresence';
 import { playNewRequestSound } from '@/lib/notificationSounds';
 import { vibrateAlert, showBrowserNotification } from '@/lib/alerts';
 import { getDismissedRideIds, dismissRide, undismissRide } from '@/lib/driverDismissedRides';
-import RideGlassPanel from '@/components/ride/RideGlassPanel';
 import SwipeDismissCard from '@/components/driver/SwipeDismissCard';
 import GenderChip from '@/components/driver/GenderChip';
 import DriverLifecycleLayout from '@/components/driver/DriverLifecycleLayout';
 import { DriverRequestsBody } from '@/components/driver/DriverRequestViews';
 import DriverBottomNav from '@/components/driver/DriverBottomNav';
 import { useDriverTripRecovery } from '@/components/driver/useDriverTripRecovery';
-import { redCta, RIDE_FONT, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2 } from '@/components/ride/rideGlass';
+import { redCta, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2 } from '@/components/ride/rideGlass';
 import DriverAvailabilityControl from '@/components/driver/DriverAvailabilityControl';
 import { getDriverEarnings } from '@/lib/walletApi';
 
@@ -273,173 +272,95 @@ export default function DriverRideRequests() {
     {undoRide && <div role="status" className="mt-4 rounded-xl bg-[#1f2129] p-3 text-sm text-white">Request dismissed <button type="button" onClick={handleUndo} className="min-h-11 px-3 font-bold text-[#ffdd00]">Undo</button></div>}
   </DriverLifecycleLayout>;
 
+  const frameId = showDrive ? '1105:296' : showWaiting && isOnline ? '1495:38' : isOnline ? '1105:172' : '1105:105';
   return (
-    <main data-map-screen="true" className="relative h-[100dvh] overflow-hidden bg-[#f2f4f7] text-[#1f2129]" style={{ fontFamily: RIDE_FONT }}>
-      <div className="absolute inset-0">
-        <LazyMapboxMap
-          defaultCenter={driverCoords ?? undefined}
-          driverLocation={driverCoords}
-          height="100%"
-          navigationFollow={recenterSignal > 0}
-          recenterSignal={recenterSignal}
-          followZoom={13}
-        />
-      </div>
-
-      <div className="absolute inset-x-0 top-[max(16px,env(safe-area-inset-top))] z-20 mx-auto flex max-w-[480px] items-center gap-2 px-4">
-        <button
-          type="button"
-          onClick={() => navigate(showHome ? '/profile' : '/driver/requests?view=home')}
-          className="grid size-11 place-items-center rounded-full bg-white shadow-sm"
-          aria-label={showHome ? 'Back to Rider account' : 'Back to Driver home'}
-        >
-          <img src="/brand/ride/driver-back.svg" alt="" />
-        </button>
-        <span className="grid size-11 place-items-center rounded-full bg-white shadow-sm" aria-hidden="true">
-          <img src="/brand/ride/map-location.svg" alt="" className="size-5" />
-        </span>
-        <button type="button" onClick={openNotifications} aria-label={unreadCount ? `Notifications, ${unreadCount} unread` : 'Notifications'} className="relative ml-auto grid size-11 place-items-center rounded-full bg-white shadow-sm">
-          <img src="/brand/ride/driver-notifications.svg" alt="" />
-          {unreadCount > 0 && <span aria-hidden="true" className="absolute -right-1 -top-1 rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">{unreadCount > 9 ? '9+' : unreadCount}</span>}
-        </button>
-      </div>
-
-      <div className="absolute inset-x-0 bottom-0 top-[clamp(166px,52dvh,540px)] z-10 mx-auto flex max-w-[480px] flex-col">
-        {driverCoords && (
-          <button
-            type="button"
-            onClick={() => setRecenterSignal((value) => value + 1)}
-            className="absolute -top-[70px] right-4 grid size-11 place-items-center rounded-full bg-white shadow-sm"
-            aria-label="Center map on your location"
-          >
-            <img src="/brand/ride/map-recenter.svg" alt="" className="size-[21px]" />
-          </button>
-        )}
-        <RideGlassPanel variant="ribbon" handleWidth={56} className="min-h-0 flex-1">
-          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-[max(104px,calc(86px_+_env(safe-area-inset-bottom)))] pt-3">
-            {showHome ? (
-              <div className="flex flex-col gap-3">
-                <div>
-                  <h1 className="text-[21px] font-bold leading-tight">{greeting}{driverName ? `, ${driverName}` : ''}</h1>
-                  <p className="mt-1 text-xs text-[#667085]">Ready when you are. Drive on your schedule.</p>
-                </div>
-                <div className="relative rounded-[17px] border border-[#e4e7ed] bg-white p-3.5">
-                  <img src="/brand/ride/availability-accent.svg" alt="" className="pointer-events-none absolute inset-x-0 top-0 h-auto w-full rounded-[17px]" />
-                  <div className="relative flex items-center justify-between gap-3">
-                    <p className="flex items-center gap-2.5 text-[15px] font-bold">
-                      <span className={`size-3 shrink-0 rounded-full ${isOnline ? 'bg-[#138862]' : 'bg-[#667085]'}`} />
-                      {isOnline ? 'You’re online' : 'You’re offline'}
-                    </p>
-                    <DriverAvailabilityControl
-                      isOnline={isOnline}
-                      onChange={handleAvailabilityChange}
-                      onApplied={handleAvailabilityApplied}
-                      coords={driverCoords}
-                      appearance="switch"
-                    />
-                  </div>
-                  <p className="relative text-[11px] text-[#667085]">{isOnline ? 'Available for verified ride requests' : 'Turn on when you’re ready for requests'}</p>
-                </div>
-                <div>
-                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[#667085]">Your drive at a glance</p>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button type="button" onClick={() => navigate('/driver/wallet')} className="rounded-[17px] bg-[#f3f4f6] p-3 text-left">
-                      <span className="block text-[11px] text-[#667085]">Today’s earnings</span>
-                      <strong className="mt-0.5 block text-lg">{earnings === null ? '—' : `$${earnings.toFixed(2)}`}</strong>
-                    </button>
-                    <button type="button" onClick={() => navigate('/driver/trips')} className="rounded-[17px] bg-[#f3f4f6] p-3 text-left">
-                      <span className="block text-[11px] text-[#667085]">Trips today</span>
-                      <strong className="mt-0.5 block text-lg">{tripsToday ?? '—'}</strong>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : showWaiting ? (
-              <div className="flex flex-col gap-3">
-                <h1 className="text-[21px] font-bold leading-tight">Waiting for ride requests</h1>
-                <p className="text-xs text-[#667085]">Stay online to receive your next booking.</p>
-                <div className="rounded-[17px] bg-[#1f2129] p-4 text-white">
-                  <p className="flex items-center gap-2.5 text-sm font-semibold">
-                    <span className={`size-3 rounded-full ${isOnline ? 'bg-[#22b364]' : 'bg-[#667085]'}`} />
-                    {isOnline ? 'You’re online' : 'You’re offline'}
-                  </p>
-                  <p className="mt-1.5 text-xs">{isOnline ? 'Ready for incoming ride requests' : 'Go online when you’re ready for requests'}</p>
-                </div>
-                <button type="button" onClick={() => navigate('/driver/requests')} className="rounded-[14px] border border-[#e4e7ed] bg-[#f3f4f6] px-3 py-2 text-left">
-                  <span className="block text-sm font-semibold">
-                    {visibleRides.length > 0 ? `${visibleRides.length} incoming ${visibleRides.length === 1 ? 'request' : 'requests'}` : 'No incoming requests yet'}
-                  </span>
-                  <span className="block text-[11px] text-[#667085]">New bookings will appear in Requests.</span>
-                </button>
-                <DriverAvailabilityControl
-                  isOnline={isOnline}
-                  onChange={handleAvailabilityChange}
-                  onApplied={handleAvailabilityApplied}
-                  coords={driverCoords}
-                  appearance="outline"
-                />
-              </div>
-            ) : showDrive ? (
-              <div className="flex flex-col gap-3">
-                <h1 className="text-[21px] font-bold leading-tight">Drive status</h1>
-                <p className="text-xs text-[#667085]">Review trip changes and driving tools.</p>
-                <div className="rounded-[17px] border border-[#e4e7ed] bg-[#f3f4f6] p-4">
-                  <p className="font-bold">No trip in progress</p>
-                  <p className="mt-4 text-xs text-[#667085]">Your next confirmed trip appears here.</p>
-                </div>
-                <button type="button" onClick={() => navigate('/driver/trips')} className={`${actionClass} bg-primary text-primary-foreground`}>Trip history</button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3">
-                <h1 className="text-[21px] font-bold leading-tight">Ride requests</h1>
-                <p className="text-xs text-[#667085]">Requests arrive here when you’re online and approved.</p>
-                <div className="flex gap-3">
-                  {(['ride', 'parcel'] as const).map((kind) => (
-                    <button
-                      key={kind}
-                      type="button"
-                      aria-pressed={requestKind === kind}
-                      onClick={() => setRequestKind((current) => current === kind ? null : kind)}
-                      className={`${actionClass} flex-1 border border-primary ${requestKind === kind ? 'bg-primary text-primary-foreground' : 'bg-white text-[#111]'}`}
-                    >
-                      {kind === 'ride' ? 'Ride requests' : 'Parcel requests'}
-                    </button>
-                  ))}
-                </div>
-                {loading ? (
-                  <div role="status" className="h-20 animate-pulse rounded-[17px] bg-[#f3f4f6]" aria-label="Loading requests" />
-                ) : filteredRides.length === 0 ? (
-                  <div className="rounded-[17px] border border-[#e4e7ed] bg-[#f3f4f6] p-4">
-                    <p className="font-bold">No active requests</p>
-                    <p className="mt-4 text-xs text-[#667085]">{isOnline ? 'New bookings will appear here.' : 'Go online on Home to receive offers.'}</p>
-                  </div>
-                ) : (
-                  <>
-                    <p className="text-[11px] text-[#667085]">Swipe a card left to dismiss.</p>
-                    {filteredRides.map(({ ride, km, minutes }) => (
-                      <SwipeDismissCard key={ride.id} onDismiss={() => handleDismiss(ride)}>
-                        <RequestCard ride={ride} km={km} minutes={minutes} onView={() => navigate(`/driver/ride/${ride.id}`)} onDismiss={() => handleDismiss(ride)} />
-                      </SwipeDismissCard>
-                    ))}
-                  </>
-                )}
-              </div>
-            )}
+    <DriverLifecycleLayout
+      frameId={frameId}
+      activeTab={showDrive ? 'Drive' : 'Home'}
+      sheetTop={461}
+      contentOffset={30}
+      onBack={() => navigate(showHome ? '/profile' : '/driver/requests?view=home')}
+      onNotifications={openNotifications}
+      unreadCount={unreadCount}
+      onRecenter={driverCoords ? () => setRecenterSignal(value => value + 1) : undefined}
+      map={<LazyMapboxMap defaultCenter={driverCoords ?? undefined} driverLocation={driverCoords} height="100%" navigationFollow={recenterSignal > 0} recenterSignal={recenterSignal} followZoom={13} />}
+      footer={<DriverBottomNav embedded requestBadgeCount={visibleRides.length} />}
+    >
+      {showHome || (showWaiting && !isOnline) ? (
+        <div className="flex flex-col gap-3">
+          <div>
+            <h1 className="text-[21px] font-bold leading-tight">{greeting}{driverName ? `, ${driverName}` : ''}</h1>
+            <p className="mt-1 text-xs text-[#667085]">Ready when you are. Drive on your schedule.</p>
           </div>
-        </RideGlassPanel>
-      </div>
-
-      {undoRide && (
-        <div className="absolute inset-x-0 bottom-24 z-30 flex justify-center">
-          <div className="flex items-center gap-3 rounded-full bg-[#1f2129] px-4 py-2.5 text-xs font-semibold text-white shadow-lg">
-            <span>Request dismissed</span>
-            <button type="button" onClick={handleUndo} className="font-bold text-[#ffdd00]">Undo</button>
+          <div className="relative rounded-[17px] border border-[#e4e7ed] bg-white p-3.5">
+            <img src="/brand/ride/availability-accent.svg" alt="" className="pointer-events-none absolute inset-x-0 top-0 h-auto w-full rounded-[17px]" />
+            <div className="relative flex items-center justify-between gap-3">
+              <p className="flex items-center gap-2.5 text-[15px] font-bold">
+                <span className={`size-3 shrink-0 rounded-full ${isOnline ? 'bg-[#138862]' : 'bg-[#667085]'}`} />
+                {isOnline ? 'You’re online' : 'You’re offline'}
+              </p>
+              <DriverAvailabilityControl
+                isOnline={isOnline}
+                onChange={handleAvailabilityChange}
+                onApplied={handleAvailabilityApplied}
+                coords={driverCoords}
+                appearance="switch"
+              />
+            </div>
+            <p className="relative text-[11px] text-[#667085]">{isOnline ? 'Available for verified ride requests' : 'Turn on when you’re ready for requests'}</p>
+          </div>
+          <div>
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[#667085]">Your drive at a glance</p>
+            <div className="grid grid-cols-2 gap-3">
+              <button type="button" onClick={() => navigate('/driver/wallet')} className="rounded-[17px] bg-[#f3f4f6] p-3 text-left">
+                <span className="block text-[11px] text-[#667085]">Today’s earnings</span>
+                <strong className="mt-0.5 block text-lg">{earnings === null ? '—' : `$${earnings.toFixed(2)}`}</strong>
+              </button>
+              <button type="button" onClick={() => navigate('/driver/trips')} className="rounded-[17px] bg-[#f3f4f6] p-3 text-left">
+                <span className="block text-[11px] text-[#667085]">Trips today</span>
+                <strong className="mt-0.5 block text-lg">{tripsToday ?? '—'}</strong>
+              </button>
+            </div>
           </div>
         </div>
-      )}
-
-      <DriverBottomNav requestBadgeCount={visibleRides.length} />
-    </main>
+      ) : showWaiting ? (
+        <div className="flex flex-col gap-3">
+          <h1 className="text-[21px] font-bold leading-tight">Waiting for ride requests</h1>
+          <p className="text-xs text-[#667085]">Stay online to receive your next booking.</p>
+          <div className="rounded-[17px] bg-[#1f2129] p-4 text-white">
+            <p className="flex items-center gap-2.5 text-sm font-semibold">
+              <span className={`size-3 rounded-full ${isOnline ? 'bg-[#22b364]' : 'bg-[#667085]'}`} />
+              {isOnline ? 'You’re online' : 'You’re offline'}
+            </p>
+            <p className="mt-1.5 text-xs">{isOnline ? 'Ready for incoming ride requests' : 'Go online when you’re ready for requests'}</p>
+          </div>
+          <button type="button" onClick={() => navigate('/driver/requests')} className="rounded-[14px] border border-[#e4e7ed] bg-[#f3f4f6] px-3 py-2 text-left">
+            <span className="block text-sm font-semibold">
+              {visibleRides.length > 0 ? `${visibleRides.length} incoming ${visibleRides.length === 1 ? 'request' : 'requests'}` : 'No incoming requests yet'}
+            </span>
+            <span className="block text-[11px] text-[#667085]">New bookings will appear in Requests.</span>
+          </button>
+          <DriverAvailabilityControl
+            isOnline={isOnline}
+            onChange={handleAvailabilityChange}
+            onApplied={handleAvailabilityApplied}
+            coords={driverCoords}
+            appearance="outline"
+          />
+        </div>
+      ) : showDrive ? (
+        <div className="flex flex-col gap-3">
+          <h1 className="text-[21px] font-bold leading-tight">Drive status</h1>
+          <p className="text-xs text-[#667085]">Review trip changes and driving tools.</p>
+          <div className="relative overflow-hidden rounded-[17px] bg-[#f3f4f6] p-4">
+            <img src="/brand/driver-hub/DriveAccent.svg" alt="" className="pointer-events-none absolute left-0 top-0" />
+            <p className="relative font-bold">No trip in progress</p>
+            <p className="mt-4 text-xs text-[#667085]">Your next confirmed trip appears here.</p>
+          </div>
+          <button type="button" onClick={() => navigate('/driver/trips')} className={`${actionClass} bg-primary text-primary-foreground`}>Trip tools</button>
+        </div>
+      ) : null}
+    </DriverLifecycleLayout>
   );
 }
 

@@ -29,7 +29,7 @@ import type { Coordinates } from "@/lib/osrm";
 import { useAgoraCall } from "@/hooks/useAgoraCall";
 import IncomingCallModal from "@/components/ride/IncomingCallModal";
 import ActiveCallOverlay from "@/components/ride/ActiveCallOverlay";
-import DriverEarningsDashboard from "@/components/driver/DriverEarningsDashboard";
+import DriverEarningsOverview from "@/components/driver/DriverEarningsOverview";
 import FullScreenNavigation, { type RiderInfo } from "@/components/driver/FullScreenNavigation";
 import TripCollectSheet, { type CollectableRide } from "@/components/driver/TripCollectSheet";
 
@@ -740,19 +740,7 @@ export default function DriverDashboard() {
       {collection}
 
       {earningsOpen ? (
-        <div className="min-h-[100dvh] pb-24" style={{ background: "#F2F4F7" }}>
-          <div
-            className="sticky top-0 z-20 flex items-center justify-between px-4 py-3.5"
-            style={{ paddingTop: "calc(env(safe-area-inset-top) + 14px)", background: "rgba(255,255,255,.94)", backdropFilter: "blur(20px) saturate(190%)", WebkitBackdropFilter: "blur(20px) saturate(190%)" }}
-          >
-            <span className="text-[16px] font-bold" style={{ color: RIDE_TEXT }}>Earnings</span>
-            <button type="button" onClick={() => setEarningsOpen(false)} className="text-[13px] font-bold" style={{ color: RIDE_RED }}>Close</button>
-          </div>
-          <div className="max-w-lg mx-auto p-4">
-            <DriverEarningsDashboard />
-          </div>
-          <DriverBottomNav requestBadgeCount={newRideAlert.badgeCount} />
-        </div>
+        <DriverEarningsOverview key={user?.id} onClose={() => setEarningsOpen(false)} />
       ) : !uncollectedRide ? (
         <Navigate to="/driver/requests" replace />
       ) : null}

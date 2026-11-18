@@ -272,7 +272,7 @@ export default function DriverProfilePage() {
     );
   }
 
-  if (detail) return <DriverDetailScreen kind={detail} fullName={fullName} phone={phone} email={user?.email ?? null} profile={profile} onBack={() => setDetail(null)} onDocuments={() => navigate('/driver/application')} />;
+  if (detail) return <DriverDetailScreen kind={detail} fullName={fullName} phone={phone} email={user?.email ?? null} profile={profile} onBack={() => setDetail(null)} onEdit={() => navigate(detail === 'personal' ? '/driver/account/personal-edit' : detail === 'contact' ? '/driver/account/security' : '/driver/records/vehicle')} />;
   if (accountStatusOpen) {
     return <DriverAccountStatusScreen status={profile.status} reactivated={reactivated} onBack={() => setAccountStatusOpen(false)} onHome={() => navigate('/driver/dashboard')} />;
   }
@@ -287,13 +287,13 @@ export default function DriverProfilePage() {
   });
 
   return (
-    <div className="min-h-[100dvh] pb-24" style={{ background: '#F2F4F7', fontFamily: "-apple-system, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif" }}>
-      {/* Header */}
-      <div style={{ background: RIDE_RED, padding: 'calc(env(safe-area-inset-top) + 12px) 16px 12px' }}>
+    <div data-figma-node="1105:410" className="mx-auto min-h-[100dvh] max-w-[440px] bg-[#f2f3f5] pb-24 font-['Poppins',system-ui,sans-serif]">
+      <header className="bg-white px-6 pb-4 pt-[max(42px,env(safe-area-inset-top))]"><h1 className="text-xl font-bold">Profile</h1></header>
+      <div className="mx-[18px] mt-4 rounded-[18px] border border-[#e4e7ed] bg-white" style={{ padding: 'calc(env(safe-area-inset-top) + 12px) 16px 12px' }}>
         <div className="max-w-lg mx-auto">
           <div className="flex items-center" style={{ gap: 11 }}>
             <label className="relative shrink-0 cursor-pointer">
-              <div className="rounded-full bg-white/95 overflow-hidden flex items-center justify-center" style={{ width: 42, height: 42, boxShadow: '0 0 0 2px rgba(255,255,255,.4)' }}>
+              <div className="rounded-full bg-white/95 overflow-hidden flex items-center justify-center" style={{ width: 67, height: 67 }}>
                 <img src={profile.avatar_url || defaultDriverAvatar} alt={fullName} className="w-full h-full object-cover" />
               </div>
               <span className="absolute -bottom-0.5 -right-0.5 rounded-full bg-white flex items-center justify-center border-2" style={{ width: 17, height: 17, borderColor: RIDE_RED }}>
@@ -303,10 +303,10 @@ export default function DriverProfilePage() {
             </label>
 
             <div className="flex-1 min-w-0">
-              <p className="truncate text-white" style={{ fontSize: 16, fontWeight: 700 }}>{fullName}</p>
-              <div className="flex items-center flex-wrap" style={{ marginTop: 1, gap: 5, fontSize: 11.5, color: 'rgba(255,255,255,.85)' }}>
+              <p className="truncate" style={{ fontSize: 17, fontWeight: 700 }}>{fullName}</p>
+              <div className="flex items-center flex-wrap" style={{ marginTop: 1, gap: 5, fontSize: 11.5, color: RIDE_TEXT_2 }}>
                 <span className="flex items-center" style={{ gap: 3 }}>
-                  <Star style={{ width: 11, height: 11 }} fill="#fff" color="#fff" />
+                  <Star style={{ width: 11, height: 11 }} fill={RIDE_RED} color={RIDE_RED} />
                   {profile.rating_avg ? profile.rating_avg.toFixed(1) : 'New'}
                 </span>
                 {profile.status === 'approved' && (
@@ -321,11 +321,11 @@ export default function DriverProfilePage() {
             <button
               type="button"
               onClick={() => setNotificationsOpen(true)}
-              aria-label="Edit profile"
+              aria-label="Settings and notifications"
               className="shrink-0 flex items-center justify-center rounded-full active:scale-90 transition-transform"
-              style={{ width: 32, height: 32, background: 'rgba(255,255,255,.2)' }}
+              style={{ width: 32, height: 32, background: '#fcebed' }}
             >
-              <Pencil style={{ width: 14, height: 14, color: '#fff' }} />
+              <Pencil style={{ width: 14, height: 14, color: RIDE_RED }} />
             </button>
           </div>
 
@@ -351,6 +351,21 @@ export default function DriverProfilePage() {
       </div>
 
       <div className="max-w-lg mx-auto px-4" style={{ paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <section aria-label="Account details" className="space-y-2">
+          <h2 className="px-1 text-xs font-semibold text-[#667080]">Account</h2>
+          <div className="overflow-hidden rounded-[14px] border border-[#e4e7ed] bg-white">
+            <AccountRow icon={Pencil} label="Personal details" onClick={() => setDetail('personal')} />
+            <AccountRow icon={Copy} label="Email address" onClick={() => setDetail('contact')} />
+            <AccountRow icon={Copy} label="Phone number" onClick={() => setDetail('contact')} />
+          </div>
+        </section>
+        <section aria-label="Vehicle details" className="space-y-2">
+          <h2 className="px-1 text-xs font-semibold text-[#667080]">Vehicle</h2>
+          <div className="overflow-hidden rounded-[14px] border border-[#e4e7ed] bg-white">
+            <AccountRow icon={Car} label="Vehicle details" onClick={() => setDetail('vehicle')} />
+            <AccountRow icon={FileCheck2} label="Car registration plate" onClick={() => setDetail('vehicle')} />
+          </div>
+        </section>
         <button type="button" onClick={() => setAccountStatusOpen(true)} className="flex min-h-14 items-center justify-between rounded-2xl border border-[#e3e5eb] bg-white px-4 py-3 text-left" aria-label="Review account status">
           <span className="font-semibold text-[#262933]">{profile.status === 'suspended' ? 'Account suspended' : reactivated ? 'Account reactivated' : 'Account status'}</span>
           <ChevronRight className="size-5 shrink-0" aria-hidden="true" />
@@ -500,9 +515,6 @@ export default function DriverProfilePage() {
           <div style={{ ...glassSurface, borderRadius: 16, overflow: 'hidden' }}>
             <AccountRow icon={Pencil} label="Edit personal details" onClick={() => navigate('/driver/account/personal-edit')} />
             <AccountRow icon={ShieldAlert} label="Account security" onClick={() => navigate('/driver/account/security')} />
-            <AccountRow icon={Pencil} label="Personal details" onClick={() => setDetail('personal')} />
-            <AccountRow icon={Copy} label="Contact details" onClick={() => setDetail('contact')} />
-            <AccountRow icon={Car} label="Vehicle details" onClick={() => navigate('/driver/records/vehicle')} />
             <AccountRow icon={ChartColumn} label="Earnings & trip history" onClick={() => navigate('/driver/trips')} />
             <AccountRow icon={BadgeCheck} label="Driver badge & achievements" onClick={() => navigate('/driver/badges/progress')} />
             <AccountRow icon={Star} label="Ratings & feedback" onClick={() => setFeedbackOpen(true)} />

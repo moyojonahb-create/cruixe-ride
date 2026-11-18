@@ -52,15 +52,16 @@ export function DriverOfferBody({ ride, busy, note, onNoteChange, onSkip, trustT
     const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure); observer?.observe(node); return () => observer?.disconnect();
   }, []);
   const preferences = [ride.preferences?.quiet_ride && 'Quiet ride', ride.preferences?.cool_temperature && 'Cool temperature', ride.preferences?.wav_required && 'Wheelchair accessible', ride.preferences?.hearing_impaired && 'Hearing impaired'].filter(Boolean);
+  const guest = ride.passenger_name;
   const name = ride.passenger_display_name || 'Rider';
   return <>
     <div className="flex min-h-[25px] items-center justify-between gap-2">
-      <p className="text-[10.5px] font-semibold text-[#6b7280]">{(ride.vehicle_type || 'economy').toUpperCase()} REQUEST</p>
+      <p className="text-[10.5px] font-semibold text-[#6b7280]">{guest ? 'BOOKED FOR SOMEONE ELSE' : `${(ride.vehicle_type || 'economy').toUpperCase()} REQUEST`}</p>
       <span className="flex min-h-[25px] shrink-0 items-center gap-2 rounded-[13px] bg-[#f5f6f8] px-2 text-[10.5px] font-semibold"><img src={`${assets}/clock.svg`} alt="" className="block max-w-none" />{seconds === null ? 'Request active' : seconds > 0 ? `${seconds}s left` : 'Expired'}</span>
     </div>
-    <h1 className="min-h-[38px] text-[22px] font-bold leading-[38px]">New ride request</h1>
+    <h1 className="min-h-[38px] text-[22px] font-bold leading-[38px]">{guest ? 'New ride · for someone else' : 'New ride request'}</h1>
     <div className="flex min-h-[25px] items-center justify-between gap-2">
-      <p className="min-w-0 break-words text-[11.5px] font-medium text-[#6b7280]">{name}{ride.passenger_count != null ? ` · ${ride.passenger_count} passenger${ride.passenger_count === 1 ? '' : 's'}` : ''}</p>
+      <p className="min-w-0 break-words text-[11.5px] font-medium text-[#6b7280]">{guest ? `Passenger: ${guest}` : name}{ride.passenger_count != null ? ` · ${ride.passenger_count} passenger${ride.passenger_count === 1 ? '' : 's'}` : ''}</p>
       <button type="button" disabled={busy} onClick={onSkip} className="min-h-[34px] shrink-0 rounded-[17px] bg-[#1f2129] px-5 text-[11.5px] font-medium text-white disabled:opacity-50">Skip</button>
     </div>
     <div ref={route} className="relative mt-0.5 min-h-[94px] rounded-[17px] border border-[#e9edf2] bg-white">
@@ -75,7 +76,7 @@ export function DriverOfferBody({ ride, busy, note, onNoteChange, onSkip, trustT
     </div>
     {luggageOpen && <p className="my-2 rounded-xl border border-[#e3e7ee] bg-white p-3 text-[12px]">{ride.hasLuggage ? 'The rider has indicated luggage for this request.' : 'No luggage has been indicated for this request.'}</p>}
     <div className="mt-1 flex min-h-[34px] items-center gap-2 rounded-[11px] bg-[#f5f6f8] px-3"><img src={`${assets}/note.svg`} alt="" className="block max-w-none" /><strong className="text-[9px] text-[#667080]">NOTE</strong><p className="min-w-0 break-words text-[10.2px] font-medium">{ride.rider_note || 'No rider note provided.'}</p></div>
-    <button type="button" aria-expanded={preferencesOpen} onClick={() => setPreferencesOpen(value => !value)} className="mt-1 flex min-h-10 w-full items-center gap-[10px] rounded-[13px] border border-[#e3e7ee] bg-white px-3 text-left text-[11.5px] font-semibold"><img src={`${assets}/preferences.svg`} alt="" className="block max-w-none" /><span className="flex-1">View rider preferences</span><img src={`${assets}/chevron.svg`} alt="" className="block max-w-none" /></button>
+    <button type="button" aria-expanded={preferencesOpen} onClick={() => setPreferencesOpen(value => !value)} className="mt-1 flex min-h-10 w-full items-center gap-[10px] rounded-[13px] border border-[#e3e7ee] bg-white px-3 text-left text-[11.5px] font-semibold"><img src={`${assets}/preferences.svg`} alt="" className="block max-w-none" /><span className="flex-1">{guest ? 'View passenger information' : 'View rider preferences'}</span><img src={`${assets}/chevron.svg`} alt="" className="block max-w-none" /></button>
     {preferencesOpen && <div className="mt-2 rounded-xl border border-[#e3e7ee] p-3 text-[12px] leading-5">
       <p>{preferences.length ? preferences.join(' · ') : 'No additional rider preferences provided.'}</p>
       {trustText && <p className="mt-2 text-[#667085]">{trustText}</p>}

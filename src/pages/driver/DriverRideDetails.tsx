@@ -187,7 +187,7 @@ export default function DriverRideDetails() {
     );
   }
 
-  if (!isParcel) return <DriverLifecycleLayout frameId="1126:105" onBack={handleClose} busy={submitting} map={<LazyMapboxMap pickup={pickup} dropoff={dropoff} height="100%" className="h-full w-full" />} footer={<><DriverFareControl fare={driverOfferFare} busy={submitting || (!!ride.expires_at && new Date(ride.expires_at).getTime() <= Date.now())} onDecrease={() => adjustOffer(-OFFER_STEP)} onIncrease={() => adjustOffer(OFFER_STEP)} onSend={() => void handleSendOffer()} /><DriverBottomNav embedded activeTab="Requests" disabled={submitting} /></>}>
+  if (!isParcel) return <DriverLifecycleLayout frameId={ride.passenger_name ? '1264:118' : '1126:105'} onBack={handleClose} busy={submitting} map={<LazyMapboxMap pickup={pickup} dropoff={dropoff} height="100%" className="h-full w-full" />} footer={<><DriverFareControl fare={driverOfferFare} busy={submitting || (!!ride.expires_at && new Date(ride.expires_at).getTime() <= Date.now())} onDecrease={() => adjustOffer(-OFFER_STEP)} onIncrease={() => adjustOffer(OFFER_STEP)} onSend={() => void handleSendOffer()} /><DriverBottomNav embedded activeTab="Requests" disabled={submitting} /></>}>
     <DriverOfferBody ride={ride} busy={submitting} note={driverNote} onNoteChange={setDriverNote} onSkip={handleDecline} />
     <p className="mt-2 text-[11px] text-[#667085]">{fareComparisonText}</p>
   </DriverLifecycleLayout>;

@@ -22,6 +22,6 @@ export default function DriverTenScreenReview() {
     </aside>
     {index < 7
       ? <DriverRegistrationWizard key={index} previewStep={index + 1} onSuccess={() => {}} onClose={() => setIndex(0)} />
-      : <DriverDetailScreen kind={kinds[index - 7]} fullName="Sample Driver" phone={null} email={null} profile={sample} onBack={() => setIndex(0)} onDocuments={() => setNotice('Preview only. Sign in to staging to view your application.')} />}
+      : <DriverDetailScreen kind={kinds[index - 7]} fullName="Sample Driver" phone={null} email={null} profile={sample} onBack={() => setIndex(0)} onEdit={() => setNotice('Preview only. Sign in to staging to view your application.')} />}
   </div>;
 }
