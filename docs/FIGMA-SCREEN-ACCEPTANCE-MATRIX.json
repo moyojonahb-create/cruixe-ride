@@ -1313,15 +1313,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverAvailabilityControl.tsx",
+        "src/components/driver/DriverWorkBalanceAlert.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "Driver availability toggle after a confirmed low-balance denial",
+      "backend_dependency": "Existing driver eligibility API with additive, authenticated low-work-balance reason and minimum",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/driverAvailability.test.ts"
+      ],
       "outstanding_problems": [
-        "Availability returns a combined eligibility denial. It does not identify low balance or expose a driver-specific minimum, so a low-balance-only event cannot be inferred."
+        "Actual wallet balance remains in the PIN-protected Wallet. The alert shows only the required minimum. Deploy and verify the Go response in isolated staging before live acceptance."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2716,16 +2721,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverCaseStatusPage.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/cases/fare",
+      "backend_dependency": "Authenticated, reporter-scoped dispute records under existing Supabase RLS",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverCaseStatusPage.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The case view displays server status and resolution only. Authenticated staging with a real case and rendered Figma review are pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2739,16 +2748,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/ride/DisputeForm.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "Driver active trip \u2192 Safety \u2192 Report a problem \u2192 Safety Concern",
+      "backend_dependency": "Existing Go dispute submission acknowledgement for Driver safety concerns",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverSafetyIncident.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Acknowledged submissions show confirmation. Case number and priority are not returned by the submission API. Authenticated staging review pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2762,16 +2774,20 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/driver/DriverCaseStatusPage.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "/driver/cases/safety",
+      "backend_dependency": "Authenticated, reporter-scoped dispute records under existing Supabase RLS",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverCaseStatusPage.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "The case view displays server status and resolution only. Authenticated staging with a real case and rendered Figma review are pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,

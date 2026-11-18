@@ -13,7 +13,7 @@ beforeEach(() => {
 
 describe('shared driver availability mutation', () => {
   it('checks eligibility before going online and publishes confirmed state', async () => {
-    vi.mocked(canCurrentDriverOperate).mockResolvedValue(true);
+    vi.mocked(canCurrentDriverOperate).mockResolvedValue({ allowed: true, lowBalanceMinimumCents: null });
     vi.mocked(setDriverOnline).mockResolvedValue({ is_online: true });
     const listener = vi.fn();
     window.addEventListener(DRIVER_AVAILABILITY_EVENT, listener);
@@ -26,8 +26,17 @@ describe('shared driver availability mutation', () => {
 
   it('rejects ineligible drivers without mutating presence', async () => {
     sessionStorage.setItem('pickme-selfie-verified', 'forged-client-value');
-    vi.mocked(canCurrentDriverOperate).mockResolvedValue(false);
+    vi.mocked(canCurrentDriverOperate).mockResolvedValue({ allowed: false, lowBalanceMinimumCents: null });
     await expect(updateDriverAvailability('driver-a', true)).rejects.toBeInstanceOf(DriverEligibilityError);
+    expect(setDriverOnline).not.toHaveBeenCalled();
+  });
+
+  it('keeps the driver offline and passes through a confirmed balance denial', async () => {
+    vi.mocked(canCurrentDriverOperate).mockResolvedValue({ allowed: false, lowBalanceMinimumCents: 50 });
+    await expect(updateDriverAvailability('driver-low-balance', true)).rejects.toMatchObject({
+      name: 'DriverEligibilityError',
+      lowBalanceMinimumCents: 50,
+    });
     expect(setDriverOnline).not.toHaveBeenCalled();
   });
 
@@ -38,7 +47,7 @@ describe('shared driver availability mutation', () => {
   });
 
   it('deduplicates the same concurrent intent for one authenticated driver', async () => {
-    vi.mocked(canCurrentDriverOperate).mockResolvedValue(true);
+    vi.mocked(canCurrentDriverOperate).mockResolvedValue({ allowed: true, lowBalanceMinimumCents: null });
     let resolve!: (value: { is_online: boolean }) => void;
     vi.mocked(setDriverOnline).mockReturnValue(new Promise((done) => { resolve = done; }));
     const first = updateDriverAvailability('driver-a', true);
@@ -50,7 +59,7 @@ describe('shared driver availability mutation', () => {
   });
 
   it('serializes opposite intents per driver and only publishes the latest result', async () => {
-    vi.mocked(canCurrentDriverOperate).mockResolvedValue(true);
+    vi.mocked(canCurrentDriverOperate).mockResolvedValue({ allowed: true, lowBalanceMinimumCents: null });
     let finishOnline!: (value: { is_online: boolean }) => void;
     vi.mocked(setDriverOnline)
       .mockReturnValueOnce(new Promise((resolve) => { finishOnline = resolve; }))

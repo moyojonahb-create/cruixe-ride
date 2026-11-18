@@ -4,7 +4,7 @@ import { setDriverOnline } from '@/lib/driverPresence';
 export const DRIVER_AVAILABILITY_EVENT = 'cruixe:driver-availability';
 
 export class DriverEligibilityError extends Error {
-  constructor() {
+  constructor(public readonly lowBalanceMinimumCents: number | null = null) {
     super('Your trial has ended or your wallet balance is too low. Please deposit to continue.');
     this.name = 'DriverEligibilityError';
   }
@@ -56,8 +56,8 @@ export function updateDriverAvailability(
   const operation = queue.tail.catch(() => undefined).then(async () => {
     if (generation !== queue!.generation) return { applied: false, isOnline: next };
     if (next) {
-      const allowed = await canCurrentDriverOperate();
-      if (!allowed) throw new DriverEligibilityError();
+      const eligibility = await canCurrentDriverOperate();
+      if (!eligibility.allowed) throw new DriverEligibilityError(eligibility.lowBalanceMinimumCents);
     }
     await setDriverOnline(next, coords);
     const applied = generation === queue!.generation;

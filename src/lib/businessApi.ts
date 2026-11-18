@@ -160,8 +160,12 @@ export function adminUpdateDemandZones() {
 }
 
 export async function canCurrentDriverOperate() {
-  const result = await goBackend.get<{ can_operate?: boolean }>("/api/drivers/me/can-operate");
-  return Boolean(result.can_operate);
+  const result = await goBackend.get<{ can_operate?: boolean; reason?: string; minimum_balance_cents?: number }>("/api/drivers/me/can-operate");
+  const minimum = result.minimum_balance_cents;
+  return {
+    allowed: Boolean(result.can_operate),
+    lowBalanceMinimumCents: result.reason === 'low_work_balance' && typeof minimum === 'number' && Number.isSafeInteger(minimum) && minimum > 0 ? minimum : null,
+  };
 }
 
 export async function isCurrentDriverTopDriver() {

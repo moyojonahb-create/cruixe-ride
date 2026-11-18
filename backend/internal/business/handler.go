@@ -983,11 +983,31 @@ func (h *Handler) CanDriverOperate(c *fiber.Ctx) error {
 	if !ok {
 		return fiber.NewError(fiber.StatusUnauthorized, "authentication required")
 	}
+	const minimumBalanceCents = 50
 	var canOperate bool
-	if err := h.db.QueryRow(c.Context(), `SELECT public.can_driver_operate($1::uuid)`, userID).Scan(&canOperate); err != nil {
+	var lowBalance bool
+	// Preserve the database function as the authorization decision. Classify a
+	// denial only when the driver's approval, trial and wallet establish its cause.
+	err := h.db.QueryRow(c.Context(), `
+		SELECT eligibility.allowed,
+		       CASE WHEN NOT eligibility.allowed THEN EXISTS (
+		         SELECT 1 FROM public.drivers d
+		         JOIN public.driver_wallets w ON w.driver_id = d.user_id
+		         WHERE d.user_id = $1::uuid AND d.status = 'approved'
+		           AND (d.trial_ends_at IS NULL OR d.trial_ends_at <= now())
+		           AND w.balance_usd < ($2::numeric / 100)
+		       ) ELSE false END
+		FROM (SELECT public.can_driver_operate($1::uuid) AS allowed) eligibility`, userID, minimumBalanceCents).
+		Scan(&canOperate, &lowBalance)
+	if err != nil {
 		return err
 	}
-	return c.JSON(fiber.Map{"can_operate": canOperate})
+	response := fiber.Map{"can_operate": canOperate}
+	if lowBalance {
+		response["reason"] = "low_work_balance"
+		response["minimum_balance_cents"] = minimumBalanceCents
+	}
+	return c.JSON(response)
 }
 
 func (h *Handler) IsTopDriver(c *fiber.Ctx) error {

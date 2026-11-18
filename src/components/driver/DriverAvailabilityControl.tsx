@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Loader2, Power } from 'lucide-react';
 import { toast } from 'sonner';
 import { DriverEligibilityError, subscribeDriverAvailability, updateDriverAvailability } from '@/lib/driverAvailability';
+import DriverWorkBalanceAlert from './DriverWorkBalanceAlert';
 import { useAuth } from '@/hooks/useAuth';
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
 export default function DriverAvailabilityControl({ isOnline, onChange, coords, compact = false, appearance, onApplied }: Props) {
   const { user } = useAuth();
   const [updating, setUpdating] = useState(false);
+  const [minimumBalance, setMinimumBalance] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   useEffect(() => subscribeDriverAvailability(onChange), [onChange]);
 
@@ -30,6 +32,10 @@ export default function DriverAvailabilityControl({ isOnline, onChange, coords, 
         onApplied?.(next);
       }
     } catch (error) {
+      if (error instanceof DriverEligibilityError && error.lowBalanceMinimumCents !== null) {
+        setMinimumBalance(error.lowBalanceMinimumCents);
+        return;
+      }
       setErrorMessage((error as Error).message || 'Could not update availability');
       toast.error(error instanceof DriverEligibilityError ? 'Cannot go online' : 'Failed to update status', { description: (error as Error).message });
     } finally {
@@ -41,8 +47,10 @@ export default function DriverAvailabilityControl({ isOnline, onChange, coords, 
     void commit(!isOnline);
   };
 
+  const balanceAlert = minimumBalance !== null && <DriverWorkBalanceAlert minimumCents={minimumBalance} onClose={() => setMinimumBalance(null)} />;
   if (appearance === 'switch') {
     return (
+      <>
       <button
         type="button"
         role="switch"
@@ -59,6 +67,8 @@ export default function DriverAvailabilityControl({ isOnline, onChange, coords, 
           </span>
         </span>
       </button>
+      {balanceAlert}
+      </>
     );
   }
 
@@ -70,6 +80,7 @@ export default function DriverAvailabilityControl({ isOnline, onChange, coords, 
         {updating ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : appearance !== 'outline' && <Power className="h-4 w-4" aria-hidden />}
         {updating ? 'Updating…' : isOnline ? 'Go offline' : 'Go online'}
       </button>
+      {balanceAlert}
       {errorMessage && <span role="alert" className="max-w-40 rounded-lg bg-white/90 px-2 py-1 text-xs font-semibold" style={{ color: compact ? '#111111' : '#B81104' }}>{errorMessage}</span>}
     </>
   );

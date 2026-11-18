@@ -1,4 +1,5 @@
-import { useState, type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
+import { useRef, useState, type ReactNode } from 'react';
 import { AlertTriangle, MessageSquare, DollarSign, Clock, Navigation, Shield, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,6 +9,7 @@ import { toast } from 'sonner';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -35,32 +37,47 @@ export default function DisputeForm({ rideId, role = 'rider', trigger }: Dispute
   const [category, setCategory] = useState<string | null>(null);
   const [description, setDescription] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [safetySubmitted, setSafetySubmitted] = useState(false);
+  const submissionInFlight = useRef(false);
+
+  const updateOpen = (next: boolean) => {
+    if (submissionInFlight.current) return;
+    setOpen(next);
+    if (!next) setSafetySubmitted(false);
+  };
 
   const handleSubmit = async () => {
-    if (!user || !category || !description.trim()) return;
+    if (!user || !category || description.trim().length < 10 || submissionInFlight.current) return;
+    submissionInFlight.current = true;
     setSubmitting(true);
 
     try {
-      await submitDispute({
+      const result = await submitDispute({
         ride_id: rideId,
         reporter_role: role,
         category,
         description: description.trim(),
       });
-      toast.success('Dispute submitted. Our team will review it shortly.');
-      setOpen(false);
+      if (result.success !== true) throw new Error('Report was not acknowledged.');
+      if (role === 'driver' && category === 'safety_concern') {
+        setSafetySubmitted(true);
+      } else {
+        toast.success('Dispute submitted. Our team will review it shortly.');
+        setOpen(false);
+      }
       setCategory(null);
       setDescription('');
     } catch (err) {
       console.error('Failed to submit dispute:', err);
       toast.error('Failed to submit dispute. Please try again.');
     } finally {
+      submissionInFlight.current = false;
       setSubmitting(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={updateOpen}>
       <DialogTrigger asChild>
         {trigger ?? (
           <Button variant="outline" size="sm" className="gap-1.5 text-destructive border-destructive/20">
@@ -69,7 +86,24 @@ export default function DisputeForm({ rideId, role = 'rider', trigger }: Dispute
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      {safetySubmitted ? <DialogContent data-figma-node="1376:173" className="max-w-[440px] rounded-[22px] bg-[#faf9f8] font-['Poppins',system-ui,sans-serif]">
+        <DialogHeader><DialogTitle>Safety Incident Submitted</DialogTitle></DialogHeader>
+        <section className="rounded-[18px] border-t-[6px] border-[#161118] bg-primary p-5 text-center text-white">
+          <h2 className="font-bold">Safety report received</h2>
+          <DialogDescription className="mt-2 text-xs text-white">The server accepted your safety report.</DialogDescription>
+        </section>
+        <section className="rounded-[18px] border-l-[5px] border-[#161118] bg-white p-4">
+          <h2 className="font-bold">Case overview</h2>
+          <dl className="mt-3 divide-y divide-border text-sm">
+            <div className="py-3"><dt className="font-semibold">Incident type</dt><dd className="mt-1 text-muted-foreground">Safety concern</dd></div>
+            <div className="py-3"><dt className="font-semibold">Report status</dt><dd className="mt-1 text-muted-foreground">Submitted</dd></div>
+          </dl>
+        </section>
+        <footer className="grid grid-cols-2 gap-2">
+          <Button variant="outline" onClick={() => updateOpen(false)}>Close</Button>
+          <Button asChild><Link to="/driver/cases/safety">Track Safety Report</Link></Button>
+        </footer>
+      </DialogContent> : <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-destructive" />
@@ -121,7 +155,7 @@ export default function DisputeForm({ rideId, role = 'rider', trigger }: Dispute
             Submit Report
           </Button>
         </div>
-      </DialogContent>
+      </DialogContent>}
     </Dialog>
   );
 }

@@ -537,6 +537,8 @@ export default function DriverProfilePage() {
               disabled={!voiceSupported}
             />
             <AccountRow icon={ShieldAlert} label="Safety & emergency contact" iconColor={RIDE_RED} onClick={() => navigate('/driver/account/emergency')} />
+            <AccountRow icon={CircleHelp} label="Fare dispute status" onClick={() => navigate('/driver/cases/fare')} />
+            <AccountRow icon={ShieldAlert} label="Safety case status" onClick={() => navigate('/driver/cases/safety')} />
             <AccountRow icon={CircleHelp} label="Help & support" onClick={() => navigate('/driver/account/help')} last />
           </div>
         </section>

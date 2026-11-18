@@ -59,6 +59,7 @@ const DriverRecordsScreenReview = import.meta.env.MODE === "staging" ? lazy(() =
 const DriverAccountPage = lazy(() => import("./pages/driver/DriverAccountPage"));
 const DriverBadgesPage = lazy(() => import("./pages/driver/DriverBadgesPage"));
 const DriverBadgeScreenReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/DriverBadgeScreenReview")) : null;
+const DriverCaseStatusPage = lazy(() => import("./pages/driver/DriverCaseStatusPage"));
 const DriverProfile = lazy(() => import("./pages/driver/DriverProfile"));
 const DriverRideRequests = lazy(() => import("./pages/driver/DriverRideRequests"));
 const DriverRideDetails = lazy(() => import("./pages/driver/DriverRideDetails"));
@@ -203,6 +204,7 @@ export default function App() {
           <Route path="/driver/records/:screen" element={<SuspenseWrap><AuthGuard><DriverRecordsPage /></AuthGuard></SuspenseWrap>} />
           <Route path="/driver/account/:screen" element={<SuspenseWrap><AuthGuard><DriverAccountPage /></AuthGuard></SuspenseWrap>} />
           <Route path="/driver/badges/:screen" element={<SuspenseWrap><AuthGuard><DriverBadgesPage /></AuthGuard></SuspenseWrap>} />
+          <Route path="/driver/cases/:kind" element={<SuspenseWrap><AuthGuard><DriverCaseStatusPage /></AuthGuard></SuspenseWrap>} />
           <Route path="/driver/profile" element={<SuspenseWrap><AuthGuard><DriverProfile /></AuthGuard></SuspenseWrap>} />
           <Route path="/driver/requests" element={<SuspenseWrap><AuthGuard><DriverRideRequests /></AuthGuard></SuspenseWrap>} />
           <Route path="/driver/ride/:rideId" element={<SuspenseWrap><AuthGuard><DriverRideDetails /></AuthGuard></SuspenseWrap>} />
