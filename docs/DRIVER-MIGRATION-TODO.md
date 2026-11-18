@@ -2,6 +2,8 @@
 
 Use the [screen acceptance ledger](FIGMA-SCREEN-ACCEPTANCE-MATRIX.json) for Figma node IDs and live integration status. The ten Support, Account Review and Cash Issue frames at `/staging/driver-support-10` use sample data. The staging controls only switch previews.
 
+The 20 Account Security, Wallet Dispute and Student Ride frames are at `/staging/driver-migration-20`. The ledger maps each route to its Figma frame. The three student offer states use a sample map and the four call states use a repository sample portrait. Compare both with Figma during visual acceptance.
+
 | Workstream | Deferred work | Acceptance evidence |
 |---|---|---|
 | Support tickets | Add owned ticket creation, inbox, status, message history, replies, resolution and reopening. Keep the existing email contact path available. | Ticket and message IDs come from the server. Test two accounts for isolation, retries, authorized status transitions and recorded staff responses. |
