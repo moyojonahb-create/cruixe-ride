@@ -19,7 +19,7 @@ function Artwork({ name, width = 360 }: { name: string; width?: number }) {
   return <div ref={container} aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"><div style={{ transform: `scaleX(${scale})`, transformOrigin: 'top left', width }}><img src={`${assets}/${name}.svg`} alt="" className="block max-w-none" /></div></div>;
 }
 
-function Rider({ name, avatar, count, note, onboard = false, tall = false }: { name: string; avatar?: string | null; count: number | null; note?: string | null; onboard?: boolean; tall?: boolean }) {
+function Rider({ name, avatar, count, note, onboard = false, tall = false, description }: { name: string; avatar?: string | null; count: number | null; note?: string | null; onboard?: boolean; tall?: boolean; description?: string }) {
   const initials = name.split(/\s+/).filter(Boolean).slice(0,2).map(part => part[0]).join('');
   return <div className={`relative flex items-center gap-3 rounded-[17px] border border-[#e9eaf0] bg-white px-3 py-[10px]`} style={{ minHeight: tall ? 104 : onboard ? 64 : 74 }}>
     {!onboard && <Artwork name={tall ? 'arrived-rider-stroke' : 'accepted-rider-stroke'} />}
@@ -28,7 +28,7 @@ function Rider({ name, avatar, count, note, onboard = false, tall = false }: { n
     </span>
     <div className="relative min-w-0 flex-1">
       <p className={`${onboard ? 'text-[17px]' : tall ? 'text-[16px]' : 'text-[15px]'} break-words font-bold leading-6`}>{name}</p>
-      <p className="mt-1 break-words text-[10.5px] leading-4 text-[#667085]">{count == null ? 'Passenger count unavailable' : `${count} passenger${count === 1 ? '' : 's'}`}{onboard ? ' · Ready for departure' : note ? ` · ${note}` : ''}</p>
+      <p className="mt-1 break-words text-[10.5px] leading-4 text-[#667085]">{description ?? (count == null ? 'Passenger count unavailable' : `${count} passenger${count === 1 ? '' : 's'}`)}{onboard ? ' · Ready for departure' : note ? ` · ${note}` : ''}</p>
     </div>
   </div>;
 }
@@ -55,6 +55,7 @@ export interface DriverActiveTripContentProps {
   callDisabled: boolean;
   unreadMessages?: number;
   onNavigate: () => void;
+  onPassengerDetails?: () => void;
   onOnboard: () => void;
   onStart: () => void;
   onBackToWaiting: () => void;
@@ -67,6 +68,7 @@ export interface DriverActiveTripContentProps {
 
 export default function DriverActiveTripContent(props: DriverActiveTripContentProps) {
   const { phase, passengerName, pickup, destination, fare, paymentMethod, busy } = props;
+  const guestBooking = phase === 'accepted' && Boolean(props.onPassengerDetails);
   const waitingMinutes = useMinutesSince(props.arrivedAt);
   return <section className="pb-3 pt-2 font-['Poppins',system-ui,sans-serif] text-[#1f2129]">
     <div className="flex items-center justify-between gap-3">
@@ -75,7 +77,7 @@ export default function DriverActiveTripContent(props: DriverActiveTripContentPr
     </div>
     <h1 className={`mt-2 min-h-[41px] ${phase === 'arrived' ? 'text-[24px]' : 'text-[21.4px]'} font-bold leading-[1.7]`}>{phase === 'accepted' ? 'Your offer was accepted' : phase === 'arrived' ? "You've arrived" : 'Passenger onboard'}</h1>
     <div className="flex min-h-6 items-center justify-between gap-3">
-      <p className="min-w-0 break-words text-[11.6px] leading-5 text-[#667085]">{phase === 'accepted' ? `${passengerName} confirmed your offer.` : phase === 'arrived' ? `Waiting for ${passengerName} at ${pickup}.` : 'Confirm every passenger is safely seated.'}</p>
+      <p className="min-w-0 break-words text-[11.6px] leading-5 text-[#667085]">{phase === 'accepted' ? guestBooking ? 'Booking accepted for someone else.' : `${passengerName} confirmed your offer.` : phase === 'arrived' ? `Waiting for ${passengerName} at ${pickup}.` : 'Confirm every passenger is safely seated.'}</p>
       {phase === 'accepted' && <span className="rounded-full bg-[#1f2129] px-5 py-1 text-[14px] font-bold text-white">${fare.toFixed(2)}</span>}
     </div>
     {phase === 'accepted' ? <>
@@ -87,8 +89,15 @@ export default function DriverActiveTripContent(props: DriverActiveTripContentPr
         <p className="relative text-[9px] font-semibold text-[#647080]">PICKUP</p><p className="relative break-words text-[15px] font-bold leading-6">{pickup}</p>
         <p className="relative mt-[5px] text-[9px] font-semibold text-[#647080]">DROP-OFF</p><p className="relative break-words text-[14.5px] font-bold leading-6">{destination}</p>
       </div>
-      <div className="mt-2"><Rider name={passengerName} avatar={props.avatarUrl} count={props.passengerCount} note={props.riderNote} /></div>
-      <p className="my-[9px] text-[11.5px] leading-[22px] text-[#667085]">Arrive at the agreed pickup point.</p>
+      {guestBooking ? (
+        <div className="relative mt-2">
+          <Rider name={passengerName} count={props.passengerCount} description="Passenger booked by another person" />
+          <button type="button" aria-label="Passenger details" className="absolute inset-0 w-full rounded-[17px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary" onClick={props.onPassengerDetails} />
+        </div>
+      ) : (
+        <div className="mt-2"><Rider name={passengerName} avatar={props.avatarUrl} count={props.passengerCount} note={props.riderNote} /></div>
+      )}
+      <p className="my-[9px] text-[11.5px] leading-[22px] text-[#667085]">{guestBooking ? 'Open passenger details for contact and pickup verification.' : 'Arrive at the agreed pickup point.'}</p>
       <button type="button" onClick={props.onNavigate} disabled={busy} className={button}>Navigate to pickup</button>
     </> : phase === 'arrived' ? <>
       <div className="mt-3"><Rider name={passengerName} avatar={props.avatarUrl} count={props.passengerCount} note={props.riderNote || pickup} tall /></div>

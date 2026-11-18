@@ -22,6 +22,7 @@ import DriverMessageSheet from "@/components/driver/DriverMessageSheet";
 import { usePickupNoShowReport } from '@/components/driver/driverTripExceptionState';
 import { DriverPickupNoShowScreen } from '@/components/driver/DriverTripExceptionScreens';
 import DriverLifecycleLayout from '@/components/driver/DriverLifecycleLayout';
+import DriverGuestPassengerDetails from '@/components/driver/DriverGuestPassengerDetails';
 import DriverActiveTripContent, { DriverNavigationDock } from '@/components/driver/DriverActiveTripContent';
 import DriverDestinationReached from "@/components/driver/DriverDestinationReached";
 import SafetySheet from "@/components/ride/SafetySheet";
@@ -250,6 +251,7 @@ export default function FullScreenNavigation({
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [lastSpokenStepIndex, setLastSpokenStepIndex] = useState(-1);
   const [chatOpen, setChatOpen] = useState(false);
+  const [guestDetailsRideId, setGuestDetailsRideId] = useState<string | null>(null);
   const latestTrip = useRef(activeTrip);
   latestTrip.current = activeTrip;
   const [navigationStarted, setNavigationStarted] = useState(false);
@@ -566,6 +568,8 @@ export default function FullScreenNavigation({
 
   const passengerName = activeTrip.passenger_name || riderInfo?.full_name || 'Passenger';
   const dialNumber = activeTrip.passenger_phone || riderPhone;
+  const guestName = activeTrip.passenger_name?.trim();
+  const guestDetailsOpen = Boolean(guestName) && guestDetailsRideId === activeTrip.id && activeTrip.status === 'accepted';
 
 
   if (noShowOpen && activeTrip.status === 'arrived') return (
@@ -585,9 +589,13 @@ export default function FullScreenNavigation({
       />);
   return (
     <motion.div data-map-screen="true" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] overflow-y-auto bg-background">
-      {(isArrivedWaiting || (isPickupPhase && !navigationStarted && activeTrip.status === 'accepted')) ? (
-        <DriverLifecycleLayout frameId={isArrivedWaiting ? onboardConfirm ? '1182:198' : '1153:225' : '1153:105'} map={navigationMap} onBack={() => navigate(profilePath)} onRecenter={() => setRecenterSignal(value => value + 1)} busy={cancelling || statusUpdating}>
-          <DriverActiveTripContent phase={isArrivedWaiting ? onboardConfirm ? 'onboard' : 'arrived' : 'accepted'} passengerName={passengerName} avatarUrl={riderInfo?.avatar_url} passengerCount={activeTrip.passenger_count ?? null} pickup={activeTrip.pickup_address} destination={activeTrip.dropoff_address} fare={activeTrip.fare} paymentMethod={activeTrip.payment_method} riderNote={riderNote} arrivedAt={activeTrip.driver_arrived_at} busy={cancelling || statusUpdating} callDisabled={!dialNumber || callStatus !== 'idle'} unreadMessages={unreadMessages} onNavigate={() => setNavigationStarted(true)} onOnboard={() => setOnboardConfirm(true)} onStart={() => void handleStatusUpdate('in_progress', 'Trip started', 'Drive safely to the destination')} onBackToWaiting={() => setOnboardConfirm(false)} onNoShow={() => setNoShowOpen(true)} onCall={onStartCall} onMessage={() => setChatOpen(true)} onCancel={() => setCancelReasonOpen(true)} onSafety={() => setSafetyOpen(true)} />
+      {guestDetailsOpen ? (
+        <DriverLifecycleLayout frameId="1261:509" sheetTop={249} contentOffset={33} map={<>{navigationMap}<span className="pointer-events-none absolute left-[73px] top-[52px] rounded-full bg-white/95 px-6 py-2 text-[10px] font-semibold">THIRD-PARTY BOOKING</span></>} onBack={() => setGuestDetailsRideId(null)} onRecenter={() => setRecenterSignal(value => value + 1)}>
+          <DriverGuestPassengerDetails name={guestName || passengerName} phone={activeTrip.passenger_phone} />
+        </DriverLifecycleLayout>
+      ) : (isArrivedWaiting || (isPickupPhase && !navigationStarted && activeTrip.status === 'accepted')) ? (
+        <DriverLifecycleLayout frameId={isArrivedWaiting ? onboardConfirm ? '1182:198' : '1153:225' : guestName ? '1263:124' : '1153:105'} map={navigationMap} onBack={() => navigate(profilePath)} onRecenter={() => setRecenterSignal(value => value + 1)} busy={cancelling || statusUpdating}>
+          <DriverActiveTripContent phase={isArrivedWaiting ? onboardConfirm ? 'onboard' : 'arrived' : 'accepted'} passengerName={passengerName} avatarUrl={guestName ? undefined : riderInfo?.avatar_url} onPassengerDetails={guestName ? () => setGuestDetailsRideId(activeTrip.id) : undefined} passengerCount={activeTrip.passenger_count ?? null} pickup={activeTrip.pickup_address} destination={activeTrip.dropoff_address} fare={activeTrip.fare} paymentMethod={activeTrip.payment_method} riderNote={riderNote} arrivedAt={activeTrip.driver_arrived_at} busy={cancelling || statusUpdating} callDisabled={!dialNumber || callStatus !== 'idle'} unreadMessages={unreadMessages} onNavigate={() => setNavigationStarted(true)} onOnboard={() => setOnboardConfirm(true)} onStart={() => void handleStatusUpdate('in_progress', 'Trip started', 'Drive safely to the destination')} onBackToWaiting={() => setOnboardConfirm(false)} onNoShow={() => setNoShowOpen(true)} onCall={onStartCall} onMessage={() => setChatOpen(true)} onCancel={() => setCancelReasonOpen(true)} onSafety={() => setSafetyOpen(true)} />
         </DriverLifecycleLayout>
       ) : <>{navigationMap}
 

@@ -25,6 +25,16 @@ describe('Driver lifecycle status boundaries',()=>{
   fireEvent.click(screen.getByRole('button',{name:"I've arrived"}));
   await waitFor(()=>expect(mocks.post).toHaveBeenCalledWith('/api/rides/ride/status',{status:'arrived',expectedStatus:'accepted'}));
  });
+ it('opens guest passenger contact only after the trip is accepted',()=>{
+  const guest={...trip,passenger_name:'Guest Rider',passenger_phone:'+263771234567'};
+  render(<MemoryRouter><FullScreenNavigation {...props} activeTrip={guest}/></MemoryRouter>);
+  expect(screen.queryByText('Contact: +263771234567')).toBeNull();
+  expect(screen.getByText('Booking accepted for someone else.')).toBeTruthy();
+  fireEvent.click(screen.getByRole('button',{name:'Passenger details'}));
+  expect(screen.getByRole('heading',{name:'Booking for someone else'})).toBeTruthy();
+  expect(screen.getByRole('link',{name:'Call passenger'}).getAttribute('href')).toBe('tel:+263771234567');
+  expect(mocks.post).not.toHaveBeenCalled();
+ });
  it('requires the separate onboard confirmation before posting trip start, and blocks duplicate taps',async()=>{
   let finish!:()=>void;mocks.post.mockImplementation(()=>new Promise<void>(resolve=>{finish=resolve;}));
   render(<MemoryRouter><FullScreenNavigation {...props} activeTrip={{...trip,status:'arrived'}}/></MemoryRouter>);
