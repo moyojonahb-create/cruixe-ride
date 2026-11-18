@@ -6,11 +6,18 @@ vi.mock('@/lib/walletApi', () => ({ getDriverWalletSummary: mocks.wallet }));
 vi.mock('@/lib/haptics', () => ({ haptic: vi.fn() }));
 vi.mock('sonner', () => ({ toast: { error: mocks.error } }));
 vi.mock('@/lib/supabaseClient', () => ({ supabase: { from: () => ({ select: () => ({ eq: () => ({ maybeSingle: () => Promise.resolve({ data: null }) }) }) }) } }));
+vi.mock('@/components/driver/DriverLifecycleLayout', () => ({ default: ({children}: {children: import('react').ReactNode}) => <div>{children}</div> }));
 import TripCollectSheet from '@/components/driver/TripCollectSheet';
 const ride = { id: 'ride-1', fare: 5, payment_method: 'cash', pickup_address: 'Montrose', dropoff_address: 'Tower Block', user_id: 'rider-1' };
 
 describe('approved driver cash collection sequence', () => {
   beforeEach(() => { vi.clearAllMocks(); mocks.wallet.mockResolvedValue({ earnings: [{ ride_id: 'ride-1', fare_amount: 5, platform_fee: .75, driver_earnings: 4.25 }] }); });
+  it('never confirms an unknown or non-cash payment through the cash action', () => {
+    render(<TripCollectSheet ride={{...ride,payment_method:'wallet'}} onDone={vi.fn()} />);
+    expect(screen.getByRole('button',{name:'Cash received'})).toBeDisabled();
+    expect(screen.getByText('Payment confirmation pending')).toBeInTheDocument();
+    expect(mocks.confirm).not.toHaveBeenCalled();
+  });
   it('keeps Not received pending without confirming or leaving the screen', async () => {
     const onDone = vi.fn();
     render(<TripCollectSheet ride={ride} onDone={onDone} />);

@@ -53,6 +53,12 @@ const DriverLeaderboard = lazy(() => import("./pages/DriverLeaderboard"));
 const DriverModeLanding = lazy(() => import("./pages/DriverModeLanding"));
 const DriverRegistrationPage = lazy(() => import("./pages/DriverRegistrationPage"));
 const DriverWalletPage = lazy(() => import("./pages/DriverWalletPage"));
+const DriverRecordsPage = lazy(() => import("./pages/driver/DriverRecordsPage"));
+const DriverTripScreenReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/DriverTripScreenReview")) : null;
+const DriverRecordsScreenReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/DriverRecordsScreenReview")) : null;
+const DriverAccountPage = lazy(() => import("./pages/driver/DriverAccountPage"));
+const DriverBadgesPage = lazy(() => import("./pages/driver/DriverBadgesPage"));
+const DriverBadgeScreenReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/DriverBadgeScreenReview")) : null;
 const DriverProfile = lazy(() => import("./pages/driver/DriverProfile"));
 const DriverRideRequests = lazy(() => import("./pages/driver/DriverRideRequests"));
 const DriverRideDetails = lazy(() => import("./pages/driver/DriverRideDetails"));
@@ -83,6 +89,12 @@ const AdminMigrationExport = lazy(() => import("./pages/admin/AdminMigrationExpo
 const StudentVerificationPage = lazy(() => import("./pages/StudentVerificationPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const LiveTrackingPage = lazy(() => import("./pages/LiveTrackingPage"));
+const DriverAccountScreenReview = import.meta.env.MODE === "staging"
+  ? lazy(() => import("./pages/staging/DriverAccountScreenReview"))
+  : null;
+const DriverTenScreenReview = import.meta.env.MODE === "staging"
+  ? lazy(() => import("./pages/staging/DriverTenScreenReview"))
+  : null;
 const RecoveryScreenReview = import.meta.env.MODE === "staging"
   ? lazy(() => import("./pages/staging/RecoveryScreenReview"))
   : null;
@@ -188,6 +200,9 @@ export default function App() {
           <Route path="/driver/deposit" element={<SuspenseWrap><AuthGuard><DriverDepositPage /></AuthGuard></SuspenseWrap>} />
           <Route path="/driver/leaderboard" element={<SuspenseWrap><AuthGuard><DriverLeaderboard /></AuthGuard></SuspenseWrap>} />
           <Route path="/driver/wallet" element={<SuspenseWrap variant="wallet"><AuthGuard><DriverWalletPage /></AuthGuard></SuspenseWrap>} />
+          <Route path="/driver/records/:screen" element={<SuspenseWrap><AuthGuard><DriverRecordsPage /></AuthGuard></SuspenseWrap>} />
+          <Route path="/driver/account/:screen" element={<SuspenseWrap><AuthGuard><DriverAccountPage /></AuthGuard></SuspenseWrap>} />
+          <Route path="/driver/badges/:screen" element={<SuspenseWrap><AuthGuard><DriverBadgesPage /></AuthGuard></SuspenseWrap>} />
           <Route path="/driver/profile" element={<SuspenseWrap><AuthGuard><DriverProfile /></AuthGuard></SuspenseWrap>} />
           <Route path="/driver/requests" element={<SuspenseWrap><AuthGuard><DriverRideRequests /></AuthGuard></SuspenseWrap>} />
           <Route path="/driver/ride/:rideId" element={<SuspenseWrap><AuthGuard><DriverRideDetails /></AuthGuard></SuspenseWrap>} />
@@ -234,6 +249,11 @@ export default function App() {
           <Route path="/admin/migration-export" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMigrationExport /></AdminGuard></SuspenseWrap>} />
           <Route path="/admin/maps-qa" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMapsQA /></AdminGuard></SuspenseWrap>} />
           <Route path="/student-verification" element={<SuspenseWrap><AuthGuard><StudentVerificationPage /></AuthGuard></SuspenseWrap>} />
+          {import.meta.env.MODE === "staging" && <Route path="/staging/driver-badges" element={<SuspenseWrap><DriverBadgeScreenReview /></SuspenseWrap>} />}
+          {import.meta.env.MODE === "staging" && <Route path="/staging/trip-10" element={<SuspenseWrap><DriverTripScreenReview /></SuspenseWrap>} />}
+          {import.meta.env.MODE === "staging" && <Route path="/staging/records-10" element={<SuspenseWrap><DriverRecordsScreenReview /></SuspenseWrap>} />}
+          {import.meta.env.MODE === "staging" && <Route path="/staging/account-10" element={<SuspenseWrap><DriverAccountScreenReview /></SuspenseWrap>} />}
+          {import.meta.env.MODE === "staging" && <Route path="/staging/driver-10" element={<SuspenseWrap><DriverTenScreenReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/recovery" element={<SuspenseWrap><RecoveryScreenReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/figma-20" element={<SuspenseWrap><Batch20ScreenReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/parcel-20" element={<SuspenseWrap><ParcelBatch20Review /></SuspenseWrap>} />}

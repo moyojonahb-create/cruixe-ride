@@ -15,6 +15,8 @@ import { getDismissedRideIds, dismissRide, undismissRide } from '@/lib/driverDis
 import RideGlassPanel from '@/components/ride/RideGlassPanel';
 import SwipeDismissCard from '@/components/driver/SwipeDismissCard';
 import GenderChip from '@/components/driver/GenderChip';
+import DriverLifecycleLayout from '@/components/driver/DriverLifecycleLayout';
+import { DriverRequestsBody } from '@/components/driver/DriverRequestViews';
 import DriverBottomNav from '@/components/driver/DriverBottomNav';
 import { useDriverTripRecovery } from '@/components/driver/useDriverTripRecovery';
 import { redCta, RIDE_FONT, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2 } from '@/components/ride/rideGlass';
@@ -236,6 +238,13 @@ export default function DriverRideRequests() {
   const handleAvailabilityApplied = (online: boolean) => {
     navigate(online ? '/driver/requests?view=waiting' : '/driver/requests?view=home', { replace: true });
   };
+
+  if (!showHome && !showWaiting && !showDrive) return <DriverLifecycleLayout frameId="1105:239" sheetTop={461} contentOffset={26} onBack={() => navigate('/driver/requests?view=home')} onRecenter={() => setRecenterSignal(value => value + 1)} map={<LazyMapboxMap defaultCenter={driverCoords ?? undefined} driverLocation={driverCoords} height="100%" navigationFollow={recenterSignal > 0} recenterSignal={recenterSignal} followZoom={13} />} footer={<DriverBottomNav embedded requestBadgeCount={visibleRides.length} activeTab="Requests" />}>
+    <DriverRequestsBody loading={loading} hasRequests={filteredRides.length > 0} online={isOnline} kind={requestKind} onKindChange={kind => setRequestKind(current => current === kind ? null : kind)}>
+      {filteredRides.map(({ride,km,minutes}) => <SwipeDismissCard key={ride.id} onDismiss={() => handleDismiss(ride)}><RequestCard ride={ride} km={km} minutes={minutes} onView={() => navigate(`/driver/ride/${ride.id}`)} onDismiss={() => handleDismiss(ride)} /></SwipeDismissCard>)}
+    </DriverRequestsBody>
+    {undoRide && <div role="status" className="mt-4 rounded-xl bg-[#1f2129] p-3 text-sm text-white">Request dismissed <button type="button" onClick={handleUndo} className="min-h-11 px-3 font-bold text-[#ffdd00]">Undo</button></div>}
+  </DriverLifecycleLayout>;
 
   return (
     <main data-map-screen="true" className="relative h-[100dvh] overflow-hidden bg-[#f2f4f7] text-[#1f2129]" style={{ fontFamily: RIDE_FONT }}>

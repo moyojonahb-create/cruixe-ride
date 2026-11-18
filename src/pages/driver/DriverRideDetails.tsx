@@ -10,6 +10,9 @@ import { getParcelSignedUrl } from '@/lib/parcelStorage';
 import { supabase } from '@/lib/supabaseClient';
 import { openNavTo } from '@/lib/navigation';
 import { dismissRide } from '@/lib/driverDismissedRides';
+import DriverLifecycleLayout from '@/components/driver/DriverLifecycleLayout';
+import DriverBottomNav from '@/components/driver/DriverBottomNav';
+import { DriverOfferBody, DriverFareControl } from '@/components/driver/DriverRequestViews';
 import GenderChip from '@/components/driver/GenderChip';
 import { redCta, RIDE_RED, RIDE_TEXT, RIDE_TEXT_2, tintBlue, tintYellow, glassSurface } from '@/components/ride/rideGlass';
 
@@ -94,6 +97,7 @@ export default function DriverRideDetails() {
 
   const handleSendOffer = async () => {
     if (!ride || submitting) return;
+    if (ride.expires_at && new Date(ride.expires_at).getTime() <= Date.now()) { toast.error('This request has expired.'); return; }
     if (!Number.isFinite(driverOfferFare) || driverOfferFare <= 0) {
       toast.error('Enter a valid fare before sending');
       return;
@@ -161,6 +165,11 @@ export default function DriverRideDetails() {
   const pickup = ride.pickup_lat != null && ride.pickup_lon != null ? { lat: ride.pickup_lat, lng: ride.pickup_lon } : null;
   const dropoff = ride.dropoff_lat != null && ride.dropoff_lon != null ? { lat: ride.dropoff_lat, lng: ride.dropoff_lon } : null;
   const note = ride.rider_note || (isParcel ? ride.parcel?.deliveryNote ?? null : null);
+
+  if (!isParcel) return <DriverLifecycleLayout frameId="1126:105" onBack={handleClose} busy={submitting} map={<LazyMapboxMap pickup={pickup} dropoff={dropoff} height="100%" className="h-full w-full" />} footer={<><DriverFareControl fare={driverOfferFare} busy={submitting || (!!ride.expires_at && new Date(ride.expires_at).getTime() <= Date.now())} onDecrease={() => adjustOffer(-OFFER_STEP)} onIncrease={() => adjustOffer(OFFER_STEP)} onSend={() => void handleSendOffer()} /><DriverBottomNav embedded activeTab="Requests" disabled={submitting} /></>}>
+    <DriverOfferBody ride={ride} busy={submitting} note={driverNote} onNoteChange={setDriverNote} onSkip={handleDecline} />
+    <p className="mt-2 text-[11px] text-[#667085]">{fareComparisonText}</p>
+  </DriverLifecycleLayout>;
 
   return (
     <div data-map-screen="true" data-figma-node={isParcel ? "1210:116" : undefined} className="min-h-[100dvh] flex flex-col relative" style={{ background: '#F2F4F7' }}>

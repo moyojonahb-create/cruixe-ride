@@ -22,6 +22,9 @@ import DriverBottomNav from '@/components/driver/DriverBottomNav';
 import defaultDriverAvatar from '@/assets/driver-avatar-jonah.png';
 import { RIDE_RED, RIDE_YELLOW, RIDE_TEXT, RIDE_TEXT_2 } from '@/components/ride/rideGlass';
 import type { DriverProfile as DriverProfileData } from '@/lib/offerHelpers';
+import DriverDetailScreen, { type DriverDetailKind } from '@/components/driver/DriverDetailScreen';
+import DriverAccountStatusScreen from '@/components/driver/DriverAccountStatusScreen';
+import { useObservedDriverReactivation } from '@/components/driver/useObservedDriverReactivation';
 import DriverAvailabilityControl from '@/components/driver/DriverAvailabilityControl';
 
 const glassSurface: CSSProperties = {
@@ -53,6 +56,7 @@ export default function DriverProfilePage() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
 
+  const [detail, setDetail] = useState<DriverDetailKind | null>(null);
   const [profile, setProfile] = useState<DriverProfileData | null>(null);
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState<string | null>(null);
@@ -64,6 +68,8 @@ export default function DriverProfilePage() {
   const [waitingCount, setWaitingCount] = useState(0);
   const [documents, setDocuments] = useState<DriverDocRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [accountStatusOpen, setAccountStatusOpen] = useState(false);
+  const reactivated = useObservedDriverReactivation(profile?.id ?? null, profile?.status ?? null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [pendingAvatarFile, setPendingAvatarFile] = useState<File | null>(null);
   const [uploadingVehiclePhoto, setUploadingVehiclePhoto] = useState(false);
@@ -141,6 +147,29 @@ export default function DriverProfilePage() {
   }, [user?.id]);
 
   useEffect(() => { load(); }, [load]);
+
+  // Re-read the existing protected profile contract after returning from support
+  // and periodically while this page is open. This observes status; it never
+  // grants approval or bypasses the normal availability eligibility checks.
+  useEffect(() => {
+    if (!user?.id || !profile?.id) return;
+    let disposed = false;
+    let refreshing = false;
+    const refreshStatus = async () => {
+      if (refreshing || document.visibilityState === 'hidden') return;
+      refreshing = true;
+      try {
+        const current = await getDriverProfile();
+        if (!disposed && current?.id === profile.id && current.user_id === user.id) {
+          setProfile((previous) => previous?.id === current.id ? { ...previous, status: current.status, is_online: current.is_online } : previous);
+        }
+      } catch { /* Keep the last saved profile; do not infer a status change. */ }
+      finally { refreshing = false; }
+    };
+    window.addEventListener('focus', refreshStatus);
+    const timer = window.setInterval(refreshStatus, 30000);
+    return () => { disposed = true; window.removeEventListener('focus', refreshStatus); window.clearInterval(timer); };
+  }, [user?.id, profile?.id]);
 
   const handleAvatarFile = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -243,6 +272,11 @@ export default function DriverProfilePage() {
     );
   }
 
+  if (detail) return <DriverDetailScreen kind={detail} fullName={fullName} phone={phone} email={user?.email ?? null} profile={profile} onBack={() => setDetail(null)} onDocuments={() => navigate('/driver/application')} />;
+  if (accountStatusOpen) {
+    return <DriverAccountStatusScreen status={profile.status} reactivated={reactivated} onBack={() => setAccountStatusOpen(false)} onHome={() => navigate('/driver/dashboard')} />;
+  }
+
   const vehicleTitle = [profile.vehicle_make, profile.vehicle_model].filter(Boolean).join(' ') || 'Vehicle';
   const isOnline = profile.is_online ?? false;
 
@@ -317,6 +351,10 @@ export default function DriverProfilePage() {
       </div>
 
       <div className="max-w-lg mx-auto px-4" style={{ paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <button type="button" onClick={() => setAccountStatusOpen(true)} className="flex min-h-14 items-center justify-between rounded-2xl border border-[#e3e5eb] bg-white px-4 py-3 text-left" aria-label="Review account status">
+          <span className="font-semibold text-[#262933]">{profile.status === 'suspended' ? 'Account suspended' : reactivated ? 'Account reactivated' : 'Account status'}</span>
+          <ChevronRight className="size-5 shrink-0" aria-hidden="true" />
+        </button>
         {/* Online / request-room block — two separate controls, not nested
             buttons: a <button> inside a <button> is invalid HTML and makes
             taps on the inner one unreliably bubble into the outer navigate. */}
@@ -432,7 +470,7 @@ export default function DriverProfilePage() {
         <section>
           <button
             type="button"
-            onClick={() => navigate('/driver/application')}
+            onClick={() => navigate('/driver/records/verification')}
             className="flex items-center w-full text-left active:scale-[0.98] transition-transform"
             style={{ ...(expiringDoc ? tintRed : glassSurface), borderRadius: 16, padding: '12px 14px', gap: 12 }}
           >
@@ -449,7 +487,7 @@ export default function DriverProfilePage() {
               <p style={{ fontSize: 11.5, fontWeight: 500, color: expiringDoc ? RIDE_RED : RIDE_TEXT_2, marginTop: 2 }}>
                 {expiringDoc
                   ? `${expiringDoc.document_type.replace(/_/g, ' ')} expires ${new Date(expiringDoc.expiry_date!).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}`
-                  : documents.length > 0 ? 'Licence, registration, ID — all verified' : 'Complete your document upload'}
+                  : documents.length > 0 ? 'View current document review status' : 'Complete your document upload'}
               </p>
             </div>
             <ChevronRight style={{ width: 16, height: 16, color: RIDE_TEXT_2 }} />
@@ -460,7 +498,13 @@ export default function DriverProfilePage() {
         <section>
           <p style={{ fontSize: 11, fontWeight: 700, color: RIDE_TEXT_2, textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 8 }}>Account</p>
           <div style={{ ...glassSurface, borderRadius: 16, overflow: 'hidden' }}>
+            <AccountRow icon={Pencil} label="Edit personal details" onClick={() => navigate('/driver/account/personal-edit')} />
+            <AccountRow icon={ShieldAlert} label="Account security" onClick={() => navigate('/driver/account/security')} />
+            <AccountRow icon={Pencil} label="Personal details" onClick={() => setDetail('personal')} />
+            <AccountRow icon={Copy} label="Contact details" onClick={() => setDetail('contact')} />
+            <AccountRow icon={Car} label="Vehicle details" onClick={() => navigate('/driver/records/vehicle')} />
             <AccountRow icon={ChartColumn} label="Earnings & trip history" onClick={() => navigate('/driver/trips')} />
+            <AccountRow icon={BadgeCheck} label="Driver badge & achievements" onClick={() => navigate('/driver/badges/progress')} />
             <AccountRow icon={Star} label="Ratings & feedback" onClick={() => setFeedbackOpen(true)} />
             <div style={{ padding: '0 14px' }}><LanguageRow /></div>
             <AccountRow icon={Bell} label="Settings & notifications" onClick={() => setNotificationsOpen(true)} />
@@ -480,8 +524,8 @@ export default function DriverProfilePage() {
               }
               disabled={!voiceSupported}
             />
-            <AccountRow icon={ShieldAlert} label="Safety & emergency contact" iconColor={RIDE_RED} onClick={() => setEmergencyOpen(true)} />
-            <AccountRow icon={CircleHelp} label="Help & support" href="mailto:support@pickme.co.zw" last />
+            <AccountRow icon={ShieldAlert} label="Safety & emergency contact" iconColor={RIDE_RED} onClick={() => navigate('/driver/account/emergency')} />
+            <AccountRow icon={CircleHelp} label="Help & support" onClick={() => navigate('/driver/account/help')} last />
           </div>
         </section>
 
