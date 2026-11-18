@@ -504,6 +504,7 @@ export default function DriverProfilePage() {
             <AccountRow icon={Copy} label="Contact details" onClick={() => setDetail('contact')} />
             <AccountRow icon={Car} label="Vehicle details" onClick={() => navigate('/driver/records/vehicle')} />
             <AccountRow icon={ChartColumn} label="Earnings & trip history" onClick={() => navigate('/driver/trips')} />
+            <AccountRow icon={BadgeCheck} label="Driver badge & achievements" onClick={() => navigate('/driver/badges/progress')} />
             <AccountRow icon={Star} label="Ratings & feedback" onClick={() => setFeedbackOpen(true)} />
             <div style={{ padding: '0 14px' }}><LanguageRow /></div>
             <AccountRow icon={Bell} label="Settings & notifications" onClick={() => setNotificationsOpen(true)} />

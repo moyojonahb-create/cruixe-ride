@@ -1406,20 +1406,28 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "react_components": [
+        "src/components/driver/DriverBadgeScreens.tsx",
+        "src/pages/driver/DriverBadgesPage.tsx"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/driver-badges"
+      ],
+      "route_or_entry_point": "/driver/badges/progress",
+      "backend_dependency": "Authenticated driver profile; exact driver-scoped completed ride/parcel counts",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverBadges.test.tsx",
+        "docs/FIGMA-DRIVER-BADGES-INCREMENT-2026-11-18.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Badge awards and progression require an authoritative configured contract.",
+        "Physical iPhone XR and authenticated staging acceptance pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "51 focused tests and 9 Chromium mobile layouts passed; no award or live acceptance claim."
     },
     {
       "figma_name": "CruiXe Driver / 19H \u00b7 Achievement History",
@@ -1429,20 +1437,28 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "react_components": [
+        "src/components/driver/DriverBadgeScreens.tsx",
+        "src/pages/driver/DriverBadgesPage.tsx"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/driver-badges"
+      ],
+      "route_or_entry_point": "/driver/badges/achievements",
+      "backend_dependency": "Authenticated driver profile; exact driver-scoped completed ride/parcel counts",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverBadges.test.tsx",
+        "docs/FIGMA-DRIVER-BADGES-INCREMENT-2026-11-18.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Badge awards and progression require an authoritative configured contract.",
+        "Physical iPhone XR and authenticated staging acceptance pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "51 focused tests and 9 Chromium mobile layouts passed; no award or live acceptance claim."
     },
     {
       "figma_name": "CruiXe Driver / 19I \u00b7 Badge Requirements",
@@ -1452,20 +1468,28 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
-      "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "react_components": [
+        "src/components/driver/DriverBadgeScreens.tsx",
+        "src/pages/driver/DriverBadgesPage.tsx"
+      ],
+      "staging_gallery_evidence": [
+        "/staging/driver-badges"
+      ],
+      "route_or_entry_point": "/driver/badges/requirements",
+      "backend_dependency": "Authenticated driver profile; exact driver-scoped completed ride/parcel counts",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverBadges.test.tsx",
+        "docs/FIGMA-DRIVER-BADGES-INCREMENT-2026-11-18.md"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Badge awards and progression require an authoritative configured contract.",
+        "Physical iPhone XR and authenticated staging acceptance pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "51 focused tests and 9 Chromium mobile layouts passed; no award or live acceptance claim."
     },
     {
       "figma_name": "CruiXe Driver / 19J \u00b7 Edit Personal Details",
