@@ -22,7 +22,7 @@ it('loads private earnings only after PIN verification and hides them again on r
   fireEvent.click(screen.getByRole('button', { name: 'PIN verified' }));
   expect(await screen.findByText('$90.00')).toBeInTheDocument();
   expect(screen.getByText('Earnings analytics')).toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: 'Hide Amounts' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Hide Earnings & Return' }));
   expect(screen.queryByText('$90.00')).toBeNull();
   expect(screen.queryByText('Earnings analytics')).toBeNull();
 });

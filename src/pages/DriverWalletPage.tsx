@@ -2,10 +2,11 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowDownLeft, ArrowUpRight, Send, TrendingUp, Receipt, Percent, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { format } from "date-fns";
 import WithdrawalModal from "@/components/wallet/WithdrawalModal";
 import TransferMoneyModal from "@/components/wallet/TransferMoneyModal";
+import DriverWalletFrame, { walletAction, walletPanel } from "@/components/driver/DriverWalletFrame";
 import WalletCard from "@/components/wallet/WalletCard";
 import WalletPinModal from "@/components/wallet/WalletPinModal";
 import { useWalletPin } from "@/hooks/useWalletPin";
@@ -45,6 +46,9 @@ interface WithdrawalRecord {
 export default function DriverWalletPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const [selectedDeposit, setSelectedDeposit] = useState<string | null>(null);
+  const [showDepositStatus, setShowDepositStatus] = useState(true);
   const [balance, setBalance] = useState(0);
   const [deposits, setDeposits] = useState<DepositRecord[]>([]);
   const [earnings, setEarnings] = useState<EarningRecord[]>([]);
@@ -53,7 +57,7 @@ export default function DriverWalletPage() {
   const [msg, setMsg] = useState("");
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [showTransfer, setShowTransfer] = useState(false);
-  const [tab, setTab] = useState<'earnings' | 'deposits' | 'withdrawals'>('earnings');
+  const [tab, setTab] = useState<'earnings' | 'deposits' | 'withdrawals'>(params.get('tab') === 'deposits' ? 'deposits' : 'earnings');
 
   // PIN gate — required to view balance/transactions
   const { hasPin, loading: pinLoading, setPin, verifyPin, refresh: refreshPin } = useWalletPin();
@@ -136,8 +140,39 @@ export default function DriverWalletPage() {
     );
   }
 
+  const deposit = deposits.find(record => record.id === selectedDeposit);
+  if (deposit) {
+    const approved = deposit.status === 'approved';
+    const rejected = deposit.status === 'rejected';
+    const pending = deposit.status === 'pending';
+    const isStatus = showDepositStatus && (approved || rejected || pending);
+    const frame = isStatus ? approved ? '1340:182' : rejected ? '1373:257' : '1373:296' : '1373:335';
+    const title = isStatus ? approved ? 'Top-Up Successful' : rejected ? 'Top-Up Failed' : 'Top-Up Pending' : 'Wallet Transaction Details';
+    return <DriverWalletFrame frame={frame} title={title} onBack={() => setSelectedDeposit(null)}
+      footer={<>
+        {isStatus && <Button variant="outline" className="mb-2 min-h-11 w-full rounded-xl" onClick={() => setShowDepositStatus(false)}>View Transaction Details</Button>}
+        <Button className={walletAction} onClick={() => setSelectedDeposit(null)}>Back to Wallet Activity</Button>
+      </>}>
+      <section className={`rounded-[20px] p-5 ${approved && isStatus ? 'bg-white' : 'bg-primary text-white'}`}>
+        <h2 className="text-xl font-bold">{isStatus ? approved ? 'Top-up approved' : rejected ? 'Top-up rejected' : 'Still waiting for confirmation' : 'EcoCash top-up'}</h2>
+        <p className="mt-2 text-sm">{isStatus && pending ? 'Check Wallet Activity before paying again.' : 'Status comes from your wallet activity.'}</p>
+      </section>
+      <section className={walletPanel}>
+        <h2 className="text-[17px] font-bold">{isStatus ? 'Status overview' : 'Transaction details'}</h2>
+        <dl className="mt-3 divide-y divide-[#e4e7ed] text-sm">
+          {[
+            ['Status', deposit.status],
+            ['Amount', Number.isFinite(deposit.amount_usd) ? `USD ${deposit.amount_usd.toFixed(2)}` : 'Unavailable'],
+            ['EcoCash reference', deposit.ecocash_reference || 'Unavailable'],
+            ['Transaction ID', deposit.id],
+          ].map(([label, value]) => <div key={label} className="py-3"><dt className="font-semibold">{label}</dt><dd className="mt-1 break-words text-[#667080]">{value}</dd></div>)}
+        </dl>
+      </section>
+    </DriverWalletFrame>;
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/[0.05] via-background to-background relative">
+    <div data-figma-node="1340:225" className="min-h-screen bg-gradient-to-b from-primary/[0.05] via-background to-background relative">
       {/* Ambient blue glow */}
       <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[520px] h-[280px] bg-primary/15 rounded-full blur-[120px]" aria-hidden />
 
@@ -146,7 +181,7 @@ export default function DriverWalletPage() {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
-          <h1 className="text-lg font-bold">Driver Wallet</h1>
+          <h1 className="text-lg font-bold">Wallet Activity</h1>
           <p className="text-xs text-muted-foreground">USD balance, earnings, and transfer activity</p>
         </div>
       </div>
@@ -293,7 +328,7 @@ export default function DriverWalletPage() {
               </div>
             )}
             {deposits.map((d) => (
-              <div key={d.id} className="glass-card rounded-2xl p-3.5 border border-primary/10 flex items-center justify-between gap-3">
+              <button key={d.id} type="button" onClick={() => { setShowDepositStatus(true); setSelectedDeposit(d.id); }} className="glass-card flex w-full items-center justify-between gap-3 rounded-2xl border border-primary/10 p-3.5 text-left">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                     <Plus className="h-4 w-4 text-primary" />
@@ -311,7 +346,7 @@ export default function DriverWalletPage() {
                   d.status === 'rejected' ? 'bg-destructive/10 text-destructive' :
                   'bg-amber-500/10 text-amber-600'
                 }`}>{d.status}</span>
-              </div>
+              </button>
             ))}
           </div>
         )}

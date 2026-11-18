@@ -1156,20 +1156,25 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/components/driver/DriverEarningsOverview.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "route_or_entry_point": "Earnings \u2192 View Amount \u2192 Wallet PIN",
+      "backend_dependency": "Authenticated existing Go driver wallet and deposit APIs",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
+      "test_evidence": [
+        "src/test/DriverEarningsOverview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing Wallet PIN and real wallet/earnings endpoints. No sample amounts.",
+        "Rendered Figma comparison and authenticated wallet verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "No live wallet mutation was exercised for this migration."
     },
     {
       "figma_name": "CruiXe Driver / 18B \u00b7 Top Up Drive Wallet",
@@ -1179,20 +1184,23 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/DriverDepositPage.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "route_or_entry_point": "/driver/deposit",
+      "backend_dependency": "Authenticated existing Go driver wallet and deposit APIs",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Uses the existing manual EcoCash payment-proof flow. No card or automatic charge.",
+        "Rendered Figma comparison and authenticated wallet verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "No live wallet mutation was exercised for this migration."
     },
     {
       "figma_name": "CruiXe Driver / 18C \u00b7 Top-Up Confirmation",
@@ -1202,20 +1210,23 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/DriverDepositPage.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "route_or_entry_point": "/driver/deposit \u2192 Review Top-Up",
+      "backend_dependency": "Authenticated existing Go driver wallet and deposit APIs",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Reviews the proof and amount before submitting to the existing deposit API. No estimated wallet balance.",
+        "Rendered Figma comparison and authenticated wallet verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "No live wallet mutation was exercised for this migration."
     },
     {
       "figma_name": "CruiXe Driver / 18D \u00b7 Payment Processing",
@@ -1225,20 +1236,23 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/DriverDepositPage.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "route_or_entry_point": "/driver/deposit \u2192 submitted",
+      "backend_dependency": "Authenticated existing Go driver wallet and deposit APIs",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Shows only after the server accepts the proof submission. Payment still awaits review.",
+        "Rendered Figma comparison and authenticated wallet verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "No live wallet mutation was exercised for this migration."
     },
     {
       "figma_name": "CruiXe Driver / 18E \u00b7 Top-Up Successful",
@@ -1248,20 +1262,23 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/DriverWalletPage.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "route_or_entry_point": "/driver/wallet \u2192 Deposits \u2192 approved top-up",
+      "backend_dependency": "Authenticated existing Go driver wallet and deposit APIs",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Requires an approved authenticated wallet deposit record. No balance projection.",
+        "Rendered Figma comparison and authenticated wallet verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "No live wallet mutation was exercised for this migration."
     },
     {
       "figma_name": "CruiXe Driver / 18F \u00b7 Wallet Activity",
@@ -1271,20 +1288,22 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/DriverWalletPage.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "route_or_entry_point": "/driver/wallet",
+      "backend_dependency": "Authenticated existing Go driver wallet and deposit APIs",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Displays the existing PIN-gated records and wallet controls.",
+        "Rendered Figma comparison and authenticated wallet verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "No live wallet mutation was exercised for this migration."
     },
     {
       "figma_name": "CruiXe Driver / 18G \u00b7 Low Work Balance Warning",
@@ -1302,8 +1321,7 @@
       "functional_integration_status": "UNVERIFIED",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Availability returns a combined eligibility denial. It does not identify low balance or expose a driver-specific minimum, so a low-balance-only event cannot be inferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
@@ -2511,20 +2529,23 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/DriverWalletPage.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "route_or_entry_point": "/driver/wallet \u2192 Deposits \u2192 rejected top-up",
+      "backend_dependency": "Authenticated existing Go driver wallet and deposit APIs",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Requires a rejected wallet deposit record. No resubmission is triggered.",
+        "Rendered Figma comparison and authenticated wallet verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "No live wallet mutation was exercised for this migration."
     },
     {
       "figma_name": "CruiXe Driver / 36 \u00b7 Top-Up Pending",
@@ -2534,20 +2555,23 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/DriverWalletPage.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "route_or_entry_point": "/driver/wallet \u2192 Deposits \u2192 pending top-up",
+      "backend_dependency": "Authenticated existing Go driver wallet and deposit APIs",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Reads the existing wallet deposit status. Does not imply funds have cleared.",
+        "Rendered Figma comparison and authenticated wallet verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": false,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "No live wallet mutation was exercised for this migration."
     },
     {
       "figma_name": "CruiXe Driver / 37 \u00b7 Wallet Transaction Details",
@@ -2557,20 +2581,23 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/DriverWalletPage.tsx",
+        "src/components/driver/DriverWalletFrame.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
-      "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
+      "route_or_entry_point": "/driver/wallet \u2192 Deposits \u2192 View Transaction Details",
+      "backend_dependency": "Authenticated existing Go driver wallet and deposit APIs",
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "IMPLEMENTED_PENDING_AUTHENTICATED_STAGING_TEST",
       "test_evidence": [],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Shows authenticated top-up details. Wallet-dispute action requires a case contract.",
+        "Rendered Figma comparison and authenticated wallet verification pending."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
-      "test_evidence_note": "Listed test files are ID references only; no new test execution or coverage assertion."
+      "test_evidence_note": "No live wallet mutation was exercised for this migration."
     },
     {
       "figma_name": "CruiXe Driver / 38 \u00b7 Rider Cancelled Ride",

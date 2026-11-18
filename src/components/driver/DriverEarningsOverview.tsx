@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import WalletPinModal from '@/components/wallet/WalletPinModal';
 import { useWalletPin } from '@/hooks/useWalletPin';
 import { getDriverWalletSummary } from '@/lib/walletApi';
+import DriverWalletFrame, { walletAction, walletPanel } from './DriverWalletFrame';
 import DriverBottomNav from './DriverBottomNav';
 import DriverEarningsDashboard from './DriverEarningsDashboard';
 import './driverOnboardingFonts.css';
@@ -37,6 +38,17 @@ export default function DriverEarningsOverview({ onClose }: { onClose: () => voi
     }
   };
   const balance = summary?.balance;
+  if (unlocked) return <DriverWalletFrame frame="1331:155" title="Private Earnings" onBack={toggleAmounts}
+    footer={<button type="button" className={walletAction} onClick={toggleAmounts}>Hide Earnings &amp; Return</button>}>
+    <h2 className="text-xl font-bold">Your money. Your privacy.</h2>
+    <p className="text-xs text-[#667080]">Protected view · Hide when finished</p>
+    <section className="rounded-[20px] bg-primary p-5 text-white">
+      <p className="text-xs font-semibold">AVAILABLE WALLET BALANCE</p>
+      <p className="mt-2 text-[32px] font-bold tabular-nums">{typeof balance === 'number' && Number.isFinite(balance) ? `$${balance.toFixed(2)}` : summaryError ? 'Unavailable' : 'Loading…'}</p>
+    </section>
+    <section className={walletPanel}><h2 className="text-[17px] font-bold">Earnings by period</h2><p className="mt-1 text-xs text-[#667080]">Review your recorded trip activity.</p></section>
+    <DriverEarningsDashboard />
+  </DriverWalletFrame>;
   return <main data-figma-node="1105:353" className="mx-auto min-h-[100dvh] max-w-[440px] bg-[#f2f3f5] pb-24 font-['Poppins',system-ui,sans-serif] text-[#1f2129]">
     <header className="flex items-center gap-3 bg-white px-[18px] pb-3 pt-[max(36px,env(safe-area-inset-top))]">
       <button type="button" onClick={onClose} aria-label="Back to requests" className="grid size-11 place-items-center rounded-full bg-[#f2f3f5]"><img src={asset + '/BackArrow.svg'} alt="" /></button>
@@ -50,8 +62,8 @@ export default function DriverEarningsOverview({ onClose }: { onClose: () => voi
         <h2 className="flex items-center gap-3 text-[17px] font-bold"><img src={asset + '/IconWallet.svg'} alt="" /> Drive Wallet</h2>
         <p className="mt-2 text-xs">Available balance · USD</p>
         <div className="flex items-center justify-between gap-2 py-2">
-          <p className="text-[28px] font-bold tabular-nums">{unlocked ? typeof balance === 'number' && Number.isFinite(balance) ? `$${balance.toFixed(2)}` : summaryError ? 'Unavailable' : 'Loading…' : '••••'}</p>
-          <button type="button" onClick={toggleAmounts} disabled={loading} aria-label={unlocked ? 'Hide wallet balance' : 'View wallet balance'} className="grid size-11 place-items-center rounded-full"><img src={asset + '/IconVisibilityEye.svg'} alt="" /></button>
+          <p className="text-[28px] font-bold tabular-nums">••••</p>
+          <button type="button" onClick={toggleAmounts} disabled={loading} aria-label="View wallet balance" className="grid size-11 place-items-center rounded-full"><img src={asset + '/IconVisibilityEye.svg'} alt="" /></button>
         </div>
         <div className="grid grid-cols-2 gap-2 border-t border-white/60 pt-3">
           <button type="button" className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-2 text-xs font-semibold text-[#161118]" onClick={() => navigate('/driver/deposit')}><img src={asset + '/IconPlusCircle.svg'} alt="" /> Top Up Wallet</button>
@@ -61,9 +73,9 @@ export default function DriverEarningsOverview({ onClose }: { onClose: () => voi
       <section className="space-y-3 rounded-[18px] bg-white p-4">
         <h2 className="flex items-center gap-3 text-[17px] font-bold"><img src={asset + '/IconEarningsLock.svg'} alt="" /> Your Earnings</h2>
         <p className="text-[11px] text-[#667080]">Amounts are private · Wallet PIN required</p>
-        <button type="button" disabled={loading} onClick={toggleAmounts} className="min-h-11 w-full rounded-xl bg-primary text-sm font-semibold text-white">{unlocked ? 'Hide Amounts' : 'View Amount'}</button>
+        <button type="button" disabled={loading} onClick={toggleAmounts} className="min-h-11 w-full rounded-xl bg-primary text-sm font-semibold text-white">View Amount</button>
       </section>
-      {unlocked ? <DriverEarningsDashboard /> : <section className="flex items-center justify-between gap-2 rounded-[18px] bg-white p-4"><h2 className="text-[17px] font-bold">Recent Earnings</h2><span className="text-xs">Private</span></section>}
+      <section className="flex items-center justify-between gap-2 rounded-[18px] bg-white p-4"><h2 className="text-[17px] font-bold">Recent Earnings</h2><span className="text-xs">Private</span></section>
     </div>
     <DriverBottomNav activeTab="Earnings" />
     <WalletPinModal isOpen={promptOpen} onClose={() => setPromptOpen(false)} mode="verify"
