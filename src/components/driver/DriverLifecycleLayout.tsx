@@ -62,7 +62,7 @@ export default function DriverLifecycleLayout({ frameId, map, children, onBack, 
       <div aria-hidden="true" className="pointer-events-none absolute left-0 z-[2] w-[400px]" style={{top:sheetTop,...artStyle}}><img src="/brand/driver-lifecycle/white-curve.svg" alt="" className="block max-w-none" /></div>
       <div aria-hidden="true" className="absolute inset-x-0 bottom-0 z-[1] bg-white" style={{top:sheetTop+50}} />
       <span aria-hidden="true" className="pointer-events-none absolute left-1/2 z-[3] h-[5px] w-14 -translate-x-1/2 rounded-full bg-white" style={{top:sheetTop-5}} />
-      <main className="relative z-10 min-h-0 flex-1 overflow-y-auto px-5 pb-2" style={{marginTop:sheetTop+contentOffset}}>{children}</main>
+      <main className="relative z-10 min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-y-none px-5 pb-2" style={{marginTop:sheetTop+contentOffset}}>{children}</main>
       <div className="relative z-10 mt-auto pt-2">{footer ?? <DriverBottomNav embedded activeTab={activeTab} disabled={busy} />}</div>
     </div>
   );

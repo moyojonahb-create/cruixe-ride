@@ -1289,7 +1289,7 @@ export default function RideView() {
   // MAIN RIDE BOOKING UI
   // ═══════════════════════════════════════════
   return (
-    <div data-map-screen="true" className="relative h-[100dvh] w-full overflow-hidden bg-background">
+    <div data-map-screen="true" className="fixed inset-x-0 top-0 h-[100dvh] overflow-hidden overscroll-none bg-background">
       {/* ── MAP ── */}
       <div className="absolute inset-0">
         <MapboxMap pickup={pickupLocation} dropoff={dropoffLocation} routeGeometry={routeData?.geometry} onMapClick={handleMapClick} defaultCenter={mapCenter} preferredCenter={preferredCenter} defaultZoom={mapZoom} className="w-full h-full" height="100%" drivers={nearbyDrivers} stops={rideStops.filter(s => s.lat && s.lng)} riderGender={(riderPrefs?.gender as "male" | "female" | undefined) ?? null} bottomInset={sheetHeight + 24} />
@@ -1444,7 +1444,7 @@ export default function RideView() {
           // size to it exactly instead of capping by viewport height, so nothing
           // in row 2 or row 3 ever needs a scroll to come into view.
           minHeight: tierPickerOpen ? 'min(62dvh, 530px)' : undefined,
-          maxHeight: showHomeMenu ? 'none' : (tierPickerOpen || sheetExpanded ? '65dvh' : '38dvh'),
+          maxHeight: showHomeMenu || tierPickerOpen || sheetExpanded ? '65dvh' : '38dvh',
           transition: 'max-height 0.3s cubic-bezier(0.32,0.72,0,1)',
           paddingBottom: 'env(safe-area-inset-bottom)',
         }}>
@@ -1463,7 +1463,7 @@ export default function RideView() {
 
         {/* Scrollable content */}
         <div
-          className={cn('min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pb-1.5 pt-1', showHomeContent ? 'px-2' : 'px-4')}
+          className={cn('min-h-0 flex-1 touch-pan-y space-y-2 overflow-y-auto overscroll-y-none pb-1.5 pt-1', showHomeContent ? 'px-2' : 'px-4')}
           style={showHomeContent ? { paddingBottom: 4 } : undefined}
         >
           {/* ── HOME CONTENT (idle state, before booking starts) ──

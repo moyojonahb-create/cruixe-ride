@@ -753,7 +753,7 @@ export default function RideMatching() {
   const tierKey = ride?.vehicle_type && TIER_LABELS[ride.vehicle_type] ? ride.vehicle_type : 'economy';
 
   return (
-    <div data-map-screen="true" className="relative w-full h-[100dvh] overflow-hidden bg-background">
+    <div data-map-screen="true" className="fixed inset-x-0 top-0 h-[100dvh] overflow-hidden overscroll-none bg-background">
       {/* Map */}
       <div className="absolute inset-0">
         <LazyMapboxMap
@@ -936,9 +936,9 @@ export default function RideMatching() {
       {/* Bottom sheet — same glass ribbon treatment as the ride-selection screen */}
       <div ref={sheetWrapRef} className="absolute left-0 right-0 z-20" style={{ bottom: 0 }}>
       <RideGlassPanel
-        style={{ maxHeight: '82vh', paddingBottom: 'env(safe-area-inset-bottom)' }}
+        style={{ maxHeight: '82dvh', paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
-        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+        <div className="min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-y-none">
           <AnimatePresence mode="wait">
             {isComplete ? (
               /* ───────── 4g: Trip complete — pay and rate ───────── */
