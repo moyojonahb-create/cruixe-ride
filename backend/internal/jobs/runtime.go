@@ -2,23 +2,27 @@ package jobs
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/hibiken/asynq"
 )
 
 type Runtime struct {
-	cfg       Config
-	redisOpt  asynq.RedisConnOpt
-	server    *asynq.Server
-	client    *Client
-	inspector *asynq.Inspector
-	done      chan error
-	handlers  map[string]asynq.HandlerFunc
+	cfg          Config
+	redisOpt     asynq.RedisConnOpt
+	server       *asynq.Server
+	client       *Client
+	inspector    *asynq.Inspector
+	done         chan error
+	handlers     map[string]asynq.HandlerFunc
+	startMu      sync.Mutex
+	started      bool
+	shutdownOnce sync.Once
+	shutdownErr  error
 }
 
 func NewRuntime(cfg Config) (*Runtime, error) {
@@ -96,14 +100,24 @@ func (r *Runtime) HandleFunc(taskType string, handler asynq.HandlerFunc) {
 	r.handlers[taskType] = handler
 }
 
-func (r *Runtime) Start() {
+func (r *Runtime) Start() error {
 	if !r.Enabled() {
-		return
+		return nil
 	}
-	go func() {
-		writeJobLog(map[string]any{"event": "asynq_server_start", "queues": Queues, "timestamp": time.Now().UTC().Format(time.RFC3339Nano)})
-		r.done <- r.server.Run(newMux(r.handlers))
-	}()
+	r.startMu.Lock()
+	defer r.startMu.Unlock()
+	if r.started {
+		return nil
+	}
+	// Start returns startup errors to the HTTP process instead of silently
+	// leaving an enabled-looking queue with no consuming worker. The HTTP
+	// process owns SIGTERM; Asynq.Run would install a second signal loop.
+	if err := r.server.Start(newMux(r.handlers)); err != nil {
+		return err
+	}
+	r.started = true
+	writeJobLog(map[string]any{"event": "asynq_server_start", "queues": Queues, "timestamp": time.Now().UTC().Format(time.RFC3339Nano)})
+	return nil
 }
 
 func (r *Runtime) Done() <-chan error {
@@ -119,25 +133,21 @@ func (r *Runtime) Shutdown(ctx context.Context) error {
 	if r == nil {
 		return nil
 	}
-	if r.server != nil {
-		r.server.Shutdown()
-	}
-	if r.client != nil {
-		if err := r.client.Close(); err != nil {
-			return err
+	r.shutdownOnce.Do(func() {
+		if r.server != nil {
+			r.server.Shutdown()
 		}
-	}
-	if r.done == nil {
-		return nil
-	}
-	select {
-	case err := <-r.done:
+		if r.client != nil {
+			r.shutdownErr = r.client.Close()
+		}
+		if r.done != nil {
+			close(r.done)
+		}
+	})
+	if err := ctx.Err(); err != nil {
 		return err
-	case <-ctx.Done():
-		return ctx.Err()
-	default:
-		return nil
 	}
+	return r.shutdownErr
 }
 
 func (r *Runtime) Stats(ctx context.Context) (Stats, error) {
@@ -207,25 +217,10 @@ func registerHandler(mux *asynq.ServeMux, handlers map[string]asynq.HandlerFunc,
 }
 
 func processJob(ctx context.Context, task *asynq.Task) error {
-	var payload Payload
-	if len(task.Payload()) > 0 {
-		if err := json.Unmarshal(task.Payload(), &payload); err != nil {
-			return err
-		}
-	}
-	queue, _ := asynq.GetQueueName(ctx)
-	if queue == "" {
-		queue = QueueDefault
-	}
-	writeJobLog(map[string]any{
-		"event":      "job_processed",
-		"type":       task.Type(),
-		"queue":      queue,
-		"payload_id": payload.ID,
-		"timestamp":  time.Now().UTC().Format(time.RFC3339Nano),
-	})
-	jobsProcessedTotal.WithLabelValues(task.Type(), queue).Inc()
-	return nil
+	// A placeholder must never acknowledge financial or notification work as
+	// successful. Archive unsupported work for inspection instead of dropping
+	// it from the queue or performing money movement implicitly.
+	return fmt.Errorf("no worker registered for task type %q: %w", task.Type(), asynq.SkipRetry)
 }
 
 func handleTaskError(ctx context.Context, task *asynq.Task, err error) {

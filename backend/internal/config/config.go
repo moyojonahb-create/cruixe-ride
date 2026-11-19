@@ -124,13 +124,15 @@ type JobsConfig struct {
 }
 
 type NotificationConfig struct {
-	RateLimitPerMinute int
-	FCMEndpoint        string
-	FCMToken           string
-	SMSEndpoint        string
-	SMSToken           string
-	EmailEndpoint      string
-	EmailToken         string
+	RateLimitPerMinute    int
+	FCMEndpoint           string
+	FCMToken              string
+	FCMProjectID          string
+	FCMServiceAccountJSON string
+	SMSEndpoint           string
+	SMSToken              string
+	EmailEndpoint         string
+	EmailToken            string
 }
 
 // DeploymentConfig carries operator-declared facts about how this process is
@@ -257,13 +259,15 @@ func Load() (Config, error) {
 		ShutdownTimeoutSeconds: envInt("ASYNQ_SHUTDOWN_TIMEOUT_SECONDS", 30),
 	}
 	notification := NotificationConfig{
-		RateLimitPerMinute: envInt("NOTIFICATION_RATE_LIMIT_PER_MINUTE", 60),
-		FCMEndpoint:        os.Getenv("NOTIFICATION_FCM_ENDPOINT"),
-		FCMToken:           os.Getenv("NOTIFICATION_FCM_TOKEN"),
-		SMSEndpoint:        os.Getenv("NOTIFICATION_SMS_ENDPOINT"),
-		SMSToken:           os.Getenv("NOTIFICATION_SMS_TOKEN"),
-		EmailEndpoint:      os.Getenv("NOTIFICATION_EMAIL_ENDPOINT"),
-		EmailToken:         os.Getenv("NOTIFICATION_EMAIL_TOKEN"),
+		RateLimitPerMinute:    envInt("NOTIFICATION_RATE_LIMIT_PER_MINUTE", 60),
+		FCMEndpoint:           os.Getenv("NOTIFICATION_FCM_ENDPOINT"),
+		FCMToken:              os.Getenv("NOTIFICATION_FCM_TOKEN"),
+		FCMProjectID:          os.Getenv("FIREBASE_PROJECT_ID"),
+		FCMServiceAccountJSON: os.Getenv("FIREBASE_SERVICE_ACCOUNT_JSON"),
+		SMSEndpoint:           os.Getenv("NOTIFICATION_SMS_ENDPOINT"),
+		SMSToken:              os.Getenv("NOTIFICATION_SMS_TOKEN"),
+		EmailEndpoint:         os.Getenv("NOTIFICATION_EMAIL_ENDPOINT"),
+		EmailToken:            os.Getenv("NOTIFICATION_EMAIL_TOKEN"),
 	}
 	deployment := DeploymentConfig{
 		InstanceCount: envInt("BACKEND_INSTANCE_COUNT", 1),

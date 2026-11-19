@@ -75,12 +75,25 @@ func main() {
 	}
 
 	notificationRepo := notification.NewPostgresRepository(dbpool)
+	pushProvider, err := notification.NewPushProvider(notification.PushProviderConfig{
+		ProjectID:          cfg.Notification.FCMProjectID,
+		ServiceAccountJSON: cfg.Notification.FCMServiceAccountJSON,
+		GatewayEndpoint:    cfg.Notification.FCMEndpoint,
+		GatewayToken:       cfg.Notification.FCMToken,
+	})
+	if err != nil {
+		log.Fatal("Invalid push notification configuration: ", err)
+	}
+	if cfg.Notification.FCMServiceAccountJSON != "" {
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		err = notification.ValidatePushProvider(ctx, pushProvider)
+		cancel()
+		if err != nil {
+			log.Fatal("Firebase credential validation failed: ", err)
+		}
+	}
 	notificationService := notification.NewService(notificationRepo, jobRuntime.Client(), notification.Providers{
-		Push: notification.NewHTTPProvider(notification.HTTPProviderConfig{
-			Name:     "firebase_fcm",
-			Endpoint: cfg.Notification.FCMEndpoint,
-			Token:    cfg.Notification.FCMToken,
-		}),
+		Push: pushProvider,
 		SMS: notification.NewHTTPProvider(notification.HTTPProviderConfig{
 			Name:     "sms_provider",
 			Endpoint: cfg.Notification.SMSEndpoint,
@@ -105,12 +118,14 @@ func main() {
 	jobRuntime.HandleFunc(jobs.TypeRiskWalletAbuse, riskService.ProcessScan(jobs.TypeRiskWalletAbuse))
 	jobRuntime.HandleFunc(jobs.TypeRiskStudentAbuse, riskService.ProcessScan(jobs.TypeRiskStudentAbuse))
 	jobRuntime.HandleFunc(jobs.TypeRiskGPSSpoofing, riskService.ProcessScan(jobs.TypeRiskGPSSpoofing))
-	jobRuntime.Start()
+	if err := jobRuntime.Start(); err != nil {
+		log.Fatal("Background job workers failed to start: ", err)
+	}
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
-	log.Println("PickMe Asynq worker running")
+	log.Println("CruiXe Ride Asynq worker running")
 	select {
 	case sig := <-quit:
 		log.Println("Worker shutdown signal received:", sig)

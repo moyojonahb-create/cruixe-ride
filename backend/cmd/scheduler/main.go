@@ -42,7 +42,7 @@ func main() {
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 	if !cfg.Jobs.Enabled {
-		log.Println("PickMe Asynq scheduler disabled because ASYNQ_ENABLED=false")
+		log.Println("CruiXe Ride Asynq scheduler disabled because ASYNQ_ENABLED=false")
 		<-quit
 		log.Println("Scheduler shutdown signal received")
 		return
@@ -61,7 +61,7 @@ func main() {
 		done <- scheduler.Run()
 	}()
 
-	log.Println("PickMe Asynq scheduler running; no recurring jobs are registered in this release")
+	log.Println("CruiXe Ride Asynq scheduler running; no recurring jobs are registered in this release")
 	select {
 	case sig := <-quit:
 		log.Println("Scheduler shutdown signal received:", sig)
