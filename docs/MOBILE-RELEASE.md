@@ -199,3 +199,21 @@ uses the new ID, bundles web assets, and contains live API/Supabase hosts with
 no staging service hosts. Rebuilt APK SHA256:
 `e9c4226740e6c7499cb8238aec5b3c31f9c5ac63ff8a926d8d8633fcee0f0c77`.
 iPhone sync is not an Xcode compilation/signing claim.
+
+## Android Firebase client configuration received
+
+The user registered `zw.co.cruixe` in existing Firebase project `koloi-87f15`
+and supplied `google-services.json`. The validated Android client configuration
+is now at `android/app/google-services.json`. This is bundled client configuration,
+not a server service-account key. No private key was supplied or committed.
+
+`:app:assembleDebug` passed in41s and executed `:app:processDebugGoogleServices`.
+The generated app ID, project ID and sender ID match the uploaded configuration;
+APK resources contain the selected Firebase project. Signature, native app ID and
+live-service assets were verified. New APK SHA256:
+`cf22878677fb0a5cd96c76aa359e407c7f7b9d972b42a81d700b905091e3122d`.
+
+This proves client build integration only. Token registration on a physical device,
+Firebase server credentials in Railway, deployment of the FCM/worker source,
+authorized test delivery, and iPhone Firebase/APNs configuration remain open.
+See FIREBASE-ONBOARDING.md for the secure server setup next step.
