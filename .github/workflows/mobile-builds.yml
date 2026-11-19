@@ -59,7 +59,7 @@ jobs:
       - name: Build Android debug APK
         if: matrix.platform == 'android'
         working-directory: android
-        run: bash gradlew assembleDebug
+        run: bash gradlew :app:assembleDebug
       - name: Compile iPhone simulator app (unsigned)
         if: matrix.platform == 'ios'
         run: >-

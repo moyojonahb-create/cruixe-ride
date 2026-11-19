@@ -20,11 +20,13 @@ remote `server.url` is embedded: the application bundles its web assets.
 
 The artifacts are a debug APK (private Android installation) and an unsigned
 iPhone simulator app. The simulator artifact cannot install on a physical iPhone.
-The workflow has not yet passed a native build; generation/sync is not compilation.
+The local Android live-service build passed `:app:assembleDebug` (45s incremental
+after the full native build). All ten plugin Java/Kotlin sources compiled. The
+GitHub workflow and iPhone native compile remain unverified.
 
 For local builds use Node 22, `npm ci`, set the live publishable key and map token as in the
 workflow, then `node scripts/build-mobile.mjs production` and `npx cap sync android` or `ios`.
-Android needs Java 21 and Android SDK 36; run `cd android && bash gradlew assembleDebug`.
+Android needs Java 21 and Android SDK 36; run `cd android && bash gradlew :app:assembleDebug`.
 iOS uses SwiftPM on macOS: open `ios/App/App.xcodeproj` after sync. Supply an
 Apple team and provisioning for a device build. Do not distribute simulator output
 as an IPA. Never commit signing assets.
@@ -91,7 +93,7 @@ initial run and 13 across three suites rerun with their missing fixture environm
 TypeScript and the production-profile web build passed (5m46s). The bundled API, WSS and Supabase
 URLs were verified as live; staging service hosts were absent. These are not native QA.
 iOS SwiftPM project generation and discovery of all ten plugins succeeded on Linux;
-native compilation has not passed on that host. The manual workflow records the
+iPhone native compilation has not passed on that host. The manual workflow records the
 exact GitHub SHA in each artifact name when a configured build succeeds.
 
 ## Live service status at the switch
@@ -124,3 +126,11 @@ Evidence logs for this session are `/tmp/cruixe-mobile-production-build.log`,
 `/tmp/cruixe-mobile-test-retry.log`, `/tmp/cruixe-live-offer-go-test.log`,
 `/tmp/cruixe-business-auth-tests.log` and `/tmp/cruixe-business-auth-postgres.log`.
 The database integration uses a disposable local database, not production records.
+
+## Android package validation
+
+The final production-profile debug APK is generated at
+`android/app/build/outputs/apk/debug/app-debug.apk`. It is for physical-device
+acceptance against live services, not an App Store/Play submission. Confirm the
+packaged hosts and signature before sharing. Android background permissions and
+notification behavior still need actual-device acceptance.
