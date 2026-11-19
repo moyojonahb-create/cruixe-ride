@@ -36,7 +36,7 @@ export default function RiderProfile() {
   const { isAdmin } = useUserRole();
   const { isApproved: isApprovedDriver } = useDriverStatus();
   const { stats } = useProfileStats();
-  const { balance: walletBalance, loading: walletLoading } = useWallet();
+  const { balance: walletBalance, loading: walletLoading, error: walletError } = useWallet();
   const { profile: studentProfile } = useStudentProfile();
   const [profileLoading, setProfileLoading] = useState(true);
   const { theme, setTheme } = useTheme();
@@ -189,7 +189,7 @@ export default function RiderProfile() {
           <QuickAction
             icon={<Wallet className="w-4 h-4" />}
             label="Wallet"
-            sublabel={walletLoading ? '...' : `$${walletBalance.toFixed(2)}`}
+            sublabel={walletError ? "Unavailable" : walletLoading ? '...' : `$${walletBalance.toFixed(2)}`}
             sublabelLoading={walletLoading}
             onClick={() => navigate('/wallet')}
             color="yellow"

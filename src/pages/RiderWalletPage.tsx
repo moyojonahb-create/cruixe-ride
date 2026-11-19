@@ -51,7 +51,7 @@ const PAYMENT_PROVIDERS: { key: string; label: string; sub: string; bg: string; 
 export default function RiderWalletPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { balance, transactions, refresh: refreshWallet, loading: walletLoading } = useWallet();
+  const { balance, transactions, refresh: refreshWallet, loading: walletLoading, error: walletError } = useWallet();
   const { hasPin, loading: pinLoading, setPin, verifyPin, refresh: refreshPin } = useWalletPin();
   const { full_name, pickme_account } = usePickmeAccount();
 
@@ -203,7 +203,7 @@ export default function RiderWalletPage() {
           </div>
           <div className="mt-1 flex min-w-0 items-center gap-3">
             <p className="min-w-0 flex-1 truncate text-[32px] font-semibold leading-[48px] tabular-nums" aria-live="polite">
-              {hideBalance ? '••••••' : `$${balance.toFixed(2)}`}
+              {walletError ? 'Unavailable' : walletLoading ? 'Loading…' : hideBalance ? '••••••' : `$${balance.toFixed(2)}`}
             </p>
             <button
               type="button"
@@ -317,7 +317,11 @@ export default function RiderWalletPage() {
 
           <div className="rounded-[18px] bg-white border border-[#f0f0f2] overflow-hidden"
                style={{ boxShadow: '0 1px 2px rgba(15,23,42,0.04), 0 4px 12px -4px rgba(15,23,42,0.05)' }}>
-            {transactions.length === 0 ? (
+            {walletError ? (
+              <p role="alert">Wallet data could not be loaded. Use Refresh wallet to try again.</p>
+            ) : walletLoading ? (
+              <p role="status">Loading transactions…</p>
+            ) : transactions.length === 0 ? (
               <div className="px-4 py-8 text-center">
                 <div className="h-12 w-12 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center">
                   <History className="h-5 w-5 text-muted-foreground" />

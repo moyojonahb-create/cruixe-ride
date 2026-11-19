@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import {
   getAdminEarnings,
@@ -37,52 +37,56 @@ interface AdminEarning {
 
 export const useWallet = () => {
   const { user } = useAuth();
-  const [wallet, setWallet] = useState<Wallet | null>(null);
-  const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const userId = user?.id;
+  const request = useRef(0);
+  const [result, setResult] = useState<{
+    userId: string;
+    wallet: Wallet | null;
+    transactions: WalletTransaction[];
+    error: string | null;
+  } | null>(null);
 
   const fetchWallet = useCallback(async () => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
+    if (!userId) return;
+
+    const requestId = ++request.current;
+    setResult(null);
 
     try {
-      setError(null);
-      
-      const walletData = await getWalletMe();
-      setWallet(walletData);
-
-      if (walletData) {
-        const txData = await getWalletTransactions(50);
-        setTransactions(txData || []);
+      const wallet = await getWalletMe();
+      if (requestId !== request.current) return;
+      const transactions = wallet ? await getWalletTransactions(50) : [];
+      if (requestId === request.current) {
+        setResult({ userId, wallet, transactions: transactions || [], error: null });
       }
-    } catch (e: unknown) {
-      setError((e as Error).message);
-    } finally {
-      setLoading(false);
+    } catch (error: unknown) {
+      if (requestId === request.current) {
+        setResult({
+          userId,
+          wallet: null,
+          transactions: [],
+          error: error instanceof Error ? error.message : 'Unable to load wallet.',
+        });
+      }
     }
-    // Keyed on user?.id, not the user object: useAuth's onAuthStateChange
-    // fires more than once during startup (listener + the explicit
-    // getSession() check both set state), each handing back a new-but-
-    // equivalent session/user object. Depending on the object identity
-    // reruns this — and its network calls — on every one of those, even
-    // though the signed-in user hasn't actually changed.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
+  }, [userId]);
 
   useEffect(() => {
-    fetchWallet();
+    void fetchWallet();
+    return () => {
+      request.current++;
+    };
   }, [fetchWallet]);
 
+  const current = result?.userId === userId ? result : null;
+
   return {
-    wallet,
-    transactions,
-    loading,
-    error,
+    wallet: current?.wallet ?? null,
+    transactions: current?.transactions ?? [],
+    loading: Boolean(userId && !current),
+    error: current?.error ?? null,
     refresh: fetchWallet,
-    balance: wallet ? Number(wallet.balance) : 0,
+    balance: current?.wallet ? Number(current.wallet.balance) : 0,
   };
 };
 

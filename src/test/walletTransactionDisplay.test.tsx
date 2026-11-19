@@ -44,12 +44,12 @@ describe('wallet transaction presentation across recent activity and history', (
     state.transactions = [{ id: 'transaction-fixture', amount, currency, transaction_type: type, description: 'Fixture transaction', created_at: '2026-10-20T12:00:00Z' }];
     const { container } = render(<RiderWalletPage />);
     const page = within(container);
-    const recentSection = page.getByText('Recent Transactions').closest('section');
+    const recentSection = page.getByRole('heading', { name: 'Recent Activity' }).closest('section');
     expect(recentSection).not.toBeNull();
     const recent = within(recentSection!);
     expect(recent.getByText(display)).toBeInTheDocument();
     expect(recent.getByText(name)).toHaveClass('sr-only');
-    fireEvent.click(page.getByRole('button', { name: 'History' }));
+    fireEvent.click(page.getByRole('button', { name: 'Transactions' }));
     const history = within(await screen.findByRole('dialog', { name: 'All Transactions' }));
     expect(history.getByText(display)).toBeInTheDocument();
     expect(history.getByText(name)).toHaveClass('sr-only');

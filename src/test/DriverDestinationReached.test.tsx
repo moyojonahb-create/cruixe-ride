@@ -2,6 +2,10 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import DriverDestinationReached from '@/components/driver/DriverDestinationReached';
 
+vi.mock('@/components/NotificationCenter', () => ({ NotificationBell: () => null }));
+
+vi.mock('@/components/driver/DriverBottomNav', () => ({ default: () => null }));
+
 afterEach(cleanup);
 const props = () => ({
   passengerName: 'Passenger Test',
@@ -18,7 +22,7 @@ describe('Driver destination reached', () => {
   it('shows the live trip details and preserves explicit confirmation', () => {
     const p = props();
     render(<DriverDestinationReached {...p} />);
-    expect(screen.getByRole('dialog')).toHaveAttribute('data-figma-node', '1185:115');
+    expect(screen.getByRole('dialog', { name: 'Destination reached' }).querySelector('[data-figma-node]')).toHaveAttribute('data-figma-node', '1185:115');
     expect(screen.getByRole('heading', { name: "You've reached Central Market" })).toBeInTheDocument();
     expect(screen.getByText('Passenger Test')).toBeInTheDocument();
     expect(screen.getByText('$7.50')).toBeInTheDocument();
@@ -28,7 +32,7 @@ describe('Driver destination reached', () => {
   it('allows closing without ending the trip', () => {
     const p = props();
     render(<DriverDestinationReached {...p} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Back to active trip' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Back', exact: true }));
     expect(p.onBack).toHaveBeenCalledOnce();
     expect(p.onConfirm).not.toHaveBeenCalled();
   });
