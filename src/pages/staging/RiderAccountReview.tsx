@@ -67,7 +67,7 @@ function PreviewField({ field, chat, select }: { field: NonNullable<RiderAccount
   </label>;
 }
 
-function FrameContent({ frame, select }: { frame: RiderAccountFrame; select: Select }) {
+export function FrameContent({ frame, select }: { frame: RiderAccountFrame; select: Select }) {
   const [choice, setChoice] = useState(0);
   const layout = frame.layout;
   const hero = frame.hero;
