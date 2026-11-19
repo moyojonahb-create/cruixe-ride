@@ -8631,16 +8631,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=activation",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8654,16 +8657,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=set-pin",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8677,16 +8683,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=confirm-pin",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8700,16 +8709,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=pin-mismatch",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8723,16 +8735,19 @@
         "width": "400",
         "height": "1000"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=add-money",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8746,16 +8761,19 @@
         "width": "400",
         "height": "900"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=confirm-topup",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8769,16 +8787,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=processing",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8792,16 +8813,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=successful",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8815,16 +8839,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=pending",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8838,16 +8865,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=failed",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8861,16 +8891,19 @@
         "width": "400",
         "height": "1000"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=transactions",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8884,16 +8917,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=transactions-empty",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8907,16 +8943,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=transactions-loading",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8930,16 +8969,19 @@
         "width": "400",
         "height": "845"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=transactions-error",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8953,16 +8995,19 @@
         "width": "400",
         "height": "1000"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=transaction-details",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8976,16 +9021,19 @@
         "width": "400",
         "height": "1000"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=security",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -8999,16 +9047,19 @@
         "width": "400",
         "height": "900"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=ride-payment",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -9022,16 +9073,19 @@
         "width": "400",
         "height": "900"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=insufficient",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -9045,16 +9099,19 @@
         "width": "400",
         "height": "900"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=refund",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -9068,16 +9125,19 @@
         "width": "400",
         "height": "900"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=refund-completed",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -9091,16 +9151,19 @@
         "width": "400",
         "height": "900"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=refund-failed",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -9114,16 +9177,19 @@
         "width": "400",
         "height": "1000"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=help",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,
@@ -9137,16 +9203,19 @@
         "width": "400",
         "height": "900"
       },
-      "react_components": [],
+      "react_components": [
+        "src/pages/staging/WalletPreviewReview.tsx"
+      ],
       "staging_gallery_evidence": [],
-      "route_or_entry_point": "Requires route/state inspection",
+      "route_or_entry_point": "/staging/wallet-review?screen=topup-methods",
       "backend_dependency": "Requires contract inspection",
-      "visual_match_status": "UNVERIFIED",
-      "functional_integration_status": "UNVERIFIED",
-      "test_evidence": [],
+      "visual_match_status": "IMPLEMENTED_WITH_DOCUMENTED_DIFFERENCES",
+      "functional_integration_status": "PREVIEW_ONLY_BACKEND_DEFERRED",
+      "test_evidence": [
+        "src/test/WalletPreviewReview.test.tsx"
+      ],
       "outstanding_problems": [
-        "Exact ID references are evidence candidates, not proof of implementation.",
-        "Semantic mapping, rendered comparison and navigation/backend verification pending."
+        "Staging-only example. Rendered Figma comparison and live Wallet integration remain deferred."
       ],
       "final_acceptance_status": "UNVERIFIED",
       "wallet_deferred": true,

@@ -58,6 +58,7 @@ const DriverTripScreenReview = import.meta.env.MODE === "staging" ? lazy(() => i
 const DriverRecordsScreenReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/DriverRecordsScreenReview")) : null;
 const DriverAccountPage = lazy(() => import("./pages/driver/DriverAccountPage"));
 const DriverBadgesPage = lazy(() => import("./pages/driver/DriverBadgesPage"));
+const WalletPreviewReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/WalletPreviewReview")) : null;
 const RiderJourneyReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/RiderJourneyReview")) : null;
 const RiderAccountReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/RiderAccountReview")) : null;
 const RiderMessageReview = import.meta.env.MODE === "staging" ? lazy(() => import("./pages/staging/RiderMessageReview")) : null;
@@ -258,6 +259,7 @@ export default function App() {
           <Route path="/admin/migration-export" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMigrationExport /></AdminGuard></SuspenseWrap>} />
           <Route path="/admin/maps-qa" element={<SuspenseWrap variant="admin"><AdminGuard><AdminMapsQA /></AdminGuard></SuspenseWrap>} />
           <Route path="/student-verification" element={<SuspenseWrap><AuthGuard><StudentVerificationPage /></AuthGuard></SuspenseWrap>} />
+          {import.meta.env.MODE === "staging" && <Route path="/staging/wallet-review" element={<SuspenseWrap><WalletPreviewReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/rider-journey" element={<SuspenseWrap><RiderJourneyReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/rider-account" element={<SuspenseWrap><RiderAccountReview /></SuspenseWrap>} />}
           {import.meta.env.MODE === "staging" && <Route path="/staging/rider-messages" element={<SuspenseWrap><RiderMessageReview /></SuspenseWrap>} />}
