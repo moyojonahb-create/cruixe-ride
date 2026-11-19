@@ -32,7 +32,7 @@ describe('Driver destination reached', () => {
   it('allows closing without ending the trip', () => {
     const p = props();
     render(<DriverDestinationReached {...p} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Back', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
     expect(p.onBack).toHaveBeenCalledOnce();
     expect(p.onConfirm).not.toHaveBeenCalled();
   });

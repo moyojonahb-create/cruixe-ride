@@ -71,6 +71,7 @@ import ParcelBookingSheet, { type ParcelBookingData } from './ParcelBookingSheet
 import ShareRideSheet from './ShareRideSheet';
 import NoteToDriverSheet from './NoteToDriverSheet';
 import BookingForSomeoneElse from './BookingForSomeoneElse';
+import { saveParcelDetails } from '@/lib/saveParcelDetails';
 import { normalizePhoneZW } from '@/lib/region';
 import { useRiderPreferences } from '@/components/settings/RiderPreferencesSettings';
 
@@ -143,6 +144,8 @@ export default function RideView() {
   const googleSessionTokenRef = useRef<string | null>(null);
   const [reverseGeoLoading, setReverseGeoLoading] = useState(false);
   const [selectedTier, setSelectedTier] = useState<VehicleTier>('economy');
+  const parcelSubmission = useRef(false);
+  const pendingParcel = useRef<{ userId: string; rideId: string; bookingKey: string }>();
   const [parcelSheetOpen, setParcelSheetOpen] = useState(false);
   const [shareSheetOpen, setShareSheetOpen] = useState(false);
   // Ride-type selection now happens BEFORE the destination is picked (tap
@@ -1091,42 +1094,47 @@ export default function RideView() {
       return;
     }
 
+    if (parcelSubmission.current) return;
+    const bookingKey = JSON.stringify([pickupLocation, dropoffLocation, parcelFare, paymentMethod, data.packageSize]);
+    const pending = pendingParcel.current?.userId === user.id ? pendingParcel.current : undefined;
+    if (pending && pending.bookingKey !== bookingKey) {
+      toast({ title: 'Finish the pending parcel booking', description: 'Restore the original route, fare, payment method and package size to retry.', variant: 'destructive' });
+      return;
+    }
+    parcelSubmission.current = true;
     haptic('medium');
     setIsRequesting(true);
-    setRideStatus('searching');
     try {
-      const result = await requestRide({
-        pickup_address: pickupLocation.name, pickup_lat: pickupLocation.lat, pickup_lng: pickupLocation.lng,
-        dropoff_address: dropoffLocation.name, dropoff_lat: dropoffLocation.lat, dropoff_lng: dropoffLocation.lng,
-        distance_km: fareEstimate.distanceKm, duration_minutes: fareEstimate.durationMinutes,
-        fare: parcelFare,
-        route_polyline: routeData?.geometry || null,
-        passenger_count: 1,
-        payment_method: paymentMethod, vehicle_type: 'parcel',
-        town_id: selectedTown?.id ?? null,
-        gender_preference: 'any',
-      });
-      if (!result.ok) throw new Error(result.error);
-      const rideId = result.ride.id;
-      setCurrentRideId(rideId);
+      let rideId = pending?.rideId;
+      if (!rideId) {
+        const result = await requestRide({
+          pickup_address: pickupLocation.name, pickup_lat: pickupLocation.lat, pickup_lng: pickupLocation.lng,
+          dropoff_address: dropoffLocation.name, dropoff_lat: dropoffLocation.lat, dropoff_lng: dropoffLocation.lng,
+          distance_km: fareEstimate.distanceKm, duration_minutes: fareEstimate.durationMinutes,
+          fare: parcelFare,
+          route_polyline: routeData?.geometry || null,
+          passenger_count: 1,
+          payment_method: paymentMethod, vehicle_type: 'parcel',
+          town_id: selectedTown?.id ?? null,
+          gender_preference: 'any',
+        });
+        if (!result.ok) throw new Error(result.error);
+        rideId = result.ride.id;
+        pendingParcel.current = { userId: user.id, rideId, bookingKey };
+      }
 
       const recipientPhone = normalizePhoneZW(data.recipientPhone);
-
-      // Judging fields (size/note/who-pays/photo) are openly readable so a
-      // browsing driver can decide whether to accept before matching — only
-      // the recipient's phone lives in the separate, matched-only table.
-      await (supabase as any).from('ride_parcel_details').insert([{
+      await saveParcelDetails({
         ride_id: rideId,
         package_size: data.packageSize,
         recipient_name: data.recipientName.trim(),
         delivery_note: data.deliveryNote.trim() || null,
         who_pays: data.whoPays,
         photo_path: data.photoPath,
-      }] as never);
-      await (supabase as any).from('ride_parcel_contacts').insert([{
-        ride_id: rideId,
-        recipient_phone: recipientPhone,
-      }] as never);
+      }, recipientPhone);
+      pendingParcel.current = undefined;
+      setCurrentRideId(rideId);
+      setRideStatus('searching');
 
       // Best-effort SMS — the recipient isn't an app user, SMS is the only
       // channel that reaches them. Never blocks the booking on failure.
@@ -1153,6 +1161,7 @@ export default function RideView() {
       toast({ title: 'Failed to send parcel', description: (error as Error).message, variant: 'destructive' });
       setRideStatus('idle');
     } finally {
+      parcelSubmission.current = false;
       setIsRequesting(false);
     }
   };
