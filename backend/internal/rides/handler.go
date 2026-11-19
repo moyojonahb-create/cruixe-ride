@@ -715,29 +715,41 @@ func (h *Handler) Request(c *fiber.Ctx) error {
 		}
 	}
 
-	insertColumns := `
-			user_id,
-			pickup_address,
-			dropoff_address,
-			pickup_lat,
-			pickup_lon,
-			dropoff_lat,
-			dropoff_lon,
-			distance_km,
-			duration_minutes,
-			fare,
-			status,
-			route_polyline,
-			vehicle_type,
-			passenger_count,
-			payment_method,
-			town_id,
-			gender_preference,
-			passenger_name,
-			passenger_phone,
-			scheduled_at
-	`
-	insertArgs := []any{
+	// The ride and optional private contact must commit together.
+	err = h.db.QueryRow(ctx, `
+		WITH new_ride AS (
+			INSERT INTO public.rides (
+				user_id,
+				pickup_address,
+				dropoff_address,
+				pickup_lat,
+				pickup_lon,
+				dropoff_lat,
+				dropoff_lon,
+				distance_km,
+				duration_minutes,
+				fare,
+				status,
+				route_polyline,
+				vehicle_type,
+				passenger_count,
+				payment_method,
+				town_id,
+				gender_preference,
+				scheduled_at,
+				id
+			)
+			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,
+				COALESCE($19::uuid, gen_random_uuid()))
+			RETURNING id, created_at
+		), passenger_contact AS (
+			INSERT INTO public.ride_passenger_contacts (ride_id, passenger_name, passenger_phone)
+			SELECT id, $20::text, $21::text
+			FROM new_ride
+			WHERE $20::text IS NOT NULL OR $21::text IS NOT NULL
+		)
+		SELECT id, created_at FROM new_ride
+	`,
 		req.RiderID,
 		req.PickupLocation,
 		req.DropoffLocation,
@@ -755,31 +767,11 @@ func (h *Handler) Request(c *fiber.Ctx) error {
 		req.PaymentMethod,
 		nullIfEmpty(req.TownID),
 		req.GenderPreference,
+		req.ScheduledAt,
+		nullIfEmpty(rideID),
 		nullIfEmpty(req.PassengerName),
 		nullIfEmpty(req.PassengerPhone),
-		req.ScheduledAt,
-	}
-
-	if walletAuthorizationRequired {
-		err = h.db.QueryRow(ctx, `
-		INSERT INTO public.rides (
-			id,`+insertColumns+`
-		)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)
-		RETURNING created_at
-	`,
-			append([]any{rideID}, insertArgs...)...,
-		).Scan(&createdAt)
-	} else {
-		err = h.db.QueryRow(ctx, `
-			INSERT INTO public.rides (`+insertColumns+`
-			)
-			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)
-			RETURNING id, created_at
-		`,
-			insertArgs...,
-		).Scan(&rideID, &createdAt)
-	}
+	).Scan(&rideID, &createdAt)
 
 	if err != nil {
 		observability.RecordPostgresFailure("rides_create")
@@ -869,7 +861,7 @@ func (h *Handler) Request(c *fiber.Ctx) error {
 
 // nullIfEmpty converts an empty string to a real SQL NULL instead of an
 // empty-string value, for the handful of nullable public.rides/offers text
-// columns (route_polyline, town_id, passenger_name, passenger_phone, message).
+// columns and passenger contact fields.
 func nullIfEmpty(s string) any {
 	if s == "" {
 		return nil
