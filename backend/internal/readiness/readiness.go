@@ -23,16 +23,17 @@ type JobsDependency interface {
 }
 
 type Config struct {
-	Postgres             *pgxpool.Pool
-	Redis                RedisDependency
-	Jobs                 JobsDependency
-	Profile              string
-	DispatchMode         string
-	NotificationFCM      string
-	NotificationSMS      string
-	NotificationEmail    string
-	PostgresTimeout      time.Duration
-	QueueSaturationLimit int
+	Postgres                   *pgxpool.Pool
+	Redis                      RedisDependency
+	Jobs                       JobsDependency
+	Profile                    string
+	DispatchMode               string
+	NotificationPushConfigured bool
+	NotificationFCM            string
+	NotificationSMS            string
+	NotificationEmail          string
+	PostgresTimeout            time.Duration
+	QueueSaturationLimit       int
 }
 
 type Checker struct {
@@ -239,6 +240,9 @@ func (c *Checker) checkNotification() DependencyStatus {
 		"push":  providerMode(c.cfg.NotificationFCM),
 		"sms":   providerMode(c.cfg.NotificationSMS),
 		"email": providerMode(c.cfg.NotificationEmail),
+	}
+	if c.cfg.NotificationPushConfigured {
+		providers["push"] = "configured"
 	}
 	mode := aggregateProviderMode(providers)
 	ready := true

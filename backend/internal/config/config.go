@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -124,13 +125,15 @@ type JobsConfig struct {
 }
 
 type NotificationConfig struct {
-	RateLimitPerMinute int
-	FCMEndpoint        string
-	FCMToken           string
-	SMSEndpoint        string
-	SMSToken           string
-	EmailEndpoint      string
-	EmailToken         string
+	RateLimitPerMinute    int
+	FCMEndpoint           string
+	FCMToken              string
+	FCMProjectID          string
+	FCMServiceAccountJSON string
+	SMSEndpoint           string
+	SMSToken              string
+	EmailEndpoint         string
+	EmailToken            string
 }
 
 // DeploymentConfig carries operator-declared facts about how this process is
@@ -168,6 +171,20 @@ func Load() (Config, error) {
 		} else {
 			return Config{}, errors.New("CORS_ALLOW_ORIGINS is required when APP_ENV is not development, dev, or local")
 		}
+	}
+
+	// Add explicitly authorized review origins without replacing the owner's
+	// existing live/native origin list. Extra origins cannot contain wildcards.
+	for _, extra := range strings.Split(os.Getenv("CORS_ADDITIONAL_ORIGINS"), ",") {
+		extra = strings.TrimSpace(extra)
+		if extra == "" {
+			continue
+		}
+		parsed, err := url.Parse(extra)
+		if err != nil || parsed.Scheme != "https" || parsed.Host == "" || parsed.User != nil || parsed.Path != "" || parsed.RawQuery != "" || parsed.Fragment != "" || strings.Contains(parsed.Host, "*") {
+			return Config{}, errors.New("CORS_ADDITIONAL_ORIGINS requires exact HTTPS origins without credentials, paths or wildcards")
+		}
+		corsAllowOrigins += "," + extra
 	}
 
 	supabaseURL := os.Getenv("SUPABASE_URL")
@@ -257,13 +274,15 @@ func Load() (Config, error) {
 		ShutdownTimeoutSeconds: envInt("ASYNQ_SHUTDOWN_TIMEOUT_SECONDS", 30),
 	}
 	notification := NotificationConfig{
-		RateLimitPerMinute: envInt("NOTIFICATION_RATE_LIMIT_PER_MINUTE", 60),
-		FCMEndpoint:        os.Getenv("NOTIFICATION_FCM_ENDPOINT"),
-		FCMToken:           os.Getenv("NOTIFICATION_FCM_TOKEN"),
-		SMSEndpoint:        os.Getenv("NOTIFICATION_SMS_ENDPOINT"),
-		SMSToken:           os.Getenv("NOTIFICATION_SMS_TOKEN"),
-		EmailEndpoint:      os.Getenv("NOTIFICATION_EMAIL_ENDPOINT"),
-		EmailToken:         os.Getenv("NOTIFICATION_EMAIL_TOKEN"),
+		RateLimitPerMinute:    envInt("NOTIFICATION_RATE_LIMIT_PER_MINUTE", 60),
+		FCMEndpoint:           os.Getenv("NOTIFICATION_FCM_ENDPOINT"),
+		FCMToken:              os.Getenv("NOTIFICATION_FCM_TOKEN"),
+		FCMProjectID:          os.Getenv("FIREBASE_PROJECT_ID"),
+		FCMServiceAccountJSON: os.Getenv("FIREBASE_SERVICE_ACCOUNT_JSON"),
+		SMSEndpoint:           os.Getenv("NOTIFICATION_SMS_ENDPOINT"),
+		SMSToken:              os.Getenv("NOTIFICATION_SMS_TOKEN"),
+		EmailEndpoint:         os.Getenv("NOTIFICATION_EMAIL_ENDPOINT"),
+		EmailToken:            os.Getenv("NOTIFICATION_EMAIL_TOKEN"),
 	}
 	deployment := DeploymentConfig{
 		InstanceCount: envInt("BACKEND_INSTANCE_COUNT", 1),
