@@ -7,6 +7,12 @@ import { confirmCashCollection } from '@/lib/confirmCashCollection';
 
 describe('cash collection persistence', () => {
   beforeEach(() => { vi.resetAllMocks(); mocks.configured.mockReturnValue(true); });
+  it.each([true, false])('never records a cash marker for a non-cash payment (Go configured: %s)', async (configured) => {
+    mocks.configured.mockReturnValue(configured);
+    await expect(confirmCashCollection('ride-1', false)).rejects.toThrow('payment service');
+    expect(mocks.post).not.toHaveBeenCalled();
+    expect(mocks.from).not.toHaveBeenCalled();
+  });
   it('waits for an authoritative paid acknowledgement', async () => {
     mocks.post.mockResolvedValue({ payment_status: 'paid', driver_collected_at: '2026-11-11T12:00:00Z' });
     await expect(confirmCashCollection('ride-1')).resolves.toBeUndefined();
@@ -28,5 +34,16 @@ describe('cash collection persistence', () => {
     const read = { eq: vi.fn().mockReturnThis(), maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }) };
     mocks.from.mockReturnValueOnce({ update: vi.fn(() => update) }).mockReturnValueOnce({ select: vi.fn(() => read) });
     await expect(confirmCashCollection('ride-1')).rejects.toThrow('not saved');
+  });
+  it('limits both the legacy write and acknowledgement read to completed cash rides', async () => {
+    mocks.configured.mockReturnValue(false);
+    const update = { eq: vi.fn().mockReturnThis(), is: vi.fn().mockResolvedValue({ error: null }) };
+    const read = { eq: vi.fn().mockReturnThis(), maybeSingle: vi.fn().mockResolvedValue({ data: { driver_collected_at: '2026-11-11T12:00:00Z' }, error: null }) };
+    mocks.from.mockReturnValueOnce({ update: vi.fn(() => update) }).mockReturnValueOnce({ select: vi.fn(() => read) });
+    await expect(confirmCashCollection('ride-1')).resolves.toBeUndefined();
+    expect(update.eq).toHaveBeenCalledWith('status', 'completed');
+    expect(update.eq).toHaveBeenCalledWith('payment_method', 'cash');
+    expect(read.eq).toHaveBeenCalledWith('status', 'completed');
+    expect(read.eq).toHaveBeenCalledWith('payment_method', 'cash');
   });
 });

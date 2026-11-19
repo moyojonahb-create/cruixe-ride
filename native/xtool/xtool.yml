@@ -1,0 +1,7 @@
+version: 1
+bundleID: zw.co.cruixe
+infoPath: Resources/Info.plist
+iconPath: ../../ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png
+resources:
+  - Resources/public
+  - Resources/capacitor.config.json

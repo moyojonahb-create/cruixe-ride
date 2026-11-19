@@ -1,4 +1,4 @@
-package zw.co.pickme;
+package zw.co.cruixe;
 
 import com.getcapacitor.BridgeActivity;
 

@@ -1056,11 +1056,12 @@ func (h *Handler) SubmitOffer(c *fiber.Ctx) error {
 	rideID := c.Params("rideId")
 	var rideStatus string
 	var paymentMethod string
+	var riderID string
 	err := h.db.QueryRow(ctx, `
-		SELECT status, COALESCE(payment_method, 'cash')
+		SELECT status, COALESCE(payment_method, 'cash'), user_id::text
 		FROM public.rides
 		WHERE id = $1
-	`, rideID).Scan(&rideStatus, &paymentMethod)
+	`, rideID).Scan(&rideStatus, &paymentMethod, &riderID)
 	if err != nil {
 		observability.RecordPostgresFailure("rides_submit_offer_lookup")
 		observability.CaptureError(err)
@@ -1109,6 +1110,11 @@ func (h *Handler) SubmitOffer(c *fiber.Ctx) error {
 		observability.CaptureError(err)
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
 	}
+
+	// Notify only after the authoritative offer insert has succeeded. The
+	// existing participant-targeted lifecycle path wakes the rider offer query
+	// without publishing private offer data to the global driver marketplace.
+	h.emitRideLifecycle("ride_offer", rideID, authUserID, rideStatus, riderID)
 
 	h.recordDispatchFirstOffer(context.Background(), dispatch.OfferOutcome{
 		RideID:   rideID,

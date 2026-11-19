@@ -1,0 +1,77 @@
+name: Mobile builds
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: android
+            runner: ubuntu-latest
+          - platform: ios
+            runner: macos-15
+    runs-on: ${{ matrix.runner }}
+    environment: mobile-production
+    env:
+      VITE_APP_ENV: production
+      VITE_GO_BACKEND_URL: https://koloi-ride-with-confidence-production.up.railway.app
+      VITE_WS_URL: wss://koloi-ride-with-confidence-production.up.railway.app/ws
+      VITE_SUPABASE_URL: https://foksbnjtzubsjpeoorvo.supabase.co
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.CRUIXE_PRODUCTION_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_MAPBOX_ACCESS_TOKEN: ${{ secrets.CRUIXE_PRODUCTION_MAPBOX_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Require explicit live service configuration
+        shell: bash
+        run: |
+          test -n "$VITE_SUPABASE_PUBLISHABLE_KEY" || { echo 'Configure the mobile-production publishable key.'; exit 1; }
+          test -n "$VITE_MAPBOX_ACCESS_TOKEN" || { echo 'Configure the mobile-production Mapbox token.'; exit 1; }
+      - run: npm ci
+      - run: npm test
+        env:
+          VITE_SUPABASE_URL: https://fixture.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: fixture-not-a-real-key
+          VITE_GO_BACKEND_URL: https://fixture.invalid
+          VITE_WS_URL: wss://fixture.invalid/ws
+      - run: node scripts/build-mobile.mjs production
+      - uses: maxim-lobanov/setup-xcode@v1
+        if: matrix.platform == 'ios'
+        with:
+          xcode-version: latest-stable
+      - uses: actions/setup-java@v4
+        if: matrix.platform == 'android'
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v3
+        if: matrix.platform == 'android'
+      - run: npx cap sync ${{ matrix.platform }}
+      - name: Build Android debug APK
+        if: matrix.platform == 'android'
+        working-directory: android
+        run: bash gradlew :app:assembleDebug
+      - name: Compile iPhone simulator app (unsigned)
+        if: matrix.platform == 'ios'
+        run: >-
+          xcodebuild -project ios/App/App.xcodeproj -scheme App
+          -configuration Debug -sdk iphonesimulator
+          -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath ios/DerivedData CODE_SIGNING_ALLOWED=NO build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cruixe-${{ matrix.platform }}-private-${{ github.sha }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            android/app/build/outputs/apk/debug/*.apk
+            ios/DerivedData/Build/Products/Debug-iphonesimulator/*.app

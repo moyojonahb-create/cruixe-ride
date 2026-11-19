@@ -10,8 +10,8 @@ const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 // value otherwise leaves the whole page blank with only a console error.
 if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
   const message =
-    'PickMe is misconfigured: VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY were not set when this build was created.';
-  console.error(`[PickMe] ${message}`);
+    'CruiXe Ride is misconfigured: VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY were not set when this build was created.';
+  console.error(`[CruiXe Ride] ${message}`);
   document.body.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;font-family:system-ui,-apple-system,sans-serif;text-align:center;">
       <div>

@@ -357,7 +357,7 @@ func TestSubmitOfferSuccessful(t *testing.T) {
 	db := &fakeDB{
 		queryRowFn: func(ctx context.Context, sql string, args ...any) pgx.Row {
 			if strings.Contains(sql, "SELECT status") && strings.Contains(sql, "FROM public.rides") {
-				return &fakeRow{values: []any{"pending", "cash"}}
+				return &fakeRow{values: []any{"pending", "cash", "rider-1"}}
 			}
 			if strings.Contains(sql, "INSERT INTO public.offers") {
 				insertedIntoOffers = true

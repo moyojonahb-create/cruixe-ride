@@ -364,7 +364,7 @@ plausible-looking, never wired. **Check the granted state on device before
 S3–S5**, or those scenarios may measure a degraded mode without anyone knowing:
 
 ```
-adb shell dumpsys package zw.co.pickme | grep -A1 ACTIVITY_RECOGNITION
+adb shell dumpsys package zw.co.cruixe | grep -A1 ACTIVITY_RECOGNITION
 ```
 
 ---

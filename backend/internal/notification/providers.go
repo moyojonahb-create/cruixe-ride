@@ -62,7 +62,7 @@ func (p *HTTPProvider) Send(ctx context.Context, req DeliveryRequest) (DeliveryR
 		return DeliveryResult{}, fmt.Errorf("notification provider is nil")
 	}
 	if p.endpoint == "" {
-		return DeliveryResult{Provider: p.name, ProviderID: "noop:" + req.HistoryID}, nil
+		return DeliveryResult{}, fmt.Errorf("notification provider is not configured")
 	}
 	raw, err := json.Marshal(req)
 	if err != nil {
