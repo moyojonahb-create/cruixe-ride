@@ -306,10 +306,15 @@ func TestRequestSendsRideOfferExactlyOnceThroughDriverNotifier(t *testing.T) {
 			// pickup_lat, pickup_lon, dropoff_lat, dropoff_lon, distance_km,
 			// duration_minutes, fare, status, route_polyline, vehicle_type,
 			// passenger_count, payment_method, town_id, gender_preference,
-			// passenger_name, passenger_phone, scheduled_at — see Handler.Request.
+			// scheduled_at, preauthorized ride ID, passenger name and phone.
 			if args[0] != "rider-1" || args[1] != "pickup" || args[2] != "dropoff" ||
-				!moneyArgEquals(args[9], 10.5) || args[10] != "pending" || args[14] != "cash" {
+				!moneyArgEquals(args[9], 10.5) || args[10] != "pending" || args[14] != "cash" ||
+				args[18] != nil || args[19] != "QA passenger" || args[20] != nil {
 				t.Fatalf("unexpected ride request insert args: %#v", args)
+			}
+			if !strings.Contains(sql, "INSERT INTO public.ride_passenger_contacts") ||
+				strings.Contains(strings.SplitN(sql, "RETURNING", 2)[0], "passenger_name") {
+				t.Fatalf("expected passenger contact in the private table: %s", sql)
 			}
 			return &fakeRow{values: []any{"ride-1", now}}
 		},
@@ -325,6 +330,7 @@ func TestRequestSendsRideOfferExactlyOnceThroughDriverNotifier(t *testing.T) {
 		DropoffLocation: "dropoff",
 		EstimatedFare:   10.5,
 		PaymentMethod:   "cash",
+		PassengerName:   "QA passenger",
 	})
 	if resp.StatusCode != http.StatusCreated {
 		t.Fatalf("expected status 201, got %d", resp.StatusCode)
