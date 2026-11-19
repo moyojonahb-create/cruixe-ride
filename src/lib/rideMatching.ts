@@ -55,6 +55,9 @@ export type MatchingRide = {
   town_id: string | null;
   payment_method: string;
   passenger_count: number;
+  driver_collected_at?: string | null;
+  wallet_paid?: boolean | null;
+  payment_failed?: boolean | null;
 };
 
 export type MatchedDriver = {
@@ -75,7 +78,7 @@ export async function fetchRideById(rideId: string): Promise<MatchingRide | null
   const { data, error } = await supabase
     .from('rides')
     .select(
-      'id, user_id, driver_id, status, pickup_address, dropoff_address, pickup_lat, pickup_lon, dropoff_lat, dropoff_lon, fare, distance_km, duration_minutes, route_polyline, expires_at, created_at, vehicle_type, town_id, payment_method, passenger_count'
+      'id, user_id, driver_id, status, pickup_address, dropoff_address, pickup_lat, pickup_lon, dropoff_lat, dropoff_lon, fare, distance_km, duration_minutes, route_polyline, expires_at, created_at, vehicle_type, town_id, payment_method, passenger_count, driver_collected_at, wallet_paid, payment_failed'
     )
     .eq('id', rideId)
     .maybeSingle();

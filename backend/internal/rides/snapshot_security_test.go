@@ -16,7 +16,7 @@ func TestRideSnapshotPreservesDriverRowIDAndExposesAssignedAuthSubject(t *testin
 		if args[1] != "driver-auth" || !strings.Contains(sql, "d.id=public.rides.driver_id AND d.user_id::text=$2") {
 			t.Fatal("snapshot driver authorization does not resolve canonical identity")
 		}
-		return &fakeRow{values: []any{"trip", "rider-auth", "driver-row", "Pickup", "Dropoff", 1.0, 2.0, 3.0, 4.0, "12.50", "cash", "accepted", 5.0, 10, "", "economy", 1, "town", "any", now, now.Add(time.Hour), "driver-auth"}}
+		return &fakeRow{values: []any{"trip", "rider-auth", "driver-row", "Pickup", "Dropoff", 1.0, 2.0, 3.0, 4.0, "12.50", "cash", "accepted", 5.0, 10, "", "economy", 1, "town", "any", now, now.Add(time.Hour), "driver-auth", ""}}
 	}}
 	h := makeHandlerWithDB(db)
 	app := makeAuthRideApp("GET", "/api/rides/:rideId", h.GetRide, "driver-auth")

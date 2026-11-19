@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "node -e \"const major=+process.versions.node.split('.')[0]; if (major>=24) { console.error('Tests are not supported on Node '+process.versions.node+'. Please use Node 20 or 22.'); process.exit(1); }\" && vitest run",
-    "test:watch": "node -e \"const major=+process.versions.node.split('.')[0]; if (major>=24) { console.error('Tests are not supported on Node '+process.versions.node+'. Please use Node 20 or 22.'); process.exit(1); }\" && vitest"
+    "test:watch": "node -e \"const major=+process.versions.node.split('.')[0]; if (major>=24) { console.error('Tests are not supported on Node '+process.versions.node+'. Please use Node 20 or 22.'); process.exit(1); }\" && vitest",
+    "build:staging": "node --max-old-space-size=4096 ./node_modules/vite/bin/vite.js build --mode staging"
   },
   "dependencies": {
     "@capacitor-community/contacts": "^7.1.0",

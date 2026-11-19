@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import PaymentStatusBadge from '@/components/ride/PaymentStatusBadge';
+import TripReceiptButton, { refreshTripReceiptPayment } from '@/components/ride/TripReceiptButton';
 
 interface Ride {
   id: string;
@@ -26,6 +27,7 @@ interface Ride {
   passenger_count: number;
   payment_method?: string | null;
   wallet_paid?: boolean | null;
+  driver_collected_at?: string | null;
   payment_failed?: boolean | null;
   payment_failure_reason?: string | null;
 }
@@ -164,6 +166,7 @@ const RideHistorySheet = forwardRef<HTMLDivElement, RideHistorySheetProps>(({ is
                             status={ride.status}
                             paymentMethod={ride.payment_method}
                             walletPaid={ride.wallet_paid}
+                            driverCollectedAt={ride.driver_collected_at}
                             paymentFailed={ride.payment_failed}
                             paymentFailureReason={ride.payment_failure_reason}
                           />
@@ -202,6 +205,14 @@ const RideHistorySheet = forwardRef<HTMLDivElement, RideHistorySheetProps>(({ is
                           </div>
                         </div>
 
+                        {ride.status === 'completed' && (
+                          <div className="mt-4">
+                            <TripReceiptButton
+                              data={{ rideId: ride.id, tripDate: ride.created_at, pickupAddress: ride.pickup_address, dropoffAddress: ride.dropoff_address, fare: ride.fare, distanceKm: ride.distance_km, durationMinutes: ride.duration_minutes, paymentMethod: ride.payment_method ?? undefined }}
+                              refresh={() => refreshTripReceiptPayment(ride.id)}
+                            />
+                          </div>
+                        )}
                         {/* Re-book button */}
                         {ride.status === 'completed' && (
                           <Button

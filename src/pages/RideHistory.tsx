@@ -8,6 +8,7 @@ import CruiXeLogo from '@/components/CruiXeLogo';
 import BottomNavBar from '@/components/BottomNavBar';
 import RiderSpendingAnalytics from '@/components/ride/RiderSpendingAnalytics';
 import PaymentStatusBadge from '@/components/ride/PaymentStatusBadge';
+import TripReceiptButton, { refreshTripReceiptPayment } from '@/components/ride/TripReceiptButton';
 
 
 interface RideRecord {
@@ -22,6 +23,7 @@ interface RideRecord {
   payment_method: string;
   vehicle_type: string;
   wallet_paid?: boolean | null;
+  driver_collected_at?: string | null;
   payment_failed?: boolean | null;
   payment_failure_reason?: string | null;
 }
@@ -70,7 +72,7 @@ export default function RideHistory() {
     setError(null);
     const { data, error: ridesError } = await supabase
       .from('rides')
-      .select('id, pickup_address, dropoff_address, fare, distance_km, duration_minutes, status, created_at, payment_method, vehicle_type, wallet_paid, payment_failed, payment_failure_reason')
+      .select('id, pickup_address, dropoff_address, fare, distance_km, duration_minutes, status, created_at, payment_method, vehicle_type, wallet_paid, driver_collected_at, payment_failed, payment_failure_reason')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(50);
@@ -176,72 +178,82 @@ export default function RideHistory() {
             const label = ride.pickup_address || 'Pickup location';
             const avatarLabel = label.charAt(0).toUpperCase();
             return (
-              <button
-                key={ride.id}
-                onClick={() => navigate(`${prefix}/ride/${ride.id}`)}
-                className="w-full rounded-[22px] border border-border/50 bg-card/90 p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99]"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-sm font-bold text-primary">
-                    {avatarLabel}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] ${STATUS_COLORS[ride.status] || STATUS_COLORS.pending}`}>
-                        {status}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {format(new Date(ride.created_at), 'MMM d, yyyy · h:mm a')}
-                      </span>
+              <article key={ride.id}>
+                <button
+                  onClick={() => navigate(`${prefix}/ride/${ride.id}`)}
+                  className="w-full rounded-[22px] border border-border/50 bg-card/90 p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99]"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-sm font-bold text-primary">
+                      {avatarLabel}
                     </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] ${STATUS_COLORS[ride.status] || STATUS_COLORS.pending}`}>
+                          {status}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {format(new Date(ride.created_at), 'MMM d, yyyy · h:mm a')}
+                        </span>
+                      </div>
 
-                    <div className="mt-3 space-y-2">
-                      <div className="flex items-start gap-2">
-                        <div className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-primary" />
-                        <div className="min-w-0">
-                          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Pickup</p>
-                          <p className="text-sm font-semibold text-foreground truncate">{ride.pickup_address}</p>
+                      <div className="mt-3 space-y-2">
+                        <div className="flex items-start gap-2">
+                          <div className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-primary" />
+                          <div className="min-w-0">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Pickup</p>
+                            <p className="text-sm font-semibold text-foreground truncate">{ride.pickup_address}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-accent" />
+                          <div className="min-w-0">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Dropoff</p>
+                            <p className="text-sm font-semibold text-foreground truncate">{ride.dropoff_address}</p>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-start gap-2">
-                        <div className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-accent" />
-                        <div className="min-w-0">
-                          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Dropoff</p>
-                          <p className="text-sm font-semibold text-foreground truncate">{ride.dropoff_address}</p>
-                        </div>
-                      </div>
+                    </div>
+                    <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
+                  </div>
+
+                  <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl border border-border/40 bg-muted/40 p-2.5 text-xs text-muted-foreground">
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.16em]">Fare</p>
+                      <p className="mt-1 font-semibold text-foreground">${Number(ride.fare).toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.16em]">Distance</p>
+                      <p className="mt-1 font-semibold text-foreground">{ride.distance_km.toFixed(1)} km</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.16em]">Time</p>
+                      <p className="mt-1 font-semibold text-foreground">{ride.duration_minutes} min</p>
                     </div>
                   </div>
-                  <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
-                </div>
 
-                <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl border border-border/40 bg-muted/40 p-2.5 text-xs text-muted-foreground">
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em]">Fare</p>
-                    <p className="mt-1 font-semibold text-foreground">${Number(ride.fare).toFixed(2)}</p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em]">Distance</p>
-                    <p className="mt-1 font-semibold text-foreground">{ride.distance_km.toFixed(1)} km</p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em]">Time</p>
-                    <p className="mt-1 font-semibold text-foreground">{ride.duration_minutes} min</p>
-                  </div>
-                </div>
-
-                {(ride.status === 'completed' || ride.payment_failed) && (
-                  <div className="mt-3">
-                    <PaymentStatusBadge
-                      status={ride.status}
-                      paymentMethod={ride.payment_method}
-                      walletPaid={ride.wallet_paid}
-                      paymentFailed={ride.payment_failed}
-                      paymentFailureReason={ride.payment_failure_reason}
+                  {(ride.status === 'completed' || ride.payment_failed) && (
+                    <div className="mt-3">
+                      <PaymentStatusBadge
+                        status={ride.status}
+                        paymentMethod={ride.payment_method}
+                        walletPaid={ride.wallet_paid}
+                        driverCollectedAt={ride.driver_collected_at}
+                        paymentFailed={ride.payment_failed}
+                        paymentFailureReason={ride.payment_failure_reason}
+                      />
+                    </div>
+                  )}
+                </button>
+                {ride.status === 'completed' && (
+                  <div className="mt-2 flex justify-end">
+                    <TripReceiptButton
+                      data={{ rideId: ride.id, tripDate: ride.created_at, pickupAddress: ride.pickup_address, dropoffAddress: ride.dropoff_address, fare: ride.fare, distanceKm: ride.distance_km, durationMinutes: ride.duration_minutes, paymentMethod: ride.payment_method }}
+                      refresh={() => refreshTripReceiptPayment(ride.id)}
                     />
                   </div>
                 )}
-              </button>
+              </article>
             );
           })
         )}
