@@ -54,6 +54,13 @@ describe("API call helpers", () => {
     expect(result.ok).toBe(true);
   });
 
+  it("accepts the deployed completion response without settling again", async () => {
+    goBackendMock.post.mockResolvedValueOnce({ ride_id: "ride-1", ride_status: "completed", status: "completed" });
+
+    await expect(completeTrip("ride-1")).resolves.toMatchObject({ ok: true });
+    expect(goBackendMock.post).toHaveBeenCalledExactlyOnceWith("/api/rides/ride-1/complete");
+  });
+
   it("completeTrip throws Go backend errors", async () => {
     goBackendMock.post.mockRejectedValue(new Error("Go completion failed"));
 
