@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -170,6 +171,20 @@ func Load() (Config, error) {
 		} else {
 			return Config{}, errors.New("CORS_ALLOW_ORIGINS is required when APP_ENV is not development, dev, or local")
 		}
+	}
+
+	// Add explicitly authorized review origins without replacing the owner's
+	// existing live/native origin list. Extra origins cannot contain wildcards.
+	for _, extra := range strings.Split(os.Getenv("CORS_ADDITIONAL_ORIGINS"), ",") {
+		extra = strings.TrimSpace(extra)
+		if extra == "" {
+			continue
+		}
+		parsed, err := url.Parse(extra)
+		if err != nil || parsed.Scheme != "https" || parsed.Host == "" || parsed.User != nil || parsed.Path != "" || parsed.RawQuery != "" || parsed.Fragment != "" || strings.Contains(parsed.Host, "*") {
+			return Config{}, errors.New("CORS_ADDITIONAL_ORIGINS requires exact HTTPS origins without credentials, paths or wildcards")
+		}
+		corsAllowOrigins += "," + extra
 	}
 
 	supabaseURL := os.Getenv("SUPABASE_URL")

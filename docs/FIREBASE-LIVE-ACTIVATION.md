@@ -35,3 +35,25 @@ provider-ready health result do not establish end-to-end delivery. Physical Andr
 registration/permission and one ordinary authorized test notification are a separate
 acceptance checkpoint. Do not use emergency, real call or financial events for it.
 iPhone still needs its Firebase app configuration and Apple/APNs signing setup.
+
+## Latest migrated iPhone web review
+
+The former Safari link resolved to production frontend commit `3ffe639`.
+A separate protected frontend deployment now builds migration/mobile commit
+`0650c1db45050025182800bfec89680d5d632137` (Vercel deployment
+`dpl_FkJrvZcCCXdCoBjxCvg2hM8pztaW`). Its clean origin is
+`https://cruixe-ride-eltgbr29l-jonah-b-moyos-projects.vercel.app`.
+The deployed entry bundle contains the newer Rider schedule/layout code and live
+API host, with no staging API host. Do not publish its private share token here.
+
+Browser verification caught a CORS gap: the existing live API did not authorize
+that origin. `CORS_ADDITIONAL_ORIGINS` adds explicit HTTPS origins while preserving
+`CORS_ALLOW_ORIGINS`. Wildcards, credentials and paths are rejected; the existing
+production base allowlist remains mandatory. Middleware tests verify that both
+existing/native origins and the review origin work, while an unrelated site is
+rejected. Full backend tests pass before applying the exact origin.
+
+The public alias is not promoted by this review deployment. Screens marked
+preview-only in the acceptance ledger remain incomplete as live workflows; a new
+frontend deployment is not acceptance of all migrated frames. Actual Safari login,
+Google/email redirect behavior and two-device rides still require verification.
