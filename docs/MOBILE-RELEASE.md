@@ -134,3 +134,36 @@ The final production-profile debug APK is generated at
 acceptance against live services, not an App Store/Play submission. Confirm the
 packaged hosts and signature before sharing. Android background permissions and
 notification behavior still need actual-device acceptance.
+
+## Live dispatch activation and Firebase follow-up
+
+On 2026-11-19, production variables `ASYNQ_ENABLED=true` and
+`DISPATCH_MODE=authoritative` were applied to service
+`692c5a82-f351-416b-bc4b-ed4fcc435aa4`, production environment
+`333219f9-d9c6-4cf0-9a15-dd4ca8b65271`. Existing build `3ffe639` was
+redeployed as `c3f1f2c6-409e-491e-9e3e-a6e3e40a9584` and reached SUCCESS.
+Runtime readiness rose from 40 to 80: PostgreSQL, Redis, Asynq configuration and
+authoritative dispatch report ready. Notifications remain noop and total readiness
+remains HTTP503. This health result does not prove job consumption or ride acceptance.
+
+The notification follow-up in this branch starts/registers API-process notification
+workers, propagates startup errors, archives unsupported work instead of acknowledging
+placeholder jobs, and adds native Firebase FCM HTTPv1 with server-only
+`FIREBASE_PROJECT_ID` and `FIREBASE_SERVICE_ACCOUNT_JSON`. It preserves custom gateway
+support, refreshes Google OAuth credentials, requires service acknowledgement, and
+rejects an absent provider instead of recording a false delivery. The separate
+worker command uses the same native provider factory. These code changes are not
+deployed to production yet.
+
+Firebase provisioning could not begin: `console.firebase.google.com` and
+`auth.firebase.tools` both return CONNECT403 under the environment network policy.
+Firebase CLI login failed before offering a sign-in URL. The cloud browser also
+failed to initialize. No Google credentials or Firebase project are available.
+Enable access to Firebase/Google sign-in and provide an authenticated Google session
+to create the project; store service credentials only in Railway server variables.
+Android needs the project's `google-services.json`; iPhone also needs Firebase app
+configuration plus APNs signing credentials. No real notifications were sent.
+
+Focused Go tests cover native FCM acknowledgements/token reuse/provider rejection,
+missing credentials, unsupported financial-job rejection and native readiness.
+The live backend health checks were read without changing production records.

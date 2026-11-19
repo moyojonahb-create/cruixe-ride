@@ -127,12 +127,17 @@ func main() {
 	riskRepo := risk.NewPostgresRepository(dbpool)
 	riskService := risk.NewService(riskRepo, redisClient, jobRuntime.Client())
 	notificationRepo := notification.NewPostgresRepository(dbpool)
+	pushProvider, err := notification.NewPushProvider(notification.PushProviderConfig{
+		ProjectID:          cfg.Notification.FCMProjectID,
+		ServiceAccountJSON: cfg.Notification.FCMServiceAccountJSON,
+		GatewayEndpoint:    cfg.Notification.FCMEndpoint,
+		GatewayToken:       cfg.Notification.FCMToken,
+	})
+	if err != nil {
+		log.Fatal("Invalid push notification configuration: ", err)
+	}
 	notificationService := notification.NewService(notificationRepo, jobRuntime.Client(), notification.Providers{
-		Push: notification.NewHTTPProvider(notification.HTTPProviderConfig{
-			Name:     "firebase_fcm",
-			Endpoint: cfg.Notification.FCMEndpoint,
-			Token:    cfg.Notification.FCMToken,
-		}),
+		Push: pushProvider,
 		SMS: notification.NewHTTPProvider(notification.HTTPProviderConfig{
 			Name:     "sms_provider",
 			Endpoint: cfg.Notification.SMSEndpoint,
@@ -145,15 +150,16 @@ func main() {
 		}),
 	}, notification.ServiceConfig{RateLimitPerMinute: cfg.Notification.RateLimitPerMinute})
 	readinessChecker := readiness.NewChecker(readiness.Config{
-		Postgres:             dbpool,
-		Redis:                redisClient,
-		Jobs:                 jobRuntime,
-		Profile:              cfg.ReadinessProfile,
-		DispatchMode:         cfg.Dispatch.Mode,
-		NotificationFCM:      cfg.Notification.FCMEndpoint,
-		NotificationSMS:      cfg.Notification.SMSEndpoint,
-		NotificationEmail:    cfg.Notification.EmailEndpoint,
-		QueueSaturationLimit: 10000,
+		Postgres:                   dbpool,
+		Redis:                      redisClient,
+		Jobs:                       jobRuntime,
+		Profile:                    cfg.ReadinessProfile,
+		DispatchMode:               cfg.Dispatch.Mode,
+		NotificationFCM:            cfg.Notification.FCMEndpoint,
+		NotificationPushConfigured: cfg.Notification.FCMServiceAccountJSON != "",
+		NotificationSMS:            cfg.Notification.SMSEndpoint,
+		NotificationEmail:          cfg.Notification.EmailEndpoint,
+		QueueSaturationLimit:       10000,
 	})
 	publicWalletPilotService := wallet.NewPublicWalletPilotService(walletRepo)
 	publicWalletPilotEnforcer := wallet.NewPublicWalletPilotRuntimeEnforcer(publicWalletPilotService, wallet.PublicWalletPilotEnforcementConfig{
@@ -323,6 +329,12 @@ func main() {
 	wallet.RegisterOperationRoutes(app, walletAdminFlowService, walletAuthorizationService, walletReconciliationService, walletPilotService, walletRecoveryService, wallet.NewPostgresReports(dbpool), requireAuth)
 	payments.RegisterRoutes(app, paymentService, payments.NewReports(dbpool), requireAuth)
 	jobs.RegisterAdminRoutes(app, jobRuntime, requireAuth)
+	jobRuntime.HandleFunc(jobs.TypePushNotification, notificationService.ProcessJob(jobs.TypePushNotification))
+	jobRuntime.HandleFunc(jobs.TypeSMSNotification, notificationService.ProcessJob(jobs.TypeSMSNotification))
+	jobRuntime.HandleFunc(jobs.TypeEmailNotification, notificationService.ProcessJob(jobs.TypeEmailNotification))
+	if err := jobRuntime.Start(); err != nil {
+		log.Fatal("Background job workers failed to start: ", err)
+	}
 	notification.RegisterRoutes(app, notificationService, requireAuth)
 	risk.RegisterRoutes(app, riskService, requireAuth)
 	business.RegisterRoutes(app, dbpool, requireAuth, rideHandler.NotifyRideCancelled)
