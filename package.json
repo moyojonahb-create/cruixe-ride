@@ -17,7 +17,7 @@
     "build:staging": "node --max-old-space-size=4096 ./node_modules/vite/bin/vite.js build --mode staging"
   },
   "dependencies": {
-    "@capacitor-community/contacts": "^7.1.0",
+    "@capacitor-community/contacts": "8.0.0",
     "@capacitor/android": "^8.0.2",
     "@capacitor/cli": "^8.0.2",
     "@capacitor/core": "^8.0.2",
