@@ -43,8 +43,9 @@ as an IPA. Never commit signing assets.
   login/recovery, resume, offline recovery, GPS, offers, calls and notifications
   on two physical devices. No live money or emergency notifications in this test.
 - Native icons/splash assets are generated defaults pending design review.
-- Existing offer delivery, cash confirmation and record-authorization audit gaps
-  remain public-launch blockers. Wallet remains outside the current implementation batch.
+- Offer delivery, cash confirmation and record-authorization fixes require backend
+  deployment and live workflow acceptance before public launch. Wallet remains outside
+  the current implementation batch.
 
 ## xtool evaluation
 
@@ -87,7 +88,8 @@ access. Keep Apple passwords and signing material out of chat.
 Baseline frontend: `511f43371eb20a3b9a22770d68cf984dc78daf9c`.
 After the Contacts upgrade, 386 frontend tests passed (12 skipped): 373 on the
 initial run and 13 across three suites rerun with their missing fixture environment.
-TypeScript and the isolated staging web build passed before the production profile switch. These are not native QA.
+TypeScript and the production-profile web build passed (5m46s). The bundled API, WSS and Supabase
+URLs were verified as live; staging service hosts were absent. These are not native QA.
 iOS SwiftPM project generation and discovery of all ten plugins succeeded on Linux;
 native compilation has not passed on that host. The manual workflow records the
 exact GitHub SHA in each artifact name when a configured build succeeds.
@@ -106,3 +108,19 @@ On 2026-11-19 production `/health/live` returned 200 but `/health/ready` returne
 Production native CORS origins already pass. Building against live services does
 not repair that deployment or establish ride workflow readiness. No production
 schema or backend deployment was changed by the mobile configuration switch.
+
+## Ride workflow source fixes in this branch
+
+- `confirmCashCollection` rejects non-cash calls before issuing any request and
+  constrains legacy writes/reads to completed cash rides: seven focused tests pass.
+- `SubmitOffer` emits participant-targeted `ride_offer` only after persistence,
+  using the authoritative ride owner: full rides Go package and six new cases pass.
+- Disputes derive roles from actual ride participation; ride-linked emergencies
+  require ownership. Full business tests and a disposable PostgreSQL integration
+  passed, covering unrelated users, forged roles, driver-row spoofing and no-ride
+  emergency compatibility. These changes are not deployed to the live API.
+
+Evidence logs for this session are `/tmp/cruixe-mobile-production-build.log`,
+`/tmp/cruixe-mobile-test-retry.log`, `/tmp/cruixe-live-offer-go-test.log`,
+`/tmp/cruixe-business-auth-tests.log` and `/tmp/cruixe-business-auth-postgres.log`.
+The database integration uses a disposable local database, not production records.

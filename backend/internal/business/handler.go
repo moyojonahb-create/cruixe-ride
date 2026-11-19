@@ -25,6 +25,7 @@ type RideCancelledCallback func(context.Context, string, string, string)
 
 type Handler struct {
 	db                *pgxpool.Pool
+	safetyWriter      execer
 	beginCancellation func(context.Context, pgx.TxOptions) (pgx.Tx, error)
 	onRideCancelled   RideCancelledCallback
 }
@@ -142,16 +143,25 @@ func (h *Handler) CreateDispute(c *fiber.Ctx) error {
 	if err := c.BodyParser(&in); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "invalid request body")
 	}
-	if in.RideID == "" || in.ReporterRole == "" || in.Category == "" || strings.TrimSpace(in.Description) == "" {
-		return fiber.NewError(fiber.StatusBadRequest, "ride_id, reporter_role, category, and description are required")
+	if strings.TrimSpace(in.RideID) == "" || in.Category == "" || strings.TrimSpace(in.Description) == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "ride_id, category, and description are required")
 	}
 
-	_, err := h.db.Exec(c.Context(), `
+	// Bind authorization and role derivation to the insert's database snapshot.
+	// A driver's profile row ID is not their authenticated user ID. The optional
+	// legacy reporter_role input is deliberately ignored.
+	tag, err := h.safetyDB().Exec(middleware.RequestContext(c), `
 		INSERT INTO public.disputes (ride_id, reporter_id, reporter_role, category, description)
-		VALUES ($1, $2, $3, $4, $5)`,
-		in.RideID, userID, in.ReporterRole, in.Category, strings.TrimSpace(in.Description))
+		SELECT r.id, $2::uuid, CASE WHEN r.user_id::text = $2::text THEN 'rider' ELSE 'driver' END, $3, $4
+		FROM public.rides r
+		LEFT JOIN public.drivers d ON d.id = r.driver_id
+		WHERE r.id = $1 AND (r.user_id::text = $2::text OR d.user_id::text = $2::text)`,
+		in.RideID, userID, in.Category, strings.TrimSpace(in.Description))
 	if err != nil {
 		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return fiber.NewError(fiber.StatusForbidden, "ride is unavailable to this account")
 	}
 	return c.JSON(fiber.Map{"success": true})
 }
@@ -175,14 +185,34 @@ func (h *Handler) CreateEmergencyEvent(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "invalid coordinates")
 	}
 
-	_, err := h.db.Exec(c.Context(), `
+	if in.RideID != nil && strings.TrimSpace(*in.RideID) == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "ride_id must be omitted or identify a ride")
+	}
+	// A no-ride emergency remains supported. A supplied ride must belong to
+	// this rider or its assigned driver's auth identity in the same statement.
+	tag, err := h.safetyDB().Exec(middleware.RequestContext(c), `
 		INSERT INTO public.emergency_alerts (ride_id, user_id, latitude, longitude)
-		VALUES ($1, $2, $3, $4)`,
+		SELECT $1::uuid, $2::uuid, $3, $4
+		WHERE $1::uuid IS NULL OR EXISTS (
+			SELECT 1 FROM public.rides r
+			LEFT JOIN public.drivers d ON d.id = r.driver_id
+			WHERE r.id = $1 AND (r.user_id::text = $2::text OR d.user_id::text = $2::text)
+		)`,
 		in.RideID, userID, in.Latitude, in.Longitude)
 	if err != nil {
 		return err
 	}
+	if tag.RowsAffected() == 0 {
+		return fiber.NewError(fiber.StatusForbidden, "ride is unavailable to this account")
+	}
 	return c.JSON(fiber.Map{"success": true})
+}
+
+func (h *Handler) safetyDB() execer {
+	if h.safetyWriter != nil {
+		return h.safetyWriter
+	}
+	return h.db
 }
 
 func (h *Handler) CancelRide(c *fiber.Ctx) error {
