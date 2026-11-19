@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { haptic } from '@/lib/haptics';
@@ -25,6 +25,7 @@ const pathAliases: Record<string, string[]> = {
 };
 
 const BottomNavBar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(function BottomNavBar(_props, ref) {
+  const reduceMotion = useReducedMotion();
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -74,19 +75,20 @@ const BottomNavBar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
                 handleNav(tab.path);
               }}
               className={cn(
-                'relative flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-full transition-colors',
-                active ? 'flex-1 px-1 text-white sm:gap-2 sm:px-3' : 'text-[#20232a] hover:bg-[#f5f6f9]'
+                'relative flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-full motion-safe:transition-colors',
+                active ? 'flex-1 px-1 text-white sm:gap-2 sm:px-3' : 'flex-col gap-0.5 text-black hover:bg-[#f5f6f9]'
               )}
             >
               {active && (
                 <motion.div
-                  layoutId="bottomNav"
-                  className="absolute inset-0 rounded-full bg-primary shadow-[0_0_9px_#ff000d45]"
+                  aria-hidden="true"
+                  layoutId={reduceMotion ? undefined : "bottomNav"}
+                  className="pointer-events-none absolute inset-0 rounded-full bg-primary shadow-[0_0_9px_#ff000d45]"
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 />
               )}
-              <img src={tab.icon} alt="" className={cn('relative z-10 shrink-0', active ? 'brightness-0 invert' : 'brightness-0')} />
-              {active && <span className="relative z-10 text-[11px] font-semibold">{tab.label}</span>}
+              <img src={tab.icon} alt="" className={cn('relative z-10 size-5 shrink-0', active ? 'brightness-0 invert' : 'brightness-0')} />
+              <span className={cn("relative z-10 font-semibold", active ? "text-[11px]" : "text-[9px]")}>{tab.label}</span>
             </button>
           );
         })}
