@@ -19,7 +19,7 @@ kept out of repository documentation. Open the new hostname in Safari; an existi
 Home Screen shortcut still addresses the old origin. Many Figma frames remain
 preview-only rather than connected product workflows.
 
-## API access blocker and concrete pending release
+## API access correction and approved release
 
 The live API preflight did not allow this new review origin. A focused CORS fix,
 commit `a97a54e7a6a3c8f64726389a6783c47f06ea2488` on the Firebase activation branch,
@@ -43,3 +43,23 @@ it without that confirmation. On approval, recheck the staged diff, apply only
 this production patch, verify its deployment SHA and liveness/readiness, then check
 preflight headers for the review origin and an unrelated origin. Test login and
 Google/email callbacks separately; they have not been accepted on the new origin.
+
+## User-approved deployment result
+
+The user explicitly approved the production-only CORS deployment after the review
+block. The exact staged diff was rechecked: one commit-SHA update on the existing
+production API, no other staged changes. accept-deploy then committed that patch.
+Deployment `074de1fa-7c4c-4ae2-891e-5057efeec2f1` reached SUCCESS at
+`a97a54e7a6a3c8f64726389a6783c47f06ea2488`. Earlier pending/rejected steps above
+are historical; the CORS correction is now active.
+
+Post-deployment verification passed:
+- Review origin preflight HTTP204 with exact Access-Control-Allow-Origin match.
+- capacitor://localhost and https://localhost preflights retain exact matches.
+- Unrelated https://unrelated.example.com receives no allow-origin header.
+- /health/live HTTP200; /health/ready HTTP200, readytrue, score100.
+- Protected review /ride returns HTTP200 and verified /assets/index-C35nTybp.js.
+
+The optional CORS setting and regression tests are also retained on the migration
+branch so later deployments preserve the authorized review origin. Authenticated
+phone login, Google/email redirects and live ride/device acceptance remain open.
