@@ -75,7 +75,7 @@ const RideGlassPanel = forwardRef<HTMLDivElement, RideGlassPanelProps>(function 
         type="button"
         onClick={onRibbonClick}
         aria-label="Toggle sheet"
-        className="absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center active:opacity-90 transition-opacity"
+        className="absolute left-1/2 -translate-x-1/2 z-30 flex items-center justify-center active:opacity-90 transition-opacity"
         style={{ top: solidRibbon ? -6 : -16, width: Math.max(64, handleWidth), height: 44 }}
       >
         <span
@@ -90,13 +90,13 @@ const RideGlassPanel = forwardRef<HTMLDivElement, RideGlassPanelProps>(function 
       {/* Frosted glass panel — sits in front of the red glow, offset down so
           the glow's curved top edge peeks out from behind it. */}
       <div
-        className={cn('relative flex-1 min-h-0 flex flex-col overflow-hidden', solidRibbon ? 'z-0' : 'z-10')}
+        className={cn('relative flex-1 min-h-0 flex flex-col overflow-hidden', solidRibbon ? 'z-20' : 'z-10')}
         style={{
-          ...(solidRibbon ? { background: '#fff' } : glassPanel),
+          ...(solidRibbon ? { background: 'linear-gradient(to bottom, transparent 14px, #fff 14px)' } : glassPanel),
           ...panelStyle,
           // Compress the ribbon vertically and overlap the white panel
-          // by a pixel to cover the seam at fractional viewport widths.
-          marginTop: solidRibbon ? 'calc(13% - 1px)' : 16,
+          // so the first row sits inside the curve and the white surfaces overlap.
+          marginTop: solidRibbon ? 'calc(13% - 15px)' : 16,
           borderTopLeftRadius: solidRibbon ? 0 : 22,
           borderTopRightRadius: solidRibbon ? 0 : 22,
         }}

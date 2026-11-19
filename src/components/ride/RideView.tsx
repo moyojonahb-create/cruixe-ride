@@ -112,7 +112,7 @@ const RIDE_TIER_LABELS: Record<RideTierId, string> = {
 };
 
 const SHARED_PASSENGER_LIMIT = 2;
-const mapControlStyle = { width: 49, height: 49, background: '#fff', boxShadow: '0 5px 16px #0003' };
+const mapControlStyle = { width: 44, height: 44, background: 'radial-gradient(circle, #fff 17px, transparent 18px)', filter: 'drop-shadow(0 3px 5px #0002)' };
 
 
 export default function RideView() {
@@ -1310,10 +1310,10 @@ export default function RideView() {
           className="absolute left-4 z-40 grid place-items-center rounded-full transition-transform active:scale-90"
           style={{ top: 'max(2.75rem, calc(env(safe-area-inset-top) + 7px))', ...mapControlStyle }}
         >
-          <img src={showHomeMenu ? menuIcon : backIcon} alt="" />
+          <img src={showHomeMenu ? menuIcon : backIcon} alt="" className="size-[19px]" />
         </button>
 
-        <div className="absolute right-4 z-40 flex flex-col gap-3" style={{ top: 'max(2.75rem, calc(env(safe-area-inset-top) + 7px))' }}>
+        <div className="absolute right-4 z-40 flex flex-col gap-1.5" style={{ top: 'max(2.75rem, calc(env(safe-area-inset-top) + 7px))' }}>
           {!showHomeContent && (
             <button
               onClick={() => setMenuOpen(true)}
@@ -1331,10 +1331,10 @@ export default function RideView() {
             className="flex items-center justify-center rounded-full active:scale-90 transition-transform"
             style={mapControlStyle}
           >
-            {gpsState.status === 'loading' ? <Loader2 className="size-5 animate-spin text-primary" /> : <img src={locationIcon} alt="" />}
+            {gpsState.status === 'loading' ? <Loader2 className="size-5 animate-spin text-primary" /> : <img src={locationIcon} alt="" className="size-[19px]" />}
           </button>
           <NotificationBell
-            className="transition-transform active:scale-90"
+            className="transition-transform active:scale-90 [&>img]:size-[19px]"
             style={mapControlStyle}
             iconSource={bellIcon}
           />
@@ -1439,7 +1439,6 @@ export default function RideView() {
         className="absolute left-0 right-0 z-50"
         onRibbonClick={() => setSheetExpanded((e) => !e)}
         handleWidth={64}
-        panelStyle={{ background: '#fff' }}
         style={{
           bottom: 0,
           // Idle content is fixed and compact (three row-2 tiles + row-3 buttons) —
