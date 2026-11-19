@@ -2,7 +2,10 @@
 
 The migrated React app at the repository root is packaged with Capacitor.
 `apps/mobile` is a separate Expo experiment, not the migrated Rider/Driver app.
-The existing app ID is `zw.co.pickme`; confirm store ownership before distribution.
+The canonical root app ID is `zw.co.cruixe` on Android, iPhone and xtool. The
+previous development APK used `zw.co.pickme`. Confirm store ownership before
+distribution: changing an application ID creates a distinct installation, not an
+update to an app published under the old ID.
 
 ## Repeatable build
 
@@ -167,3 +170,32 @@ configuration plus APNs signing credentials. No real notifications were sent.
 Focused Go tests cover native FCM acknowledgements/token reuse/provider rejection,
 missing credentials, unsupported financial-job rejection and native readiness.
 The live backend health checks were read without changing production records.
+
+## Uniform CruiXe identity check (2026-11-19)
+
+The root Capacitor app, Android namespace/application ID/Java activity package,
+Android package/scheme resources, iOS Debug/Release bundle IDs, and xtool bundle
+and generated Info.plist identity now all use `zw.co.cruixe`. The visible app name
+is CruiXe. The separate Expo experiment already uses CruiXe branding and its
+distinct `zw.co.cruixe.mobile` identifier; it is not the root release app.
+
+The user's Firebase screenshot shows zero apps in Koloi project `koloi-87f15`.
+Register Android package `zw.co.cruixe` and Apple bundle ID `zw.co.cruixe` there.
+No Firebase configuration files or native callback URLs tied to the old ID were
+found in the reviewed root app. FileProvider authority derives from applicationId.
+No release signingConfig, Apple signing team or store publication record was found
+in the repository. This does not establish absence of an existing Play/App Store
+listing: store-console access is unavailable. Check store ownership and any OAuth,
+APNs or Transistorsoft release-license registration against the new ID before launch.
+Historical staging/audit documents retain the identifiers used by their old builds.
+The old APK download was built under the old ID; use the newly rebuilt APK once
+its package and signature verification pass. No store or Firebase registration was
+changed by this source migration.
+
+Identity validation passed: Capacitor sync on both platforms; Android
+`:app:assembleDebug` (52s), apksigner verification, and aapt2 package check
+(`zw.co.cruixe`, version1.0, minSDK24/target36). The APK's embedded Capacitor config
+uses the new ID, bundles web assets, and contains live API/Supabase hosts with
+no staging service hosts. Rebuilt APK SHA256:
+`e9c4226740e6c7499cb8238aec5b3c31f9c5ac63ff8a926d8d8633fcee0f0c77`.
+iPhone sync is not an Xcode compilation/signing claim.

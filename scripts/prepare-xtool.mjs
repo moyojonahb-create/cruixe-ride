@@ -22,7 +22,7 @@ for (const key of ['UIMainStoryboardFile', 'UILaunchStoryboardName', 'CAPACITOR_
   plist = plist.replace(new RegExp(`<key>${key}</key>\\s*<string>[^<]*</string>`, 'g'), '');
 }
 plist = plist.replaceAll('$(EXECUTABLE_NAME)', 'CruiXe')
-  .replaceAll('$(PRODUCT_BUNDLE_IDENTIFIER)', 'zw.co.pickme')
+  .replaceAll('$(PRODUCT_BUNDLE_IDENTIFIER)', 'zw.co.cruixe')
   .replaceAll('$(PRODUCT_NAME)', 'CruiXe')
   .replaceAll('$(MARKETING_VERSION)', '1.0')
   .replaceAll('$(CURRENT_PROJECT_VERSION)', '1');

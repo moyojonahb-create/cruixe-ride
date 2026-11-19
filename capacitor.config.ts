@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'zw.co.pickme',
+  appId: 'zw.co.cruixe',
   appName: 'CruiXe',
   webDir: 'dist',
   server: {
