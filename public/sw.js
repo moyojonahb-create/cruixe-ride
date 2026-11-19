@@ -23,7 +23,7 @@ const MAX_TILE_CACHE_SIZE = 500;
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[PickMe SW] Caching static assets');
+      console.log('[CruiXe Ride SW] Caching static assets');
       return cache.addAll(STATIC_ASSETS);
     })
   );
@@ -46,7 +46,7 @@ self.addEventListener('activate', (event) => {
 
 // Push notification handler
 self.addEventListener('push', (event) => {
-  let data = { title: 'PickMe', body: 'You have a new notification', url: '/' };
+  let data = { title: 'CruiXe Ride', body: 'You have a new notification', url: '/' };
 
   try {
     if (event.data) {

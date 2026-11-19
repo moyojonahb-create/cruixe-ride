@@ -117,7 +117,7 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
-	log.Println("PickMe Asynq worker running")
+	log.Println("CruiXe Ride Asynq worker running")
 	select {
 	case sig := <-quit:
 		log.Println("Worker shutdown signal received:", sig)

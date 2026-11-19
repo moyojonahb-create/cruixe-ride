@@ -12,20 +12,20 @@ const TILE_PATTERNS = [
 
 // Install event - cache core app files
 self.addEventListener('install', (event) => {
-  console.log('[Koloi SW] Installing tile cache service worker');
+  console.log('[CruiXe Ride SW] Installing tile cache service worker');
   self.skipWaiting();
 });
 
 // Activate event - clean old caches
 self.addEventListener('activate', (event) => {
-  console.log('[Koloi SW] Activating tile cache service worker');
+  console.log('[CruiXe Ride SW] Activating tile cache service worker');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames
           .filter((name) => name.startsWith('koloi-tiles-') && name !== CACHE_NAME)
           .map((name) => {
-            console.log('[Koloi SW] Deleting old cache:', name);
+            console.log('[CruiXe Ride SW] Deleting old cache:', name);
             return caches.delete(name);
           })
       );
@@ -47,7 +47,7 @@ self.addEventListener('fetch', (event) => {
       // Try cache first
       const cachedResponse = await cache.match(event.request);
       if (cachedResponse) {
-        console.log('[Koloi SW] Serving tile from cache:', url);
+        console.log('[CruiXe Ride SW] Serving tile from cache:', url);
         return cachedResponse;
       }
 
@@ -65,12 +65,12 @@ self.addEventListener('fetch', (event) => {
           
           // Cache the tile
           cache.put(event.request, responseToCache);
-          console.log('[Koloi SW] Cached new tile:', url);
+          console.log('[CruiXe Ride SW] Cached new tile:', url);
         }
         
         return networkResponse;
       } catch (error) {
-        console.error('[Koloi SW] Tile fetch failed:', error);
+        console.error('[CruiXe Ride SW] Tile fetch failed:', error);
         // Return a placeholder or error response for offline
         return new Response('', { status: 503, statusText: 'Service Unavailable' });
       }
@@ -85,7 +85,7 @@ async function limitCacheSize(cache) {
     // Remove oldest cached tiles (FIFO)
     const tilesToRemove = keys.slice(0, keys.length - TILE_CACHE_LIMIT + 50);
     await Promise.all(tilesToRemove.map((key) => cache.delete(key)));
-    console.log('[Koloi SW] Cleaned up', tilesToRemove.length, 'old tiles');
+    console.log('[CruiXe Ride SW] Cleaned up', tilesToRemove.length, 'old tiles');
   }
 }
 
@@ -93,7 +93,7 @@ async function limitCacheSize(cache) {
 self.addEventListener('message', (event) => {
   if (event.data.type === 'CLEAR_TILE_CACHE') {
     caches.delete(CACHE_NAME).then(() => {
-      console.log('[Koloi SW] Tile cache cleared');
+      console.log('[CruiXe Ride SW] Tile cache cleared');
       event.ports[0].postMessage({ success: true });
     });
   }

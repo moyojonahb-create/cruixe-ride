@@ -31,12 +31,12 @@ function sentryProjectId(dsn: string): string {
 
 window.addEventListener('unhandledrejection', (event) => {
   captureError(event.reason);
-  console.error('[PickMe] Unhandled promise rejection:', event.reason);
+  console.error('[CruiXe Ride] Unhandled promise rejection:', event.reason);
 });
 
 window.addEventListener('error', (event) => {
   captureError(event.error || event.message);
-  console.error('[PickMe] Global runtime error:', event.error || event.message);
+  console.error('[CruiXe Ride] Global runtime error:', event.error || event.message);
 });
 
 // Initialize native Capacitor plugins (no-ops on web)
@@ -175,10 +175,10 @@ if ('serviceWorker' in navigator) {
     if (import.meta.env.PROD) {
       navigator.serviceWorker.register('/sw.js')
         .then((registration) => {
-          console.log('[PickMe] PWA SW registered:', registration.scope);
+          console.log('[CruiXe Ride] PWA SW registered:', registration.scope);
         })
         .catch((error) => {
-          console.log('[PickMe] PWA SW registration failed:', error);
+          console.log('[CruiXe Ride] PWA SW registration failed:', error);
         });
 
       // sw.js already owns tile caching. Registering a second worker at the
@@ -192,7 +192,7 @@ if ('serviceWorker' in navigator) {
 }
 
 const rootElement = document.getElementById("root");
-if (!rootElement) throw new Error("PickMe root element is missing");
+if (!rootElement) throw new Error("CruiXe Ride root element is missing");
 
 createRoot(rootElement).render(
   <QueryClientProvider client={queryClient}>

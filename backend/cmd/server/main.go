@@ -298,7 +298,7 @@ func main() {
 	app.Use("/ws", websocket.NewHandler(wsManager, riderRegistry, driverRegistry, jwtVerifier, websocket.NewPostgresRoomAuthorizer(dbpool, authzSvc), authzSvc))
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		return c.JSON(fiber.Map{"message": "PickMe Go Backend Running 🚖"})
+		return c.JSON(fiber.Map{"message": "CruiXe Ride Go Backend Running 🚖"})
 	})
 
 	app.Get("/health", database.HealthHandler())
@@ -354,7 +354,7 @@ func main() {
 		}
 	}()
 
-	log.Println("PickMe Go Backend running on port", cfg.Port)
+	log.Println("CruiXe Ride Go Backend running on port", cfg.Port)
 	if err := app.Listen(":" + cfg.Port); err != nil {
 		log.Fatal(err)
 	}

@@ -1,4 +1,4 @@
-# PickMe Monorepo by Jonah B Moyo
+# CruiXe Ride Monorepo by Jonah B Moyo
 
 # Monorepo Structure
 
