@@ -235,7 +235,7 @@ export default function RideView() {
   const { landmarks, loading: landmarksLoading } = useLandmarksSearch({ searchQuery, limit: 30, userLocation: gpsState.coords, radiusKm: proximityRadius, townCenter: selectedTown.center, townRadiusKm: selectedTown.radiusKm });
   const { streets, loading: streetsLoading } = useStreets({ searchQuery, townName: selectedTown.name, limit: 15 });
   const nearbyDrivers = useNearbyDrivers(
-    rideStatus === 'idle' || rideStatus === 'searching',
+    !authLoading && Boolean(user) && (rideStatus === 'idle' || rideStatus === 'searching'),
     gpsState.coords ? { lat: gpsState.coords.lat, lng: gpsState.coords.lng } : (pickupLocation ?? selectedTown.center),
     1, // 1km radius — Uber/Bolt feel
   );
@@ -481,14 +481,16 @@ export default function RideView() {
     const detected = detectTown(c.lat, c.lng);
     setSelectedTown(detected);
 
-    if (!reverseGeocode) return;
+    if (!reverseGeocode || !setPickup) return;
     // Reverse geocode to get city name for better results
     try {
       const result = await reverseZW(c.lat, c.lng);
       const name = result?.name || result?.display_name?.split(',')[0] || 'My location';
-      if (setPickup) setPickupLocation({ name, lat: c.lat, lng: c.lng });
-    } catch (e) {
-      console.error('Reverse geocode error:', e);
+      setPickupLocation((current) => current?.name === 'My location' && current.lat === c.lat && current.lng === c.lng
+        ? { name, lat: c.lat, lng: c.lng }
+        : current);
+    } catch {
+      // GPS coordinates remain usable even if the address service is unavailable.
     }
   }, []);
 
@@ -1451,7 +1453,7 @@ export default function RideView() {
 
         {/* Location pills row — pinned above the content, always visible, never scrolls.
             Same treatment on every screen, including idle (row 1 of the 4e layout). */}
-        {!tierPickerOpen && <div className="flex shrink-0 items-center gap-2.5 px-4 pb-2 pt-2">
+        {!tierPickerOpen && <div className="flex shrink-0 items-center gap-2.5 px-4 pb-2 pt-1">
           <TownSelectorSheet currentTown={selectedTown} onSelect={handleTownSelect} />
           <span
             className="ml-auto inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full border border-[#d4d5d9] bg-[#f7f7fa] px-2.5 text-xs font-semibold text-[#111] shadow-sm"
