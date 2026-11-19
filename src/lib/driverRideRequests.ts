@@ -34,12 +34,10 @@ export interface EnrichedRideRequest {
     hearing_impaired: boolean;
   } | null;
   hasLuggage: boolean;
-  /** Parcel rides only — recipient/size/note/who-pays/photo are openly
-   * readable (a browsing driver needs them to judge the parcel before
-   * accepting); the recipient's phone stays hidden until matched. */
+  /** Open requests expose package size and payer to eligible Drivers. */
   parcel: {
     packageSize: 'small' | 'medium' | 'large';
-    recipientName: string;
+    recipientName: string | null;
     deliveryNote: string | null;
     whoPays: 'sender' | 'recipient';
     photoPath: string | null;
@@ -58,7 +56,7 @@ export async function fetchEnrichedOpenRides(driverGender?: string | null): Prom
   const rideIds = rides.map((r) => String(r.id));
   const userIds = Array.from(new Set(rides.map((r) => String(r.user_id ?? r.rider_id ?? '')).filter(Boolean)));
 
-  const [prefsRes, luggageRes, profilesRes, parcelRes, noteRes] = await Promise.all([
+  const [prefsRes, luggageRes, profilesRes, parcelRes, noteRes, parcelSummaryRes] = await Promise.all([
     supabase.from('ride_preferences').select('ride_id, quiet_ride, cool_temperature, wav_required, hearing_impaired').in('ride_id', rideIds),
     supabase.from('luggage_requests').select('ride_id').in('ride_id', rideIds),
     userIds.length > 0
@@ -69,6 +67,7 @@ export async function fetchEnrichedOpenRides(driverGender?: string | null): Prom
     // FullScreenNavigation.tsx read — a driver deciding whether to accept
     // needs the same note the rider actually sent, not a separate copy.
     supabase.from('trip_events').select('ride_id, payload, created_at').in('ride_id', rideIds).eq('event_type', 'rider_note').order('created_at', { ascending: false }),
+    (supabase as any).rpc('open_parcel_package_summary', { p_ride_ids: rideIds }),
   ]);
 
   const prefsMap = new Map((prefsRes.data ?? []).map((p) => [p.ride_id, p]));
@@ -76,6 +75,9 @@ export async function fetchEnrichedOpenRides(driverGender?: string | null): Prom
   const genderMap = new Map((profilesRes.data ?? []).map((p) => [p.user_id, p.gender]));
   const profileMap = new Map((profilesRes.data ?? []).map((p) => [p.user_id, p]));
   const parcelMap = new Map(((parcelRes.data ?? []) as Record<string, any>[]).map((p) => [p.ride_id as string, p]));
+  for (const summary of parcelSummaryRes.data ?? []) {
+    if (!parcelMap.has(summary.ride_id)) parcelMap.set(summary.ride_id, summary);
+  }
   const noteMap = new Map<string, string>();
   for (const row of noteRes.data ?? []) {
     if (noteMap.has(row.ride_id)) continue; // rows are newest-first — keep only the latest per ride
@@ -123,10 +125,10 @@ export async function fetchEnrichedOpenRides(driverGender?: string | null): Prom
         if (!p) return null;
         return {
           packageSize: p.package_size as 'small' | 'medium' | 'large',
-          recipientName: p.recipient_name,
-          deliveryNote: p.delivery_note,
+          recipientName: p.recipient_name ?? null,
+          deliveryNote: p.delivery_note ?? null,
           whoPays: p.who_pays as 'sender' | 'recipient',
-          photoPath: p.photo_path,
+          photoPath: p.photo_path ?? null,
         };
       })(),
     };

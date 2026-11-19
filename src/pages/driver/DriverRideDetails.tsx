@@ -224,7 +224,7 @@ export default function DriverRideDetails() {
             <p className="text-[10px] font-bold uppercase tracking-wide text-[#ff000d]">PARCEL REQUEST</p>
             <p className="mt-1 text-[18px] font-bold text-[#1f2129]">New parcel delivery</p>
             <p className="mt-1 text-[12px] leading-5 text-[#667080]">
-              Review the actual route, parcel photograph, contact details and fare before submitting an offer.
+              Review the route, package size and fare before submitting an offer.
             </p>
           </div>
         )}
@@ -237,7 +237,7 @@ export default function DriverRideDetails() {
               </span>
               <div className="min-w-0" style={{ flex: 1 }}>
                 <p className="truncate" style={{ fontSize: 16, fontWeight: 700, color: RIDE_TEXT }}>{ride.parcel ? PARCEL_SIZE_LABEL[ride.parcel.packageSize] ?? ride.parcel.packageSize : 'Parcel'}</p>
-                <p className="truncate" style={{ fontSize: 12, fontWeight: 500, color: RIDE_TEXT_2, marginTop: 1 }}>To: {ride.parcel?.recipientName}</p>
+                {ride.parcel?.recipientName && <p className="truncate" style={{ fontSize: 12, fontWeight: 500, color: RIDE_TEXT_2, marginTop: 1 }}>To: {ride.parcel.recipientName}</p>}
               </div>
             </>
           ) : (
