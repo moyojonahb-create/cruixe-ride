@@ -217,3 +217,26 @@ This proves client build integration only. Token registration on a physical devi
 Firebase server credentials in Railway, deployment of the FCM/worker source,
 authorized test delivery, and iPhone Firebase/APNs configuration remain open.
 See FIREBASE-ONBOARDING.md for the secure server setup next step.
+
+## Firebase live activation verified
+
+On 2026-11-19 the user's production Firebase variables were confirmed present
+without reading values. A focused backend release based on live commit `3ffe639`
+was published in PR9 and deployed pinned to
+`d921b3cf2f883ae127629f76ba071b8c87351c05`. Production deployment
+`055621f0-4801-4acd-b6c2-b0a7d121763e` reached SUCCESS. The full backend Go suite
+passed before release; no schema/dependency/frontend/payment activation was included.
+The previous successful deployment is `d78211a2-bcb2-4f83-b6af-6876a5629928`.
+
+Startup authenticates Firebase service-account credentials with Google without
+sending a notification. Startup succeeded and the deployed worker log confirms
+`asynq_server_start` for critical/default/low queues. Live checks returned
+`/health/live` HTTP200 and `/health/ready` HTTP200, readytrue, score100:
+PostgreSQL/Redis/Asynq/push/authoritative dispatch ready. Push mode is configured;
+SMS and email remain noop. Queue depth and dead-letter count were zero.
+
+Physical Android token registration and ordinary test delivery remain unverified,
+as do iPhone Firebase/APNs configuration and signing. No real message or money
+movement was sent as part of verification. Other migration-branch ride changes
+are not part of this focused live deployment. The migrated branch also receives
+the startup Google validation and registered risk handlers to avoid later drift.

@@ -44,6 +44,16 @@ func NewPushProvider(cfg PushProviderConfig) (Provider, error) {
 	return NewHTTPProvider(HTTPProviderConfig{Name: "push_gateway", Endpoint: cfg.GatewayEndpoint, Token: cfg.GatewayToken}), nil
 }
 
+// ValidatePushProvider authenticates native Firebase credentials without sending a message.
+// The gateway transport has its own provider-specific authentication contract.
+func ValidatePushProvider(ctx context.Context, provider Provider) error {
+	if firebase, ok := provider.(*firebaseProvider); ok {
+		_, err := firebase.accessToken(ctx)
+		return err
+	}
+	return nil
+}
+
 type firebaseProvider struct {
 	projectID   string
 	email       string

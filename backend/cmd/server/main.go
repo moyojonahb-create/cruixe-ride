@@ -136,6 +136,14 @@ func main() {
 	if err != nil {
 		log.Fatal("Invalid push notification configuration: ", err)
 	}
+	if cfg.Notification.FCMServiceAccountJSON != "" {
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		err = notification.ValidatePushProvider(ctx, pushProvider)
+		cancel()
+		if err != nil {
+			log.Fatal("Firebase credential validation failed: ", err)
+		}
+	}
 	notificationService := notification.NewService(notificationRepo, jobRuntime.Client(), notification.Providers{
 		Push: pushProvider,
 		SMS: notification.NewHTTPProvider(notification.HTTPProviderConfig{
@@ -332,6 +340,12 @@ func main() {
 	jobRuntime.HandleFunc(jobs.TypePushNotification, notificationService.ProcessJob(jobs.TypePushNotification))
 	jobRuntime.HandleFunc(jobs.TypeSMSNotification, notificationService.ProcessJob(jobs.TypeSMSNotification))
 	jobRuntime.HandleFunc(jobs.TypeEmailNotification, notificationService.ProcessJob(jobs.TypeEmailNotification))
+	jobRuntime.HandleFunc(jobs.TypeFraudScan, riskService.ProcessScan(jobs.TypeFraudScan))
+	jobRuntime.HandleFunc(jobs.TypeRiskRecalculateUser, riskService.ProcessScan(jobs.TypeRiskRecalculateUser))
+	jobRuntime.HandleFunc(jobs.TypeRiskMultiAccount, riskService.ProcessScan(jobs.TypeRiskMultiAccount))
+	jobRuntime.HandleFunc(jobs.TypeRiskWalletAbuse, riskService.ProcessScan(jobs.TypeRiskWalletAbuse))
+	jobRuntime.HandleFunc(jobs.TypeRiskStudentAbuse, riskService.ProcessScan(jobs.TypeRiskStudentAbuse))
+	jobRuntime.HandleFunc(jobs.TypeRiskGPSSpoofing, riskService.ProcessScan(jobs.TypeRiskGPSSpoofing))
 	if err := jobRuntime.Start(); err != nil {
 		log.Fatal("Background job workers failed to start: ", err)
 	}

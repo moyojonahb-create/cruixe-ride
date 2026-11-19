@@ -67,6 +67,12 @@ func TestFirebaseAcknowledgementAndTokenReuse(t *testing.T) {
 		}
 		return &http.Response{StatusCode: status, Body: io.NopCloser(strings.NewReader(body)), Header: http.Header{}}, nil
 	})
+	if err := ValidatePushProvider(context.Background(), p); err != nil {
+		t.Fatal(err)
+	}
+	if sends != 0 {
+		t.Fatal("credential validation sent a notification")
+	}
 	req := DeliveryRequest{HistoryID: "history-1", DeviceTokens: []string{"device-a", "device-a"}, Title: "Test"}
 	result, err := p.Send(context.Background(), req)
 	if err != nil || result.ProviderID == "" {

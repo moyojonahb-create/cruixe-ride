@@ -84,6 +84,14 @@ func main() {
 	if err != nil {
 		log.Fatal("Invalid push notification configuration: ", err)
 	}
+	if cfg.Notification.FCMServiceAccountJSON != "" {
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		err = notification.ValidatePushProvider(ctx, pushProvider)
+		cancel()
+		if err != nil {
+			log.Fatal("Firebase credential validation failed: ", err)
+		}
+	}
 	notificationService := notification.NewService(notificationRepo, jobRuntime.Client(), notification.Providers{
 		Push: pushProvider,
 		SMS: notification.NewHTTPProvider(notification.HTTPProviderConfig{
